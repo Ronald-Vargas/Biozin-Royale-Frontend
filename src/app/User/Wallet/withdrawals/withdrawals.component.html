@@ -1,3 +1,89 @@
-<p>
-  withdrawals works!
-</p>
+<app-screen-shell
+  title="Retirar"
+  current="wallet"
+  (back)="goBack()"
+>
+  <!-- Saldo -->
+  <div class="balance-card">
+    <div class="balance-label">Saldo disponible</div>
+    <div class="gold-text balance-amount">$1,250.00</div>
+    <div class="balance-glow"></div>
+  </div>
+
+  <!-- Método de retiro -->
+  <div class="field-label">Método de retiro</div>
+  <div class="dropdown-wrap">
+    <button class="dropdown-trigger" (click)="toggleDropdown()">
+      {{ method }}
+      <app-icon
+        [svg]="iconChevronDown"
+        [size]="18"
+        class="chevron"
+        [class.chevron--open]="open"
+        style="color:var(--gold-2)"
+      ></app-icon>
+    </button>
+
+    <div *ngIf="open" class="dropdown-menu">
+      <div
+        *ngFor="let m of methods"
+        class="dropdown-option"
+        [class.dropdown-option--active]="m === method"
+        (click)="selectMethod(m)"
+      >{{ m }}</div>
+    </div>
+  </div>
+
+  <!-- Monto a retirar -->
+  <div class="field-label">Monto a retirar</div>
+  <div class="amount-display">$ {{ shown }}</div>
+
+  <div class="amounts-grid">
+    <button
+      *ngFor="let a of amounts"
+      class="amount-btn"
+      [class.amount-btn--active]="isAmountActive(a)"
+      (click)="selectAmount(a)"
+    >${{ a }}</button>
+  </div>
+
+  <input
+    class="other-input"
+    [class.other-input--filled]="other !== ''"
+    [value]="other"
+    (input)="onOtherInput($any($event.target).value)"
+    placeholder="Otro monto"
+    inputmode="decimal"
+  />
+
+  <!-- Datos de retiro (dinámico) -->
+<div class="info-header">
+  <app-icon [svg]="info.icon" [size]="16" style="color:var(--gold-2)"></app-icon>
+  <span class="info-title">{{ info.title }}</span>
+</div>
+
+<div class="info-card">
+  <div
+    *ngFor="let row of info.rows; let last = last"
+    class="info-row"
+    [class.info-row--last]="last"
+  >
+    <span class="info-key">{{ row.k }}</span>
+    <span class="info-value">{{ row.v }}</span>
+  </div>
+</div>
+
+<!-- Cambiar datos -->
+<button class="change-btn" (click)="changeInfo()">
+  <app-icon [svg]="iconEdit" [size]="16"></app-icon>
+  Cambiar datos de destino
+</button>
+
+
+
+
+  <div class="footer-btn">
+    <app-gold-button (clicked)="confirm()">Retirar</app-gold-button>
+    <p class="footer-note">El retiro será procesado en 24 a 48 horas hábiles.</p>
+  </div>
+</app-screen-shell>

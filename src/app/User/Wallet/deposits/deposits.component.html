@@ -1,3 +1,86 @@
-<p>
-  deposits works!
-</p>
+<app-screen-shell
+  title="Depósito"
+  current="wallet"
+  (back)="goBack()"
+>
+  <!-- Método de pago -->
+  <div class="section-label">MÉTODO DE PAGO</div>
+  <div class="methods-list">
+    <div
+      *ngFor="let m of payMethods"
+      class="method-item"
+      [class.method-item--active]="isMethodActive(m.key)"
+      (click)="selectMethod(m.key)"
+    >
+      <div class="method-icon" [class.method-icon--active]="isMethodActive(m.key)">
+        <app-icon
+          [svg]="m.icon"
+          [size]="18"
+          [style.color]="isMethodActive(m.key) ? 'var(--gold-1)' : '#9a8a68'"
+        ></app-icon>
+      </div>
+      <span class="method-label">{{ m.label }}</span>
+      <app-method-badge [kind]="m.badge"></app-method-badge>
+      <div class="radio" [class.radio--active]="isMethodActive(m.key)">
+        <div *ngIf="isMethodActive(m.key)" class="radio-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selección de cuenta/tarjeta -->
+  <div class="accounts-header">
+    <span class="section-label">{{ sectionLabel }}</span>
+    <span class="add-link" (click)="goPagos()">
+      <app-icon [svg]="iconAdd" [size]="14"></app-icon>
+      Agregar
+    </span>
+  </div>
+
+  <div class="accounts-list">
+    <div
+      *ngFor="let a of accounts"
+      class="account-item"
+      [class.account-item--active]="isAccountActive(a.id)"
+      (click)="selectAccount(a.id)"
+    >
+      <div class="account-brand-wrap">
+        <app-account-brand [brand]="a.brand"></app-account-brand>
+      </div>
+
+      <div class="account-body">
+        <div class="account-title-row">
+          <span class="account-label">{{ a.label }}</span>
+          <span *ngIf="a.principal" class="principal-badge">Principal</span>
+        </div>
+        <div class="account-sub">{{ a.sub }}</div>
+      </div>
+
+      <div class="radio" [class.radio--active]="isAccountActive(a.id)">
+        <div *ngIf="isAccountActive(a.id)" class="radio-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monto -->
+  <div class="section-label">MONTO</div>
+  <div class="amounts-grid">
+    <button
+      *ngFor="let a of amounts"
+      class="amount-btn"
+      [class.amount-btn--active]="isAmountActive(a)"
+      (click)="selectAmount(a)"
+    >${{ a }}</button>
+  </div>
+
+  <input
+    class="other-input"
+    [value]="other"
+    (input)="onOtherInput($any($event.target).value)"
+    placeholder="Otro"
+    inputmode="decimal"
+  />
+
+  <div class="footer-btn">
+    <app-gold-button (clicked)="confirm()">Depositar</app-gold-button>
+  </div>
+</app-screen-shell>

@@ -1,0 +1,42 @@
+.cards-badge {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.visa {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  font-style: italic;
+  color: #1a5fc4;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.mc {
+  position: relative;
+  width: 26px;
+  height: 16px;
+  display: inline-block;
+}
+
+.mc-red,
+.mc-yellow {
+  position: absolute;
+  top: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.mc-red {
+  left: 0;
+  background: #eb001b;
+}
+
+.mc-yellow {
+  left: 9px;
+  background: #f79e1b;
+  mix-blend-mode: screen;
+}

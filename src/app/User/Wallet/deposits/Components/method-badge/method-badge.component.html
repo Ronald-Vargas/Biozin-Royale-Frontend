@@ -1,3 +1,24 @@
-<p>
-  method-badge works!
-</p>
+<!-- Tarjetas: VISA + Mastercard -->
+<div *ngIf="kind === 'cards'" class="cards-badge">
+  <span class="visa">VISA</span>
+  <span class="mc">
+    <span class="mc-red"></span>
+    <span class="mc-yellow"></span>
+  </span>
+</div>
+
+<!-- Bitcoin -->
+<app-icon
+  *ngIf="kind === 'btc'"
+  [svg]="iconBitcoin"
+  [size]="22"
+  style="color:#f7931a"
+></app-icon>
+
+<!-- PayPal -->
+<app-icon
+  *ngIf="kind === 'paypal'"
+  [svg]="iconPaypal"
+  [size]="22"
+  style="color:#2790c3"
+></app-icon>

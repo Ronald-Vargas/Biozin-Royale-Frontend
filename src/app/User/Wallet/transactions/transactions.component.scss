@@ -1,0 +1,123 @@
+// ── Filters ──────────────────────────────────────────────────
+.filters-row {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 18px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  background: transparent;
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(177deg, #f4dd92, #c79a32);
+    color: #2a1f06;
+    box-shadow: 0 4px 12px -4px rgba(199, 154, 50, 0.6);
+  }
+}
+
+// ── Transactions ─────────────────────────────────────────────
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tx-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.18);
+}
+
+.tx-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid;
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: 1px;
+}
+
+.tx-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tx-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tx-type {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.tx-amt {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tx-method {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: #cbb98f;
+  margin-top: 4px;
+}
+
+.tx-row-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.tx-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+}
+
+.tx-status {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+// ── Empty ────────────────────────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted);
+  font-size: 13px;
+}

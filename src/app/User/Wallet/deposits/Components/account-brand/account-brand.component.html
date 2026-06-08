@@ -1,3 +1,24 @@
-<p>
-  account-brand works!
-</p>
+<!-- VISA -->
+<span *ngIf="brand === 'visa'" class="visa-text">VISA</span>
+
+<!-- Mastercard -->
+<span *ngIf="brand === 'master'" class="mc-mark">
+  <span class="mc-red"></span>
+  <span class="mc-yellow"></span>
+</span>
+
+<!-- Bitcoin -->
+<app-icon
+  *ngIf="brand === 'btc'"
+  [svg]="iconBitcoin"
+  [size]="20"
+  style="color:#f7931a"
+></app-icon>
+
+<!-- PayPal -->
+<app-icon
+  *ngIf="brand === 'paypal'"
+  [svg]="iconPaypal"
+  [size]="20"
+  style="color:#2790c3"
+></app-icon>

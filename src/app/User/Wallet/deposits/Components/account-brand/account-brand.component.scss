@@ -1,0 +1,24 @@
+.visa-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  font-style: italic;
+  color: #1a5fc4;
+}
+
+.mc-mark {
+  position: relative;
+  width: 26px; height: 16px;
+  display: inline-block;
+}
+
+.mc-red,
+.mc-yellow {
+  position: absolute;
+  top: 0;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+}
+
+.mc-red    { left: 0;  background: #eb001b; }
+.mc-yellow { left: 9px; background: #f79e1b; mix-blend-mode: screen; }

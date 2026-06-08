@@ -1,3 +1,47 @@
-<p>
-  transactions works!
-</p>
+<app-screen-shell
+  title="Transacciones"
+  current="wallet"
+  (back)="goBack()"
+>
+  <!-- Filters -->
+  <div class="filters-row">
+    <button
+      *ngFor="let f of filters"
+      class="filter-chip"
+      [class.filter-chip--active]="filter === f.key"
+      (click)="filter = f.key"
+    >{{ f.label }}</button>
+  </div>
+
+  <!-- Transactions -->
+  <div class="tx-list">
+    <div *ngFor="let t of list" class="tx-card">
+      <div class="tx-icon" [style.border-color]="t.color">
+        <app-icon [svg]="t.icon" [size]="18" [style.color]="t.color"></app-icon>
+      </div>
+
+      <div class="tx-body">
+        <div class="tx-row-top">
+          <span class="tx-type">{{ t.type }}</span>
+          <span
+            class="tx-amt"
+            [style.color]="t.pos ? '#4fd190' : '#e06a6a'"
+          >{{ t.amt }}</span>
+        </div>
+
+        <div class="tx-method">{{ t.method }}</div>
+
+        <div class="tx-row-bottom">
+          <span class="tx-date">{{ t.date }}</span>
+          <span class="tx-status" [style.color]="statusColor(t.status)">
+            {{ t.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="list.length === 0" class="empty-state">
+    Sin transacciones en esta categoría.
+  </div>
+</app-screen-shell>

@@ -1,3 +1,52 @@
-<p>
-  wallet works!
-</p>
+<app-screen-shell
+  title="Mi Wallet"
+  current="wallet"
+  [glow]="0.3"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <!-- Balance card -->
+  <div class="balance-card">
+    <div class="balance-label">SALDO TOTAL</div>
+    <div class="balance-row">
+      <span class="gold-text balance-amount">
+        {{ hidden ? '$ ••••••' : '$ 1,250.00' }}
+      </span>
+      <app-icon
+        [svg]="hidden ? iconEyeOff : iconEye"
+        [size]="21"
+        class="eye-toggle"
+        (click)="toggleHidden()"
+      ></app-icon>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-row">
+    <app-gold-button (clicked)="goDeposito()">Depositar</app-gold-button>
+    <app-ghost-button (clicked)="goRetirar()">Retirar</app-ghost-button>
+  </div>
+
+  <!-- Transactions header -->
+  <div class="tx-header">
+    <span class="tx-title">Últimas transacciones</span>
+    <span class="tx-action" (click)="goTransacciones()">Ver todo</span>
+  </div>
+
+  <!-- Transactions list -->
+  <div class="tx-list">
+    <div *ngFor="let t of transactions" class="tx-item">
+      <div class="tx-icon" [style.border-color]="t.color">
+        <app-icon [svg]="t.icon" [size]="18" [style.color]="t.color"></app-icon>
+      </div>
+      <div class="tx-info">
+        <div class="tx-type">{{ t.type }}</div>
+        <div class="tx-date">{{ t.date }}</div>
+      </div>
+      <div class="tx-amt" [style.color]="t.pos ? '#4fd190' : '#e06a6a'">
+        {{ t.amt }}
+      </div>
+    </div>
+  </div>
+  </div>
+</app-screen-shell>
