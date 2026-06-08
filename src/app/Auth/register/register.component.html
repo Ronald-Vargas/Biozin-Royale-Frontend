@@ -1,3 +1,42 @@
-<p>
-  register works!
-</p>
+<ion-content [fullscreen]="true" class="auth-content scrollable">
+  <app-atmosphere [glow]="0.38" [count]="12"></app-atmosphere>
+
+  <div class="auth-wrap">
+    <app-auth-header
+      title="Registrar"
+      subtitle="Crea tu cuenta"
+      [logoSize]="92"
+      (backClick)="goBack()"
+    ></app-auth-header>
+
+    <div class="fields-wrap">
+      <app-field label="Nombre completo"      placeholder="Juan Pérez"             [control]="nameCtrl"></app-field>
+      <app-field label="Correo electrónico"   type="email" placeholder="ejemplo@correo.com" [control]="emailCtrl"></app-field>
+      <app-field label="Teléfono"             type="tel"   placeholder="+506 8144 7441"     [control]="phoneCtrl"></app-field>
+      <app-field label="Contraseña"           placeholder="Mínimo 8 caracteres"   [password]="true" [control]="passCtrl"></app-field>
+      <app-field label="Confirmar contraseña" placeholder="Repite tu contraseña"  [password]="true" [control]="confirmCtrl"></app-field>
+    </div>
+
+    <label class="agree-row">
+      <ion-checkbox
+        [checked]="agree"
+        (ionChange)="agree = $event.detail.checked"
+      ></ion-checkbox>
+      <span class="agree-text">
+        Acepto los <span class="link-gold">Términos y Condiciones</span>
+      </span>
+    </label>
+
+    <app-gold-button [loading]="loading" (clicked)="submit()">
+      Registrarse
+    </app-gold-button>
+
+    <app-divider label="o regístrate con"></app-divider>
+    <app-social-row (picked)="goHome()"></app-social-row>
+
+    <div class="footer-line">
+      ¿Ya tienes cuenta?
+      <span class="link-gold-bold" (click)="goLogin()">INICIAR SESIÓN</span>
+    </div>
+  </div>
+</ion-content>

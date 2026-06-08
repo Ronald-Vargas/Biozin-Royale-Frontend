@@ -1,0 +1,49 @@
+ion-content.auth-content {
+  --background: var(--bg-dark);
+  &.scrollable { --overflow: auto; }
+}
+
+.auth-wrap {
+  position: relative;
+  padding: 24px 26px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 2;
+}
+
+.fields-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: 2px;
+}
+
+.agree-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  cursor: pointer;
+
+  ion-checkbox { margin-top: 1px; }
+}
+
+.agree-text {
+  font-size: 17px;
+  color: #cbb98f;
+  line-height: 1.5;
+}
+
+.footer-line {
+  text-align: center;
+  font-size: 15px;
+  color: #cbb98f;
+  font-weight: 500;
+}
+
+.link-gold      { color: var(--gold-2); font-weight: 600; cursor: pointer; }
+.link-gold-bold { color: var(--gold-1); font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
+
+.auth-wrap {
+  padding-top: 70px;  
+}

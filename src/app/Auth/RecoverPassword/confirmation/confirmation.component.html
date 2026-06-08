@@ -1,3 +1,45 @@
-<p>
-  confirmation works!
-</p>
+<ion-content [fullscreen]="true" class="auth-content">
+  <app-atmosphere [glow]="0.55" [count]="14"></app-atmosphere>
+
+  <div class="success-wrap">
+    <!-- Medallion + burst -->
+    <div class="medallion-wrap">
+      <!-- Particle burst -->
+      <span
+        *ngFor="let s of sparks"
+        class="spark"
+        [style.width.px]="s.size"
+        [style.height.px]="s.size"
+        [style.--tx]="s.x + 'px'"
+        [style.--ty]="s.y + 'px'"
+        [style.animation-delay.s]="s.delay"
+      ></span>
+
+      <!-- Expanding ring -->
+      <div class="ring"></div>
+
+      <!-- Glow -->
+      <div class="glow"></div>
+
+      <!-- Circle with check -->
+      <div class="success-circle">
+        <app-icon [svg]="iconCheck" [size]="58" class="check-icon" style="color:var(--gold-1)"></app-icon>
+      </div>
+    </div>
+
+    <h2 class="gold-text success-title">¡Contraseña actualizada!</h2>
+    <p class="success-sub">
+      Tu contraseña ha sido cambiada<br />con éxito.
+    </p>
+
+    <!-- Info card -->
+    <div class="info-card">
+      <app-icon [svg]="iconLock" [size]="22" style="color:var(--gold-1);flex-shrink:0"></app-icon>
+      <span>Ahora puedes iniciar sesión con tu nueva contraseña.</span>
+    </div>
+
+    <div class="btn-wrap">
+      <app-gold-button (clicked)="goLogin()">Ir al inicio de sesión</app-gold-button>
+    </div>
+  </div>
+</ion-content>

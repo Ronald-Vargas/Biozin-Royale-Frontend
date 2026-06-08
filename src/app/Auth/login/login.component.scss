@@ -1,0 +1,50 @@
+ion-content.auth-content { --background: var(--bg-dark); }
+
+.auth-wrap {
+  position: relative;
+  min-height: 100%;
+  padding: 24px 26px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.fields-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 4px;
+}
+
+.forgot-wrap {
+  text-align: right;
+  margin-top: 9px;
+}
+
+.footer-line {
+  text-align: center;
+  font-size: 17px;
+  color: #cbb98f; 
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.link-gold {
+  color: var(--gold-2);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-gold-bold {
+  color: var(--gold-1);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.auth-wrap {
+  padding-top: 70px; 
+}

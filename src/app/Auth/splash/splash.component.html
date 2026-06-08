@@ -1,3 +1,27 @@
-<p>
-  splash works!
-</p>
+<ion-content [fullscreen]="true" class="splash-content">
+  <app-atmosphere [glow]="0.5" [count]="14"></app-atmosphere>
+
+  <div class="splash-center">
+    <div class="logo-wrapper">
+      <app-logo [size]="118"></app-logo>
+    </div>
+
+    <h1 class="gold-text biozin-title">BIOZIN</h1>
+
+    <div class="royale-row">
+      <span class="line-left"></span>
+      <h2 class="gold-text royale-subtitle">ROYALE</h2>
+      <span class="line-right"></span>
+    </div>
+
+    <div class="casino-label">CASINO</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">Cargando...</div>
+    <div class="progress-track">
+      <div class="progress-fill" [style.width.%]="pct"></div>
+    </div>
+    <div class="progress-pct">{{ pct }}%</div>
+  </div>
+</ion-content>

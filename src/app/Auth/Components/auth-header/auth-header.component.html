@@ -1,3 +1,10 @@
-<p>
-  auth-header works!
-</p>
+<div class="auth-header">
+  <button class="back-btn" aria-label="Volver" (click)="backClick.emit()">
+    <app-icon [svg]="iconBack" [size]="20"></app-icon>
+  </button>
+  <div class="header-center">
+    <app-logo [size]="logoSize"></app-logo>
+    <h2 class="gold-text header-title">{{ title }}</h2>
+    <p class="header-subtitle">{{ subtitle }}</p>
+  </div>
+</div>

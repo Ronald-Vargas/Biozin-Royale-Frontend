@@ -1,0 +1,47 @@
+.auth-header {
+  position: relative;
+  z-index: 2;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--gold-2);
+
+  ion-icon { font-size: 20px; }
+}
+
+.header-center {
+  text-align: center;
+  padding-top: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 25px;
+  letter-spacing: 2.5px;
+  margin: 10px 0 0;
+  text-transform: uppercase;
+}
+
+.header-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #cbb98f;
+  margin: 7px 0 0;
+  letter-spacing: 0.5px;
+}

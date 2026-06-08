@@ -1,3 +1,48 @@
-<p>
-  login works!
-</p>
+<ion-content [fullscreen]="true" class="auth-content">
+  <app-atmosphere [glow]="0.4" [count]="12"></app-atmosphere>
+
+  <div class="auth-wrap">
+    <app-auth-header
+      title="Iniciar Sesión"
+      subtitle="Accede a tu cuenta"
+      [logoSize]="104"
+      (backClick)="goBack()"
+    ></app-auth-header>
+
+    <div class="fields-wrap">
+      <app-field
+        label="Correo electrónico"
+        type="email"
+        placeholder="ejemplo@correo.com"
+        [control]="emailCtrl"
+      ></app-field>
+
+      <div>
+        <app-field
+          label="Contraseña"
+          placeholder="••••••••••"
+          [password]="true"
+          [control]="passwordCtrl"
+        ></app-field>
+        <div class="forgot-wrap">
+          <span class="link-gold" (click)="goForgot()">
+            ¿Olvidaste tu contraseña?
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <app-gold-button [loading]="loading" (clicked)="submit()">
+      Iniciar sesión
+    </app-gold-button>
+
+    <app-divider label="o continúa con"></app-divider>
+    <app-social-row (picked)="goHome()"></app-social-row>
+
+
+    <div class="footer-line">
+      ¿No tienes cuenta?
+      <span class="link-gold-bold" (click)="goRegister()">REGISTRARSE</span>
+    </div>
+  </div>
+</ion-content>

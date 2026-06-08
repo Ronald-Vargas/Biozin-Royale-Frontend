@@ -1,3 +1,27 @@
-<p>
-  field works!
-</p>
+<div class="field-wrap">
+  <div class="field-label">{{ label }}</div>
+  <ion-input
+    class="fld"
+    [class.has-focus]="focused"
+    [type]="effectiveType"
+    [placeholder]="placeholder"
+    [formControl]="control"
+    autocapitalize="off"
+    spellcheck="false"
+    (ionFocus)="onFocus()"
+    (ionBlur)="onBlur()"
+  >
+    <button
+      *ngIf="password"
+      slot="end"
+      type="button"
+      class="eye-btn"
+      (click)="toggleShow()"
+    >
+      <app-icon
+        [svg]="showPassword ? iconEyeOff : iconEye"
+        [size]="20"
+      ></app-icon>
+    </button>
+  </ion-input>
+</div>

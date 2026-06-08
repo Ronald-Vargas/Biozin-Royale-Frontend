@@ -1,0 +1,103 @@
+ion-content.welcome-content {
+  --background: var(--bg-dark);
+}
+
+.welcome-wrap {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 26px 26px;
+}
+
+// ── Brand ──────────────────────────────────────────────────────
+.brand-block {
+  text-align: center;
+  margin-top: 22px;
+  animation: fadeDown 0.9s ease 0.1s both;
+}
+
+.logo-row {
+  display: flex;
+  justify-content: center;
+}
+
+.bienvenido-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  letter-spacing: 6px;
+  margin-top: 16px;
+  font-weight: 500;
+  padding-left: 6px;
+}
+
+.brand-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 27px;
+  letter-spacing: 2px;
+  margin: 7px 0 0;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #d8c7a0;
+  margin: 14px auto 0;
+  max-width: 250px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+
+// ── Hero ───────────────────────────────────────────────────────
+.hero-block {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+}
+
+// ── Actions ────────────────────────────────────────────────────
+.actions-block {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  animation: fadeUp 0.9s ease 0.35s both;
+}
+
+// ── Dots ───────────────────────────────────────────────────────
+.dots-row {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.dot {
+  height: 6px;
+  border-radius: 4px;
+  width: 6px;
+  background: rgba(212, 167, 60, 0.3);
+  transition: width 0.3s;
+
+  &--active {
+    width: 18px;
+    background: linear-gradient(90deg, var(--gold-1), var(--gold-3));
+  }
+}
+
+// ── Animations ─────────────────────────────────────────────────
+@keyframes fadeDown {
+  0%   { opacity: 0; transform: translateY(-16px); }
+  100% { opacity: 1; transform: translateY(0);     }
+}
+
+@keyframes fadeUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0);    }
+}

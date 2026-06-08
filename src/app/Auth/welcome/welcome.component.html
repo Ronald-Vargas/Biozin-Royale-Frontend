@@ -1,3 +1,44 @@
-<p>
-  welcome works!
-</p>
+<ion-content [fullscreen]="true" class="welcome-content">
+  <app-atmosphere [glow]="0.6" [count]="18"></app-atmosphere>
+
+  <div class="welcome-wrap">
+
+    <!-- Brand -->
+    <div class="brand-block">
+      <div class="logo-row">
+        <app-logo [size]="128"></app-logo>
+      </div>
+      <div class="gold-text bienvenido-label">BIENVENIDO A</div>
+      <h1 class="gold-text brand-title">BIOZIN ROYALE</h1>
+      <p class="brand-subtitle">
+        Donde la suerte<br />se vuelve dinero.
+      </p>
+    </div>
+
+    <!-- Cards hero -->
+    <div class="hero-block">
+      <app-cards-hero [width]="272"></app-cards-hero>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-block">
+      <app-gold-button (clicked)="goLogin()">
+        Iniciar sesión
+      </app-gold-button>
+
+      <app-ghost-button (clicked)="goGuest()">
+        Continuar como invitado
+      </app-ghost-button>
+
+      <!-- Pagination dots -->
+      <div class="dots-row">
+        <span
+          *ngFor="let dot of [].constructor(slides); let i = index"
+          class="dot"
+          [class.dot--active]="i === active"
+        ></span>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
