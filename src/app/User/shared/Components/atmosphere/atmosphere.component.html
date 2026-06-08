@@ -1,0 +1,27 @@
+<div class="atm-root">
+  <!-- Base radial -->
+  <div class="atm-base"></div>
+
+  <!-- Amber pool bottom-center -->
+  <div class="atm-pool" [style.opacity]="glow"></div>
+
+  <!-- Top sheen -->
+  <div class="atm-sheen"></div>
+
+  <!-- Bokeh dots -->
+  <span
+    *ngFor="let d of dots"
+    class="atm-dot"
+    [style.left.%]="d.left"
+    [style.top.%]="d.top"
+    [style.width.px]="d.size"
+    [style.height.px]="d.size"
+    [style.opacity]="d.op"
+    [style.filter]="'blur(' + d.blur + 'px)'"
+    [style.animation-duration.s]="d.dur"
+    [style.animation-delay.s]="d.delay"
+  ></span>
+
+  <!-- Edge vignette -->
+  <div class="atm-vignette"></div>
+</div>

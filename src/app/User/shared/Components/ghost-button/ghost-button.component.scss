@@ -1,0 +1,14 @@
+ion-button.btn-ghost {
+  --color: var(--gold-2);
+  --border-color: rgba(212, 167, 60, 0.45);
+  --border-width: 1px;
+  --background: transparent;
+  --background-activated: rgba(212, 167, 60, 0.08);
+  --border-radius: 14px;
+  height: 52px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}

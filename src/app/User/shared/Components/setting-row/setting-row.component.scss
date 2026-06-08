@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.row-icon {
+  width: 32px; height: 32px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: rgba(212, 167, 60, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.26);
+}
+
+.row-label {
+  flex: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cream);
+}
+
+.row-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+  margin-right: 2px;
+  white-space: nowrap;
+}

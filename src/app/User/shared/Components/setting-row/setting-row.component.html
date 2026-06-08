@@ -1,0 +1,23 @@
+<div
+  class="row"
+  [class.row--last]="last"
+  (click)="rowClick.emit()"
+>
+  <div class="row-icon">
+    <app-icon [svg]="icon" [size]="17" style="color:var(--gold-1)"></app-icon>
+  </div>
+
+  <span class="row-label">{{ label }}</span>
+
+  <span *ngIf="value" class="row-value">{{ value }}</span>
+
+  <!-- Slot derecho para toggles -->
+  <ng-content select="[slot=right]"></ng-content>
+
+  <app-icon
+    *ngIf="showChevron"
+    [svg]="iconChevron"
+    [size]="18"
+    style="color:#6f6757"
+  ></app-icon>
+</div>

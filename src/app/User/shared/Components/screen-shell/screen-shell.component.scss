@@ -1,0 +1,69 @@
+// El host es un elemento custom (display:inline por defecto) que
+// envuelve a <ion-content>. Sin tamaño propio, ion-content (que es
+// position:absolute; inset:0) no tiene contenedor dimensionado y la
+// página colapsa. Lo posicionamos para llenar el host de la página.
+:host {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-content.shell-content { --background: var(--bg-dark); }
+
+.shell-root {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shell-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(16px + var(--ion-safe-area-top)) 20px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  margin-bottom: 18px;
+}
+
+.header-back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: none;
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--gold-1);
+}
+
+.header-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 3px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.shell-slot {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

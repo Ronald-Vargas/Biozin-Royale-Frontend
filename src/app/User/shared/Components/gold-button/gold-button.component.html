@@ -1,0 +1,13 @@
+<ion-button
+  class="btn-gold"
+  expand="block"
+  shape="round"
+  [disabled]="loading"
+  (click)="onClick()"
+>
+  <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+  <span *ngIf="!loading" class="btn-label">
+    <ng-content></ng-content>
+  </span>
+  <span class="shine"></span>
+</ion-button>

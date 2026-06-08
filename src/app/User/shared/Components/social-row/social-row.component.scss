@@ -1,0 +1,36 @@
+.social-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.social-btn {
+  width: 58px;
+  height: 52px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.22);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:active {
+    background: rgba(212, 167, 60, 0.09);
+    border-color: rgba(212, 167, 60, 0.45);
+  }
+
+  &--apple {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.apple-icon {
+  font-size: 26px;
+  color: #f2f2f2;
+}
+
+.mail-icon {
+  font-size: 24px;
+  color: var(--gold-2);
+}

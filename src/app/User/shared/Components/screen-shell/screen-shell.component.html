@@ -1,0 +1,25 @@
+<ion-content [fullscreen]="true" class="shell-content">
+  <div class="shell-root">
+    <app-atmosphere [glow]="glow" [count]="8"></app-atmosphere>
+
+    <div class="shell-body">
+      <!-- Header -->
+      <div class="screen-header">
+        <button class="header-back" (click)="back.emit()">
+          <app-icon [svg]="iconBack" [size]="23"></app-icon>
+        </button>
+        <h2 class="gold-text header-title">{{ title }}</h2>
+      </div>
+
+      <!-- Contenido proyectado -->
+      <div class="shell-slot">
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+    <app-bottom-nav
+      *ngIf="showNav"
+      [current]="current"
+    ></app-bottom-nav>
+  </div>
+</ion-content>

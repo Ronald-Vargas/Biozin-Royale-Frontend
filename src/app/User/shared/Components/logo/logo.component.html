@@ -1,0 +1,15 @@
+<div class="logo-wrap" [style.width.px]="size" [style.height.px]="size">
+  <div
+    *ngIf="halo"
+    class="logo-halo"
+    [style.width.px]="haloSize"
+    [style.height.px]="haloSize"
+  ></div>
+  <img
+    src="assets/logo.png"
+    alt="Biozin Royale"
+    class="logo-img"
+    [style.width.px]="size"
+    [style.height.px]="size"
+  />
+</div>

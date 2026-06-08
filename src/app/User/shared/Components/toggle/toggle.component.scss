@@ -1,0 +1,31 @@
+.toggle {
+  width: 46px; height: 27px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  transition: background 0.25s, border-color 0.25s;
+
+  &--on {
+    background: linear-gradient(177deg, #f4dd92, #c79a32);
+    border-color: transparent;
+  }
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
+  width: 21px; height: 21px;
+  border-radius: 50%;
+  background: #cbb98f;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  transition: left 0.22s cubic-bezier(0.4, 1.3, 0.6, 1), background 0.22s;
+
+  &--on {
+    left: 22px;
+    background: #2a1f06;
+  }
+}
