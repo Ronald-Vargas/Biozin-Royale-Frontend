@@ -1,3 +1,7 @@
-<p>
-  big-game-card works!
-</p>
+<div class="game-card">
+  <div class="card-art" [style.background]="artBg">
+    <app-icon [svg]="svg" [size]="42" [style.color]="game.ic"></app-icon>
+    <div class="card-glow"></div>
+  </div>
+  <div class="card-name">{{ game.name }}</div>
+</div>

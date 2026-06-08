@@ -1,0 +1,37 @@
+.game-card {
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(212, 167, 60, 0.26);
+  box-shadow: 0 8px 20px -12px rgba(0, 0, 0, 0.8);
+}
+
+.card-art {
+  height: clamp(90px, 28vw, 140px);
+  display: grid;
+  place-items: center;
+  position: relative;
+
+  app-icon { filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.55)); }
+}
+
+.card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(75% 55% at 50% 125%, rgba(231, 200, 107, 0.28), transparent);
+}
+
+.card-name {
+  padding: 9px 10px;
+  text-align: center;
+  background: linear-gradient(180deg, #15110b, #0b0908);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--cream);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

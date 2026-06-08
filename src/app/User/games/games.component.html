@@ -1,3 +1,36 @@
-<p>
-  games works!
-</p>
+<app-screen-shell
+  title="Todos los juegos"
+  current="juegos"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+    <!-- Search -->
+    <div class="search-wrap">
+      <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+      <input
+        class="search-input"
+        [(ngModel)]="query"
+        placeholder="Buscar juego"
+      />
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-row">
+      <button
+        *ngFor="let f of filters"
+        class="filter-chip"
+        [class.filter-chip--active]="filter === f.key"
+        (click)="filter = f.key"
+      >{{ f.label }}</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="games-grid">
+      <app-big-game-card *ngFor="let g of list" [game]="g"></app-big-game-card>
+    </div>
+
+    <div *ngIf="list.length === 0" class="empty-state">
+      Sin resultados
+    </div>
+  </div>
+</app-screen-shell>
