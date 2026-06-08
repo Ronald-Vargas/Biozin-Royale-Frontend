@@ -1,3 +1,39 @@
-<p>
-  guest works!
-</p>
+<ion-content [fullscreen]="true" class="guest-content">
+  <app-atmosphere [glow]="0.42" [count]="12"></app-atmosphere>
+
+  <div class="guest-wrap">
+    <button class="back-btn" (click)="goBack()">
+      <app-icon [svg]="iconBack" [size]="20"></app-icon>
+    </button>
+
+    <div class="center-block">
+      <div class="logo-anim">
+        <app-logo [size]="124"></app-logo>
+      </div>
+
+      <div class="medallion">
+        <app-icon [svg]="iconPerson" [size]="40" style="color:var(--gold-1)"></app-icon>
+      </div>
+
+      <h2 class="gold-text guest-title">Jugar como invitado</h2>
+
+      <p class="guest-subtitle">
+        Disfruta de Biozin Royale<br />sin crear una cuenta.
+      </p>
+
+      <div class="btn-wrap">
+        <app-gold-button (clicked)="goHome()">
+          Continuar como invitado
+        </app-gold-button>
+      </div>
+
+      <p class="guest-note">
+        Podrás crear una cuenta más tarde<br />y mantener tu progreso.
+      </p>
+
+      <div class="register-link" (click)="goRegister()">
+        Crear cuenta
+      </div>
+    </div>
+  </div>
+</ion-content>
