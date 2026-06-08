@@ -1,0 +1,64 @@
+.hist-card {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+
+  &--dim { opacity: 0.72; }
+}
+
+.hist-icon {
+  width: 50px; height: 50px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, rgba(199, 154, 50, 0.22), rgba(122, 90, 20, 0.05));
+  border: 1px solid rgba(212, 167, 60, 0.34);
+}
+
+.hist-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.hist-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.3px;
+}
+
+.hist-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #cbb98f;
+  margin-top: 3px;
+}
+
+.hist-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.hist-status {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hist-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #5a5240;
+}
+
+.hist-date {
+  font-size: 16px;
+  color: #cbb98f;
+}

@@ -1,3 +1,47 @@
-<p>
-  bonuses works!
-</p>
+<app-screen-shell
+  title="Mis Bonos"
+  current="bonos"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button
+        *ngFor="let t of tabs"
+        class="tab"
+        [class.tab--active]="tab === t.k"
+        (click)="tab = t.k"
+      >{{ t.l }}</button>
+    </div>
+
+    <!-- Activos -->
+    <div *ngIf="tab === 'activos'" class="active-list">
+      <app-bonus-card
+        *ngFor="let b of activeBonuses"
+        [bonus]="b"
+        (viewDetails)="goDetalle($event)"
+      >
+      </app-bonus-card>
+    </div>
+
+    <!-- Historial -->
+    <div *ngIf="tab === 'historial'">
+      <div class="filters-row">
+        <button
+          *ngFor="let f of filters"
+          class="filter-chip"
+          [class.filter-chip--active]="filter === f.key"
+          (click)="filter = f.key"
+        >{{ f.label }}</button>
+      </div>
+
+      <div class="hist-list">
+        <app-bonus-hist-card *ngFor="let b of histList" [bonus]="b"></app-bonus-hist-card>
+      </div>
+
+      <div *ngIf="histList.length === 0" class="empty-state">
+        Sin bonos en esta categoría.
+      </div>
+    </div>
+  </div>
+</app-screen-shell>

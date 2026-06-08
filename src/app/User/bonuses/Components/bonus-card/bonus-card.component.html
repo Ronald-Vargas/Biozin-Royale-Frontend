@@ -1,3 +1,17 @@
-<p>
-  bonus-card works!
-</p>
+<div class="bonus-card">
+  <div class="bonus-icon">
+    <app-icon [svg]="svg" [size]="28" style="color:var(--gold-1)"></app-icon>
+  </div>
+  <div class="bonus-body">
+    <div class="bonus-title">{{ bonus.title }}</div>
+    <div class="bonus-desc">{{ bonus.desc }}</div>
+    <div class="bonus-req">{{ bonus.req }}</div>
+    <div class="bonus-footer">
+      <button class="details-btn" (click)="viewDetails.emit(bonus.id)">Ver detalles</button>
+      <div class="time-left">
+        <app-icon [svg]="iconTime" [size]="14"></app-icon>
+        <span>{{ bonus.time }}</span>
+      </div>
+    </div>
+  </div>
+</div>

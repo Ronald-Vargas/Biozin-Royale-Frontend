@@ -1,3 +1,44 @@
-<p>
-  bonus-details works!
-</p>
+<app-screen-shell
+  title="Detalle del bono"
+  current="bonos"
+  (back)="goBack()"
+>
+  <!-- Hero -->
+  <div class="bono-hero">
+    <div class="hero-icon-wrap">
+      <div class="hero-glow"></div>
+      <div class="hero-circle">
+        <app-icon [svg]="detail.icon" [size]="36" style="color:var(--gold-1)"></app-icon>
+      </div>
+    </div>
+
+    <h2 class="gold-text bono-title">{{ detail.title }}</h2>
+    <div class="bono-headline">{{ detail.headline }}</div>
+    <div class="bono-sub">{{ detail.sub }}</div>
+
+    <div class="expires-row">
+      <app-icon [svg]="iconTime" [size]="14"></app-icon>
+      <span>{{ detail.expires }}</span>
+    </div>
+  </div>
+
+
+  <!-- Juegos aplicables -->
+  <div class="section-label">JUEGOS APLICABLES</div>
+  <div class="games-row">
+    <span *ngFor="let g of detail.games" class="game-chip">{{ g }}</span>
+  </div>
+
+  <!-- Términos -->
+  <div class="section-label">TÉRMINOS Y CONDICIONES</div>
+  <div class="terms-list">
+    <div *ngFor="let t of detail.terms" class="term-row">
+      <app-icon [svg]="iconCheck" [size]="16" class="term-icon"></app-icon>
+      <span>{{ t }}</span>
+    </div>
+  </div>
+
+  <div class="footer-btn">
+    <app-gold-button (clicked)="claim()">Reclamar bono</app-gold-button>
+  </div>
+</app-screen-shell>

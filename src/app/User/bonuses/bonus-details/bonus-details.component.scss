@@ -1,0 +1,130 @@
+// ── Hero ─────────────────────────────────────────────────────
+.bono-hero {
+  text-align: center;
+  padding: 6px 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-icon-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.hero-glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 200, 107, 0.35), transparent 70%);
+  filter: blur(6px);
+}
+
+.hero-circle {
+  position: relative;
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #2a59b5, #0e1d44);
+  border: 2px solid var(--gold-3);
+  box-shadow: 0 0 20px rgba(199, 154, 50, 0.45);
+}
+
+.bono-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 1.5px;
+  margin: 4px 0 0;
+}
+
+.bono-headline {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold-1);
+  margin-top: 6px;
+}
+
+.bono-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #cbb98f;
+  margin-top: 4px;
+}
+
+.expires-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(212, 167, 60, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  color: var(--gold-2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+// ── Section ──────────────────────────────────────────────────
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #cbb98f;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+// ── Games chips ──────────────────────────────────────────────
+.games-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.game-chip {
+  padding: 7px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+// ── Terms list ───────────────────────────────────────────────
+.terms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.term-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    color: #cbb98f;
+    line-height: 1.5;
+  }
+}
+
+.term-icon {
+  color: var(--gold-2);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+// ── Footer ───────────────────────────────────────────────────
+.footer-btn { margin-top: auto; }

@@ -1,3 +1,14 @@
-<p>
-  bonus-hist-card works!
-</p>
+<div class="hist-card" [class.hist-card--dim]="dim">
+  <div class="hist-icon">
+    <app-icon [svg]="svg" [size]="25" style="color:var(--gold-1)"></app-icon>
+  </div>
+  <div class="hist-body">
+    <div class="hist-title">{{ bonus.title }}</div>
+    <div class="hist-desc">{{ bonus.desc }}</div>
+    <div class="hist-meta">
+      <span class="hist-status" [style.color]="meta.color">{{ meta.label }}</span>
+      <span class="hist-dot"></span>
+      <span class="hist-date">{{ bonus.date }}</span>
+    </div>
+  </div>
+</div>
