@@ -1,6 +1,3 @@
-/**
- * Prevents Angular change detection from
- * running with certain Web Component callbacks
- */
-// eslint-disable-next-line no-underscore-dangle
-(window as any).__Zone_disable_customElements = true;
+// zone-flags.ts — keep empty; do NOT disable customElements here.
+// Ionic's ion-router-outlet is a custom element and needs zone.js patching
+// to trigger Angular change detection on navigation.

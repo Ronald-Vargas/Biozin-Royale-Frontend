@@ -1,37 +1,91 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+// ─── Variables de color ───────────────────────────────────────
+:root {
+  --bg-dark: #0d0a05;
+  --gold-1:  #f0d080;   // más claro — highlight
+  --gold-2:  #d4a73c;   // medio — base
+  --gold-3:  #c9921a;   // más oscuro — sombra
+  --muted:   rgba(200, 185, 150, 0.45);
+  --cream:   #f0e6c8;
 
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+  // Safe areas del dispositivo (notch/cámara arriba, barra de inicio
+  // abajo). Normalmente las define el CSS core de Ionic; como no lo
+  // importamos, las mapeamos aquí a env(). Requiere viewport-fit=cover
+  // en index.html (ya está). En dispositivos sin notch valen 0px.
+  --ion-safe-area-top:    env(safe-area-inset-top, 0px);
+  --ion-safe-area-right:  env(safe-area-inset-right, 0px);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --ion-safe-area-left:   env(safe-area-inset-left, 0px);
+}
 
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+// ─── Texto dorado con gradiente ───────────────────────────────
+.gold-text {
+  background: linear-gradient(
+    160deg,
+    #f5e17a 0%,
+    #e7c86b 25%,
+    #d4a73c 55%,
+    #c9921a 80%,
+    #a87510 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+// ─── Fondo base de toda la app ────────────────────────────────
+ion-app,
+ion-content {
+  --background: var(--bg-dark);
+}
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+// ─── Reset mínimo ─────────────────────────────────────────────
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// ─── Layout de páginas con router-outlet estándar ─────────────
+// Usamos <router-outlet> de Angular (no ion-router-outlet) por
+// fiabilidad en la navegación. El componente enrutado se inserta
+// como hermano DESPUÉS de <router-outlet> dentro de <ion-app>.
+// Como los hijos son position:absolute, ion-app ya no obtiene
+// altura de su contenido: hay que fijar height:100% en toda la
+// cadena html → body → ion-app para que las páginas llenen la
+// pantalla (lo que normalmente hace el CSS core de Ionic).
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+ion-app {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Contenedor de la animación de rutas: llena ion-app y recorta las
+// páginas que se deslizan fuera de pantalla durante la transición.
+ion-app > .route-host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.route-host > router-outlet {
+  display: none;
+}
+
+// Cada página enrutada replica el layout de .ion-page para que
+// <ion-content> (position:absolute; inset:0) tenga contenedor.
+.route-host > router-outlet ~ * {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 0;
+}
