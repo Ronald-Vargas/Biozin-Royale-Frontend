@@ -1,0 +1,42 @@
+<div class="sec-card">
+  <!-- Medallón con glow -->
+  <div class="medallion-wrap">
+    <div class="medallion-glow"></div>
+    <div class="medallion">
+      <app-icon
+        *ngIf="icon"
+        [svg]="icon"
+        [size]="22"
+        style="color:var(--gold-1)"
+      ></app-icon>
+      <span *ngIf="iconText" class="medallion-text">{{ iconText }}</span>
+    </div>
+  </div>
+
+  <!-- Texto -->
+  <div class="sec-text">
+    <div class="sec-title">{{ title }}</div>
+    <div
+      *ngFor="let l of lines; let i = index"
+      class="sec-line"
+      [class.sec-line--strong]="l.strong"
+      [style.color]="lineColor(l)"
+      [style.marginTop.px]="i === 0 ? 5 : 2"
+      [style.fontWeight]="l.strong ? 600 : 400"
+    >
+      <span *ngIf="l.dot" class="status-dot"></span>
+      <span>{{ l.label }}</span>
+      <span
+        *ngIf="l.value"
+        class="line-value"
+        [style.color]="l.valueColor || 'var(--cream)'"
+      >{{ l.value }}</span>
+    </div>
+  </div>
+
+  <!-- Botón -->
+  <button class="sec-btn" (click)="btnClick.emit()">
+    <app-icon [svg]="btnIcon" [size]="17"></app-icon>
+    <span>{{ btnLabel }}</span>
+  </button>
+</div>

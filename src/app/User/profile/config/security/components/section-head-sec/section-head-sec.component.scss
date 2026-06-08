@@ -1,0 +1,26 @@
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 12px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  letter-spacing: 1.2px;
+  color: var(--cream);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.section-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  color: var(--gold-2);
+  font-weight: 600;
+  cursor: pointer;
+}

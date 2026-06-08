@@ -1,0 +1,97 @@
+<app-screen-shell
+  title="Seguridad"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <!-- Contraseña -->
+  <app-sec-card
+    [icon]="iconLock"
+    title="Contraseña"
+    [lines]="passLines"
+    [btnIcon]="iconEdit"
+    btnLabel="Cambiar contraseña"
+    (btnClick)="changePass()"
+  ></app-sec-card>
+
+  <!-- 2FA -->
+  <app-sec-card
+    iconText="2FA"
+    title="Autenticación en dos pasos"
+    [lines]="twoFaLines"
+    [btnIcon]="iconShield"
+    btnLabel="Gestionar 2FA"
+    (btnClick)="manage2FA()"
+  ></app-sec-card>
+
+  <!-- PIN -->
+  <app-sec-card
+    [icon]="iconKeypad"
+    title="PIN de transacciones"
+    [lines]="pinLines"
+    [btnIcon]="iconLock"
+    btnLabel="Cambiar PIN"
+    (btnClick)="changePin()"
+  ></app-sec-card>
+
+  <!-- Sesiones activas -->
+  <div class="sessions-block">
+    <app-section-head-sec title="Sesiones activas" action="Ver todas"></app-section-head-sec>
+
+    <div class="sessions-card">
+      <div
+        *ngFor="let s of sessions; let last = last"
+        class="session-row"
+        [class.session-row--last]="last"
+      >
+        <span
+          class="status-led"
+          [class.status-led--active]="s.active"
+        ></span>
+
+        <div class="session-icon">
+          <app-icon [svg]="s.icon" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <div class="session-body">
+          <div class="session-device">{{ s.device }}</div>
+          <div class="session-meta">{{ s.loc }} · IP: {{ s.ip }}</div>
+        </div>
+
+        <span *ngIf="s.active" class="active-badge">Activo ahora</span>
+        <span *ngIf="!s.active" class="session-when">{{ s.when }}</span>
+
+        <app-icon [svg]="iconDots" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+      </div>
+    </div>
+
+    <!-- Cerrar todas -->
+    <button class="close-all-btn" (click)="closeAll()">
+      <app-icon [svg]="iconTrash" [size]="18"></app-icon>
+      Cerrar todas las sesiones
+    </button>
+  </div>
+
+  <!-- Historial de seguridad -->
+  <div class="history-block">
+    <app-section-head-sec title="Historial de seguridad" action="Ver todo"></app-section-head-sec>
+
+    <div class="history-card">
+      <div
+        *ngFor="let h of history; let last = last"
+        class="history-row"
+        [class.history-row--last]="last"
+      >
+        <div class="history-icon" [style.border-color]="h.color">
+          <app-icon [svg]="h.icon" [size]="17" [style.color]="h.color"></app-icon>
+        </div>
+
+        <div class="history-body">
+          <div class="history-label">{{ h.label }}</div>
+          <div class="history-date">{{ h.date }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</app-screen-shell>
