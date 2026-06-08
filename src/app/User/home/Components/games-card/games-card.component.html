@@ -1,3 +1,10 @@
-<p>
-  games-card works!
-</p>
+<div class="game-card">
+  <div
+    class="card-art"
+    [style.background]="'radial-gradient(120% 100% at 50% 0%, ' + game.g1 + ', ' + game.g2 + ')'"
+  >
+    <app-icon [svg]="svg" [size]="34" [style.color]="game.ic"></app-icon>
+    <div class="card-glow"></div>
+  </div>
+  <div class="card-name">{{ game.name }}</div>
+</div>

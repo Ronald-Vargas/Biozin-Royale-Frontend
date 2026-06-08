@@ -1,3 +1,12 @@
-<p>
-  bottom-nav works!
-</p>
+<nav class="bottom-nav">
+  <div
+    *ngFor="let item of items"
+    class="nav-item"
+    [class.nav-item--active]="current === item.key"
+    (click)="go(item)"
+  >
+    <div *ngIf="current === item.key" class="active-bar"></div>
+    <app-icon [svg]="current === item.key ? item.filled : item.outline" [size]="22"></app-icon>
+    <span class="nav-label">{{ item.label }}</span>
+  </div>
+</nav>

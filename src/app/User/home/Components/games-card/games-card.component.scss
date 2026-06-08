@@ -1,0 +1,32 @@
+.game-card {
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.7);
+}
+
+.card-art {
+  height: 78px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 60% at 50% 120%, rgba(231, 200, 107, 0.25), transparent);
+}
+
+.card-name {
+  padding: 8px 6px;
+  text-align: center;
+  background: linear-gradient(180deg, #15110b, #0c0a08);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--cream);
+  text-transform: uppercase;
+}

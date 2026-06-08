@@ -1,3 +1,59 @@
-<p>
-  home works!
-</p>
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="home-root">
+    <app-atmosphere [glow]="0.3" [count]="9"></app-atmosphere>
+
+    <!-- Scroll area -->
+    <div class="scroll-area">
+
+      <!-- Top bar -->
+      <div class="top-bar">
+        <div class="avatar" (click)="goMiPerfil()">
+
+          <app-icon [svg]="iconPerson" [size]="27" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <div class="balance-pill">
+          <span class="balance-amount">$1,250.00</span>
+          <div class="add-btn" (click)="goDeposito()">
+            <app-icon [svg]="iconAdd" [size]="18" style="color:#2a1f06"></app-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="hero-block">
+        <div class="welcome-label">WELCOME TO</div>
+        <h1 class="gold-text hero-title">BIOZIN ROYALE</h1>
+        <app-cards-hero [width]="228" [delay]="0.1"></app-cards-hero>
+      </div>
+
+      <!-- Juegos destacados -->
+      <div class="section">
+        <app-section-head
+          title="Juegos destacados"
+          (action)="goJuegos()"
+        ></app-section-head>
+        <div class="games-grid">
+          <app-game-card *ngFor="let g of games" [game]="g"></app-game-card>
+        </div>
+      </div>
+
+      <!-- Apuestas deportivas -->
+      <div class="section">
+        <app-section-head title="Apuestas deportivas"></app-section-head>
+        <div class="sports-banner">
+          <div class="sports-text">
+            <div class="sports-title">Eventos en vivo</div>
+            <div class="sports-sub">Fútbol · NBA · Tenis y más</div>
+          </div>
+          <app-icon [svg]="iconFootball" [size]="84" class="sports-icon"></app-icon>
+        </div>
+      </div>
+
+    </div><!-- /scroll-area -->
+
+    <app-bottom-nav 
+      [current]="'home'">
+    </app-bottom-nav>
+  </div>
+</ion-content>
