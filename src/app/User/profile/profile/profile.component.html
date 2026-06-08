@@ -1,3 +1,39 @@
-<p>
-  profile works!
-</p>
+<app-screen-shell
+  title="Mi Perfil"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <!-- Profile card -->
+  <div class="profile-card" (click)="goProfile()">
+    <div class="profile-avatar">
+      <app-icon [svg]="iconPerson" [size]="34" style="color:var(--gold-1)"></app-icon>
+    </div>
+    <div class="profile-info">
+      <div class="profile-name">Juan Pérez</div>
+      <div class="profile-handle">&#64;juanperez4</div>
+    </div>
+    <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+  </div>
+
+  <!-- Menu -->
+  <div class="menu-list">
+    <div
+      *ngFor="let m of menu"
+      class="menu-item"
+      (click)="goTo(m.route)"
+    >
+      <div class="menu-icon">
+        <app-icon [svg]="m.icon" [size]="18" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <span class="menu-label">{{ m.label }}</span>
+      <app-icon [svg]="iconChevron" [size]="18" style="color:#cbb98f"></app-icon>
+    </div>
+  </div>
+
+  <!-- Logout -->
+  <div class="logout-wrap">
+    <app-ghost-button (clicked)="logout()">Cerrar sesión</app-ghost-button>
+  </div>
+  </div>
+</app-screen-shell>

@@ -1,3 +1,37 @@
-<p>
-  game-history works!
-</p>
+<app-screen-shell
+  title="Historial de Juegos"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <!-- Table head -->
+  <div class="table-head">
+    <span class="th">Juego</span>
+    <span class="th th--center">Fecha</span>
+    <span class="th th--right">Apuesta</span>
+    <span class="th th--right">Resultado</span>
+  </div>
+
+  <!-- Rows -->
+  <div class="table-body">
+    <div *ngFor="let g of gameHist" class="table-row">
+      <div class="cell-game">
+        <app-game-thumb [game]="g"></app-game-thumb>
+        <span class="game-name">{{ g.name }}</span>
+      </div>
+
+      <div class="cell-date">
+        <div class="date-day">{{ g.date }}</div>
+        <div class="date-time">{{ g.time }}</div>
+      </div>
+
+      <span class="cell-bet">${{ g.bet }}</span>
+
+      <span
+        class="cell-result"
+        [style.color]="g.result >= 0 ? '#4fd190' : '#e06a6a'"
+      >{{ fmt(g.result) }}</span>
+    </div>
+  </div>
+  </div>
+</app-screen-shell>

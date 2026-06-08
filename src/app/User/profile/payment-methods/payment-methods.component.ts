@@ -1,14 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
+import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
+import { KebabComponent }       from './components/kebab/kebab.component';
+import { PaySectionComponent }  from './components/pay-section/pay-section.component';
+import {
+  ICON_CARD, ICON_BITCOIN, ICON_PAYPAL,
+  ICON_STAR, ICON_SHIELD_CHECK,
+} from '../shared/icons/icons';
 
 @Component({
-  selector: 'app-payment-methods',
-  templateUrl: './payment-methods.component.html',
-  styleUrls: ['./payment-methods.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, ScreenShellComponent, SvgIconComponent,
+    KebabComponent, PaySectionComponent,
+  ],
+  selector: 'app-pagos',
+  templateUrl: './pagos.component.html',
+  styleUrls: ['./pagos.component.scss'],
 })
-export class PaymentMethodsComponent  implements OnInit {
+export class PagosPage {
+  iconCard    = ICON_CARD;
+  iconBitcoin = ICON_BITCOIN;
+  iconPaypal  = ICON_PAYPAL;
+  iconStar    = ICON_STAR;
+  iconShield  = ICON_SHIELD_CHECK;
 
-  constructor() { }
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
-
+  goBack() { this.router.navigate(['/perfil']); }
 }

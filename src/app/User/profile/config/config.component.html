@@ -1,3 +1,70 @@
-<p>
-  config works!
-</p>
+<app-screen-shell
+  title="Configuración"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <!-- Cuenta -->
+  <app-group-label>Cuenta</app-group-label>
+  <app-group-card>
+    <app-setting-row
+      [icon]="iconPerson"
+      label="Información personal"
+      (rowClick)="goMiPerfil()"
+    ></app-setting-row>
+    <app-setting-row
+      [icon]="iconLock"
+      label="Seguridad"
+      [last]="true"
+      (rowClick)="goSeguridad()"
+    ></app-setting-row>
+  </app-group-card>
+
+  <!-- Preferencias -->
+  <app-group-label>Preferencias</app-group-label>
+  <app-group-card>
+    <app-setting-row
+      [icon]="iconVolume"
+      label="Sonidos"
+      [showChevron]="false"
+    >
+      <app-toggle
+        slot="right"
+        [on]="sounds"
+        (changed)="sounds = $event"
+      ></app-toggle>
+    </app-setting-row>
+
+    <app-setting-row
+      [icon]="iconLanguage"
+      label="Idioma"
+      value="Español"
+      (rowClick)="noop()"
+    ></app-setting-row>
+
+    <app-setting-row
+      [icon]="iconMoon"
+      label="Tema"
+      value="Oscuro"
+      [last]="true"
+      (rowClick)="noop()"
+    ></app-setting-row>
+  </app-group-card>
+
+  <!-- General -->
+  <app-group-label>General</app-group-label>
+  <app-group-card>
+    <app-setting-row
+      [icon]="iconDoc"
+      label="Términos y Condiciones"
+      (rowClick)="noop()"
+    ></app-setting-row>
+    <app-setting-row
+      [icon]="iconShield"
+      label="Políticas de Privacidad"
+      [last]="true"
+      (rowClick)="noop()"
+    ></app-setting-row>
+  </app-group-card>
+  </div>
+</app-screen-shell>

@@ -1,0 +1,7 @@
+// ── Wrapper ───────────────────────────────────────────────────
+.page-inner {
+  padding: 0 12px;
+
+  @media (min-width: 480px) { padding: 0 16px; }
+  @media (min-width: 768px) { padding: 0 24px; }
+}

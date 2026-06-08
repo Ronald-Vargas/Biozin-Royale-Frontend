@@ -1,0 +1,245 @@
+// ── Wrapper ───────────────────────────────────────────────────
+.page-inner {
+  padding: 0 12px;
+
+  @media (min-width: 480px) { padding: 0 16px; }
+  @media (min-width: 768px) { padding: 0 24px; }
+}
+
+// ── Profile card ─────────────────────────────────────────────
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  margin-bottom: 22px;
+  background: linear-gradient(135deg, rgba(199, 154, 50, 0.10), rgba(20, 16, 10, 0.4));
+  border: 1px solid rgba(212, 167, 60, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(212, 167, 60, 0.08),
+    0 14px 34px -18px rgba(199, 154, 50, 0.5);
+}
+
+.logo-watermark {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 96px; height: 96px;
+  object-fit: contain;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+// ── Avatar ───────────────────────────────────────────────────
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 84px; height: 84px;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(150deg, var(--gold-1), var(--gold-3));
+  box-shadow: 0 0 16px rgba(199, 154, 50, 0.5);
+}
+
+.avatar-slot {
+  width: 78px; height: 78px;
+  border-radius: 50%;
+  background: #15110b;
+  display: grid;
+  place-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.camera-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  border: 2.5px solid #0c0907;
+  cursor: pointer;
+  z-index: 3;
+}
+
+// ── Identity ─────────────────────────────────────────────────
+.identity {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.identity-name {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.identity-handle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: var(--gold-2);
+  margin-top: 2px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+
+  & + .meta-row { margin-top: 5px; }
+}
+
+.meta-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f; 
+}
+
+.meta-value {
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.copy-btn {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+// ── Section head ─────────────────────────────────────────────
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px 2px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--cream);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+// ── Info card ────────────────────────────────────────────────
+.info-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  margin-bottom: 16px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 15px;
+  background: rgba(255, 255, 255, 0.018);
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.info-icon {
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid rgba(212, 167, 60, 0.45);
+  background: rgba(212, 167, 60, 0.06);
+}
+
+.info-key {
+  flex: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f; 
+}
+
+.info-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+  text-align: right;
+}
+
+// ── Edit button ──────────────────────────────────────────────
+.edit-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: 13px;
+  cursor: pointer;
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  border: 1.3px solid rgba(212, 167, 60, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-1);
+}
+
+// ── Stats grid ───────────────────────────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+
+  @media (min-width: 400px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 15px 5px 13px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(199, 154, 50, 0.13), rgba(122, 90, 20, 0.03));
+  border: 1px solid rgba(212, 167, 60, 0.32);
+}
+
+.stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #cbb98f; 
+  line-height: 1.3;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: pre-line;
+}

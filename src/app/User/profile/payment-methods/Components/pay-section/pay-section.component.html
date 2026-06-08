@@ -1,0 +1,17 @@
+<div class="pay-section">
+  <div class="section-header">
+    <div class="section-title-row">
+      <app-icon [svg]="icon" [size]="20" style="color:var(--gold-1)"></app-icon>
+      <span class="section-title">{{ title }}</span>
+    </div>
+    <div class="section-add">
+      <span class="add-label">{{ addLabel }}</span>
+      <div class="add-icon">
+        <app-icon [svg]="iconAdd" [size]="16" style="color:var(--gold-1)"></app-icon>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <ng-content></ng-content>
+  </div>
+</div>

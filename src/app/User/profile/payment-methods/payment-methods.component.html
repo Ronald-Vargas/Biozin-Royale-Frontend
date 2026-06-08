@@ -1,3 +1,95 @@
-<p>
-  payment-methods works!
-</p>
+<app-screen-shell
+  title="Métodos de pago"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+  <p class="intro">
+    Administra tus métodos de pago para depósitos y retiros
+    de forma rápida y segura.
+  </p>
+
+  <!-- TARJETAS -->
+  <app-pay-section
+    [icon]="iconCard"
+    title="Tarjetas"
+    addLabel="Agregar tarjeta"
+  >
+    <!-- VISA principal -->
+    <div class="method-card method-card--principal">
+      <div class="method-body">
+        <span class="visa-mark">VISA</span>
+        <div class="card-number">•••• •••• •••• 4567</div>
+        <div class="principal-row">
+          <span class="principal-badge">Principal</span>
+          <app-icon [svg]="iconStar" [size]="15" style="color:var(--gold-1)"></app-icon>
+        </div>
+      </div>
+      <app-kebab id="visa"></app-kebab>
+    </div>
+
+    <!-- Mastercard -->
+    <div class="method-card">
+      <span class="mc-mark">
+        <span class="mc-red"></span>
+        <span class="mc-yellow"></span>
+      </span>
+      <div class="method-body">
+        <div class="card-number">•••• •••• •••• 4567</div>
+      </div>
+      <app-kebab id="master"></app-kebab>
+    </div>
+  </app-pay-section>
+
+  <!-- CRIPTOMONEDAS -->
+  <app-pay-section
+    [icon]="iconBitcoin"
+    title="Criptomonedas"
+    addLabel="Agregar crypto"
+  >
+    <div class="method-card">
+      <div class="crypto-circle">
+        <app-icon [svg]="iconBitcoin" [size]="22" style="color:#fff"></app-icon>
+      </div>
+      <div class="method-body">
+        <div class="method-title">Bitcoin (BTC)</div>
+        <div class="method-sub">bc1q...4gf8</div>
+      </div>
+      <app-kebab id="btc"></app-kebab>
+    </div>
+  </app-pay-section>
+
+  <!-- PAYPAL -->
+  <app-pay-section
+    [icon]="iconPaypal"
+    title="PayPal"
+    addLabel="Agregar cuenta"
+  >
+    <div class="method-card">
+      <div class="paypal-circle">
+        <app-icon [svg]="iconPaypal" [size]="22" style="color:#2790c3"></app-icon>
+      </div>
+      <div class="method-body">
+        <div class="method-title">PayPal</div>
+        <div class="method-sub">juanperez&#64;gmail.com</div>
+      </div>
+      <app-kebab id="paypal"></app-kebab>
+    </div>
+  </app-pay-section>
+
+  <!-- Seguridad -->
+  <div class="security-banner">
+    <div class="security-icon-wrap">
+      <div class="security-glow"></div>
+      <app-icon [svg]="iconShield" [size]="34" style="color:var(--gold-1);position:relative"></app-icon>
+    </div>
+    <div>
+      <div class="security-title">Tu seguridad es nuestra prioridad</div>
+      <div class="security-body">
+        Todos los métodos de pago están encriptados y protegidos
+        con estándares de seguridad.
+      </div>
+    </div>
+  </div>
+  </div>
+</app-screen-shell>

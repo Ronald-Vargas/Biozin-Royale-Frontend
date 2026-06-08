@@ -1,0 +1,22 @@
+<div class="kebab-wrap">
+  <button class="kebab-btn" (click)="toggle($event)" aria-label="Opciones">
+    <app-icon [svg]="iconDots" [size]="18" style="color:#8d8064"></app-icon>
+  </button>
+
+  <div *ngIf="open" class="kebab-menu">
+    <div
+      *ngFor="let it of items; let last = last"
+      class="kebab-item"
+      [class.kebab-item--danger]="it.danger"
+      [class.kebab-item--last]="last"
+      (click)="select($event)"
+    >
+      <app-icon
+        [svg]="it.icon"
+        [size]="16"
+        [style.color]="it.danger ? '#e06a6a' : 'var(--gold-1)'"
+      ></app-icon>
+      <span>{{ it.label }}</span>
+    </div>
+  </div>
+</div>
