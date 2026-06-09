@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { BigGameCardComponent, GameItem } from './components/big-game-card/big-game-card.component';
 import { ICON_SEARCH } from '../shared/icons/icons';
+import { ScreenShellComponent } from '../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
+import { BigGameCardComponent, GameItem } from './Components/big-game-card/big-game-card.component';
 
 interface Filter { key: string; label: string; }
 

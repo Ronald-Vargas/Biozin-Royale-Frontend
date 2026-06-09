@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
 import {
   ICON_ICECREAM, ICON_FLASH, ICON_SKULL, ICON_CUBE,
   ICON_APERTURE, ICON_ALBUMS, ICON_DIAMOND, ICON_LAYERS, ICON_SYNC_CIRCLE,
 } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 export interface GameItem {
   name: string;
