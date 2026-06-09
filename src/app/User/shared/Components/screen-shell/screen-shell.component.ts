@@ -2,9 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonContent } from '@ionic/angular/standalone';
 import { AtmosphereComponent } from '../atmosphere/atmosphere.component';
-import { SvgIconComponent }    from '../svg-icons/svg-icon.component';
-import { BottomNavComponent }  from '../../../home/components/bottom-nav/bottom-nav.component';
 import { ICON_ARROW_BACK } from '../../icons/icons';
+import { BottomNavComponent } from 'src/app/User/home/Components/bottom-nav/bottom-nav.component';
+import { SvgIconComponent } from '../svg-icons/svg-icons.component';
 
 @Component({
   standalone: true,

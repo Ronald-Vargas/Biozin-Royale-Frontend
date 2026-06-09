@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../svg-icons/svg-icon.component';
 import { ICON_APPLE, ICON_MAIL } from '../../icons/icons';
+import { SvgIconComponent } from '../svg-icons/svg-icons.component';
 
 @Component({
   standalone: true,
