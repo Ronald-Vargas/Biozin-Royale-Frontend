@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { GroupLabelComponent }  from '../shared/components/group-label/group-label.component';
-import {
-  ICON_HEADSET, ICON_MAIL, ICON_WHATSAPP, ICON_HELP_CIRC, ICON_CHEVRON_FWD,
-} from '../shared/icons/icons';
+import { GroupLabelComponent } from '../../shared/Components/group-label/group-label.component';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_HEADSET, ICON_CHEVRON_FWD, ICON_MAIL, ICON_WHATSAPP, ICON_HELP_CIRC } from '../../shared/icons/icons';
 
 interface SupportItem {
   key:      string;
@@ -22,11 +20,11 @@ interface SupportItem {
   imports: [
     CommonModule, ScreenShellComponent, SvgIconComponent, GroupLabelComponent,
   ],
-  selector: 'app-soporte',
-  templateUrl: './soporte.component.html',
-  styleUrls: ['./soporte.component.scss'],
+  selector: 'app-support',
+  templateUrl: './support.component.html',
+  styleUrls: ['./support.component.scss'],
 })
-export class SoportePage {
+export class SupportComponent {
   iconHeadset = ICON_HEADSET;
   iconChevron = ICON_CHEVRON_FWD;
 

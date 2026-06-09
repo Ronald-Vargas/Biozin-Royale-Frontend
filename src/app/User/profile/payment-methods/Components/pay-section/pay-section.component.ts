@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
-import { ICON_ADD } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_ADD } from 'src/app/User/shared/icons/icons';
+
 
 @Component({
   standalone: true,

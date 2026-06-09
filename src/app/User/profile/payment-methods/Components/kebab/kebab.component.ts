@@ -1,9 +1,8 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
-import {
-  ICON_DOTS_VERT, ICON_STAR_OUT, ICON_EYE, ICON_TRASH,
-} from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_DOTS_VERT, ICON_STAR_OUT, ICON_EYE, ICON_TRASH } from 'src/app/User/shared/icons/icons';
+
 
 interface KebabItem {
   label:   string;

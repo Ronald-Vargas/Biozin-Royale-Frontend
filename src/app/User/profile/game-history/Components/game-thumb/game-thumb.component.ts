@@ -1,9 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
-import {
-  ICON_APERTURE, ICON_ALBUMS, ICON_CUBE, ICON_FLASH, ICON_STAR, ICON_SYNC_CIRCLE,
-} from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_APERTURE, ICON_ALBUMS, ICON_CUBE, ICON_FLASH, ICON_STAR, ICON_SYNC_CIRCLE } from 'src/app/User/shared/icons/icons';
 
 export interface GameHist {
   name:   string;

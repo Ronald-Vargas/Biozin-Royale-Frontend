@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { GhostButtonComponent } from '../shared/components/GhostButton/ghost-button.component';
-import {
-  ICON_PERSON_FILLED, ICON_CHEVRON_FWD,
-  ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP,
-} from '../shared/icons/icons';
+import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP } from '../../shared/icons/icons';
+
 
 interface MenuItem {
   label: string;
@@ -18,11 +16,11 @@ interface MenuItem {
 @Component({
   standalone: true,
   imports: [CommonModule, ScreenShellComponent, SvgIconComponent, GhostButtonComponent],
-  selector: 'app-perfil',
-  templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.scss'],
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss'],
 })
-export class PerfilPage {
+export class ProfileComponent {
   iconPerson  = ICON_PERSON_FILLED;
   iconChevron = ICON_CHEVRON_FWD;
 
