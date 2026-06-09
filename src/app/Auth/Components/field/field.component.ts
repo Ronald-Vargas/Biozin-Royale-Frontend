@@ -9,7 +9,7 @@ import { ICON_EYE, ICON_EYE_OFF } from 'src/app/User/shared/icons/icons';
 @Component({
   standalone: true,
   imports: [CommonModule, IonInput, ReactiveFormsModule, SvgIconComponent],
-  selector: 'app-field.component',
+  selector: 'app-field',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss'],
 })

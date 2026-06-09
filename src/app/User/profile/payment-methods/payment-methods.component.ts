@@ -14,9 +14,9 @@ import { PaySectionComponent } from './Components/pay-section/pay-section.compon
     CommonModule, ScreenShellComponent, SvgIconComponent,
     KebabComponent, PaySectionComponent,
   ],
-  selector: 'app-pagos',
-  templateUrl: './pagos.component.html',
-  styleUrls: ['./pagos.component.scss'],
+  selector: 'app-payment-methods',
+  templateUrl: './payment-methods.component.html',
+  styleUrls: ['./payment-methods.component.scss'],
 })
 export class PaymentMethodsComponent {
   iconCard    = ICON_CARD;

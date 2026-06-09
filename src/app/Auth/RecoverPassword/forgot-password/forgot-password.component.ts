@@ -18,7 +18,7 @@ import { FieldComponent } from '../../Components/field/field.component';
     AtmosphereComponent, GoldButtonComponent, SvgIconComponent,
     FieldComponent, AuthHeaderComponent,
   ],
-  selector: 'app-forgot-password.component',
+  selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss'],
 })

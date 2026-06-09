@@ -29,9 +29,9 @@ interface HistEntry {
     CommonModule, ScreenShellComponent, SvgIconComponent,
     SecCardComponent, SectionHeadSecComponent,
   ],
-  selector: 'app-seguridad',
-  templateUrl: './seguridad.component.html',
-  styleUrls: ['./seguridad.component.scss'],
+  selector: 'app-security',
+  templateUrl: './security.component.html',
+  styleUrls: ['./security.component.scss'],
 })
 export class SecurityComponent {
   iconLock    = ICON_LOCK_FILLED;

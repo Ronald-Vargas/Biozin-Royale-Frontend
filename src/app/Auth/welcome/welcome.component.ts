@@ -19,7 +19,7 @@ import { LogoComponent } from 'src/app/User/shared/Components/logo/logo.componen
     GoldButtonComponent,
     GhostButtonComponent,
   ],
-  selector: 'app-welcome.component',
+  selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.scss'],
 })

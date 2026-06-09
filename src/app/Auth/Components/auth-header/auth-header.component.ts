@@ -8,7 +8,7 @@ import { ICON_BACK } from 'src/app/User/shared/icons/icons';
 @Component({
   standalone: true,
   imports: [CommonModule, LogoComponent, SvgIconComponent],
-  selector: 'app-auth-header.component',
+  selector: 'app-auth-header',
   templateUrl: './auth-header.component.html',
   styleUrls: ['./auth-header.component.scss'],
 })

@@ -25,7 +25,7 @@ import { FieldComponent } from '../Components/field/field.component';
     FieldComponent,
     AuthHeaderComponent,
   ],
-  selector: 'app-login.component',
+  selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

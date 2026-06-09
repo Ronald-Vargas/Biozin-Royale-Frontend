@@ -12,9 +12,9 @@ interface Filter { key: string; label: string; }
 @Component({
   standalone: true,
   imports: [CommonModule, FormsModule, ScreenShellComponent, SvgIconComponent, BigGameCardComponent],
-  selector: 'app-juegos',
-  templateUrl: './juegos.component.html',
-  styleUrls: ['./juegos.component.scss'],
+  selector: 'app-games',
+  templateUrl: './games.component.html',
+  styleUrls: ['./games.component.scss'],
 })
 export class GamesComponent {
   iconSearch = ICON_SEARCH;

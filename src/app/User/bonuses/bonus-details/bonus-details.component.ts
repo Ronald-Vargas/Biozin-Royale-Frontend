@@ -25,9 +25,9 @@ interface BonoDetail {
   imports: [
     CommonModule, ScreenShellComponent, SvgIconComponent, GoldButtonComponent,
   ],
-  selector: 'app-bono-detalle',
-  templateUrl: './bono-detalle.component.html',
-  styleUrls: ['./bono-detalle.component.scss'],
+  selector: 'app-bonus-details',
+  templateUrl: './bonus-details.component.html',
+  styleUrls: ['./bonus-details.component.scss'],
 })
 
 

@@ -18,7 +18,7 @@ interface Spark {
     CommonModule, IonicModule, AtmosphereComponent,
     SvgIconComponent, GoldButtonComponent,
   ],
-  selector: 'app-confirmation.component',
+  selector: 'app-confirmation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss'],
 })

@@ -15,7 +15,7 @@ import { AuthHeaderComponent } from '../../Components/auth-header/auth-header.co
     CommonModule, IonicModule, AtmosphereComponent, SvgIconComponent,
     GoldButtonComponent, AuthHeaderComponent,
   ],
-  selector: 'app-verify-password.component',
+  selector: 'app-verify-password',
   templateUrl: './verify-password.component.html',
   styleUrls: ['./verify-password.component.scss'],
 })

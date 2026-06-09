@@ -7,8 +7,8 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 
 @Component({
   standalone: true,
-  imports: [IonContent, CommonModule, AtmosphereComponent, Component],
-  selector: 'app-splash.component',
+  imports: [IonContent, CommonModule, AtmosphereComponent],
+  selector: 'app-splash',
   templateUrl: './splash.component.html',
   styleUrls: ['./splash.component.scss'],
 })

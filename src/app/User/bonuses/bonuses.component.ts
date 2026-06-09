@@ -11,9 +11,9 @@ interface Filter { key: string; label: string; }
 @Component({
   standalone: true,
   imports: [CommonModule, ScreenShellComponent, BonusCardComponent, BonusHistCardComponent],
-  selector: 'app-bonos',
-  templateUrl: './bonos.component.html',
-  styleUrls: ['./bonos.component.scss'],
+  selector: 'app-bonuses',
+  templateUrl: './bonuses.component.html',
+  styleUrls: ['./bonuses.component.scss'],
 })
 export class BonusesComponent {
   tab    = 'activos';

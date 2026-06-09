@@ -7,7 +7,7 @@ import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.
 import { CardsHeroComponent } from '../shared/Components/cards-hero/cards-hero.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BottomNavComponent } from './Components/bottom-nav/bottom-nav.component';
-import { GameCardComponent, Game } from './Components/games-card/games-card.component';
+import { Game, GamesCardComponent } from './Components/games-card/games-card.component';
 import { SectionHeadComponent } from './Components/section-head/section-head.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { SectionHeadComponent } from './Components/section-head/section-head.com
   imports: [
     IonContent, CommonModule,
     AtmosphereComponent, CardsHeroComponent, SvgIconComponent,
-    BottomNavComponent, SectionHeadComponent, GameCardComponent,
+    BottomNavComponent, SectionHeadComponent, GamesCardComponent,
   ],
   selector: 'app-home',
   templateUrl: './home.component.html',

@@ -14,11 +14,11 @@ export interface Game {
 @Component({
   standalone: true,
   imports: [CommonModule, SvgIconComponent],
-  selector: 'app-game-card',
-  templateUrl: './game-card.component.html',
-  styleUrls: ['./game-card.component.scss'],
+  selector: 'app-games-card',
+  templateUrl: './games-card.component.html',
+  styleUrls: ['./games-card.component.scss'],
 })
-export class GameCardComponent {
+export class GamesCardComponent {
   @Input() game!: Game;
 
   private iconMap = {

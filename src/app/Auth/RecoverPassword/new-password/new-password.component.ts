@@ -18,7 +18,7 @@ interface Req { key: string; label: string; test: (v: string) => boolean; }
     CommonModule, FormsModule, IonicModule,
     AtmosphereComponent, SvgIconComponent, GoldButtonComponent, AuthHeaderComponent,
   ],
-  selector: 'app-new-password.component',
+  selector: 'app-new-password',
   templateUrl: './new-password.component.html',
   styleUrls: ['./new-password.component.scss'],
 })
