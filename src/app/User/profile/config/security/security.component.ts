@@ -33,7 +33,7 @@ interface HistEntry {
   templateUrl: './seguridad.component.html',
   styleUrls: ['./seguridad.component.scss'],
 })
-export class SeguridadPage {
+export class SecurityComponent {
   iconLock    = ICON_LOCK_FILLED;
   iconKeypad  = ICON_KEYPAD;
   iconEdit    = ICON_EDIT;

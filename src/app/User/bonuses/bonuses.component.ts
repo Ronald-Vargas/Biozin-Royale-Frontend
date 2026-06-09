@@ -15,7 +15,7 @@ interface Filter { key: string; label: string; }
   templateUrl: './bonos.component.html',
   styleUrls: ['./bonos.component.scss'],
 })
-export class BonosPage {
+export class BonusesComponent {
   tab    = 'activos';
   filter = 'todos';
 

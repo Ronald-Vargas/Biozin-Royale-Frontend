@@ -18,7 +18,7 @@ import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.compo
   templateUrl: './guest.component.html',
   styleUrls: ['./guest.component.scss'],
 })
-export class GuestPage {
+export class GuestComponent {
   iconBack   = ICON_BACK;
   iconPerson = ICON_PERSON_FILLED;
 

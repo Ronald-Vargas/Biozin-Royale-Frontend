@@ -12,7 +12,7 @@ import { GameThumbComponent, GameHist } from './Components/game-thumb/game-thumb
   templateUrl: './game-history.component.html',
   styleUrls: ['./game-history.component.scss'],
 })
-export class gameHistoryComponent {
+export class GameHistoryComponent {
   gameHist: GameHist[] = [
     { name: 'Bozin Roulette',   cat: 'casino',   date: '01/05/2024', time: '14:35', bet: 25, result: 60,  g1: '#6e1f24', g2: '#2a0c0e', ic: '#ffcaa6', icon: 'aperture' },
     { name: 'Royale Blackjack', cat: 'casino',   date: '01/05/2024', time: '14:20', bet: 50, result: -50, g1: '#1d5a3a', g2: '#0b2417', ic: '#a6ffc8', icon: 'albums' },

@@ -29,7 +29,9 @@ interface BonoDetail {
   templateUrl: './bono-detalle.component.html',
   styleUrls: ['./bono-detalle.component.scss'],
 })
-export class BonoDetallePage implements OnInit {
+
+
+export class BonusDetailsComponent implements OnInit {
   iconTime  = ICON_TIME;
   iconCheck = ICON_CHECK_OUT;
 

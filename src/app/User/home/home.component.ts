@@ -21,7 +21,7 @@ import { SectionHeadComponent } from './Components/section-head/section-head.com
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomePage {
+export class HomeComponent {
   currentNav = 'home';
 
   iconPerson   = ICON_PERSON_FILLED;

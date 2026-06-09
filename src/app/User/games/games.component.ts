@@ -16,7 +16,7 @@ interface Filter { key: string; label: string; }
   templateUrl: './juegos.component.html',
   styleUrls: ['./juegos.component.scss'],
 })
-export class JuegosPage {
+export class GamesComponent {
   iconSearch = ICON_SEARCH;
 
   filter = 'todos';
