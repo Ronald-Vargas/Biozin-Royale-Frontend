@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { AtmosphereComponent } from '../shared/components/atmosphere/atmosphere.component';
-import { LogoComponent }       from '../shared/components/logo/logo.component';
-import { GoldButtonComponent } from '../shared/components/gold-button/gold-button.component';
-import { SvgIconComponent }    from '../shared/components/svg-icons/svg-icon.component';
 import { ICON_BACK, ICON_PERSON_FILLED } from '../shared/icons/icons';
+import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
+import { GoldButtonComponent } from '../shared/Components/gold-button/gold-button.component';
+import { LogoComponent } from '../shared/Components/logo/logo.component';
+import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 
 @Component({
   standalone: true,
