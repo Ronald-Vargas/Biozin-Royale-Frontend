@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChildren, QueryList, Afte
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { ScreenShellComponent } from '../../shared/components/screen-shell/screen-shell.component';
-import { AtmosphereComponent }  from '../../shared/components/atmosphere/atmosphere.component';
-import { SvgIconComponent }     from '../../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent }  from '../../shared/components/gold-button/gold-button.component';
-import { AuthHeaderComponent }  from '../components/auth-header/auth-header.component';
-import { ICON_MAIL } from '../../shared/icons/icons';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_MAIL } from 'src/app/User/shared/icons/icons';
+import { AuthHeaderComponent } from '../../Components/auth-header/auth-header.component';
+
 
 @Component({
   standalone: true,
@@ -15,11 +15,11 @@ import { ICON_MAIL } from '../../shared/icons/icons';
     CommonModule, IonicModule, AtmosphereComponent, SvgIconComponent,
     GoldButtonComponent, AuthHeaderComponent,
   ],
-  selector: 'app-verificar',
-  templateUrl: './verificar.component.html',
-  styleUrls: ['./verificar.component.scss'],
+  selector: 'app-verify-password.component',
+  templateUrl: './verify-password.component.html',
+  styleUrls: ['./verify-password.component.scss'],
 })
-export class VerificarPage implements OnInit, OnDestroy, AfterViewInit {
+export class VerifyPasswordComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('otpInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   digits: string[] = ['', '', '', '', '', ''];
@@ -94,7 +94,7 @@ export class VerificarPage implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(() => this.shake = false, 500);
       return;
     }
-    this.router.navigate(['/auth/nueva']);
+    this.router.navigate(['/auth/new-password']);
   }
 
   goBack()  { this.router.navigate(['/auth/forgot']); }

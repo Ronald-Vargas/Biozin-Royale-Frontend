@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { AtmosphereComponent } from '../../shared/components/atmosphere/atmosphere.component';
-import { SvgIconComponent }    from '../../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent } from '../../shared/components/gold-button/gold-button.component';
-import { ICON_CHECK, ICON_LOCK_FILLED } from '../../shared/icons/icons';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_CHECK, ICON_LOCK_FILLED } from 'src/app/User/shared/icons/icons';
+
 
 interface Spark {
   x: number; y: number; size: number; delay: number; op: number;
@@ -17,11 +18,11 @@ interface Spark {
     CommonModule, IonicModule, AtmosphereComponent,
     SvgIconComponent, GoldButtonComponent,
   ],
-  selector: 'app-actualizada',
-  templateUrl: './actualizada.component.html',
-  styleUrls: ['./actualizada.component.scss'],
+  selector: 'app-confirmation.component',
+  templateUrl: './confirmation.component.html',
+  styleUrls: ['./confirmation.component.scss'],
 })
-export class ActualizadaPage implements OnInit {
+export class ConfirmationComponent implements OnInit {
   sparks: Spark[] = [];
 
   iconCheck = ICON_CHECK;

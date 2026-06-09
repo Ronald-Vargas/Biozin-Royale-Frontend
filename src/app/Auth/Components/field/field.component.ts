@@ -2,13 +2,14 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonInput } from '@ionic/angular/standalone';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
-import { ICON_EYE, ICON_EYE_OFF } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_EYE, ICON_EYE_OFF } from 'src/app/User/shared/icons/icons';
+
 
 @Component({
   standalone: true,
   imports: [CommonModule, IonInput, ReactiveFormsModule, SvgIconComponent],
-  selector: 'app-field',
+  selector: 'app-field.component',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss'],
 })

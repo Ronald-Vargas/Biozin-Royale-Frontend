@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { AtmosphereComponent }  from '../../shared/components/atmosphere/atmosphere.component';
-import { SvgIconComponent }     from '../../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent }  from '../../shared/components/gold-button/gold-button.component';
-import { AuthHeaderComponent }  from '../components/auth-header/auth-header.component';
-import {
-  ICON_EYE, ICON_EYE_OFF, ICON_CHECK, ICON_CLOSE_CIRC,
-} from '../../shared/icons/icons';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_EYE, ICON_EYE_OFF, ICON_CHECK, ICON_CLOSE_CIRC } from 'src/app/User/shared/icons/icons';
+import { AuthHeaderComponent } from '../../Components/auth-header/auth-header.component';
+
 
 interface Req { key: string; label: string; test: (v: string) => boolean; }
 
@@ -19,11 +18,11 @@ interface Req { key: string; label: string; test: (v: string) => boolean; }
     CommonModule, FormsModule, IonicModule,
     AtmosphereComponent, SvgIconComponent, GoldButtonComponent, AuthHeaderComponent,
   ],
-  selector: 'app-nueva',
-  templateUrl: './nueva.component.html',
-  styleUrls: ['./nueva.component.scss'],
+  selector: 'app-new-password.component',
+  templateUrl: './new-password.component.html',
+  styleUrls: ['./new-password.component.scss'],
 })
-export class NuevaPage {
+export class NewPasswordComponent {
   pw      = '';
   confirm = '';
 

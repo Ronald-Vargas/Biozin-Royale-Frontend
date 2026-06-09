@@ -1,13 +1,14 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LogoComponent } from '../../../shared/components/logo/logo.component';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
-import { ICON_BACK } from '../../../shared/icons/icons';
+import { LogoComponent } from 'src/app/User/shared/Components/logo/logo.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_BACK } from 'src/app/User/shared/icons/icons';
+
 
 @Component({
   standalone: true,
   imports: [CommonModule, LogoComponent, SvgIconComponent],
-  selector: 'app-auth-header',
+  selector: 'app-auth-header.component',
   templateUrl: './auth-header.component.html',
   styleUrls: ['./auth-header.component.scss'],
 })

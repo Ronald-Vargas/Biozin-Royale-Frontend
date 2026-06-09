@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { AtmosphereComponent }  from '../shared/components/atmosphere/atmosphere.component';
-import { LogoComponent }        from '../shared/components/logo/logo.component';
-import { CardsHeroComponent }   from '../shared/components/cards-hero/cards-hero.component';
-import { GoldButtonComponent }  from '../shared/components/gold-button/gold-button.component';
-import { GhostButtonComponent } from '../shared/components/GhostButton/ghost-button.component';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+import { CardsHeroComponent } from 'src/app/User/shared/Components/cards-hero/cards-hero.component';
+import { GhostButtonComponent } from 'src/app/User/shared/Components/ghost-button/ghost-button.component';
+import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
+import { LogoComponent } from 'src/app/User/shared/Components/logo/logo.component';
 
 @Component({
   standalone: true,
@@ -19,11 +19,11 @@ import { GhostButtonComponent } from '../shared/components/GhostButton/ghost-but
     GoldButtonComponent,
     GhostButtonComponent,
   ],
-  selector: 'app-welcome',
-  templateUrl: './welcome.page.html',
-  styleUrls: ['./welcome.page.scss'],
+  selector: 'app-welcome.component',
+  templateUrl: './welcome.component.html',
+  styleUrls: ['./welcome.component.scss'],
 })
-export class WelcomePage {
+export class WelcomeComponent {
   slides = 4;
   active = 0;
 

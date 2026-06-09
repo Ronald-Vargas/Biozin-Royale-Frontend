@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AtmosphereComponent }  from '../../shared/components/atmosphere/atmosphere.component';
-import { GoldButtonComponent }  from '../../shared/components/gold-button/gold-button.component';
-import { DividerComponent }     from '../../shared/components/divider/divider.component';
-import { SocialRowComponent }   from '../../shared/components/social-row/social-row.component';
-import { FieldComponent }       from '../components/field/field.component';
-import { AuthHeaderComponent }  from '../components/auth-header/auth-header.component';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+import { DividerComponent } from 'src/app/User/shared/Components/divider/divider.component';
+import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
+import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/social-row.component';
+import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
+import { FieldComponent } from '../Components/field/field.component';
+
 
 @Component({
   standalone: true,
@@ -24,11 +25,11 @@ import { AuthHeaderComponent }  from '../components/auth-header/auth-header.comp
     FieldComponent,
     AuthHeaderComponent,
   ],
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-login.component',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginPage {
+export class LoginComponent {
   form: FormGroup;
   loading = false;
 

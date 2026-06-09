@@ -2,17 +2,17 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { AtmosphereComponent } from '../shared/components/atmosphere/atmosphere.component';
-import { LogoComponent } from '../shared/components/logo/logo.component';
+import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
+
 
 @Component({
   standalone: true,
-  imports: [IonContent, CommonModule, AtmosphereComponent, LogoComponent],
-  selector: 'app-splash',
-  templateUrl: './splash.page.html',
-  styleUrls: ['./splash.page.scss'],
+  imports: [IonContent, CommonModule, AtmosphereComponent, Component],
+  selector: 'app-splash.component',
+  templateUrl: './splash.component.html',
+  styleUrls: ['./splash.component.scss'],
 })
-export class SplashPage implements OnInit, OnDestroy {
+export class SplashComponent implements OnInit, OnDestroy {
   pct = 0;
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
