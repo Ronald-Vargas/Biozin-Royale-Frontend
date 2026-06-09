@@ -2,14 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent }  from '../shared/components/gold-button/gold-button.component';
-import { MethodBadgeComponent } from './components/method-badge/method-badge.component';
-import { AccountBrandComponent } from './components/account-brand/account-brand.component';
-import {
-  ICON_CARD, ICON_BITCOIN, ICON_PAYPAL, ICON_ADD,
-} from '../shared/icons/icons';
+import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_CARD, ICON_BITCOIN, ICON_PAYPAL, ICON_ADD } from '../../shared/icons/icons';
+import { AccountBrandComponent } from './Components/account-brand/account-brand.component';
+import { MethodBadgeComponent } from './Components/method-badge/method-badge.component';
 
 interface PayMethod {
   key:   string;
@@ -33,11 +31,11 @@ interface SavedAccount {
     SvgIconComponent, GoldButtonComponent,
     MethodBadgeComponent, AccountBrandComponent,
   ],
-  selector: 'app-deposito',
-  templateUrl: './deposito.component.html',
-  styleUrls: ['./deposito.component.scss'],
+  selector: 'app-deposits',
+  templateUrl: './deposits.component.html',
+  styleUrls: ['./deposits.component.scss'],
 })
-export class DepositoPage {
+export class DepositsComponent {
   method = 'crypto';
   account: string | null = 'btc';
   amount: number | null = null;

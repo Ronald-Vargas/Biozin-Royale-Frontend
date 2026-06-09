@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import {
-  ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_GIFT_FILLED,
-} from '../shared/icons/icons';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_ARROW_DOWN, ICON_ARROW_UP } from '../../shared/icons/icons';
+
 
 interface Tx {
   type:   string;
@@ -24,11 +23,11 @@ interface Filter { key: string; label: string; }
 @Component({
   standalone: true,
   imports: [CommonModule, ScreenShellComponent, SvgIconComponent],
-  selector: 'app-transacciones',
-  templateUrl: './transacciones.component.html',
-  styleUrls: ['./transacciones.component.scss'],
+  selector: 'app-transactions',
+  templateUrl: './transactions.component.html',
+  styleUrls: ['./transactions.component.scss'],
 })
-export class TransaccionesPage {
+export class TransactionsComponent {
   filter = 'todas';
 
   filters: Filter[] = [

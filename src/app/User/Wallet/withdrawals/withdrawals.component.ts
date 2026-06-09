@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent }  from '../shared/components/gold-button/gold-button.component';
-import {
-  ICON_CHEVRON_DOWN, ICON_BUSINESS, ICON_BITCOIN, ICON_PAYPAL, ICON_EDIT,
-} from '../shared/icons/icons';
+import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_CHEVRON_DOWN, ICON_EDIT, ICON_BUSINESS, ICON_BITCOIN, ICON_PAYPAL } from '../../shared/icons/icons';
+
 
 interface InfoRow { k: string; v: string; }
 
@@ -23,11 +22,11 @@ interface WithdrawInfo {
     CommonModule, FormsModule, ScreenShellComponent,
     SvgIconComponent, GoldButtonComponent,
   ],
-  selector: 'app-retirar',
-  templateUrl: './retirar.component.html',
-  styleUrls: ['./retirar.component.scss'],
+  selector: 'app-withdrawals',
+  templateUrl: './withdrawals.component.html',
+  styleUrls: ['./withdrawals.component.scss'],
 })
-export class RetirarPage {
+export class WithdrawalsComponent {
   amount = 500;
   other  = '';
   open   = false;

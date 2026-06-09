@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent }     from '../shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent }  from '../shared/components/gold-button/gold-button.component';
-import { GhostButtonComponent } from '../shared/components/GhostButton/ghost-button.component';
-import {
-  ICON_EYE, ICON_EYE_OFF, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_GIFT_FILLED,
-} from '../shared/icons/icons';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
+import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_EYE, ICON_EYE_OFF, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_GIFT_FILLED } from '../../shared/icons/icons';
+
 
 interface Tx {
   type:  string;
@@ -28,7 +27,7 @@ interface Tx {
   templateUrl: './wallet.component.html',
   styleUrls: ['./wallet.component.scss'],
 })
-export class WalletPage {
+export class WalletComponent {
   hidden = false;
 
   iconEye    = ICON_EYE;
