@@ -20,7 +20,7 @@ import {
   templateUrl: './pagos.component.html',
   styleUrls: ['./pagos.component.scss'],
 })
-export class PagosPage {
+export class PaymentMethods {
   iconCard    = ICON_CARD;
   iconBitcoin = ICON_BITCOIN;
   iconPaypal  = ICON_PAYPAL;
