@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
 import { ICON_SLOTS, ICON_ROULETTE, ICON_BLACKJACK } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 export interface Game {
   name:  string;

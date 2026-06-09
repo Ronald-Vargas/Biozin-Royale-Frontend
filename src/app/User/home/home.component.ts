@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { AtmosphereComponent } from '../shared/components/atmosphere/atmosphere.component';
-import { CardsHeroComponent }  from '../shared/components/cards-hero/cards-hero.component';
-import { SvgIconComponent }    from '../shared/components/svg-icons/svg-icon.component';
-import { BottomNavComponent }  from './components/bottom-nav/bottom-nav.component';
-import { SectionHeadComponent } from './components/section-head/section-head.component';
-import { GameCardComponent, Game } from './components/game-card/game-card.component';
 import { ICON_PERSON_FILLED, ICON_ADD, ICON_FOOTBALL } from '../shared/icons/icons';
+import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
+import { CardsHeroComponent } from '../shared/Components/cards-hero/cards-hero.component';
+import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
+import { BottomNavComponent } from './Components/bottom-nav/bottom-nav.component';
+import { GameCardComponent, Game } from './Components/games-card/games-card.component';
+import { SectionHeadComponent } from './Components/section-head/section-head.component';
 
 @Component({
   standalone: true,

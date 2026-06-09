@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
 import {
   ICON_HOME_FILLED, ICON_HOME_OUTLINE,
   ICON_GRID_FILLED, ICON_GRID_OUTLINE,
@@ -9,6 +8,7 @@ import {
   ICON_GIFT_FILLED, ICON_GIFT_OUTLINE,
   ICON_PERSON_FILLED, ICON_PERSON_OUTLINE,
 } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 interface NavItem { key: string; label: string; route: string; filled: string; outline: string; }
 
