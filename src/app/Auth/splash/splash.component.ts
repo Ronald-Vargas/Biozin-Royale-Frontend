@@ -3,15 +3,17 @@ import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
-
+import { LogoComponent } from 'src/app/User/shared/Components/logo/logo.component';
 
 @Component({
   standalone: true,
-  imports: [IonContent, CommonModule, AtmosphereComponent],
+  imports: [IonContent, CommonModule, AtmosphereComponent, LogoComponent],
   selector: 'app-splash',
   templateUrl: './splash.component.html',
   styleUrls: ['./splash.component.scss'],
 })
+
+
 export class SplashComponent implements OnInit, OnDestroy {
   pct = 0;
   private intervalId: ReturnType<typeof setInterval> | null = null;
