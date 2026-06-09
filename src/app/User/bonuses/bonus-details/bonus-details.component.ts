@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ScreenShellComponent } from 'src/app/shared/components/screen-shell/screen-shell.component';
-import { SvgIconComponent } from 'src/app/shared/components/svg-icons/svg-icon.component';
-import { GoldButtonComponent } from 'src/app/shared/components/gold-button/gold-button.component';
-import { ICON_CHECK_OUT, ICON_SHIELD, ICON_TIME, ICON_TROPHY } from 'src/app/shared/icons/icons';
+import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
+import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
+import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
+import { ICON_TIME, ICON_CHECK_OUT, ICON_TROPHY, ICON_SHIELD } from '../../shared/icons/icons';
 
 
 

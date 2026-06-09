@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ScreenShellComponent } from '../shared/components/screen-shell/screen-shell.component';
-import { BonusCardComponent, ActiveBonus }     from './components/bonus-card/bonus-card.component';
-import { BonusHistCardComponent, HistBonus }   from './components/bonus-hist-card/bonus-hist-card.component';
+import { ScreenShellComponent } from '../shared/Components/screen-shell/screen-shell.component';
+import { BonusCardComponent, ActiveBonus } from './Components/bonus-card/bonus-card.component';
+import { BonusHistCardComponent, HistBonus } from './Components/bonus-hist-card/bonus-hist-card.component';
+
 
 interface Filter { key: string; label: string; }
 

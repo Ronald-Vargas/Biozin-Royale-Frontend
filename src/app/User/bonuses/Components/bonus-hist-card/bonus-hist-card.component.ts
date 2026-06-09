@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SvgIconComponent } from '../../../shared/components/svg-icons/svg-icon.component';
 import {
   ICON_TROPHY, ICON_SYNC_CIRCLE, ICON_WALLET_FILLED, ICON_CALENDAR,
 } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 export interface HistBonus {
   title:  string;
