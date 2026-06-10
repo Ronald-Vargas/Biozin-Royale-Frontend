@@ -26,7 +26,11 @@
 
     <!-- Grid -->
     <div class="games-grid">
-      <app-big-game-card *ngFor="let g of list" [game]="g"></app-big-game-card>
+     <app-big-game-card
+      *ngFor="let g of list"
+      [game]="g"
+      (click)="onGameClick(g.name)"
+      ></app-big-game-card>
     </div>
 
     <div *ngIf="list.length === 0" class="empty-state">

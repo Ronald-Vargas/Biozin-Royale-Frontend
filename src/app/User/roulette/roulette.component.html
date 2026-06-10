@@ -1,0 +1,181 @@
+<ion-content [fullscreen]="true" class="ruleta-content">
+  <div class="ruleta-root">
+    <app-atmosphere [glow]="0.32" [count]="8"></app-atmosphere>
+
+    <!-- Scroll area -->
+    <div class="scroll-area">
+      <!-- Top bar -->
+      <div class="top-bar">
+        <button class="back-btn" (click)="goBack()">
+          <app-icon [svg]="iconBack" [size]="20"></app-icon>
+        </button>
+
+        <div class="title-block">
+          <div class="gold-text title-1">BIOZIN</div>
+          <div class="title-2">ROULETTE</div>
+        </div>
+
+        <div class="hist-wrap">
+          <div
+            *ngFor="let h of history.slice(0, 4)"
+            class="hist-dot"
+            [style.background]="histBg(h)"
+          >{{ h }}</div>
+        </div>
+      </div>
+
+      <!-- Wheel -->
+      <div class="wheel-area">
+        <app-roulette-wheel [rotation]="rotation" [size]="224"></app-roulette-wheel>
+
+        <div *ngIf="last !== null" class="result-badge">
+          <span class="result-label">ÚLTIMO</span>
+          <span class="result-num" [style.background]="histBg(last!)">{{ last }}</span>
+        </div>
+      </div>
+
+      <!-- Betting table -->
+      <div class="table-scroll">
+        <div class="table-inner">
+          <div class="numbers-block">
+            <!-- Zero -->
+            <button
+              class="cell zero-cell"
+              [style.background]="cellBg(0)"
+              (click)="place('0')"
+            >
+              0
+              <span *ngIf="betOn('0')" class="bet-marker">{{ betOn('0') }}</span>
+            </button>
+
+            <!-- Grid 12×3 -->
+            <div class="grid-12x3">
+              <button
+                *ngFor="let n of gridNums"
+                class="cell num-cell"
+                [style.background]="cellBg(n)"
+                (click)="place(n.toString())"
+              >
+                {{ n }}
+                <span *ngIf="betOn(n.toString())" class="bet-marker">{{ betOn(n.toString()) }}</span>
+              </button>
+            </div>
+
+            <!-- 2:1 columns -->
+            <div class="col-2to1">
+              <button
+                *ngFor="let id of columns"
+                class="cell col-cell"
+                (click)="place(id)"
+              >
+                2:1
+                <span *ngIf="betOn(id)" class="bet-marker">{{ betOn(id) }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dozens -->
+          <div class="dozens-row">
+            <button class="cell out-cell" (click)="place('d1')">
+              1ª 12
+              <span *ngIf="betOn('d1')" class="bet-marker">{{ betOn('d1') }}</span>
+            </button>
+            <button class="cell out-cell" (click)="place('d2')">
+              2ª 12
+              <span *ngIf="betOn('d2')" class="bet-marker">{{ betOn('d2') }}</span>
+            </button>
+            <button class="cell out-cell" (click)="place('d3')">
+              3ª 12
+              <span *ngIf="betOn('d3')" class="bet-marker">{{ betOn('d3') }}</span>
+            </button>
+          </div>
+
+          <!-- Even money -->
+          <div class="even-row">
+            <button class="cell out-cell" (click)="place('low')">
+              1-18
+              <span *ngIf="betOn('low')" class="bet-marker">{{ betOn('low') }}</span>
+            </button>
+            <button class="cell out-cell" (click)="place('even')">
+              Par
+              <span *ngIf="betOn('even')" class="bet-marker">{{ betOn('even') }}</span>
+            </button>
+            <button class="cell out-cell color-red" (click)="place('red')">
+              Rojo
+              <span *ngIf="betOn('red')" class="bet-marker">{{ betOn('red') }}</span>
+            </button>
+            <button class="cell out-cell color-black" (click)="place('black')">
+              Negro
+              <span *ngIf="betOn('black')" class="bet-marker">{{ betOn('black') }}</span>
+            </button>
+            <button class="cell out-cell" (click)="place('odd')">
+              Impar
+              <span *ngIf="betOn('odd')" class="bet-marker">{{ betOn('odd') }}</span>
+            </button>
+            <button class="cell out-cell" (click)="place('high')">
+              19-36
+              <span *ngIf="betOn('high')" class="bet-marker">{{ betOn('high') }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chips -->
+      <div class="chips-row">
+        <button
+          *ngFor="let c of chips"
+          class="chip-btn"
+          [class.chip-btn--active]="chip === c.v"
+          (click)="selectChip(c.v)"
+        >
+          <img [src]="c.img" [alt]="c.v" />
+          <div *ngIf="chip === c.v" class="chip-ring"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-row">
+        <div class="footer-info">
+          <div class="info-label">SALDO</div>
+          <div class="gold-text info-value">{{ fmtMoney(balance) }}</div>
+        </div>
+
+        <button class="action-btn action-btn--danger" (click)="clearBets()" aria-label="Limpiar">
+          <app-icon [svg]="iconTrash" [size]="18"></app-icon>
+        </button>
+
+        <button class="action-btn" (click)="rebet()" aria-label="Repetir">
+          <app-icon [svg]="iconRefresh" [size]="18"></app-icon>
+        </button>
+
+        <div class="footer-info footer-info--right">
+          <div class="info-label">APUESTA</div>
+          <div class="info-value info-value--cream">{{ fmtMoney(total) }}</div>
+        </div>
+      </div>
+
+      <button
+        class="spin-btn"
+        [class.spin-btn--disabled]="spinning || total === 0"
+        [disabled]="spinning || total === 0"
+        (click)="spin()"
+      >
+        <app-icon
+          [svg]="spinning ? iconSync : iconPlay"
+          [size]="spinning ? 19 : 18"
+          [class.spin-icon-rotate]="spinning"
+        ></app-icon>
+        {{ spinning ? 'Girando…' : 'Girar' }}
+      </button>
+    </div>
+
+    <!-- Toast -->
+    <div
+      *ngIf="toast"
+      class="toast"
+      [class.toast--win]="toast.kind === 'win'"
+    >{{ toast.msg }}</div>
+  </div>
+</ion-content>

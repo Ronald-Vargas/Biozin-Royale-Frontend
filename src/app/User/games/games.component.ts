@@ -51,4 +51,11 @@ export class GamesComponent {
   }
 
   goBack() { this.router.navigate(['/home'], { replaceUrl: true }); }
+  goRuleta() { this.router.navigate(['/ruleta']); }
+
+  onGameClick(name: string) {
+    if (name === 'Roulette' || name === 'Lightning Roulette') {
+      this.goRuleta();
+    }
+  }
 }

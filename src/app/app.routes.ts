@@ -127,4 +127,9 @@ export const routes: Routes = [
     data: { depth: 6 },
     loadComponent: () => import('./User/bonuses/bonus-details/bonus-details.component').then(m => m.BonusDetailsComponent),
   },
+  {
+  path: 'ruleta',
+  data: { depth: 5, tab: 1 },
+  loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
+  },
 ];

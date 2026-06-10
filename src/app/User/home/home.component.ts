@@ -39,4 +39,6 @@ export class HomeComponent {
   goMiPerfil() { this.router.navigate(['/miperfil']); }
   goDeposito() { this.router.navigate(['/deposito']); }
   goJuegos() { this.router.navigate(['/juegos']); }
+  goRuleta() { this.router.navigate(['/ruleta']); }
+
 }

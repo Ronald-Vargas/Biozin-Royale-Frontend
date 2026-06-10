@@ -34,7 +34,11 @@
           (action)="goJuegos()"
         ></app-section-head>
         <div class="games-grid">
-          <app-games-card *ngFor="let g of games" [game]="g"></app-games-card>
+          <app-games-card
+          *ngFor="let g of games"
+          [game]="g"
+          (click)="g.name === 'Roulette' ? goRuleta() : null"
+        ></app-games-card>
         </div>
       </div>
 
