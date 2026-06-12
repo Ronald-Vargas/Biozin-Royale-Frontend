@@ -57,7 +57,9 @@ export class SlotsComponent implements OnInit, OnDestroy {
 
   private lockRef = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router, 
+  ) {}
 
   ngOnInit() {
     const stored = parseFloat(localStorage.getItem('biozin_balance') || '');
@@ -98,6 +100,8 @@ export class SlotsComponent implements OnInit, OnDestroy {
     return rl.dur ? `transform ${rl.dur}ms cubic-bezier(.16,.62,.18,1)` : 'none';
   }
 
+  trackByIndex(index: number): number { return index; }
+
   // ── Bet ────────────────────────────────────────────────────
   changeBet(d: number) {
     if (this.spinning) return;
@@ -117,29 +121,27 @@ export class SlotsComponent implements OnInit, OnDestroy {
     this.balance = +Math.max(0, this.balance - this.bet).toFixed(2);
     this.saveBalance();
 
-    // Generar resultado: grid[col][row]
+    // Generar resultado
     const grid: string[][] = Array.from({ length: COLS }, () => this.randCol());
 
     const baseDur = isTurbo ? 620 : 1150;
     const step    = isTurbo ? 130 : 280;
 
-    // Construir strips: resultado arriba, padding random debajo
-    const newReels: Reel[] = grid.map(col => {
+    // PASO 1: nuevos strips con offset al fondo, sin transición
+    this.reels = grid.map(col => {
       const strip = [...col, ...Array.from({ length: PAD }, () => randomSym())];
       return { strip, offset: -(strip.length - ROWS), dur: 0 };
     });
-    this.reels = newReels;
 
-    // Esperar a que el DOM aplique el "jump to bottom"
-    await this.nextFrame();
-    await this.nextFrame();
+    // PASO 2: esperar a que se pinte ese estado y luego animar a offset 0
+    setTimeout(() => {
+      const durs = grid.map((_, c) => baseDur + c * step);
+      this.reels = this.reels.map((rl, c) => ({ ...rl, offset: 0, dur: durs[c] }));
+    }, 50);
 
-    // Animar cada carrete hacia offset 0 escalonadamente
-    const durs = grid.map((_, c) => baseDur + c * step);
-    this.reels = this.reels.map((rl, c) => ({ ...rl, offset: 0, dur: durs[c] }));
-
-    // Esperar al último carrete + extra
-    await this.wait(durs[COLS - 1] + 140);
+    // PASO 3: esperar a que termine la última animación
+    const totalWait = baseDur + step * (COLS - 1) + 140 + 50;
+    await this.wait(totalWait);
 
     // Evaluar
     const { win, cells, hits } = this.evalLines(grid, this.bet);
@@ -162,9 +164,6 @@ export class SlotsComponent implements OnInit, OnDestroy {
     return Array.from({ length: ROWS }, () => randomSym());
   }
 
-  private nextFrame(): Promise<void> {
-    return new Promise(r => requestAnimationFrame(() => r()));
-  }
 
   private wait(ms: number): Promise<void> {
     return new Promise(r => setTimeout(r, ms));

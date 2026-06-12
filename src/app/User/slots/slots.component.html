@@ -30,7 +30,7 @@
         <div class="reels-inner">
           <div class="reels-row">
             <div
-              *ngFor="let rl of reels; let c = index"
+              *ngFor="let rl of reels; let c = index; trackBy: trackByIndex"
               class="reel"
               [style.width.px]="cell"
               [style.height.px]="reelHeight"
