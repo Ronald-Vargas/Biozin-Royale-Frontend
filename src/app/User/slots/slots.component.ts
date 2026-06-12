@@ -29,7 +29,7 @@ const BET_STEPS  = [5, 10, 20, 50, 100, 200];
   templateUrl: './slots.component.html',
   styleUrls: ['./slots.component.scss'],
 })
-export class SlotsPage implements OnInit, OnDestroy {
+export class SlotsComponent implements OnInit, OnDestroy {
   iconBack    = ICON_BACK;
   iconDiamond = ICON_DIAMOND;
   iconMinus   = ICON_MINUS;
