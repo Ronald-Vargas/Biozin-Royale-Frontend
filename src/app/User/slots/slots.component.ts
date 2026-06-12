@@ -2,19 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { AtmosphereComponent } from '../shared/components/atmosphere/atmosphere.component';
-import { SvgIconComponent }    from '../shared/components/svg-icon/svg-icon.component';
-import { GemDefsComponent }    from './components/gem-defs/gem-defs.component';
-import { GemComponent }        from './components/gem/gem.component';
-import { EmblemComponent }     from './components/emblem/emblem.component';
-import { PaytableModalComponent } from './components/paytable-modal/paytable-modal.component';
-import {
-  randomSym, glowColor, LINES, LEN_FACTOR, SYMBOLS, COLS, ROWS,
-} from './slots.symbols';
-import {
-  ICON_CHEVRON_BACK, ICON_DIAMOND, ICON_MINUS, ICON_ADD,
-  ICON_FLASH, ICON_SYNC, ICON_REFRESH, ICON_INFO,
-} from '../shared/icons/icons';
+import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
+import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
+import { ICON_DIAMOND, ICON_MINUS, ICON_ADD, ICON_FLASH, ICON_SYNC, ICON_REFRESH, ICON_INFO, ICON_BACK } from '../shared/icons/icons';
+import { EmblemComponent } from './Components/emblem/emblem.component';
+import { GemDefsComponent } from './Components/gem-defs/gem-defs.component';
+import { GemComponent } from './Components/gem/gem.component';
+import { PaytableModalComponent } from './Components/paytable-modal/paytable-modal.component';
+import { ROWS, COLS, randomSym, glowColor, LINES, SYMBOLS, LEN_FACTOR } from './slots.symbols';
+
 
 interface Reel    { strip: string[]; offset: number; dur: number; }
 interface Hit     { li: number; len: number; sym: string; amt: number; }
@@ -34,7 +30,7 @@ const BET_STEPS  = [5, 10, 20, 50, 100, 200];
   styleUrls: ['./slots.component.scss'],
 })
 export class SlotsPage implements OnInit, OnDestroy {
-  iconBack    = ICON_CHEVRON_BACK;
+  iconBack    = ICON_BACK;
   iconDiamond = ICON_DIAMOND;
   iconMinus   = ICON_MINUS;
   iconAdd     = ICON_ADD;

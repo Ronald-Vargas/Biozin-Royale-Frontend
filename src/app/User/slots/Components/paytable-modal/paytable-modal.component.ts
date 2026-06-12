@@ -1,11 +1,11 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GemComponent } from '../gem/gem.component';
-import { SvgIconComponent } from '../../../shared/components/svg-icon/svg-icon.component';
 import {
   SYMBOLS, SYM_NAMES, PAY_ORDER, LINES, LEN_FACTOR, COLS, ROWS, glowColor,
 } from '../../slots.symbols';
 import { ICON_CLOSE } from '../../../shared/icons/icons';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 interface PayRow { sym: string; name: string; x3: string; x4: string; glow: string; }
 interface LinePreview { idx: number; cells: boolean[]; }
