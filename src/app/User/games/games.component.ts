@@ -51,11 +51,11 @@ export class GamesComponent {
   }
 
   goBack() { this.router.navigate(['/home'], { replaceUrl: true }); }
+  goSlots()  { this.router.navigate(['/slots']); }
   goRuleta() { this.router.navigate(['/ruleta']); }
 
-  onGameClick(name: string) {
-    if (name === 'Roulette' || name === 'Lightning Roulette') {
-      this.goRuleta();
-    }
+  onGameClick(g: GameItem) {
+    if (g.cat === 'slots') this.goSlots();
+    else if (g.name === 'Roulette' || g.name === 'Lightning Roulette') this.goRuleta();
   }
 }

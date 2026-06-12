@@ -1,0 +1,14 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <ng-container *ngFor="let e of entries">
+      <linearGradient [attr.id]="'gem-' + e.key + '-b'" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0" [attr.stop-color]="e.mid"/>
+        <stop offset="1" [attr.stop-color]="e.dark"/>
+      </linearGradient>
+      <linearGradient [attr.id]="'gem-' + e.key + '-t'" x1="0" y1="0" x2="0.2" y2="1">
+        <stop offset="0" [attr.stop-color]="e.light"/>
+        <stop offset="1" [attr.stop-color]="e.mid"/>
+      </linearGradient>
+    </ng-container>
+  </defs>
+</svg>

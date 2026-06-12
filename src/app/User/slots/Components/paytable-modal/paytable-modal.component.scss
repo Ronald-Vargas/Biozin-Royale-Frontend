@@ -1,0 +1,181 @@
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(6, 5, 12, 0.78);
+  display: flex;
+  align-items: flex-end;
+  animation: ptFade 0.2s ease both;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-height: 88%;
+  overflow-y: auto;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  background: linear-gradient(180deg, #1a1430, #0c0916);
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  border-bottom: none;
+  padding: 16px 18px 26px;
+  box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.6);
+  animation: ptUp 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.handle {
+  width: 44px; height: 4px;
+  border-radius: 3px;
+  background: rgba(212, 167, 60, 0.5);
+  margin: 0 auto 14px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.close-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: #cbb98f;
+  line-height: 1.5;
+  margin: 0 0 16px;
+
+  .gold { color: var(--gold-1); }
+}
+
+// ── Pay grid ─────────────────────────────────────────────────
+.pay-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pay-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(212, 167, 60, 0.22);
+}
+
+.gem-wrap {
+  position: relative;
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+}
+
+.gem-glow {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  opacity: 0.5;
+  filter: blur(2px);
+}
+
+.gem-inner {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+.pay-info { min-width: 0; }
+
+.pay-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.pay-mults {
+  display: flex;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.mult {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.mult-3 { color: var(--gold-2); }
+.mult-4 { color: var(--gold-1); }
+
+// ── Líneas ───────────────────────────────────────────────────
+.lines-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--cream);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.lines-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px;
+}
+
+.line-card {
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+  border-radius: 9px;
+  padding: 5px;
+}
+
+.line-cells {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.line-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: rgba(212, 167, 60, 0.1);
+
+  &--on { background: linear-gradient(135deg, #f4dd92, #c79a32); }
+}
+
+.line-num {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+@keyframes ptFade {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes ptUp {
+  0%   { transform: translateY(100%); }
+  100% { transform: translateY(0); }
+}
