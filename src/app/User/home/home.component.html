@@ -37,7 +37,7 @@
           <app-games-card
           *ngFor="let g of games"
           [game]="g"
-          (click)="g.name === 'Roulette' ? goRuleta() : null"
+          (click)="onGameClick(g.name)"
         ></app-games-card>
         </div>
       </div>
