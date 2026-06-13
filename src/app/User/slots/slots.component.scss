@@ -32,9 +32,18 @@ ion-content.slots-content { --background: #0a0712; }
 
 // ── Top bar ──────────────────────────────────────────────────
 .top-bar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+app-emblem {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .back-btn {
@@ -60,7 +69,7 @@ ion-content.slots-content { --background: #0a0712; }
 
 .balance-amt {
   font-family: 'Cinzel', serif;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--gold-1);
 }
@@ -189,9 +198,9 @@ ion-content.slots-content { --background: #0a0712; }
 
 .win-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10.5px;
+  font-size: 13px;
   letter-spacing: 3px;
-  color: var(--muted);
+  color: #cbb98f; 
   font-weight: 600;
 }
 
@@ -249,9 +258,9 @@ ion-content.slots-content { --background: #0a0712; }
 
 .bet-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 3px;
-  color: var(--muted);
+  color: #cbb98f; 
   font-weight: 600;
 }
 
@@ -261,6 +270,10 @@ ion-content.slots-content { --background: #0a0712; }
   font-weight: 700;
   color: var(--cream);
 }
+
+
+
+
 
 // ── Controls bar ─────────────────────────────────────────────
 .controls-bar {
