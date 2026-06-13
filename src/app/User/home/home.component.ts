@@ -34,6 +34,11 @@ export class HomeComponent {
     { name: 'Blackjack',  icon: 'blackjack', g1: '#1d5a3a', g2: '#0b2417', ic: '#a6ffc8' },
   ];
 
+  onGameClick(name: string) {
+    if (name === 'Slots')    this.router.navigate(['/slots']);
+    if (name === 'Roulette') this.router.navigate(['/ruleta']);
+  }
+
   constructor(private router: Router) {}
 
   goMiPerfil() { this.router.navigate(['/miperfil']); }

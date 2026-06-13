@@ -1,0 +1,52 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-sheet" (click)="stop($event)">
+    <div class="handle"></div>
+
+    <div class="modal-header">
+      <h2 class="gold-text modal-title">Tabla de Premios</h2>
+      <button class="close-btn" (click)="close()">
+        <app-icon [svg]="iconClose" [size]="18" style="color:var(--gold-1)"></app-icon>
+      </button>
+    </div>
+
+    <p class="intro">
+      Alinea <b class="gold">3 ó 4 símbolos iguales</b> desde el carrete izquierdo
+      en una de las <b class="gold">10 líneas</b>. Las gemas más raras pagan más;
+      el número es el multiplicador de tu apuesta.
+    </p>
+
+    <!-- Tabla de pagos -->
+    <div class="pay-grid">
+      <div *ngFor="let p of payRows" class="pay-item">
+        <div class="gem-wrap">
+          <div class="gem-glow" [style.background]="'radial-gradient(circle, ' + p.glow + ', transparent 68%)'"></div>
+          <div class="gem-inner">
+            <app-gem [sym]="p.sym"></app-gem>
+          </div>
+        </div>
+        <div class="pay-info">
+          <div class="pay-name">{{ p.name }}</div>
+          <div class="pay-mults">
+            <span class="mult">3<b class="mult-3"> {{ p.x3 }}</b></span>
+            <span class="mult">4<b class="mult-4"> {{ p.x4 }}</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Líneas de pago -->
+    <h3 class="lines-title">LÍNEAS DE PAGO</h3>
+    <div class="lines-grid">
+      <div *ngFor="let lp of linePreviews" class="line-card">
+        <div class="line-cells">
+          <div
+            *ngFor="let on of lp.cells"
+            class="line-cell"
+            [class.line-cell--on]="on"
+          ></div>
+        </div>
+        <div class="line-num">{{ lp.idx }}</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,149 @@
+<ion-content [fullscreen]="true" class="slots-content">
+  <div class="slots-root">
+    <app-gem-defs></app-gem-defs>
+
+    <div class="bg-base"></div>
+    <div class="bg-glow"></div>
+
+    <div class="scroll-area">
+      <!-- Header -->
+      <div class="top-bar">
+        <button class="back-btn" (click)="goBack()">
+          <app-icon [svg]="iconBack" [size]="19"></app-icon>
+        </button>
+
+        <app-emblem></app-emblem>
+
+        <div class="balance-pill">
+          <app-icon [svg]="iconDiamond" [size]="18" style="color:var(--gold-1)"></app-icon>
+          <span class="balance-amt">{{ fmtMoney(balance) }}</span>
+        </div>
+      </div>
+
+      <!-- Marco de carretes -->
+      <div class="reels-frame">
+        <div class="corner corner--tl"></div>
+        <div class="corner corner--tr"></div>
+        <div class="corner corner--bl"></div>
+        <div class="corner corner--br"></div>
+
+        <div class="reels-inner">
+          <div class="reels-row">
+            <div
+              *ngFor="let rl of reels; let c = index; trackBy: trackByIndex"
+              class="reel"
+              [style.width.px]="cell"
+              [style.height.px]="reelHeight"
+            >
+              <div
+                class="reel-strip"
+                [style.transform]="reelTransform(rl)"
+                [style.transition]="reelTransition(rl)"
+              >
+                <div
+                  *ngFor="let sym of rl.strip; let idx = index"
+                  class="reel-cell"
+                  [class.reel-cell--win]="isWinCell(c, idx)"
+                  [style.height.px]="cell"
+                >
+                  <div
+                    class="cell-glow"
+                    [style.background]="'radial-gradient(circle, ' + glowFor(sym) + ' 0%, transparent 68%)'"
+                    [class.cell-glow--win]="isWinCell(c, idx)"
+                  ></div>
+                  <div class="cell-gem" [class.cell-gem--win]="isWinCell(c, idx)">
+                    <app-gem [sym]="sym"></app-gem>
+                  </div>
+                </div>
+              </div>
+
+              <div class="reel-fade reel-fade--top"></div>
+              <div class="reel-fade reel-fade--bot"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="payline-marker"></div>
+      </div>
+
+      <!-- Ganancia -->
+      <div class="win-box">
+        <div class="win-label">GANANCIA</div>
+        <div
+          class="win-amount"
+          [class.gold-text]="win > 0"
+          [class.win-amount--big]="bigWin"
+          [style.color]="win > 0 ? null : '#5a5240'"
+        >{{ fmtMoney(win) }}</div>
+        <div *ngIf="bigWin" class="big-win-tag">¡GRAN PREMIO!</div>
+      </div>
+
+      <!-- Apuesta -->
+      <div class="bet-row">
+        <button
+          class="bet-btn"
+          [disabled]="spinning || betIdx === 0"
+          (click)="changeBet(-1)"
+        >
+          <app-icon [svg]="iconMinus" [size]="22"></app-icon>
+        </button>
+
+        <div class="bet-center">
+          <div class="bet-label">APUESTA</div>
+          <div class="bet-amount">{{ fmtMoney(bet) }}</div>
+        </div>
+
+        <button
+          class="bet-btn"
+          [disabled]="spinning || betIdx === betSteps.length - 1"
+          (click)="changeBet(1)"
+        >
+          <app-icon [svg]="iconAdd" [size]="22"></app-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+      <button
+        class="round-ctrl"
+        [class.round-ctrl--active]="turbo"
+        (click)="toggleTurbo()"
+      >
+        <app-icon
+          [svg]="iconFlash"
+          [size]="22"
+          [style.color]="turbo ? '#2a1f06' : 'var(--gold-1)'"
+        ></app-icon>
+      </button>
+
+      <button
+        class="spin-knob"
+        [class.spin-knob--spinning]="spinning"
+        [disabled]="spinning || balance < bet"
+        (click)="spin()"
+      >
+        <div class="knob-ring"></div>
+        <div class="knob-content">
+          <app-icon
+            [svg]="spinning ? iconSync : iconRefresh"
+            [size]="30"
+            [class.spinning]="spinning"
+            style="color:var(--gold-1)"
+          ></app-icon>
+          <span class="knob-label">{{ spinning ? '…' : 'GIRAR' }}</span>
+        </div>
+      </button>
+
+      <button class="round-ctrl" (click)="openInfo()">
+        <app-icon [svg]="iconInfo" [size]="24" style="color:var(--gold-1)"></app-icon>
+      </button>
+    </div>
+
+    <!-- Paytable modal -->
+    <app-paytable-modal
+      *ngIf="showInfo"
+      (closed)="closeInfo()"
+    ></app-paytable-modal>
+  </div>
+</ion-content>

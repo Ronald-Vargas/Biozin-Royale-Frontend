@@ -132,4 +132,8 @@ export const routes: Routes = [
   data: { depth: 5, tab: 1 },
   loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
   },
+  {
+    path: 'slots',
+    loadComponent: () => import('./User/slots/slots.component').then(m => m.SlotsComponent),
+},
 ];
