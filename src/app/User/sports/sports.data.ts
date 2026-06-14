@@ -18,6 +18,5 @@ export const SPORT_MATCHES: SportMatch[] = [
   { id: 4, league: 'NBA',             sport: 'basketball', time: 'HOY 01:30', team1: 'Lakers',       team2: 'Celtics',    odds: { home: 1.90, draw: null,  away: 1.85 } },
   { id: 5, league: 'Ligue 1',         sport: 'football',   time: 'MÑN 20:00', team1: 'PSG',          team2: 'Marseille',  odds: { home: 1.65, draw: 3.80, away: 4.50 } },
   { id: 6, league: 'Bundesliga',      sport: 'football',   time: 'MÑN 18:30', team1: 'Bayern',       team2: 'Dortmund',   odds: { home: 1.80, draw: 3.60, away: 3.90 } },
-  { id: 7, league: 'ATP Masters',     sport: 'tennis',     time: 'HOY 17:00', team1: 'Djokovic',     team2: 'Alcaraz',    odds: { home: 1.75, draw: null,  away: 2.10 } },
   { id: 8, league: 'UEFA Champions',  sport: 'football',   time: 'MÑN 21:00', team1: 'Milan',        team2: 'Arsenal',    odds: { home: 2.50, draw: 3.25, away: 2.60 } },
 ];

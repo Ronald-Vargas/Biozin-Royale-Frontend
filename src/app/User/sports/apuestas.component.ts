@@ -29,7 +29,6 @@ export class ApuestasComponent {
     { key: 'all',        label: 'Todo' },
     { key: 'football',   label: '⚽ Fútbol' },
     { key: 'basketball', label: '🏀 NBA' },
-    { key: 'tennis',     label: '🎾 Tenis' },
   ];
 
   // ── Bet panel state ───────────────────────────────────────
