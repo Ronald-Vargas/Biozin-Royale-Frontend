@@ -118,7 +118,7 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-league {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--gold-2);
@@ -127,10 +127,10 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-time {
   font-family: 'Montserrat', sans-serif;
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.6px;
-  color: rgba(200, 185, 150, 0.45);
+  color: #cbb98f; 
   text-transform: uppercase;
 }
 
@@ -144,7 +144,7 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-team {
   font-family: 'Cinzel', serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--cream);
   flex: 1;
@@ -155,10 +155,10 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-vs {
   font-family: 'Montserrat', sans-serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 2px;
-  color: rgba(200, 185, 150, 0.3);
+  color: #cbb98f;
   flex-shrink: 0;
 }
 
@@ -194,7 +194,7 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-lbl {
   font-family: 'Montserrat', sans-serif;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.8px;
   color: rgba(200, 185, 150, 0.45);
@@ -203,7 +203,7 @@ ion-content.home-content { --background: var(--bg-dark); }
 
 .sp-val {
   font-family: 'Cinzel', serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--cream);
   transition: color 0.2s;

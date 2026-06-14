@@ -42,7 +42,7 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
 
 .page-title {
   font-family: 'Cinzel', serif;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 2px;
   margin: 0;
@@ -103,7 +103,7 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
 
 .match-league {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.2px;
   color: var(--gold-2);
@@ -112,9 +112,9 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
 
 .match-time {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(200, 185, 150, 0.5);
+  color: #cbb98f; 
   text-transform: uppercase;
 }
 
@@ -128,7 +128,7 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
 
 .team-name {
   font-family: 'Cinzel', serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--cream);
   flex: 1;
@@ -141,7 +141,7 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 2px;
-  color: rgba(200, 185, 150, 0.3);
+  color: #cbb98f; 
   flex-shrink: 0;
 }
 
@@ -174,7 +174,7 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
 
 .odd-lbl {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   color: rgba(200, 185, 150, 0.5);
