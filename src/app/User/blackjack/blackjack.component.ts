@@ -51,13 +51,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   iconSplit = ICON_COPY;
   iconSurrender = ICON_FLAG;
 
-  navItems: NavItem[] = [
-    { label: 'Lobby',     icon: ICON_HOME,           to: '/blackjack-lobby' },
-    { label: 'Juegos',    icon: ICON_ALBUMS,         to: '/juegos' },
-    { label: 'Bonos',     icon: ICON_GIFT,           to: '/bonos' },
-    { label: 'Billetera', icon: ICON_WALLET,         to: '/wallet' },
-    { label: 'Perfil',    icon: ICON_PERSON_OUTLINE, to: '/perfil' },
-  ];
 
   // Estado de mesa
   table: BjTable = { id: 4, min: 10, max: 1000, players: 2, max_players: 4, secs: 150, tag: null };

@@ -190,19 +190,6 @@
       <app-action-btn [icon]="iconSurrender" label="RENDIRSE" [on]="canSurrender" (act)="surrender()"></app-action-btn>
     </div>
 
-    <!-- Bottom nav -->
-    <div class="casino-nav">
-      <div
-        *ngFor="let n of navItems"
-        class="nav-item"
-        [class.nav-item--active]="n.label === 'Lobby'"
-        (click)="go(n.to)"
-      >
-        <app-icon [svg]="n.icon" [size]="19"></app-icon>
-        <span class="nav-label">{{ n.label }}</span>
-      </div>
-    </div>
-
     <!-- Toast -->
     <div *ngIf="msg" class="toast">{{ msg }}</div>
   </div>
