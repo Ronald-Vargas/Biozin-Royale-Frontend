@@ -94,37 +94,117 @@ ion-content.home-content { --background: var(--bg-dark); }
   gap: 11px;
 }
 
-// ── Sports banner ─────────────────────────────────────────────
-.sports-banner {
-  height: 92px;
-  border-radius: 16px;
-  padding: 16px 18px;
-  cursor: pointer;
-  background: linear-gradient(110deg, #11243a, #0a0f1a 60%, #0c0a10);
-  border: 1px solid rgba(212, 167, 60, 0.28);
-  position: relative;
-  overflow: hidden;
+// ── Sports previews ───────────────────────────────────────────
+.sport-previews {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 10px;
 }
 
-.sports-title {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
+.sport-preview {
+  border-radius: 14px;
+  background: linear-gradient(135deg, #111720, #0c0d11);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+  padding: 12px 14px;
+  box-shadow: 0 4px 14px -6px rgba(0, 0, 0, 0.55);
+}
+
+.sp-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.sp-league {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gold-2);
+  text-transform: uppercase;
+}
+
+.sp-time {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--gold-1);
+  letter-spacing: 0.6px;
+  color: #cbb98f; 
+  text-transform: uppercase;
 }
 
-.sports-sub {
+.sp-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 11px;
+}
+
+.sp-team {
+  font-family: 'Cinzel', serif;
   font-size: 14px;
-  color: #cbb98f;
-  margin-top: 4px;
+  font-weight: 600;
+  color: var(--cream);
+  flex: 1;
+  letter-spacing: 0.3px;
+
+  &--right { text-align: right; }
 }
 
-.sports-icon {
-  position: absolute;
-  right: -8px;
-  bottom: -10px;
-  color: rgba(231, 200, 107, 0.1);
+.sp-vs {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #cbb98f;
+  flex-shrink: 0;
+}
+
+.sp-odds {
+  display: flex;
+  gap: 7px;
+}
+
+.sp-odd {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 7px 4px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.15);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+
+  &:active { transform: scale(0.95); }
+
+  &--on {
+    background: linear-gradient(135deg, rgba(244, 221, 146, 0.2), rgba(199, 154, 50, 0.15));
+    border-color: rgba(212, 167, 60, 0.65);
+    box-shadow: 0 0 10px -3px rgba(212, 167, 60, 0.3);
+
+    .sp-lbl { color: var(--gold-1); }
+    .sp-val  { color: var(--gold-1); }
+  }
+}
+
+.sp-lbl {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: rgba(200, 185, 150, 0.45);
+  transition: color 0.2s;
+}
+
+.sp-val {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cream);
+  transition: color 0.2s;
 }

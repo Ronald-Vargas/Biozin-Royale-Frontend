@@ -128,9 +128,9 @@ export const routes: Routes = [
     loadComponent: () => import('./User/bonuses/bonus-details/bonus-details.component').then(m => m.BonusDetailsComponent),
   },
   {
-  path: 'ruleta',
-  data: { depth: 5, tab: 1 },
-  loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
+    path: 'ruleta',
+    data: { depth: 5, tab: 1 },
+    loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
   },
   {
     path: 'slots',
@@ -143,5 +143,10 @@ export const routes: Routes = [
   {
     path: 'blackjack/:id',
     loadComponent: () => import('./User/blackjack/blackjack.component').then(m => m.BlackjackComponent),
+  },
+  {
+    path: 'apuestas',
+    data: { depth: 6 },
+    loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
 ];
