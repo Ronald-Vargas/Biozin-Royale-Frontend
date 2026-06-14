@@ -1,0 +1,35 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SvgIconComponent } from '../../../../shared/Components/svg-icons/svg-icons.component';
+import { AvatarStackComponent } from '../avatar-stack/avatar-stack.component';
+import { CountRingComponent }   from '../count-ring/count-ring.component';
+import { BjTable } from '../../tables.data';
+import { ICON_PEOPLE } from '../../../../shared/icons/icons';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule, SvgIconComponent, AvatarStackComponent, CountRingComponent],
+  selector: 'app-table-card',
+  templateUrl: './table-card.component.html',
+  styleUrls: ['./table-card.component.scss'],
+})
+
+export class TableCardComponent {
+  @Input() table!: BjTable;
+  @Output() join = new EventEmitter<BjTable>();
+
+  iconPeople = ICON_PEOPLE;
+
+  get tagBg(): string | null {
+    if (this.table.tag === 'VIP')     return 'linear-gradient(135deg,#6a3fae,#3a1f6e)';
+    if (this.table.tag === 'POPULAR') return 'linear-gradient(135deg,#2e8b57,#176b39)';
+    return null;
+  }
+
+  get isPopular(): boolean { return this.table.tag === 'POPULAR'; }
+  get idLabel(): string { return String(this.table.id).padStart(2, '0'); }
+
+  get betRange(): string {
+    return `$${this.table.min.toLocaleString()} - $${this.table.max.toLocaleString()}`;
+  }
+}

@@ -1,0 +1,13 @@
+<button
+  class="action-btn"
+  [disabled]="!on"
+  [style.background]="bg"
+  [style.border-color]="borderColor"
+  (click)="onClick()"
+>
+  <div class="icon-wrap">
+    <app-icon [svg]="icon" [size]="21" [style.color]="color"></app-icon>
+    <span *ngIf="txt" class="txt" [style.color]="color">{{ txt }}</span>
+  </div>
+  <span class="label" [style.color]="color">{{ label }}</span>
+</button>

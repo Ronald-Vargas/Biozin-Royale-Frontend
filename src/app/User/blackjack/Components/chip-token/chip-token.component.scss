@@ -1,0 +1,24 @@
+.chip-token {
+  position: relative;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.chip-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.chip-value {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+
+  span {
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    color: #2a1f06;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}

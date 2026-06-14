@@ -37,6 +37,7 @@ export class HomeComponent {
   onGameClick(name: string) {
     if (name === 'Slots')    this.router.navigate(['/slots']);
     if (name === 'Roulette') this.router.navigate(['/ruleta']);
+    if (name === 'Blackjack') this.router.navigate(['/blackjack-lobby']);
   }
 
   constructor(private router: Router) {}
@@ -44,6 +45,6 @@ export class HomeComponent {
   goMiPerfil() { this.router.navigate(['/miperfil']); }
   goDeposito() { this.router.navigate(['/deposito']); }
   goJuegos() { this.router.navigate(['/juegos']); }
-  goRuleta() { this.router.navigate(['/ruleta']); }
+  
 
 }

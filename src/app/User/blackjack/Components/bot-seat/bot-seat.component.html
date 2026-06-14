@@ -1,0 +1,31 @@
+<div class="bot-seat" [class.bot-seat--right]="isRight">
+  <app-seat-badge
+    [num]="num"
+    [name]="bot.name"
+    [balance]="bot.balance"
+    [avatar]="bot.avatar"
+    [bet]="bot.bet"
+    [align]="align"
+  ></app-seat-badge>
+
+  <app-seat-spot [win]="win">
+    <app-hand
+      *ngIf="bot.cards.length > 0; else emptySpot"
+      [cards]="bot.cards"
+      [w]="32"
+      [tone]="bot.tone"
+      [deal]="true"
+    ></app-hand>
+    <ng-template #emptySpot>
+      <div class="empty-cards"></div>
+    </ng-template>
+  </app-seat-spot>
+
+  <div *ngIf="bot.status" class="status" [style.color]="statusColor">
+    {{ bot.status }}
+  </div>
+
+  <div *ngIf="bot.bet > 0" class="chip-wrap">
+    <app-chip-token [amount]="bot.bet" [size]="38"></app-chip-token>
+  </div>
+</div>

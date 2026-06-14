@@ -89,3 +89,10 @@ ion-app > .route-host {
   overflow: hidden;
   z-index: 0;
 }
+
+
+
+@keyframes cardDeal {
+  0%   { opacity: 0; transform: translateY(-26px) scale(0.7) rotate(-8deg); }
+  100% { opacity: 1; transform: none; }
+}

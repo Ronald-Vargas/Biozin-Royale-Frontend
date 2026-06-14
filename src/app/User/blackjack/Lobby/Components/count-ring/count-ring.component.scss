@@ -1,0 +1,37 @@
+.ring {
+  position: relative;
+  width: 84px; height: 84px;
+  display: grid;
+  place-items: center;
+}
+
+.ring-svg {
+  position: absolute;
+  transform: rotate(-90deg);
+}
+
+.ring-progress {
+  transition: stroke-dashoffset 1s linear;
+}
+
+.ring-center {
+  text-align: center;
+}
+
+.ring-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.ring-time {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-1);
+  line-height: 1.1;
+
+  &--urgent { color: #4fd190; }
+}

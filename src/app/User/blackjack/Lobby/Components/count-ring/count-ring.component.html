@@ -1,0 +1,19 @@
+<div class="ring">
+  <svg width="84" height="84" class="ring-svg">
+    <circle cx="42" cy="42" [attr.r]="R" fill="none"
+            stroke="rgba(212,167,60,0.14)" stroke-width="3"/>
+    <circle cx="42" cy="42" [attr.r]="R" fill="none"
+            [attr.stroke]="color"
+            stroke-width="3"
+            stroke-linecap="round"
+            [attr.stroke-dasharray]="CIRC"
+            [attr.stroke-dashoffset]="dashOffset"
+            class="ring-progress"
+            [style.filter]="'drop-shadow(0 0 4px ' + color + '99)'"/>
+  </svg>
+
+  <div class="ring-center">
+    <div class="ring-label">INICIA EN</div>
+    <div class="ring-time" [class.ring-time--urgent]="urgent">{{ label }}</div>
+  </div>
+</div>

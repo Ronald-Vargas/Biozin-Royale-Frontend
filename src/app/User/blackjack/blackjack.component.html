@@ -1,0 +1,209 @@
+<ion-content [fullscreen]="true" class="bj-content">
+  <div class="bj-root">
+    <!-- Fondo -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="felt-curve"></div>
+
+    <div class="scroll-area">
+      <!-- Top bar -->
+      <div class="top-bar">
+        <button class="back-btn" (click)="go('/blackjack-lobby')">
+          <app-icon [svg]="iconBack" [size]="19"></app-icon>
+        </button>
+
+        <div class="brand">
+          <img src="assets/logo.png" alt="" class="brand-logo"/>
+          <div class="brand-text">
+            <div class="gold-text brand-1">BIOZIN</div>
+            <div class="brand-2">ROYALE</div>
+            <div class="brand-3">CASINO</div>
+          </div>
+        </div>
+
+        <div class="balance-pill">
+          <span class="balance-amt">{{ fmt(balance) }}</span>
+          <div class="add-btn" (click)="goDeposito()">
+            <app-icon [svg]="iconAdd" [size]="15" style="color:#2a1f06"></app-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escena del crupier -->
+      <div class="dealer-scene">
+        <img src="assets/bj-dealer2.png" alt="Crupiera" class="dealer-img"/>
+
+        <div class="table-info">
+          <div class="info-line">Mesa: <b>Blackjack VIP {{ table.id }}</b></div>
+          <div class="info-sub">Mín: {{ fmtShort(table.min) }} · Máx: {{ fmtShort(table.max) }}</div>
+        </div>
+
+        <!-- Cartas del crupier -->
+        <div class="dealer-cards">
+          <app-hand
+            *ngIf="dealer.cards.length > 0"
+            [cards]="dealer.cards"
+            [w]="42"
+            [hideHole]="dealer.hole"
+            [tone]="dealerTone"
+            [deal]="true"
+          ></app-hand>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Banner curvo -->
+      <div class="banner">
+        <svg viewBox="0 0 320 104" width="290" height="94">
+          <defs>
+            <path id="bjArc"  d="M 24 60 Q 160 10 296 60" fill="none"/>
+            <path id="bjArc2" d="M 40 76 Q 160 40 280 76" fill="none"/>
+            <path id="bjArc3" d="M 56 98 Q 160 68 264 98" fill="none"/>
+          </defs>
+          <text fill="#e9c969" font-family="Cinzel, serif" font-weight="700" font-size="19" letter-spacing="1.5">
+            <textPath href="#bjArc" startOffset="50%" text-anchor="middle">BLACKJACK PAGA 3 A 2</textPath>
+          </text>
+          <text fill="#cbb98f" font-family="Montserrat, sans-serif" font-size="9" letter-spacing="0.5">
+            <textPath href="#bjArc2" startOffset="50%" text-anchor="middle">El crupier pide con 16 y se planta en 17</textPath>
+          </text>
+          <text fill="#c79a32" font-family="Cinzel, serif" font-weight="600" font-size="11" letter-spacing="2.5">
+            <textPath href="#bjArc3" startOffset="50%" text-anchor="middle">SEGURO PAGA 2 A 1</textPath>
+          </text>
+        </svg>
+      </div>
+
+      <!-- Oponentes arriba -->
+      <div class="bots-top">
+        <app-bot-seat [bot]="bots[0]" [num]="1" align="left"></app-bot-seat>
+        <app-bot-seat [bot]="bots[1]" [num]="2" align="right"></app-bot-seat>
+      </div>
+
+      <!-- Fila inferior: J3 + TÚ -->
+      <div class="bottom-row">
+        <app-bot-seat [bot]="bots[2]" [num]="3" align="left"></app-bot-seat>
+
+        <div class="you-area">
+          <div class="you-badge">
+            <div class="you-avatar">
+              <app-icon [svg]="iconPerson" [size]="14" style="color:var(--gold-1)"></app-icon>
+            </div>
+            <span class="you-name">Tú</span>
+          </div>
+
+          <!-- Tus manos -->
+          <div class="you-hands">
+            <app-seat-spot
+              *ngFor="let h of hands; let i = index"
+              [active]="isHandActive(i)"
+              [win]="isHandWin(h)"
+            >
+              <app-hand
+                *ngIf="h.cards.length > 0; else emptyYou"
+                [cards]="h.cards"
+                [w]="hands.length > 1 ? 38 : 48"
+                [tone]="handTone(h)"
+                [deal]="true"
+              ></app-hand>
+              <ng-template #emptyYou>
+                <div class="empty-you"></div>
+              </ng-template>
+            </app-seat-spot>
+          </div>
+
+          <div *ngIf="youStatus" class="you-status" [style.color]="youStatus.c">
+            {{ youStatus.t }}
+          </div>
+
+          <app-chip-token *ngIf="myBet > 0" [amount]="myBet" [size]="46"></app-chip-token>
+        </div>
+      </div>
+
+      <!-- Últimas manos + historial -->
+      <div class="history-bar">
+        <div class="history-box">
+          <span class="history-label">ÚLTIMAS<br/>MANOS</span>
+          <div class="history-dots">
+            <span
+              *ngFor="let h of history"
+              class="hist-dot"
+              [style.background]="historyBg(h)"
+            >{{ h }}</span>
+          </div>
+        </div>
+        <button class="history-btn">
+          <app-icon [svg]="iconTime" [size]="18"></app-icon>
+          <span>HISTORIAL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== Controles: apuesta O acciones ===== -->
+    <div *ngIf="phase === 'bet'" class="bet-controls">
+      <div class="bet-header">
+        <div class="bet-timer">
+          <div class="timer-ring" [class.timer-ring--urgent]="count <= 5">{{ count }}</div>
+          <span class="bet-prompt">Coloca tu apuesta</span>
+        </div>
+        <div class="bet-display">
+          <div class="bet-display-label">APUESTA</div>
+          <div class="bet-display-amt">{{ fmt(myBet) }}</div>
+        </div>
+      </div>
+
+      <!-- Chips -->
+      <div class="chips-row">
+        <button
+          *ngFor="let v of chipVals"
+          class="chip-btn"
+          [class.chip-btn--active]="chip === v"
+          (click)="selectChip(v)"
+        >
+          <img [src]="chipImg(v)" alt="" class="chip-art"/>
+          <div class="chip-num">{{ v }}</div>
+          <div *ngIf="chip === v" class="chip-ring"></div>
+        </button>
+      </div>
+
+      <!-- Botones -->
+      <div class="bet-actions">
+        <button class="clear-bet" [disabled]="myBet === 0" (click)="clearBet()">
+          <app-icon [svg]="iconSurrender" [size]="18" style="color:#e06a6a"></app-icon>
+        </button>
+        <button class="add-bet" (click)="addChip()">
+          <app-icon [svg]="iconAdd" [size]="18"></app-icon>
+          AÑADIR {{ fmtShort(chip) }}
+        </button>
+        <button
+          class="deal-btn"
+          [class.deal-btn--ready]="myBet >= table.min"
+          (click)="deal()"
+        >Repartir</button>
+      </div>
+    </div>
+
+    <div *ngIf="phase !== 'bet'" class="action-bar">
+      <app-action-btn [icon]="iconHit"    label="PEDIR"     [on]="canAct"      (act)="hit()"></app-action-btn>
+      <app-action-btn [icon]="iconStand"  label="PLANTARSE" [on]="canAct"      accent="#4fd190" (act)="stand()"></app-action-btn>
+      <app-action-btn [icon]="iconDouble" label="DOBLAR"    txt="2x" [on]="canDouble" (act)="double()"></app-action-btn>
+      <app-action-btn [icon]="iconSplit"  label="DIVIDIR"   [on]="canSplit"    (act)="split()"></app-action-btn>
+      <app-action-btn [icon]="iconSurrender" label="RENDIRSE" [on]="canSurrender" (act)="surrender()"></app-action-btn>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="casino-nav">
+      <div
+        *ngFor="let n of navItems"
+        class="nav-item"
+        [class.nav-item--active]="n.label === 'Lobby'"
+        (click)="go(n.to)"
+      >
+        <app-icon [svg]="n.icon" [size]="19"></app-icon>
+        <span class="nav-label">{{ n.label }}</span>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div *ngIf="msg" class="toast">{{ msg }}</div>
+  </div>
+</ion-content>

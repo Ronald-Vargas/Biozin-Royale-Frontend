@@ -1,0 +1,29 @@
+<app-screen-shell
+  title="Blackjack"
+  current="juegos"
+  (back)="goBack()"
+>
+  <!-- Título -->
+  <div class="title-block">
+    <div class="title-row">
+      <span class="spade">♠</span>
+      <h1 class="gold-text title">BLACKJACK</h1>
+    </div>
+    <p class="subtitle">Elige una mesa y únete a la acción</p>
+  </div>
+
+  <!-- Mesas -->
+  <div class="tables-list">
+    <app-table-card
+      *ngFor="let t of tables"
+      [table]="t"
+      (join)="joinTable($event)"
+    ></app-table-card>
+  </div>
+
+  <!-- Crear privada -->
+  <button class="create-btn">
+    <app-icon [svg]="iconAddCircle" [size]="20"></app-icon>
+    Crear mesa privada
+  </button>
+</app-screen-shell>

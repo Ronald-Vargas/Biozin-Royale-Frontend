@@ -1,0 +1,32 @@
+<div
+  class="table-card"
+  [class.table-card--popular]="isPopular"
+  (click)="join.emit(table)"
+>
+  <!-- Mesa + apuesta -->
+  <div class="card-left">
+    <div class="mesa-row">
+      <span class="mesa-label">MESA</span>
+      <span *ngIf="table.tag" class="tag" [style.background]="tagBg">{{ table.tag }}</span>
+    </div>
+    <div class="gold-text mesa-num">{{ idLabel }}</div>
+    <div class="divider"></div>
+    <div class="bet-label">APUESTA</div>
+    <div class="bet-range">{{ betRange }}</div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="card-center">
+    <app-count-ring [secs]="table.secs"></app-count-ring>
+  </div>
+
+  <!-- Jugadores -->
+  <div class="card-right">
+    <div class="players-label">JUGADORES</div>
+    <div class="players-count">
+      <app-icon [svg]="iconPeople" [size]="14" style="color:var(--gold-2)"></app-icon>
+      <span>{{ table.players }} / {{ table.max_players }}</span>
+    </div>
+    <app-avatar-stack [count]="table.players" [tint0]="table.id"></app-avatar-stack>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+.seat-spot {
+  position: relative;
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  padding: 6px 14px;
+}
+
+.spot-oval {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid;
+  background: radial-gradient(closest-side, rgba(212, 167, 60, 0.06), transparent 80%);
+}
+
+.spot-content {
+  position: relative;
+}

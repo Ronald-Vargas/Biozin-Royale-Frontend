@@ -1,0 +1,21 @@
+<!-- Reverso -->
+<div *ngIf="faceDown" class="card card--back" [ngStyle]="cardStyle" [style.border-width]="borderW">
+  <div class="back-inner" [style.border-radius]="backRadius">
+    <span class="back-text" [style.font-size]="backFont">BR</span>
+  </div>
+</div>
+
+<!-- Cara -->
+<div *ngIf="!faceDown" class="card card--face" [ngStyle]="cardStyle">
+  <div class="corner corner--tl" [style.top]="pad" [style.left]="padX" [style.color]="color">
+    <div class="rank" [style.font-size]="rankSize">{{ card.r }}</div>
+    <div class="suit" [style.font-size]="suitSize">{{ glyph }}</div>
+  </div>
+
+  <div class="pip" [style.color]="color" [style.font-size]="pipSize">{{ glyph }}</div>
+
+  <div class="corner corner--br" [style.bottom]="pad" [style.right]="padX" [style.color]="color">
+    <div class="rank" [style.font-size]="rankSize">{{ card.r }}</div>
+    <div class="suit" [style.font-size]="suitSize">{{ glyph }}</div>
+  </div>
+</div>

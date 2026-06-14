@@ -1,0 +1,6 @@
+<div *ngIf="amount" class="chip-token" [ngStyle]="tokenStyle">
+  <img [src]="img" alt="" class="chip-img"/>
+  <div class="chip-value">
+    <span [style.font-size]="valueSize">{{ amount }}</span>
+  </div>
+</div>

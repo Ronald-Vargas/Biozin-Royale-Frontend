@@ -1,0 +1,14 @@
+.hand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cards {
+  display: flex;
+  position: relative;
+}
+
+.card-slot {
+  position: relative;
+}

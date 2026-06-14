@@ -135,5 +135,13 @@ export const routes: Routes = [
   {
     path: 'slots',
     loadComponent: () => import('./User/slots/slots.component').then(m => m.SlotsComponent),
-},
+  },
+  {
+    path: 'blackjack-lobby',
+    loadComponent: () => import('./User/blackjack/Lobby/blackjack-lobby.component').then(m => m.BlackjackLobbyComponent),
+  },
+  {
+    path: 'blackjack/:id',
+    loadComponent: () => import('./User/blackjack/blackjack.component').then(m => m.BlackjackComponent),
+  },
 ];

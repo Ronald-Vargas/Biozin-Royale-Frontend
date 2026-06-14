@@ -1,0 +1,25 @@
+<div class="hand">
+  <div class="cards">
+    <div
+      *ngFor="let c of cards; let i = index"
+      class="card-slot"
+      [style.margin-left]="marginLeft(i)"
+      [style.z-index]="i"
+    >
+      <app-playing-card
+        [card]="c"
+        [w]="w"
+        [faceDown]="isFaceDown(i)"
+        [dealAnim]="deal"
+        [idx]="i"
+      ></app-playing-card>
+    </div>
+  </div>
+
+  <app-total-badge
+    *ngIf="showBadge"
+    [value]="displayTotal"
+    [tone]="tone"
+    [size]="badgeSize"
+  ></app-total-badge>
+</div>

@@ -55,7 +55,8 @@ export class GamesComponent {
   goRuleta() { this.router.navigate(['/ruleta']); }
 
   onGameClick(g: GameItem) {
-    if (g.cat === 'slots') this.goSlots();
-    else if (g.name === 'Roulette' || g.name === 'Lightning Roulette') this.goRuleta();
-  }
+  if (g.cat === 'slots')        this.goSlots();
+  else if (g.name === 'Roulette' || g.name === 'Lightning Roulette') this.goRuleta();
+  else if (g.name === 'Blackjack' || g.cat === 'mesa') this.router.navigate(['/blackjack-lobby']);
+}
 }

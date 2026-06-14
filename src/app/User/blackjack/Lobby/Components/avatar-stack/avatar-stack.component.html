@@ -1,0 +1,13 @@
+<div class="stack">
+  <div
+    *ngFor="let a of avatars"
+    class="avatar"
+    [style.margin-left]="a.ml"
+    [style.z-index]="a.z"
+    [style.background]="avatarBg(a.tint)"
+  >
+    <app-icon [svg]="iconPerson" [size]="16" style="color:rgba(20,15,8,0.7)"></app-icon>
+  </div>
+
+  <div *ngIf="extra > 0" class="avatar avatar--extra">+{{ extra }}</div>
+</div>

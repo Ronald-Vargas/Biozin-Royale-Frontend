@@ -1,0 +1,62 @@
+.card {
+  position: relative;
+  flex-shrink: 0;
+}
+
+// ── Reverso ──────────────────────────────────────────────────
+.card--back {
+  background:
+    linear-gradient(150deg, #7c1d22, #43101400 0),
+    repeating-linear-gradient(45deg, #5e161b 0 6px, #7a1f24 6px 12px);
+  background-color: #5e161b;
+  border-style: solid;
+  border-color: #e9c969;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.back-inner {
+  width: 62%;
+  height: 78%;
+  border: 1px solid rgba(231, 201, 105, 0.6);
+  display: grid;
+  place-items: center;
+}
+
+.back-text {
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  color: #e9c969;
+  line-height: 1;
+}
+
+// ── Cara ─────────────────────────────────────────────────────
+.card--face {
+  background: linear-gradient(160deg, #fffdf7, #ede6d4);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.corner {
+  position: absolute;
+  line-height: 0.9;
+  text-align: center;
+
+  &--br { transform: rotate(180deg); }
+}
+
+.rank {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+}
+
+.pip {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0.96;
+}

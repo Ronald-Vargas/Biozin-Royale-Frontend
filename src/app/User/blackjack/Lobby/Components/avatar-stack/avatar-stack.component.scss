@@ -1,0 +1,23 @@
+.stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold-3);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+  &--extra {
+    margin-left: -10px;
+    background: rgba(255, 255, 255, 0.04);
+    z-index: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold-1);
+  }
+}

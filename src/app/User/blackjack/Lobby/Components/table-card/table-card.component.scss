@@ -1,0 +1,107 @@
+.table-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.005));
+  border: 1px solid rgba(212, 167, 60, 0.28);
+
+  &--popular { border-color: rgba(79, 209, 144, 0.45); }
+}
+
+// ── Left ─────────────────────────────────────────────────────
+.card-left {
+  width: 92px;
+  flex-shrink: 0;
+}
+
+.mesa-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mesa-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+
+.mesa-num {
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.divider {
+  width: 26px;
+  height: 1px;
+  background: rgba(212, 167, 60, 0.4);
+  margin: 7px 0;
+}
+
+.bet-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.bet-range {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: var(--cream);
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+// ── Center ───────────────────────────────────────────────────
+.card-center {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+// ── Right ────────────────────────────────────────────────────
+.card-right {
+  width: 104px;
+  flex-shrink: 0;
+}
+
+.players-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.players-count {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 3px 0 9px;
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+}

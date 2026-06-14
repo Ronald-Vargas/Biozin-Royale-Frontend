@@ -1,0 +1,564 @@
+ion-content.bj-content { --background: #060503; }
+
+.bj-root {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: radial-gradient(130% 70% at 50% 8%, #1c1810 0%, #100c08 40%, #060503 100%);
+}
+
+// ── Fondo ────────────────────────────────────────────────────
+.bg-grid {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 34%;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(212,167,60,0.07) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(-45deg, rgba(212,167,60,0.07) 0 1px, transparent 1px 26px);
+  -webkit-mask-image: radial-gradient(70% 100% at 50% 0%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(70% 100% at 50% 0%, #000 30%, transparent 75%);
+}
+
+.bg-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(54% 30% at 50% 8%, rgba(214,158,52,0.18), transparent 70%);
+}
+
+.felt-curve {
+  position: absolute;
+  left: -10%; right: -10%;
+  bottom: 20%;
+  height: 60%;
+  border-radius: 50% 50% 0 0;
+  border: 1px solid rgba(212, 167, 60, 0.18);
+  border-bottom: none;
+  background: radial-gradient(100% 80% at 50% 100%, rgba(20,40,30,0.5), transparent 70%);
+}
+
+.scroll-area {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Top bar ──────────────────────────────────────────────────
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(12px + var(--ion-safe-area-top)) 16px 6px;
+}
+
+.back-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(8, 7, 9, 0.5);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--gold-2);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-logo {
+  width: 34px; height: 34px;
+  object-fit: contain;
+}
+
+.brand-text { line-height: 1; text-align: left; }
+
+.brand-1 {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.brand-2 {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 3.5px;
+  color: var(--gold-2);
+  margin-top: 2px;
+}
+
+.brand-3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 6px;
+  letter-spacing: 4px;
+  color: #cbb98f;
+  margin-top: 2px;
+}
+
+.balance-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px 5px 11px;
+  border-radius: 18px;
+  background: rgba(8, 7, 9, 0.55);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.balance-amt {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.add-btn {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+// ── Dealer scene ─────────────────────────────────────────────
+.dealer-scene {
+  position: relative;
+  margin-top: 2px;
+}
+
+.dealer-img {
+  width: 100%;
+  display: block;
+}
+
+.table-info {
+  position: absolute;
+  top: 6%;
+  left: 3%;
+  max-width: 46%;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: rgba(10, 9, 8, 0.78);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  backdrop-filter: blur(2px);
+}
+
+.info-line {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.info-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  color: #cbb98f;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.dealer-cards {
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  transform: translateX(-50%);
+  z-index: 3;
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+}
+
+.spacer { height: 22px; }
+
+// ── Banner ───────────────────────────────────────────────────
+.banner {
+  display: flex;
+  justify-content: center;
+}
+
+// ── Bots ─────────────────────────────────────────────────────
+.bots-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 10px 0;
+}
+
+.bottom-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 10px 0;
+}
+
+.you-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 0 0 4px;
+}
+
+.you-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px 4px 7px;
+  border-radius: 20px;
+  background: rgba(8, 7, 9, 0.6);
+  border: 1px solid var(--gold-3);
+}
+
+.you-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(212, 167, 60, 0.16);
+  border: 1px solid var(--gold-2);
+  display: grid;
+  place-items: center;
+}
+
+.you-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.you-hands {
+  display: flex;
+  gap: 14px;
+  min-height: 72px;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-you {
+  width: 86px; height: 52px;
+}
+
+.you-status {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+// ── History ──────────────────────────────────────────────────
+.history-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin: 8px 16px 14px;
+}
+
+.history-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(8, 7, 9, 0.5);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+}
+
+.history-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--gold-2);
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.history-dots {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.hist-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  border: 1px solid rgba(212, 167, 60, 0.4);
+}
+
+.history-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 78px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(8, 7, 9, 0.5);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  color: var(--gold-1);
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+}
+
+// ── Bet controls ─────────────────────────────────────────────
+.bet-controls {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  padding: 12px 16px 18px;
+  background: linear-gradient(180deg, transparent, rgba(7, 13, 11, 0.95) 26%);
+  border-top: 1px solid rgba(212, 167, 60, 0.2);
+}
+
+.bet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.bet-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-ring {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-2);
+  display: grid;
+  place-items: center;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-1);
+
+  &--urgent {
+    border-color: #e06a6a;
+    color: #e06a6a;
+  }
+}
+
+.bet-prompt {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.bet-display { text-align: right; }
+
+.bet-display-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.bet-display-amt {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.chips-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chip-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  filter: grayscale(0.3) brightness(0.8);
+  transition: all 0.16s;
+
+  &--active {
+    width: 50px; height: 50px;
+    transform: translateY(-3px);
+    filter: drop-shadow(0 5px 10px rgba(199, 154, 50, 0.6));
+
+    .chip-num { font-size: 14px; }
+  }
+}
+
+.chip-art {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+.chip-num {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #2a1f06;
+}
+
+.chip-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-1);
+}
+
+.bet-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.clear-bet {
+  width: 52px;
+  border-radius: 13px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(224, 106, 106, 0.45);
+  display: grid;
+  place-items: center;
+
+  &:disabled { cursor: default; }
+}
+
+.add-bet {
+  flex: 1;
+  height: 50px;
+  border-radius: 13px;
+  cursor: pointer;
+  background: rgba(212, 167, 60, 0.12);
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  color: var(--gold-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.deal-btn {
+  flex: 1;
+  height: 50px;
+  border-radius: 13px;
+  cursor: pointer;
+  border: none;
+  background: rgba(120, 100, 50, 0.25);
+  color: #7d7361;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  &--ready {
+    background: linear-gradient(177deg, #f4dd92, #c89a35, #a87e22);
+    color: #2a1f06;
+  }
+}
+
+// ── Action bar ───────────────────────────────────────────────
+.action-bar {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 12px 12px 18px;
+  background: linear-gradient(180deg, transparent, rgba(7, 13, 11, 0.95) 26%);
+  border-top: 1px solid rgba(212, 167, 60, 0.2);
+}
+
+// ── Casino nav ───────────────────────────────────────────────
+.casino-nav {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 7px 4px calc(9px + var(--ion-safe-area-bottom));
+  background: rgba(5, 4, 3, 0.96);
+  border-top: 1px solid rgba(212, 167, 60, 0.18);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  width: 56px;
+  padding: 2px 0;
+  color: #8d8064;
+
+  .nav-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  &--active {
+    color: var(--gold-1);
+    .nav-label { font-weight: 700; }
+  }
+}
+
+// ── Toast ────────────────────────────────────────────────────
+.toast {
+  position: absolute;
+  top: calc(96px + var(--ion-safe-area-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 10px 20px;
+  border-radius: 13px;
+  white-space: nowrap;
+  background: rgba(8, 7, 9, 0.92);
+  color: var(--gold-1);
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  animation: toastIn 0.3s ease both;
+}
+
+@keyframes toastIn {
+  0%   { opacity: 0; transform: translate(-50%, -10px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
+}
