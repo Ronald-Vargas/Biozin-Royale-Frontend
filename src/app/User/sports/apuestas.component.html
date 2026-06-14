@@ -1,0 +1,164 @@
+<ion-content [fullscreen]="true" class="apuestas-content">
+  <div class="apuestas-root">
+    <app-atmosphere [glow]="0.28" [count]="8"></app-atmosphere>
+
+    <!-- ── Match list ── -->
+    <div class="scroll-area" [class.scroll-area--slip]="selectionCount > 0">
+
+      <div class="top-bar">
+        <button class="back-btn" (click)="goBack()">
+          <app-icon [svg]="iconBack" [size]="22"></app-icon>
+        </button>
+        <h1 class="gold-text page-title">APUESTAS DEPORTIVAS</h1>
+        <div class="header-ghost"></div>
+      </div>
+
+      <div class="filter-row">
+        <button
+          *ngFor="let f of filters"
+          class="filter-chip"
+          [class.filter-chip--active]="activeFilter === f.key"
+          (click)="activeFilter = f.key"
+        >{{ f.label }}</button>
+      </div>
+
+      <div class="matches-list">
+        <div *ngFor="let m of filtered" class="match-card">
+          <div class="match-meta">
+            <span class="match-league">{{ m.league }}</span>
+            <span class="match-time">{{ m.time }}</span>
+          </div>
+          <div class="match-teams">
+            <span class="team-name">{{ m.team1 }}</span>
+            <span class="vs-badge">VS</span>
+            <span class="team-name">{{ m.team2 }}</span>
+          </div>
+          <div class="odds-row">
+            <button
+              class="odd-btn"
+              [class.odd-btn--on]="isSelected(m.id, 'home')"
+              (click)="toggleBet(m.id, 'home')"
+            >
+              <span class="odd-lbl">1</span>
+              <span class="odd-val">{{ m.odds.home | number:'1.2-2' }}</span>
+            </button>
+            <button
+              *ngIf="m.odds.draw !== null"
+              class="odd-btn"
+              [class.odd-btn--on]="isSelected(m.id, 'draw')"
+              (click)="toggleBet(m.id, 'draw')"
+            >
+              <span class="odd-lbl">X</span>
+              <span class="odd-val">{{ m.odds.draw | number:'1.2-2' }}</span>
+            </button>
+            <button
+              class="odd-btn"
+              [class.odd-btn--on]="isSelected(m.id, 'away')"
+              (click)="toggleBet(m.id, 'away')"
+            >
+              <span class="odd-lbl">2</span>
+              <span class="odd-val">{{ m.odds.away | number:'1.2-2' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- ── Slip bar ── -->
+    <div class="slip-bar" [class.slip-bar--visible]="selectionCount > 0">
+      <div class="slip-info">
+        <span class="slip-badge">{{ selectionCount }}</span>
+        <span class="slip-label">Selección{{ selectionCount !== 1 ? 'es' : '' }}</span>
+      </div>
+      <button class="slip-btn" (click)="openBetPanel()">Apostar</button>
+    </div>
+
+    <!-- ── Bet panel overlay ── -->
+    <div
+      class="bet-overlay"
+      [class.bet-overlay--visible]="showBetPanel"
+      (click)="closeBetPanel()"
+    ></div>
+
+    <!-- ── Bet panel ── -->
+    <div class="bet-panel" [class.bet-panel--open]="showBetPanel">
+
+      <div class="panel-handle"></div>
+
+      <div class="panel-header">
+        <span class="gold-text panel-title">Tu apuesta</span>
+        <button class="panel-close" (click)="closeBetPanel()">
+          <app-icon [svg]="iconClose" [size]="15"></app-icon>
+        </button>
+      </div>
+
+      <!-- Selections -->
+      <div class="selection-list">
+        <div *ngFor="let s of selectedList" class="sel-row">
+          <div class="sel-info">
+            <div class="sel-match">{{ s.match.team1 }} vs {{ s.match.team2 }}</div>
+            <div class="sel-outcome">{{ outcomeLabel(s.match, s.outcome) }}</div>
+          </div>
+          <span class="sel-odds">x{{ selectionOdds(s.match, s.outcome) | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Combined odds -->
+      <div class="combined-row">
+        <span class="combined-label">{{ selectedList.length > 1 ? 'Cuota combinada' : 'Cuota' }}</span>
+        <span class="gold-text combined-value">x{{ totalOdds | number:'1.2-2' }}</span>
+      </div>
+
+      <!-- Amount input -->
+      <div class="amount-label">Monto a apostar</div>
+      <div class="amount-wrap" [class.amount-wrap--error]="isInsufficient">
+        <span class="dollar-sign">$</span>
+        <input
+          type="text"
+          inputmode="decimal"
+          class="amount-input"
+          [value]="displayAmount"
+          (input)="onAmountInput($event)"
+          placeholder="0.00"
+        />
+      </div>
+      <div class="amount-error" *ngIf="isInsufficient">Fondos insuficientes</div>
+
+      <!-- Quick amounts -->
+      <div class="quick-row">
+        <button class="quick-btn" (click)="setAmount(10)">$10</button>
+        <button class="quick-btn" (click)="setAmount(50)">$50</button>
+        <button class="quick-btn" (click)="setAmount(100)">$100</button>
+        <button class="quick-btn" (click)="setAmount(500)">$500</button>
+        <button class="quick-btn quick-btn--max" (click)="setAmount(balance())">MÁX</button>
+      </div>
+
+      <!-- Balance + potential -->
+      <div class="info-row">
+        <div class="info-item">
+          <div class="info-lbl">Balance disponible</div>
+          <div class="info-val">{{ balance() | currency:'USD':'symbol':'1.2-2' }}</div>
+        </div>
+        <div class="info-item info-item--right">
+          <div class="info-lbl">Ganancia potencial</div>
+          <div class="info-val info-val--gold">{{ potentialWin | currency:'USD':'symbol':'1.2-2' }}</div>
+        </div>
+      </div>
+
+      <!-- Confirm -->
+      <button
+        class="confirm-btn"
+        [disabled]="!canConfirm"
+        (click)="confirmBet()"
+      >Confirmar apuesta</button>
+
+    </div><!-- /bet-panel -->
+
+    <!-- ── Toast ── -->
+    <div class="bet-toast" [class.bet-toast--visible]="showToast">
+      ✓ &nbsp;¡Apuesta realizada!
+    </div>
+
+  </div>
+</ion-content>

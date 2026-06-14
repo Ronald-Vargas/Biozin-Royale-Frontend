@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { ICON_PERSON_FILLED, ICON_ADD, ICON_FOOTBALL } from '../shared/icons/icons';
+import { ICON_PERSON_FILLED, ICON_ADD } from '../shared/icons/icons';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { CardsHeroComponent } from '../shared/Components/cards-hero/cards-hero.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BottomNavComponent } from './Components/bottom-nav/bottom-nav.component';
 import { Game, GamesCardComponent } from './Components/games-card/games-card.component';
 import { SectionHeadComponent } from './Components/section-head/section-head.component';
+import { BetOutcome, SPORT_MATCHES, SportMatch } from '../sports/sports.data';
+import { BalanceService } from '../shared/balance.service';
 
 @Component({
   standalone: true,
@@ -24,9 +26,8 @@ import { SectionHeadComponent } from './Components/section-head/section-head.com
 export class HomeComponent {
   currentNav = 'home';
 
-  iconPerson   = ICON_PERSON_FILLED;
-  iconAdd      = ICON_ADD;
-  iconFootball = ICON_FOOTBALL;
+  iconPerson = ICON_PERSON_FILLED;
+  iconAdd    = ICON_ADD;
 
   games: Game[] = [
     { name: 'Slots',      icon: 'slots',     g1: '#4a2a6e', g2: '#1c0f33', ic: '#e9c0ff' },
@@ -34,16 +35,34 @@ export class HomeComponent {
     { name: 'Blackjack',  icon: 'blackjack', g1: '#1d5a3a', g2: '#0b2417', ic: '#a6ffc8' },
   ];
 
+  featuredMatches: SportMatch[] = SPORT_MATCHES.slice(0, 2);
+  bets: Record<number, BetOutcome> = {};
+
+  isBetOn(id: number, outcome: BetOutcome): boolean {
+    return this.bets[id] === outcome;
+  }
+
+  toggleBet(id: number, outcome: BetOutcome): void {
+    if (this.bets[id] === outcome) {
+      const next = { ...this.bets };
+      delete next[id];
+      this.bets = next;
+    } else {
+      this.bets = { ...this.bets, [id]: outcome };
+    }
+  }
+
   onGameClick(name: string) {
     if (name === 'Slots')    this.router.navigate(['/slots']);
     if (name === 'Roulette') this.router.navigate(['/ruleta']);
   }
 
-  constructor(private router: Router) {}
+  readonly balance = this.balanceService.balance;
 
-  goMiPerfil() { this.router.navigate(['/miperfil']); }
-  goDeposito() { this.router.navigate(['/deposito']); }
-  goJuegos() { this.router.navigate(['/juegos']); }
-  goRuleta() { this.router.navigate(['/ruleta']); }
+  constructor(private router: Router, private balanceService: BalanceService) {}
 
+  goMiPerfil()  { this.router.navigate(['/miperfil']); }
+  goDeposito()  { this.router.navigate(['/deposito']); }
+  goJuegos()    { this.router.navigate(['/juegos']); }
+  goApuestas()  { this.router.navigate(['/apuestas']); }
 }

@@ -135,5 +135,10 @@ export const routes: Routes = [
   {
     path: 'slots',
     loadComponent: () => import('./User/slots/slots.component').then(m => m.SlotsComponent),
-},
+  },
+  {
+    path: 'apuestas',
+    data: { depth: 6 },
+    loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
+  },
 ];
