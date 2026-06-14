@@ -1,4 +1,36 @@
+// ── Balance ──────────────────────────────────────────────────
+.balance-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 7px 6px 14px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.balance-amt {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.add-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+// ── Título ───────────────────────────────────────────────────
 .title-block {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 30px;
   margin-bottom: 18px;
 }
 
@@ -23,11 +55,30 @@
 
 .subtitle {
   font-family: 'Montserrat', sans-serif;
-  font-size: 12.5px;
-  color: var(--muted);
+  font-size: 14px;
+  color: #cbb98f; 
   margin: 6px 0 0 2px;
 }
 
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  color: var(--gold-1);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+// ── Mesas ────────────────────────────────────────────────────
 .tables-list {
   display: flex;
   flex-direction: column;
@@ -47,7 +98,7 @@
   background: transparent;
   border: 1.4px solid rgba(212, 167, 60, 0.5);
   font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;

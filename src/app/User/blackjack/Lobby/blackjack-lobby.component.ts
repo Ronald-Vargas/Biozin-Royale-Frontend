@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent }     from '../../shared/Components/svg-icons/svg-icons.component';
-import { TableCardComponent } from './Components/table-card/table-card.component';
 import { BJ_TABLES, BjTable }   from './tables.data';
-import { ICON_FILTER, ICON_ADD_CIRCLE } from '../../shared/icons/icons';
+import { ICON_FILTER, ICON_ADD_CIRCLE, ICON_ADD } from '../../shared/icons/icons';
+import { TableCardComponent } from './Components/table-card/table-card.component';
 
 @Component({
   standalone: true,
@@ -14,21 +14,32 @@ import { ICON_FILTER, ICON_ADD_CIRCLE } from '../../shared/icons/icons';
   templateUrl: './blackjack-lobby.component.html',
   styleUrls: ['./blackjack-lobby.component.scss'],
 })
-
-
-export class BlackjackLobbyComponent {
+export class BlackjackLobbyComponent implements OnInit {
   iconFilter    = ICON_FILTER;
   iconAddCircle = ICON_ADD_CIRCLE;
+  iconAdd       = ICON_ADD;
 
   tables = BJ_TABLES;
-  balance = '$1,250.00';
+  balance = 1250;
 
   constructor(private router: Router) {}
 
-  goBack() { this.router.navigate(['/home']); }
+  ngOnInit() {
+    const stored = parseFloat(localStorage.getItem('biozin_balance') || '');
+    if (!isNaN(stored)) this.balance = stored;
+  }
+
+  fmt(n: number): string {
+    return '$' + Number(n).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  goBack()     { this.router.navigate(['/home']); }
+  goDeposito() { this.router.navigate(['/deposito']); }
 
   joinTable(t: BjTable) {
-    // Pasamos la mesa por state de navegación
     this.router.navigate(['/blackjack', t.id], { state: { table: t } });
   }
 }

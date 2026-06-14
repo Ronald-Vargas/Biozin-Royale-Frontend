@@ -1,15 +1,30 @@
 <app-screen-shell
-  title="Blackjack"
   current="juegos"
-  (back)="goBack()"
->
-  <!-- Título -->
-  <div class="title-block">
-    <div class="title-row">
-      <span class="spade">♠</span>
-      <h1 class="gold-text title">BLACKJACK</h1>
+  [boxedBack]="true"
+  (back)="goBack()">
+
+  <!-- Balance pill (en la fila de la cabecera, junto a la flecha) -->
+  <div class="balance-pill" shell-header-end>
+    <span class="balance-amt">{{ fmt(balance) }}</span>
+    <div class="add-btn" (click)="goDeposito()">
+      <app-icon [svg]="iconAdd" [size]="19" style="color:#2a1f06"></app-icon>
     </div>
-    <p class="subtitle">Elige una mesa y únete a la acción</p>
+  </div>
+
+  <!-- Título + filtros -->
+  <div class="title-block">
+    <div class="title-left">
+      <div class="title-row">
+        <span class="spade">♠</span>
+        <h1 class="gold-text title">BLACKJACK</h1>
+      </div>
+      <p class="subtitle">Elige una mesa y únete a la acción</p>
+    </div>
+
+    <button class="filter-btn">
+      <app-icon [svg]="iconFilter" [size]="18"></app-icon>
+      FILTROS
+    </button>
   </div>
 
   <!-- Mesas -->
@@ -23,7 +38,7 @@
 
   <!-- Crear privada -->
   <button class="create-btn">
-    <app-icon [svg]="iconAddCircle" [size]="20"></app-icon>
+    <app-icon [svg]="iconAddCircle" [size]="22"></app-icon>
     Crear mesa privada
   </button>
 </app-screen-shell>

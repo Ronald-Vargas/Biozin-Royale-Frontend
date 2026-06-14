@@ -21,7 +21,6 @@ export class TableCardComponent {
   iconPeople = ICON_PEOPLE;
 
   get tagBg(): string | null {
-    if (this.table.tag === 'VIP')     return 'linear-gradient(135deg,#6a3fae,#3a1f6e)';
     if (this.table.tag === 'POPULAR') return 'linear-gradient(135deg,#2e8b57,#176b39)';
     return null;
   }

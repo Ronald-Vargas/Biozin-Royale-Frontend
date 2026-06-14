@@ -18,6 +18,7 @@ export class ScreenShellComponent {
   @Input() current  = '';
   @Input() glow     = 0.26;
   @Input() showNav  = true;
+  @Input() boxedBack = false;
 
   @Output() back    = new EventEmitter<void>();
   @Output() navClick = new EventEmitter<string>();
