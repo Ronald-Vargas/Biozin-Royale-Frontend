@@ -1,0 +1,93 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Ajustes" (back)="goBack()"></app-admin-header>
+
+    <!-- Profile card con foto -->
+    <div class="profile-card">
+      <img [src]="logo" alt="" class="profile-watermark"/>
+
+      <!-- Avatar con photo slot + cámara -->
+      <div class="avatar-wrap">
+        <div class="avatar-ring">
+          <image-slot
+            id="admin-photo"
+            shape="circle"
+            placeholder="Foto"
+            style="width:78px;height:78px;display:block;background:#15110b"
+          ></image-slot>
+        </div>
+        <div class="camera-btn">
+          <app-icon [svg]="iconCamera" [size]="14" style="color:#2a1f06"></app-icon>
+        </div>
+      </div>
+
+      <!-- Identidad -->
+      <div class="identity">
+        <div class="identity-name">Administrador</div>
+        <div class="identity-sub">Panel de control</div>
+        <div class="identity-role">
+          <app-icon [svg]="iconShield" [size]="14" style="color:var(--gold-1)"></app-icon>
+          <span>Rol: <span class="role-value">Administrador</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuenta -->
+    <app-group-label>Cuenta</app-group-label>
+    <app-group-card>
+      <app-setting-row
+        [icon]="iconPersonCircle"
+        label="Información personal"
+        (rowClick)="noop()"
+      ></app-setting-row>
+      <app-setting-row
+        [icon]="iconLock"
+        label="Seguridad"
+        [last]="true"
+        (rowClick)="noop()"
+      ></app-setting-row>
+    </app-group-card>
+
+    <!-- Preferencias -->
+    <app-group-label>Preferencias</app-group-label>
+    <app-group-card>
+      <div class="row-with-toggle">
+        <app-setting-row
+          [icon]="iconNotifs"
+          label="Notificaciones"
+          [showChevron]="false"
+        ></app-setting-row>
+        <div class="toggle-overlay">
+          <app-toggle [on]="notifs" (changed)="setNotifs($event)"></app-toggle>
+        </div>
+      </div>
+      <app-setting-row
+        [icon]="iconLanguage"
+        label="Idioma"
+        value="Español"
+        [last]="true"
+        (rowClick)="noop()"
+      ></app-setting-row>
+    </app-group-card>
+
+    <!-- General -->
+    <app-group-label>General</app-group-label>
+    <app-group-card>
+      <app-setting-row
+        [icon]="iconDoc"
+        label="Términos y Condiciones"
+        (rowClick)="noop()"
+      ></app-setting-row>
+      <app-setting-row
+        [icon]="iconShield"
+        label="Políticas de Privacidad"
+        [last]="true"
+        (rowClick)="noop()"
+      ></app-setting-row>
+    </app-group-card>
+  </div>
+
+  <app-admin-nav current="ajustes"></app-admin-nav>
+</div>

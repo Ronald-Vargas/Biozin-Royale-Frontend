@@ -1,0 +1,128 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 18px;
+}
+
+// ── Profile card ─────────────────────────────────────────────
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(199, 154, 50, 0.10), rgba(20, 16, 10, 0.4));
+  border: 1px solid rgba(212, 167, 60, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(212, 167, 60, 0.08),
+    0 14px 34px -18px rgba(199, 154, 50, 0.5);
+}
+
+.profile-watermark {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 96px; height: 96px;
+  object-fit: contain;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+// ── Avatar ───────────────────────────────────────────────────
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 84px; height: 84px;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(150deg, var(--gold-1), var(--gold-3));
+  box-shadow: 0 0 16px rgba(199, 154, 50, 0.5);
+}
+
+.camera-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  border: 2.5px solid #0c0907;
+  cursor: pointer;
+  z-index: 3;
+}
+
+// ── Identidad ────────────────────────────────────────────────
+.identity {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.identity-name {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.identity-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--gold-2);
+  margin-top: 3px;
+}
+
+.identity-role {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .role-value {
+    color: var(--cream);
+    font-weight: 600;
+  }
+}
+
+// ── Row con toggle ───────────────────────────────────────────
+.row-with-toggle {
+  position: relative;
+}
+
+.toggle-overlay {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}

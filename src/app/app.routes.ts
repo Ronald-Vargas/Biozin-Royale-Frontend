@@ -169,4 +169,8 @@ export const routes: Routes = [
     path: 'admin/reportes',
     loadComponent: () => import('./Admin/reports/reports.component').then(m => m.AdminReportsComponent),
   },
+  {
+    path: 'admin/ajustes',
+    loadComponent: () => import('./Admin/settings/settings.component').then(m => m.AdminSettingsComponent),
+  },
 ];
