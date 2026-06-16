@@ -161,4 +161,8 @@ export const routes: Routes = [
     path: 'admin/usuario/:id',
     loadComponent: () => import('./Admin/users/user-detail/user-detail.component').then(m => m.UserDetailComponent),
   },
+  {
+    path: 'admin/finanzas',
+    loadComponent: () => import('./Admin/finance/finance.component').then(m => m.AdminFinanceComponent),
+  },
 ];

@@ -1,4 +1,4 @@
-import { ICON_PEOPLE, ICON_WALLET_FILLED, ICON_TRENDING, ICON_STATS, ICON_HOME_OUTLINE, ICON_HOME_FILLED, ICON_PERSON_OUTLINE, ICON_PERSON_FILLED, ICON_WALLET_OUTLINE, ICON_DOC, ICON_SETTINGS } from "src/app/User/shared/icons/icons";
+import { ICON_PEOPLE, ICON_WALLET_FILLED, ICON_TRENDING, ICON_STATS, ICON_HOME_OUTLINE, ICON_HOME_FILLED, ICON_PERSON_OUTLINE, ICON_PERSON_FILLED, ICON_WALLET_OUTLINE, ICON_DOC, ICON_SETTINGS, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_BITCOIN } from "src/app/User/shared/icons/icons";
 
 export interface AdminKpi {
   label: string;
@@ -61,3 +61,39 @@ export const STATUS_BADGE: Record<string, StatusStyle> = {
 };
 
 export interface DetailMenuItem { key: string; icon: string; title: string; sub: string; }
+
+
+
+
+
+export interface FinSummary {
+  key:    string;
+  label:  string;
+  icon:   string;
+  amount: string;
+  count:  string;
+  color:  string;
+  bg:     string;
+  bd:     string;
+}
+
+export const FIN_SUMMARY: FinSummary[] = [
+  { key: 'dep', label: 'Depósitos', icon: ICON_ARROW_DOWN, amount: '$24,350.00', count: '128 transacciones', color: '#62d89b',       bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
+  { key: 'ret', label: 'Retiros',   icon: ICON_ARROW_UP,   amount: '$12,480.00', count: '76 transacciones',  color: '#ec8a8a',       bg: 'rgba(224,106,106,0.14)', bd: 'rgba(224,106,106,0.5)' },
+  { key: 'bet', label: 'Apuestas',  icon: ICON_BITCOIN,    amount: '$45,920.00', count: '215 transacciones', color: 'var(--gold-1)', bg: 'rgba(212,167,60,0.14)',  bd: 'rgba(212,167,60,0.5)' },
+];
+
+export interface FinRecent {
+  type:   string;
+  icon:   string;
+  user:   string;
+  when:   string;
+  amount: string;
+  color:  string;
+}
+
+export const FIN_RECENT: FinRecent[] = [
+  { type: 'Depósito', icon: ICON_ARROW_DOWN, user: 'USR-1001', when: 'Hoy, 09:21 AM', amount: '$250.00', color: '#62d89b' },
+  { type: 'Retiro',   icon: ICON_ARROW_UP,   user: 'USR-1003', when: 'Hoy, 08:45 AM', amount: '$600.00', color: '#ec8a8a' },
+  { type: 'Apuesta',  icon: ICON_BITCOIN,    user: 'USR-1002', when: 'Hoy, 07:30 AM', amount: '$150.00', color: 'var(--gold-1)' },
+];

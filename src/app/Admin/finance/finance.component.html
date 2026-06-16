@@ -1,0 +1,70 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header
+      title="Finanzas"
+      [showFilter]="true"
+      (back)="goBack()"
+    ></app-admin-header>
+
+    <!-- Buscador + filtro -->
+    <div class="search-row">
+      <div class="search-wrap">
+        <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+        <input
+          class="search-input"
+          [(ngModel)]="q"
+          placeholder="Buscar transacción..."
+        />
+      </div>
+      <button class="filter-btn">
+        <app-icon [svg]="iconFunnel" [size]="19" style="color:#2a1f06"></app-icon>
+      </button>
+    </div>
+
+    <!-- Resumen de hoy -->
+    <div class="section-label">Resumen de hoy</div>
+    <div class="summary-list">
+      <div *ngFor="let s of summary" class="summary-row">
+        <app-fin-icon
+          [icon]="s.icon"
+          [color]="s.color"
+          [bg]="s.bg"
+          [bd]="s.bd"
+          [size]="46"
+        ></app-fin-icon>
+        <div class="summary-info">
+          <div class="summary-label">{{ s.label }}</div>
+          <div class="summary-count">{{ s.count }}</div>
+        </div>
+        <div class="summary-right">
+          <div class="summary-amount">{{ s.amount }}</div>
+          <div class="summary-status">Completado</div>
+        </div>
+        <app-icon [svg]="iconChevron" [size]="18" style="color:var(--gold-2)"></app-icon>
+      </div>
+    </div>
+
+    <!-- Transacciones recientes -->
+    <div class="recent-head">
+      <span class="recent-label">Transacciones recientes</span>
+      <span class="gold-text recent-all">Ver todas</span>
+    </div>
+    <div class="recent-list">
+      <div *ngFor="let r of recent" class="recent-row">
+        <app-fin-icon [icon]="r.icon" [color]="r.color" [size]="38"></app-fin-icon>
+        <div class="recent-info">
+          <div class="recent-type">{{ r.type }} · {{ r.user }}</div>
+          <div class="recent-when">{{ r.when }}</div>
+        </div>
+        <div class="recent-right">
+          <div class="recent-amount">{{ r.amount }}</div>
+          <div class="recent-status">Completado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-admin-nav current="finanzas"></app-admin-nav>
+</div>
