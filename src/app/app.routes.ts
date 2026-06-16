@@ -152,5 +152,13 @@ export const routes: Routes = [
   {
   path: 'admin',
   loadComponent: () => import('./Admin/home/home.component').then(m => m.HomeComponent),
-},
+  },
+  {
+    path: 'admin/usuarios',
+    loadComponent: () => import('./Admin/users/users.component').then(m => m.UsersComponent),
+  },
+  {
+    path: 'admin/usuario/:id',
+    loadComponent: () => import('./Admin/users/user-detail/user-detail.component').then(m => m.UserDetailComponent),
+  },
 ];

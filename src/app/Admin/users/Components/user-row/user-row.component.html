@@ -1,0 +1,14 @@
+<div class="user-row" (click)="open.emit(user.id)">
+  <app-user-avatar [size]="50"></app-user-avatar>
+
+  <div class="user-info">
+    <div class="user-top">
+      <span class="user-name">{{ user.name }}</span>
+      <app-status-badge [status]="user.status"></app-status-badge>
+    </div>
+    <div class="user-role">{{ user.role }}</div>
+    <div class="user-id">ID: {{ user.id }}</div>
+  </div>
+
+  <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+</div>

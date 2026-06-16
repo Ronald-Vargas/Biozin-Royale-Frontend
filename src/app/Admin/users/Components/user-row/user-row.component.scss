@@ -1,0 +1,46 @@
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(120deg, rgba(199, 154, 50, 0.07), rgba(20, 17, 24, 0.5) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.user-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-role {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: var(--gold-2);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.user-id {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}

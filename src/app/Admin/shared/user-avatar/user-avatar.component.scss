@@ -1,0 +1,9 @@
+.user-avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #2a2114, #0c0907);
+  border: 2px solid var(--gold-3);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 3px rgba(212, 167, 60, 0.07);
+}

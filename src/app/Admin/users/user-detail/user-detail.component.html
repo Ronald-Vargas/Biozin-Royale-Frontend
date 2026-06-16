@@ -1,0 +1,48 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Detalle de Usuario" (back)="goBack()"></app-admin-header>
+
+    <!-- Profile card -->
+    <div class="detail-card">
+      <app-user-avatar [size]="64"></app-user-avatar>
+      <div class="detail-info">
+        <div class="detail-top">
+          <span class="detail-name">{{ user.name }}</span>
+          <app-status-badge [status]="user.status"></app-status-badge>
+        </div>
+        <div class="detail-role">{{ user.role }}</div>
+        <div class="detail-meta">ID: {{ user.id }}</div>
+        <div class="detail-meta">Registrado: {{ user.reg }}</div>
+      </div>
+    </div>
+
+    <!-- Menú -->
+    <div class="menu-list">
+      <div *ngFor="let m of menu" class="menu-item">
+        <div class="menu-icon">
+          <app-icon [svg]="m.icon" [size]="20" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="menu-text">
+          <div class="menu-title">{{ m.title }}</div>
+          <div class="menu-sub">{{ m.sub }}</div>
+        </div>
+        <app-icon [svg]="iconChevron" [size]="18" style="color:#6f6757"></app-icon>
+      </div>
+
+      <!-- Bloquear (danger) -->
+      <div class="menu-item menu-item--danger">
+        <div class="menu-icon menu-icon--danger">
+          <app-icon [svg]="iconLock" [size]="20" style="color:#e2746f"></app-icon>
+        </div>
+        <div class="menu-text">
+          <div class="menu-title menu-title--danger">Bloquear usuario</div>
+          <div class="menu-sub menu-sub--danger">Restringir acceso a la cuenta</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

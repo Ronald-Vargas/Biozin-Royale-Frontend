@@ -1,0 +1,35 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Gestión de usuarios" (back)="goBack()"></app-admin-header>
+
+    <!-- Buscador + filtro -->
+    <div class="search-row">
+      <div class="search-wrap">
+        <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+        <input
+          class="search-input"
+          [(ngModel)]="q"
+          placeholder="Buscar usuario..."
+        />
+      </div>
+      <button class="filter-btn">
+        <app-icon [svg]="iconFunnel" [size]="19" style="color:#2a1f06"></app-icon>
+      </button>
+    </div>
+
+    <!-- Lista -->
+    <div class="users-list">
+      <app-user-row
+        *ngFor="let u of list"
+        [user]="u"
+        (open)="openUser($event)"
+      ></app-user-row>
+    </div>
+
+    <div *ngIf="list.length === 0" class="empty">Sin resultados</div>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>
