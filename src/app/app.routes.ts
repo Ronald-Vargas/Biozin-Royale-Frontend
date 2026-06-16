@@ -165,4 +165,8 @@ export const routes: Routes = [
     path: 'admin/finanzas',
     loadComponent: () => import('./Admin/finance/finance.component').then(m => m.AdminFinanceComponent),
   },
+  {
+    path: 'admin/reportes',
+    loadComponent: () => import('./Admin/reports/reports.component').then(m => m.AdminReportsComponent),
+  },
 ];

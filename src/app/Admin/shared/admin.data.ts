@@ -1,4 +1,4 @@
-import { ICON_PEOPLE, ICON_WALLET_FILLED, ICON_TRENDING, ICON_STATS, ICON_HOME_OUTLINE, ICON_HOME_FILLED, ICON_PERSON_OUTLINE, ICON_PERSON_FILLED, ICON_WALLET_OUTLINE, ICON_DOC, ICON_SETTINGS, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_BITCOIN } from "src/app/User/shared/icons/icons";
+import { ICON_PEOPLE, ICON_WALLET_FILLED, ICON_TRENDING, ICON_STATS, ICON_HOME_OUTLINE, ICON_HOME_FILLED, ICON_PERSON_OUTLINE, ICON_PERSON_FILLED, ICON_WALLET_OUTLINE, ICON_DOC, ICON_SETTINGS, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_BITCOIN, ICON_CASH } from "src/app/User/shared/icons/icons";
 
 export interface AdminKpi {
   label: string;
@@ -96,4 +96,41 @@ export const FIN_RECENT: FinRecent[] = [
   { type: 'Depósito', icon: ICON_ARROW_DOWN, user: 'USR-1001', when: 'Hoy, 09:21 AM', amount: '$250.00', color: '#62d89b' },
   { type: 'Retiro',   icon: ICON_ARROW_UP,   user: 'USR-1003', when: 'Hoy, 08:45 AM', amount: '$600.00', color: '#ec8a8a' },
   { type: 'Apuesta',  icon: ICON_BITCOIN,    user: 'USR-1002', when: 'Hoy, 07:30 AM', amount: '$150.00', color: 'var(--gold-1)' },
+];
+
+
+
+
+
+
+
+
+
+
+
+export interface RepKpi {
+  label: string;
+  value: string;
+  sub:   string;
+  icon:  string;
+}
+
+export const REP_KPIS: RepKpi[] = [
+  { label: 'Usuarios',      value: '1,248',   sub: 'Activos', icon: ICON_PEOPLE },
+  { label: 'Depósitos',     value: '$24,350', sub: 'Hoy',     icon: ICON_WALLET_FILLED },
+  { label: 'Retiros',       value: '$12,480', sub: 'Hoy',     icon: ICON_CASH },
+  { label: 'Ganancia neta', value: '$11,870', sub: 'Hoy',     icon: ICON_STATS },
+];
+
+export interface RepGen {
+  key:   string;
+  title: string;
+  sub:   string;
+}
+
+export const REP_GEN: RepGen[] = [
+  { key: 'd', title: 'Reporte diario',  sub: 'Resumen del día actual' },
+  { key: 'w', title: 'Reporte semanal', sub: 'Resumen de la semana' },
+  { key: 'm', title: 'Reporte mensual', sub: 'Resumen del mes' },
+  { key: 'y', title: 'Reporte anual',   sub: 'Resumen del año' },
 ];
