@@ -1,0 +1,17 @@
+<div class="admin-nav">
+  <div
+    *ngFor="let n of navItems"
+    class="nav-item"
+    (click)="go(n)"
+  >
+    <div *ngIf="isActive(n.key)" class="active-bar"></div>
+    <app-icon
+      [svg]="isActive(n.key) ? n.iconActive : n.icon"
+      [size]="22"
+      [style.color]="isActive(n.key) ? 'var(--gold-1)' : '#6f6757'"
+    ></app-icon>
+    <span class="nav-label" [class.nav-label--active]="isActive(n.key)">
+      {{ n.label }}
+    </span>
+  </div>
+</div>

@@ -149,4 +149,8 @@ export const routes: Routes = [
     data: { depth: 6 },
     loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
+  {
+  path: 'admin',
+  loadComponent: () => import('./Admin/home/home.component').then(m => m.HomeComponent),
+},
 ];

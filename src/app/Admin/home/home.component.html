@@ -1,0 +1,48 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.26" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <!-- Brand header -->
+    <div class="brand">
+      <img [src]="logo" alt="Biozin Royale" class="brand-logo"/>
+      <div class="brand-text">
+        <span class="gold-text brand-1">BIOZIN</span>
+        <span class="brand-2">ROYALE</span>
+      </div>
+    </div>
+
+    <!-- Profile card -->
+    <div class="profile-card" (click)="goPerfil()">
+      <div class="profile-avatar">
+        <image-slot
+          id="admin-photo"
+          shape="circle"
+          placeholder="Foto"
+          style="width:54px;height:54px;display:block;background:#15110b"
+        ></image-slot>
+      </div>
+      <div class="profile-info">
+        <div class="profile-greeting">Hola, Administrador</div>
+        <div class="profile-sub">Bienvenido al panel de control</div>
+      </div>
+      <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+    </div>
+
+    <!-- KPI grid -->
+    <div class="kpi-grid">
+      <app-kpi-card *ngFor="let k of kpis" [kpi]="k"></app-kpi-card>
+    </div>
+
+    <!-- Cerrar sesión -->
+    <div class="logout-wrap">
+      <app-gold-button (clicked)="logout()">
+        <span class="logout-content">
+          <app-icon [svg]="iconPower" [size]="18"></app-icon>
+          Cerrar sesión
+        </span>
+      </app-gold-button>
+    </div>
+  </div>
+
+  <app-admin-nav current="home"></app-admin-nav>
+</div>

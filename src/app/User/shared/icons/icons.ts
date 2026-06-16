@@ -173,3 +173,10 @@ export const ICON_ELLIPSE   = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="
 export const ICON_HOME   = ICON_HOME_OUTLINE;
 export const ICON_GIFT   = ICON_GIFT_OUTLINE;
 export const ICON_WALLET = ICON_WALLET_OUTLINE;
+
+
+
+
+
+
+export const ICON_POWER = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>`;

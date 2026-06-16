@@ -51,9 +51,14 @@ export class LoginComponent {
   submit() {
     if (this.loading) return;
     this.loading = true;
+
+    const email = (this.emailCtrl.value || '').trim().toLowerCase();
+    const isAdmin = email.includes('admin');
+
     setTimeout(() => {
       this.loading = false;
-      this.router.navigate(['/home'], { replaceUrl: true });
+      const target = isAdmin ? '/admin' : '/home';
+      this.router.navigate([target], { replaceUrl: true });
     }, 1400);
   }
 }
