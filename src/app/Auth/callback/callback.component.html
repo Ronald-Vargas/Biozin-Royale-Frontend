@@ -1,0 +1,16 @@
+<ion-content [fullscreen]="true" class="auth-content">
+  <app-atmosphere [glow]="0.4" [count]="12"></app-atmosphere>
+
+  <div class="callback-wrap">
+    <ng-container *ngIf="!errorMsg; else errorTpl">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Iniciando sesión…</p>
+    </ng-container>
+
+    <ng-template #errorTpl>
+      <p class="callback-error">No se pudo iniciar sesión</p>
+      <p class="callback-detail">{{ errorMsg }}</p>
+      <span class="link-gold" (click)="retry()">Volver a intentar</span>
+    </ng-template>
+  </div>
+</ion-content>

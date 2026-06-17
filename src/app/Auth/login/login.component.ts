@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
@@ -10,7 +10,7 @@ import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/
 import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/social-row.component';
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
-
+import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 
 @Component({
   standalone: true,
@@ -30,6 +30,10 @@ import { FieldComponent } from '../Components/field/field.component';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+
+  private readonly supabaseService = inject(SupabaseService);
+
+  
   form: FormGroup;
   loading = false;
 
@@ -61,4 +65,41 @@ export class LoginComponent {
       this.router.navigate([target], { replaceUrl: true });
     }, 1400);
   }
+
+
+
+
+  onSocialPicked(provider: string): void {
+    switch (provider) {
+      case 'google':
+        this.iniciarSesionConGoogle();
+        break;
+      case 'apple':
+        // TODO: implementar inicio de sesión con Apple
+        break;
+      case 'mail':
+        // TODO: enfocar el formulario de correo, etc.
+        break;
+    }
+  }
+
+  async iniciarSesionConGoogle(): Promise<void> {
+    const { error } =
+      await this.supabaseService.client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+    if (error) {
+      console.error('Error iniciando sesión:', error);
+    }
+  }
+
+
 }
+
+
+
+

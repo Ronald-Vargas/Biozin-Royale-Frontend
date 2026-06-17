@@ -28,6 +28,11 @@ export const routes: Routes = [
     loadComponent: () => import('./Auth/login/login.component').then(m => m.LoginComponent),
   },
   {
+    path: 'auth/callback',
+    data: { depth: 3 },
+    loadComponent: () => import('./Auth/callback/callback.component').then(m => m.CallbackComponent),
+  },
+  {
     path: 'auth/register',
     data: { depth: 4 },
     loadComponent: () => import('./Auth/register/register.component').then(m => m.RegisterComponent),
