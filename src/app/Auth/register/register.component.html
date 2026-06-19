@@ -27,6 +27,8 @@
       </span>
     </label>
 
+    <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
     <app-gold-button [loading]="loading" (clicked)="submit()">
       Registrarse
     </app-gold-button>

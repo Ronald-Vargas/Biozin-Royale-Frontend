@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ICON_APPLE, ICON_MAIL } from '../../icons/icons';
+import { ICON_FACEBOOK, ICON_MAIL } from '../../icons/icons';
 import { SvgIconComponent } from '../svg-icons/svg-icons.component';
 
 @Component({
@@ -13,6 +13,6 @@ import { SvgIconComponent } from '../svg-icons/svg-icons.component';
 export class SocialRowComponent {
   @Output() picked = new EventEmitter<string>();
 
-  iconApple = ICON_APPLE;
+  iconFacebook = ICON_FACEBOOK;
   iconMail  = ICON_MAIL;
 }

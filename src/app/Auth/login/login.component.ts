@@ -11,6 +11,7 @@ import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/so
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
 import { SupabaseService } from 'src/app/Core/Services/supabase.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -32,10 +33,11 @@ import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 export class LoginComponent {
 
   private readonly supabaseService = inject(SupabaseService);
+  private readonly authService = inject(AuthService);
 
-  
   form: FormGroup;
   loading = false;
+  errorMsg = '';
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
@@ -53,17 +55,29 @@ export class LoginComponent {
   goHome()     { this.router.navigate(['/home'], { replaceUrl: true }); }
 
   submit() {
-    if (this.loading) return;
+    if (this.loading || this.form.invalid) return;
+
+    this.errorMsg = '';
     this.loading = true;
 
     const email = (this.emailCtrl.value || '').trim().toLowerCase();
-    const isAdmin = email.includes('admin');
+    const password = this.passwordCtrl.value;
 
-    setTimeout(() => {
-      this.loading = false;
-      const target = isAdmin ? '/admin' : '/home';
-      this.router.navigate([target], { replaceUrl: true });
-    }, 1400);
+    this.authService.login({ email, password }).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.blnError) {
+          this.errorMsg = res.strResponseMessage || 'Credenciales inválidas.';
+          return;
+        }
+        const faltanDatos = !!res.returnValue?.camposPendientes?.length;
+        this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
+      },
+      error: () => {
+        this.loading = false;
+        this.errorMsg = 'No se pudo conectar con el servidor. Intenta de nuevo.';
+      },
+    });
   }
 
 

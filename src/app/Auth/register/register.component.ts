@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent, IonCheckbox } from '@ionic/angular/standalone';
@@ -10,6 +10,7 @@ import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/
 import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/social-row.component';
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -30,9 +31,12 @@ import { FieldComponent } from '../Components/field/field.component';
 })
 
 export class RegisterComponent {
+  private readonly authService = inject(AuthService);
+
   form: FormGroup;
   loading = false;
   agree   = false;
+  errorMsg = '';
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
@@ -55,11 +59,29 @@ export class RegisterComponent {
   goHome()  { this.router.navigate(['/home'], { replaceUrl: true }); }
 
   submit() {
-    if (this.loading || !this.agree) return;
+    if (this.loading || !this.agree || this.form.invalid) return;
+
+    this.errorMsg = '';
     this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      this.router.navigate(['/home'], { replaceUrl: true });
-    }, 1500);
+
+    const { name, email, phone, pass, confirm } = this.form.value;
+
+    this.authService
+      .register({ nombre: name, email, phone, password: pass, confirm })
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res.blnError) {
+            this.errorMsg = res.strResponseMessage || 'No se pudo completar el registro.';
+            return;
+          }
+          const faltanDatos = !!res.returnValue?.camposPendientes?.length;
+          this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMsg = 'No se pudo conectar con el servidor. Intenta de nuevo.';
+        },
+      });
   }
 }
