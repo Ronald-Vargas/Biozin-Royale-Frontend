@@ -20,8 +20,8 @@
 
     <!-- Identity -->
     <div class="identity">
-      <div class="identity-name">Juan Pérez</div>
-      <div class="identity-handle">&#64;juanperez4</div>
+      <div class="identity-name">{{ perfil?.displayName || perfil?.username || '—' }}</div>
+      <div class="identity-handle">&#64;{{ perfil?.username }}</div>
 
       <div class="meta-row">
         <app-icon [svg]="iconFinger" [size]="14" style="color:var(--gold-1)"></app-icon>
@@ -52,7 +52,7 @@
     <span class="section-title">Información personal</span>
   </div>
 
-  <div class="info-card">
+  <div class="info-card" *ngIf="!editMode">
     <div
       *ngFor="let r of info; let last = last"
       class="info-row"
@@ -66,11 +66,27 @@
     </div>
   </div>
 
-  <!-- Botón editar -->
-  <button class="edit-btn" (click)="editInfo()">
+  <!-- Formulario de edición -->
+  <form class="edit-form" *ngIf="editMode" [formGroup]="form">
+    <app-field label="Nombre completo"      placeholder="Juan Pérez"             [control]="displayNameCtrl"></app-field>
+    <app-field label="Usuario"              placeholder="juanperez4"             [control]="usernameCtrl"></app-field>
+    <app-field label="Teléfono"             type="tel"  placeholder="+506 8144 7441" [control]="phoneCtrl"></app-field>
+    <app-field label="País"                 placeholder="Honduras"               [control]="countryCtrl"></app-field>
+    <app-field label="Fecha de nacimiento"  type="date" [control]="birthdateCtrl"></app-field>
+  </form>
+
+  <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+  <!-- Botones editar / guardar -->
+  <button class="edit-btn" *ngIf="!editMode" (click)="editInfo()">
     <app-icon [svg]="iconEdit" [size]="18"></app-icon>
     Editar información
   </button>
+
+  <div class="edit-actions" *ngIf="editMode">
+    <app-gold-button [loading]="saving" (clicked)="saveInfo()">Guardar</app-gold-button>
+    <app-ghost-button (clicked)="cancelEdit()">Cancelar</app-ghost-button>
+  </div>
 
   <!-- Estadísticas -->
   <div class="section-head">

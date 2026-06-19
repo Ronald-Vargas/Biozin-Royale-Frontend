@@ -30,3 +30,11 @@ export interface LoginManualRequest {
   email: string;
   password: string;
 }
+
+export interface ActualizarPerfilRequest {
+  username?: string;
+  displayName?: string;
+  phone?: string;
+  country?: string;
+  birthdate?: string;
+}

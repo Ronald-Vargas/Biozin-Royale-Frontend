@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angula
 import { Router } from '@angular/router';
 import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { Subscription } from '@supabase/supabase-js';
+import { Session, Subscription } from '@supabase/supabase-js';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SupabaseService } from 'src/app/Core/Services/supabase.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -15,6 +16,7 @@ import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 })
 export class CallbackComponent implements OnInit, OnDestroy {
   private readonly supabaseService = inject(SupabaseService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -39,7 +41,7 @@ export class CallbackComponent implements OnInit, OnDestroy {
     const { data: listener } =
       this.supabaseService.client.auth.onAuthStateChange((_event, session) => {
         if (session) {
-          this.goHome();
+          this.handleSession(session);
         }
       });
     this.authSub = listener.subscription;
@@ -51,7 +53,7 @@ export class CallbackComponent implements OnInit, OnDestroy {
       return;
     }
     if (data.session) {
-      this.goHome();
+      this.handleSession(data.session);
       return;
     }
 
@@ -66,14 +68,31 @@ export class CallbackComponent implements OnInit, OnDestroy {
     if (this.timeoutId) clearTimeout(this.timeoutId);
   }
 
-  private goHome(): void {
+  private handleSession(session: Session): void {
     if (this.done) return;
     this.done = true;
     if (this.timeoutId) clearTimeout(this.timeoutId);
-    // Recarga completa a /home en vez de navegación interna: el IonRouterOutlet
-    // se queda atascado al navegar desde el callback de OAuth. La sesión ya está
-    // persistida en localStorage, así que /home carga ya autenticado.
-    window.location.replace('/home');
+
+    // Le avisamos al backend que esta sesión OAuth existe para que cree/recupere
+    // el Profile asociado, y de paso sabemos si faltan datos que Google no manda
+    // (teléfono, país, fecha de nacimiento).
+    this.authService.syncOAuth(session.access_token).subscribe({
+      next: (res) => {
+        const faltanDatos = !!res.returnValue?.camposPendientes?.length;
+        this.redirect(faltanDatos ? '/miperfil' : '/home');
+      },
+      error: (err) => {
+        console.error('[callback] error sincronizando perfil:', err);
+        this.redirect('/home');
+      },
+    });
+  }
+
+  private redirect(path: string): void {
+    // Recarga completa en vez de navegación interna: el IonRouterOutlet se queda
+    // atascado al navegar desde el callback de OAuth. La sesión ya está
+    // persistida en localStorage, así que la ruta destino carga ya autenticada.
+    window.location.replace(path);
   }
 
   private fail(message: string): void {

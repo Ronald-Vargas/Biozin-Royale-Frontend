@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
+  ActualizarPerfilRequest,
   ApiResponse,
   LoginManualRequest,
   PerfilResultado,
@@ -15,6 +16,7 @@ const PROFILE_KEY = 'biozin_profile';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly profileUrl = `${environment.apiUrl}/profile`;
 
   readonly currentProfile = signal<PerfilResultado | null>(this.readStoredProfile());
 
@@ -32,6 +34,33 @@ export class AuthService {
       .pipe(tap((res) => this.storeSession(res)));
   }
 
+  /**
+   * Llamado por el callback de OAuth justo después de que Supabase confirma la sesión.
+   * El token de Supabase se manda explícito porque el interceptor todavía no tiene
+   * nada guardado en este punto del flujo.
+   */
+  syncOAuth(supabaseAccessToken: string): Observable<ApiResponse<PerfilResultado>> {
+    return this.http
+      .post<ApiResponse<PerfilResultado>>(
+        `${this.baseUrl}/sync`,
+        {},
+        { headers: { Authorization: `Bearer ${supabaseAccessToken}` } }
+      )
+      .pipe(tap((res) => this.storeSession(res, supabaseAccessToken)));
+  }
+
+  getProfile(): Observable<ApiResponse<PerfilResultado>> {
+    return this.http
+      .get<ApiResponse<PerfilResultado>>(this.profileUrl)
+      .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  updateProfile(datos: ActualizarPerfilRequest): Observable<ApiResponse<PerfilResultado>> {
+    return this.http
+      .put<ApiResponse<PerfilResultado>>(this.profileUrl, datos)
+      .pipe(tap((res) => this.storeSession(res)));
+  }
+
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(PROFILE_KEY);
@@ -46,11 +75,15 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  private storeSession(res: ApiResponse<PerfilResultado>): void {
+  // El backend solo manda `token` en register/login manual; en sync/get/update viene
+  // null porque la sesión ya existe, así que mantenemos el que ya está guardado
+  // (o el de Supabase, si se pasa como fallback explícito desde syncOAuth).
+  private storeSession(res: ApiResponse<PerfilResultado>, fallbackToken?: string): void {
     if (res.blnError || !res.returnValue) return;
 
-    if (res.returnValue.token) {
-      localStorage.setItem(TOKEN_KEY, res.returnValue.token);
+    const token = res.returnValue.token ?? fallbackToken ?? this.getToken();
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
     }
     localStorage.setItem(PROFILE_KEY, JSON.stringify(res.returnValue));
     this.currentProfile.set(res.returnValue);
