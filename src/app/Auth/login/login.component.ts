@@ -86,28 +86,27 @@ export class LoginComponent {
   onSocialPicked(provider: string): void {
     switch (provider) {
       case 'google':
-        this.iniciarSesionConGoogle();
+        this.iniciarSesionConOAuth('google');
         break;
-      case 'apple':
-        // TODO: implementar inicio de sesión con Apple
+      case 'facebook':
+        this.iniciarSesionConOAuth('facebook');
         break;
       case 'mail':
-        // TODO: enfocar el formulario de correo, etc.
         break;
     }
   }
 
-  async iniciarSesionConGoogle(): Promise<void> {
+  async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
     const { error } =
       await this.supabaseService.client.auth.signInWithOAuth({
-        provider: 'google',
+        provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`
         }
       });
 
     if (error) {
-      console.error('Error iniciando sesión:', error);
+      console.error(`Error iniciando sesión con ${provider}:`, error);
     }
   }
 
