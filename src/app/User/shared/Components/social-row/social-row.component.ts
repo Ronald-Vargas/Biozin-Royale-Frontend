@@ -14,5 +14,4 @@ export class SocialRowComponent {
   @Output() picked = new EventEmitter<string>();
 
   iconFacebook = ICON_FACEBOOK;
-  iconMail  = ICON_MAIL;
 }

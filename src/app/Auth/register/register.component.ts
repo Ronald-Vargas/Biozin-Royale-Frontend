@@ -59,7 +59,18 @@ export class RegisterComponent {
   goHome()  { this.router.navigate(['/home'], { replaceUrl: true }); }
 
   submit() {
-    if (this.loading || !this.agree || this.form.invalid) return;
+    if (this.loading) return;
+
+    if (!this.agree) {
+      this.errorMsg = 'Debes aceptar los Términos y Condiciones.';
+      return;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.errorMsg = 'Revisa los campos del formulario.';
+      return;
+    }
 
     this.errorMsg = '';
     this.loading = true;
