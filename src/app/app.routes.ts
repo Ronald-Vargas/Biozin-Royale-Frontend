@@ -195,23 +195,23 @@ export const routes: Routes = [
     loadComponent: () => import('./Support/panel/panel.component').then(m => m.SupportPanelComponent),
   },
   {
-    path: 'support/ticket/:id',
+    path: 'soporte/ticket/:id',
     loadComponent: () => import('./Support/ticket/ticket.component').then(m => m.TicketComponent),
   },
   {
-  path: 'support/tickets',
+  path: 'soporte/tickets',
   loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
   },
   {
-    path: 'support/usuarios',
+    path: 'soporte/usuarios',
     loadComponent: () => import('./Support/users/users.component').then(m => m.UsersComponent),
   },
   {
-    path: 'support/reportes',
+    path: 'soporte/reportes',
     loadComponent: () => import('./Support/reports/reports.component').then(m => m.ReportsComponent),
   },
   {
-    path: 'support/ajustes',
+    path: 'soporte/ajustes',
     loadComponent: () => import('./Support/settings/settings.component').then(m => m.SettingsComponent),
   },
   {

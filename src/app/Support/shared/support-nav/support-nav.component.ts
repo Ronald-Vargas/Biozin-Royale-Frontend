@@ -20,7 +20,7 @@ export class SupportNavComponent {
   @Input() current = 'panel';
 
   navItems: SupportNavItem[] = [
-    { key: 'panel',    label: 'Panel',    route: '/soporte',          icon: ICON_GRID_OUTLINE,      iconActive: ICON_GRID_FILLED },
+    { key: 'panel',    label: 'Panel',    route: '/support',          icon: ICON_GRID_OUTLINE,      iconActive: ICON_GRID_FILLED },
     { key: 'tickets',  label: 'Tickets',  route: '/soporte/tickets',  icon: ICON_CHATBUBBLES_OUT,   iconActive: ICON_CHATBUBBLES },
     { key: 'usuarios', label: 'Usuarios', route: '/soporte/usuarios', icon: ICON_PERSON_OUTLINE,    iconActive: ICON_PEOPLE },
     { key: 'reportes', label: 'Reportes', route: '/soporte/reportes', icon: ICON_STATS,             iconActive: ICON_STATS },
