@@ -8,7 +8,7 @@ import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-bu
 import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
 import { FieldComponent } from 'src/app/Auth/Components/field/field.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
-import { PerfilResultado } from 'src/app/Core/Models/auth.models';
+import { EstadisticasResultado, PerfilResultado } from 'src/app/Core/Models/auth.models';
 import { ICON_PERSON_CIRCLE, ICON_FINGERPRINT, ICON_COPY, ICON_CHECK, ICON_CALENDAR, ICON_CAMERA, ICON_EDIT, ICON_STATS, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_GLOBE, ICON_PHONE_CALL, ICON_ALBUMS, ICON_TROPHY, ICON_CASH, ICON_TRENDING } from '../../shared/icons/icons';
 
 interface InfoRow { k: string; v: string; icon: string; }
@@ -49,12 +49,7 @@ export class PersonalInformationComponent implements OnInit {
 
   info: InfoRow[] = [];
 
-  stats: Stat[] = [
-    { icon: ICON_ALBUMS,   value: '1,245',   label: 'Partidas\njugadas' },
-    { icon: ICON_TROPHY,   value: '652',     label: 'Partidas\nganadas' },
-    { icon: ICON_CASH,     value: '$42,500', label: 'Apostado\ntotal' },
-    { icon: ICON_TRENDING, value: '$9,200',  label: 'Ganancias\nnetas' },
-  ];
+  stats: Stat[] = [];
 
   form: FormGroup;
 
@@ -88,6 +83,12 @@ export class PersonalInformationComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.errorMsg = 'No se pudo conectar con el servidor.';
+      },
+    });
+
+    this.authService.getStatistics().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) this.aplicarEstadisticas(res.returnValue);
       },
     });
   }
@@ -151,6 +152,15 @@ export class PersonalInformationComponent implements OnInit {
       { k: 'País',                v: perfil.country || 'Sin definir',  icon: ICON_GLOBE },
       { k: 'Fecha de nacimiento', v: perfil.birthdate || 'Sin definir', icon: ICON_CALENDAR },
       { k: 'Teléfono',            v: perfil.phone || 'Sin definir',    icon: ICON_PHONE_CALL },
+    ];
+  }
+
+  private aplicarEstadisticas(stats: EstadisticasResultado): void {
+    this.stats = [
+      { icon: ICON_ALBUMS,   value: stats.partidasJugadas.toLocaleString('en-US'),               label: 'Partidas\njugadas' },
+      { icon: ICON_TROPHY,   value: stats.partidasGanadas.toLocaleString('en-US'),                label: 'Partidas\nganadas' },
+      { icon: ICON_CASH,     value: '$' + stats.apostadoTotal.toLocaleString('en-US'),             label: 'Apostado\ntotal' },
+      { icon: ICON_TRENDING, value: '$' + stats.gananciasNetas.toLocaleString('en-US'),            label: 'Ganancias\nnetas' },
     ];
   }
 }

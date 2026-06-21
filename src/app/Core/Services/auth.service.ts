@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import {
   ActualizarPerfilRequest,
   ApiResponse,
+  EstadisticasResultado,
   LoginManualRequest,
   PerfilResultado,
   RegistroManualRequest,
@@ -59,6 +60,10 @@ export class AuthService {
     return this.http
       .put<ApiResponse<PerfilResultado>>(this.profileUrl, datos)
       .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  getStatistics(): Observable<ApiResponse<EstadisticasResultado>> {
+    return this.http.get<ApiResponse<EstadisticasResultado>>(`${this.profileUrl}/statistics`);
   }
 
   logout(): void {

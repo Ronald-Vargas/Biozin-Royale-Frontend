@@ -31,6 +31,13 @@ export interface LoginManualRequest {
   password: string;
 }
 
+export interface EstadisticasResultado {
+  partidasJugadas: number;
+  partidasGanadas: number;
+  apostadoTotal: number;
+  gananciasNetas: number;
+}
+
 export interface ActualizarPerfilRequest {
   username?: string;
   displayName?: string;
