@@ -1,0 +1,44 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header
+      title="Equipo interno"
+      [showFilter]="true"
+      (back)="goBack()"
+    ></app-admin-header>
+
+    <!-- Buscador -->
+    <div class="search-wrap">
+      <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+      <input
+        class="search-input"
+        [(ngModel)]="q"
+        placeholder="Buscar miembro..."
+      />
+    </div>
+
+    <!-- Nuevo miembro -->
+    <button class="new-member-btn" (click)="goNewMember()">
+      <app-icon [svg]="iconAddCircle" [size]="22"></app-icon>
+      Nuevo miembro
+    </button>
+
+    <!-- Total -->
+    <div class="total-label">
+      Total de miembros: <span class="total-count">{{ total }}</span>
+    </div>
+
+    <!-- Lista -->
+    <div class="members-list">
+      <app-member-row
+        *ngFor="let m of list"
+        [member]="m"
+      ></app-member-row>
+    </div>
+
+    <div *ngIf="list.length === 0" class="empty">Sin resultados</div>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

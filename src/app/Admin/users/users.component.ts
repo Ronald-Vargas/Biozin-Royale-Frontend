@@ -8,7 +8,7 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { AdminUser, ADMIN_USERS } from '../shared/admin.data';
 import { UserRowComponent } from './Components/user-row/user-row.component';
-import { ICON_FUNNEL, ICON_SEARCH } from 'src/app/User/shared/icons/icons';
+import { ICON_SEARCH, ICON_FUNNEL, ICON_PEOPLE, ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
 
 
 @Component({
@@ -24,7 +24,8 @@ import { ICON_FUNNEL, ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 export class UsersComponent {
   iconSearch = ICON_SEARCH;
   iconFunnel = ICON_FUNNEL;
-
+  iconPeople  = ICON_PEOPLE;
+  iconChevron = ICON_CHEVRON_FWD;
 
   q = '';
   allUsers: AdminUser[] = ADMIN_USERS;
@@ -43,4 +44,6 @@ export class UsersComponent {
 
   goBack()        { this.router.navigate(['/admin']); }
   openUser(id: string) { this.router.navigate(['/admin/usuario', id]); }
+  goTeam() { this.router.navigate(['/admin/equipo']); }
+
 }

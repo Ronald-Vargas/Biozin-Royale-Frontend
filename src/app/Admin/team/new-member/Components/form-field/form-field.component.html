@@ -1,0 +1,13 @@
+<div class="form-field">
+  <div class="field-label">{{ label }}</div>
+  <div class="field-input-wrap">
+    <app-icon [svg]="icon" [size]="18" class="field-icon"></app-icon>
+    <input
+      class="field-input"
+      [type]="type"
+      [ngModel]="value"
+      (ngModelChange)="onInput($event)"
+    />
+  </div>
+  <div *ngIf="help" class="field-help">{{ help }}</div>
+</div>

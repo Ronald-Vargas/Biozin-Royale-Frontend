@@ -1,0 +1,40 @@
+<div class="select-field">
+  <div class="field-label">{{ label }}</div>
+
+  <div class="select-wrap">
+    <div
+      class="select-trigger"
+      [class.select-trigger--open]="open"
+      (click)="toggle()"
+    >
+      <app-icon [svg]="icon" [size]="18" class="select-icon"></app-icon>
+      <span class="select-value">{{ value }}</span>
+      <app-icon
+        [svg]="iconChevron"
+        [size]="18"
+        class="select-chevron"
+        [class.select-chevron--open]="open"
+      ></app-icon>
+    </div>
+
+    <div *ngIf="open" class="select-dropdown">
+      <div
+        *ngFor="let o of options; let i = index"
+        class="select-option"
+        [class.select-option--selected]="o === value"
+        [class.select-option--last]="isLast(i)"
+        (click)="select(o)"
+      >
+        <span class="option-text" [class.option-text--selected]="o === value">{{ o }}</span>
+        <app-icon
+          *ngIf="o === value"
+          [svg]="iconCheck"
+          [size]="17"
+          style="color:var(--gold-1)"
+        ></app-icon>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="help" class="field-help">{{ help }}</div>
+</div>

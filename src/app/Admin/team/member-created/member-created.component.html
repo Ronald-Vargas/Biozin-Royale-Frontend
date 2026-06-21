@@ -1,0 +1,63 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.3" [count]="9"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Miembro creado" (back)="goTeam()"></app-admin-header>
+
+    <!-- Tarjeta principal -->
+    <div class="main-card">
+      <!-- Check medallón -->
+      <div class="check-wrap">
+        <div class="check-glow"></div>
+        <div class="check-medal">
+          <app-icon [svg]="iconCheck" [size]="46" style="color:#2a1f06"></app-icon>
+        </div>
+        <app-icon [svg]="iconSparkles" [size]="18" class="sparkle sparkle--tr"></app-icon>
+        <app-icon [svg]="iconSparkles" [size]="13" class="sparkle sparkle--bl"></app-icon>
+      </div>
+
+      <h3 class="gold-text success-title">¡Miembro creado<br/>con éxito!</h3>
+      <p class="success-sub">{{ subtitle }}</p>
+
+      <!-- Resumen -->
+      <div class="summary">
+        <div
+          *ngFor="let r of rows; let last = last"
+          class="summary-row"
+          [class.summary-row--last]="last && !sendsCreds"
+        >
+          <app-icon [svg]="r.icon" [size]="19" style="color:var(--gold-1)"></app-icon>
+          <span class="row-label">{{ r.label }}</span>
+          <span class="row-spacer"></span>
+          <span class="row-value">{{ r.value }}</span>
+        </div>
+
+        <!-- Estado -->
+        <div class="summary-row summary-row--last">
+          <app-icon [svg]="iconCheck" [size]="19" style="color:var(--gold-1)"></app-icon>
+          <span class="row-label">Estado</span>
+          <span class="row-spacer"></span>
+          <span class="status-value">{{ statusText }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <button class="primary-btn" (click)="goTeam()">
+      <app-icon [svg]="iconPeople" [size]="21"></app-icon>
+      Ver equipo
+    </button>
+
+    <button class="ghost-btn" (click)="goNewMember()">
+      <app-icon [svg]="iconAdd" [size]="20"></app-icon>
+      Crear otro
+    </button>
+
+    <!-- Emblema -->
+    <div class="emblem">
+      <img [src]="logo" alt="" class="emblem-logo"/>
+    </div>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

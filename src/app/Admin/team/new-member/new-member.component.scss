@@ -1,0 +1,65 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 24px;
+}
+
+// ── Nota automática ──────────────────────────────────────────
+.auto-note {
+  display: flex;
+  gap: 11px;
+  padding: 13px 15px;
+  border-radius: 13px;
+  margin-top: 4px;
+  margin-bottom: 22px;
+  background: rgba(212, 167, 60, 0.07);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+}
+
+.note-icon {
+  color: var(--gold-1);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.note-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #cbb98f;
+  line-height: 1.5;
+
+  b { color: var(--cream); }
+}
+
+// ── Crear ────────────────────────────────────────────────────
+.create-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+  box-shadow:
+    0 12px 26px -10px rgba(199, 154, 50, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2a1f06;
+}

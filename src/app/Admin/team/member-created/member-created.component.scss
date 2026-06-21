@@ -1,0 +1,209 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Tarjeta principal ────────────────────────────────────────
+.main-card {
+  border-radius: 20px;
+  padding: 26px 20px 22px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, rgba(199, 154, 50, 0.10), rgba(16, 12, 8, 0.5) 55%);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  box-shadow:
+    0 18px 40px -22px rgba(199, 154, 50, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+// ── Check medallón ───────────────────────────────────────────
+.check-wrap {
+  position: relative;
+  width: 84px; height: 84px;
+  margin: 0 auto 16px;
+}
+
+.check-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 200, 107, 0.4), transparent 70%);
+  filter: blur(6px);
+}
+
+.check-medal {
+  position: relative;
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #f4dd92, #c79a32 70%, #a87e22);
+  box-shadow:
+    0 8px 22px -6px rgba(199, 154, 50, 0.8),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  animation: bzPop 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.sparkle {
+  position: absolute;
+  color: #ffe9a8;
+
+  &--tr {
+    top: -4px; right: -2px;
+    filter: drop-shadow(0 0 5px rgba(255, 220, 120, 0.8));
+  }
+
+  &--bl {
+    bottom: 2px; left: -6px;
+    color: #f3d77f;
+  }
+}
+
+@keyframes bzPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .check-medal { animation: none; }
+}
+
+// ── Texto ────────────────────────────────────────────────────
+.success-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+  margin: 0;
+  line-height: 1.18;
+}
+
+.success-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  margin: 10px 0 20px;
+  line-height: 1.5;
+}
+
+// ── Resumen ──────────────────────────────────────────────────
+.summary {
+  border-radius: 14px;
+  padding: 4px 14px;
+  background: rgba(8, 7, 5, 0.45);
+  border: 1px solid rgba(212, 167, 60, 0.24);
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.row-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.row-spacer {
+  flex: 1;
+}
+
+.row-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+.status-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #62d89b;
+}
+
+// ── Botones ──────────────────────────────────────────────────
+.primary-btn {
+  width: 100%;
+  height: 56px;
+  margin-bottom: 13px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+  box-shadow:
+    0 12px 26px -10px rgba(199, 154, 50, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2a1f06;
+}
+
+.ghost-btn {
+  width: 100%;
+  height: 54px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: transparent;
+  border: 1.4px solid rgba(212, 167, 60, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--gold-1);
+}
+
+// ── Emblema ──────────────────────────────────────────────────
+.emblem {
+  margin-top: auto;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.emblem-logo {
+  height: 30px;
+  opacity: 0.45;
+  filter: drop-shadow(0 2px 8px rgba(231, 200, 107, 0.3));
+}

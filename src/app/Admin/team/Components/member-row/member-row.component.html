@@ -1,0 +1,14 @@
+<div class="member-row">
+  <app-user-avatar [size]="50"></app-user-avatar>
+
+  <div class="member-info">
+    <div class="member-top">
+      <span class="member-name">{{ member.name }}</span>
+      <app-status-badge [status]="member.status"></app-status-badge>
+    </div>
+    <div class="member-role">{{ member.role }}</div>
+    <div class="member-email">{{ member.email }}</div>
+  </div>
+
+  <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+</div>

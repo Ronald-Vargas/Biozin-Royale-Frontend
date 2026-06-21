@@ -1,26 +1,25 @@
-.user-row {
+.member-row {
   display: flex;
   align-items: center;
   gap: 13px;
   padding: 13px 15px;
   border-radius: 15px;
-  cursor: pointer;
   background: linear-gradient(120deg, rgba(199, 154, 50, 0.07), rgba(20, 17, 24, 0.5) 60%);
   border: 1px solid rgba(212, 167, 60, 0.3);
 }
 
-.user-info {
+.member-info {
   flex: 1;
   min-width: 0;
 }
 
-.user-top {
+.member-top {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.user-name {
+.member-name {
   font-family: 'Montserrat', sans-serif;
   font-size: 14.5px;
   font-weight: 700;
@@ -30,7 +29,7 @@
   white-space: nowrap;
 }
 
-.user-role {
+.member-role {
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   color: var(--gold-2);
@@ -38,9 +37,12 @@
   font-weight: 500;
 }
 
-.user-id {
+.member-email {
   font-family: 'Montserrat', sans-serif;
   font-size: 11px;
-  color: #cbb98f; 
+  color: var(--muted);
   margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

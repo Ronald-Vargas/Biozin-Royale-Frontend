@@ -178,4 +178,16 @@ export const routes: Routes = [
     path: 'admin/ajustes',
     loadComponent: () => import('./Admin/settings/settings.component').then(m => m.AdminSettingsComponent),
   },
+  {
+    path: 'admin/equipo',
+    loadComponent: () => import('./Admin/team/team.component').then(m => m.TeamComponent),
+  },
+  {
+    path: 'admin/equipo/nuevo',
+    loadComponent: () => import('./Admin/team/new-member/new-member.component').then(m => m.NewMemberComponent),
+  },
+  {
+    path: 'admin/equipo/creado',
+    loadComponent: () => import('./Admin/team/member-created/member-created.component').then(m => m.MemberCreatedComponent),
+  },
 ];

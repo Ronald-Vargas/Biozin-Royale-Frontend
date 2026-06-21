@@ -19,6 +19,17 @@
       </button>
     </div>
 
+    <div class="team-card" (click)="goTeam()">
+      <div class="team-icon">
+        <app-icon [svg]="iconPeople" [size]="22" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="team-text">
+        <div class="team-title">Equipo interno</div>
+        <div class="team-sub">Administradores y personal de soporte</div>
+      </div>
+      <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+    </div>
+
     <!-- Lista -->
     <div class="users-list">
       <app-user-row

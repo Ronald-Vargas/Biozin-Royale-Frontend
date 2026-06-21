@@ -134,3 +134,60 @@ export const REP_GEN: RepGen[] = [
   { key: 'm', title: 'Reporte mensual', sub: 'Resumen del mes' },
   { key: 'y', title: 'Reporte anual',   sub: 'Resumen del año' },
 ];
+
+
+
+
+
+
+
+
+
+export interface TeamMember {
+  name:       string;
+  role:       string;
+  status:     'Activo' | 'Inactivo';
+  email:      string;
+  phone?:     string;
+  user?:      string;
+  pass?:      string;
+  access?:    string;
+  sendCreds?: boolean;
+}
+
+export const TEAM_MEMBERS: TeamMember[] = [
+  { name: 'Luis Maza',        role: 'Administrador', status: 'Activo',   email: 'luis.maza@biozinroyale.com' },
+  { name: 'Catherine Rojas',  role: 'Soporte',       status: 'Activo',   email: 'catherine.rojas@biozinroyale.com' },
+  { name: 'Alejandro Bustos', role: 'Administrador', status: 'Activo',   email: 'alejandro.bustos@biozinroyale.com' },
+  { name: 'Bryan Ruiz',       role: 'Administrador', status: 'Inactivo', email: 'bryan.ruiz@biozinroyale.com' },
+  { name: 'María Gómez',      role: 'Soporte',       status: 'Activo',   email: 'maria.gomez@biozinroyale.com' },
+  { name: 'Diego Fernández',  role: 'Administrador', status: 'Inactivo', email: 'diego.fernandez@biozinroyale.com' },
+  { name: 'Sofía Herrera',    role: 'Soporte',       status: 'Activo',   email: 'sofia.herrera@biozinroyale.com' },
+  { name: 'Carlos Méndez',    role: 'Administrador', status: 'Activo',   email: 'carlos.mendez@biozinroyale.com' },
+  { name: 'Valentina Cruz',   role: 'Soporte',       status: 'Activo',   email: 'valentina.cruz@biozinroyale.com' },
+  { name: 'Ricardo Peña',     role: 'Soporte',       status: 'Inactivo', email: 'ricardo.pena@biozinroyale.com' },
+];
+
+export const ACCESS_BY_ROLE: Record<string, string> = {
+  'Administrador': 'Acceso administrativo',
+  'Soporte':       'Acceso de soporte',
+};
+
+// Genera usuario a partir del nombre (slug sin acentos)
+export function autoUsername(name: string): string {
+  const parts = name.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'usuario';
+  if (parts.length === 1) return parts[0];
+  return parts[0] + '.' + parts[parts.length - 1];
+}
+
+// Contraseña temporal aleatoria
+export function autoPassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  const sym = '!@#$%&*';
+  let p = '';
+  for (let i = 0; i < 8; i++) p += chars[Math.floor(Math.random() * chars.length)];
+  return p.slice(0, 4) + sym[Math.floor(Math.random() * sym.length)] + p.slice(4);
+}

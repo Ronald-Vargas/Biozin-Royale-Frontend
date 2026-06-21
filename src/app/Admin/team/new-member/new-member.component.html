@@ -1,0 +1,54 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Registrar miembro" (back)="goBack()"></app-admin-header>
+
+    <app-form-field
+      label="Nombre completo"
+      [icon]="iconPerson"
+      [(value)]="name"
+    ></app-form-field>
+
+    <app-form-field
+      label="Correo electrónico"
+      [icon]="iconMail"
+      type="email"
+      [(value)]="email"
+    ></app-form-field>
+
+    <app-form-field
+      label="Teléfono"
+      [icon]="iconPhone"
+      type="tel"
+      [(value)]="phone"
+    ></app-form-field>
+
+    <app-select-field
+      label="Rol"
+      [icon]="iconShield"
+      [value]="role"
+      [options]="roleOptions"
+      (valueChange)="role = $event"
+      help="Puedes crear miembros con rol Administrador o Soporte."
+    ></app-select-field>
+
+    <!-- Nota -->
+    <div class="auto-note">
+      <app-icon [svg]="iconSparkles" [size]="18" class="note-icon"></app-icon>
+      <div class="note-text">
+        El <b>usuario</b> y una <b>contraseña temporal</b> se generan automáticamente.
+        El <b>nivel de acceso</b> se asigna según el rol y las <b>credenciales</b>
+        se envían al correo del miembro.
+      </div>
+    </div>
+
+    <!-- Crear -->
+    <button class="create-btn" (click)="submit()">
+      <app-icon [svg]="iconPersonAdd" [size]="21"></app-icon>
+      Crear miembro
+    </button>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>
