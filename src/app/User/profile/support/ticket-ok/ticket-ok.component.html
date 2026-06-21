@@ -1,0 +1,40 @@
+<app-screen-shell title="Ticket enviado" current="perfil" (back)="goBack()">
+  <div class="ok-body">
+    <!-- Medallón -->
+    <div class="medal-wrap">
+      <div class="medal-glow"></div>
+      <div class="medal">
+        <app-icon [svg]="iconCheck" [size]="48" style="color:#2a1f06"></app-icon>
+      </div>
+    </div>
+
+    <h3 class="gold-text ok-title">¡Ticket enviado!</h3>
+    <p class="ok-sub">
+      Recibimos tu solicitud. Nuestro equipo de soporte te responderá muy pronto.
+    </p>
+
+    <!-- Resumen -->
+    <div class="summary">
+      <div class="summary-row">
+        <span class="row-label">N° de ticket</span>
+        <span class="gold-text row-id">{{ ticket.id }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="row-label">Categoría</span>
+        <span class="row-value">{{ ticket.cat }}</span>
+      </div>
+      <div class="summary-row summary-row--last">
+        <span class="row-label">Estado</span>
+        <span class="status-value">
+          <span class="status-dot"></span>Enviado
+        </span>
+      </div>
+    </div>
+
+    <!-- Botón -->
+    <button class="ok-btn" (click)="goSoporte()">
+      <app-icon [svg]="iconCheck" [size]="20"></app-icon>
+      Entendido
+    </button>
+  </div>
+</app-screen-shell>

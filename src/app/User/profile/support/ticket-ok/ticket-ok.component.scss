@@ -1,0 +1,140 @@
+.ok-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 14px;
+}
+
+// ── Medallón ─────────────────────────────────────────────────
+.medal-wrap {
+  position: relative;
+  width: 96px; height: 96px;
+  margin-bottom: 20px;
+}
+
+.medal-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 200, 107, 0.4), transparent 70%);
+  filter: blur(7px);
+}
+
+.medal {
+  position: relative;
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #f4dd92, #c79a32 70%, #a87e22);
+  box-shadow:
+    0 8px 22px -6px rgba(199, 154, 50, 0.8),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  animation: bzTk 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+@keyframes bzTk {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .medal { animation: none; }
+}
+
+// ── Texto ────────────────────────────────────────────────────
+.ok-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+  margin: 0;
+}
+
+.ok-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  margin: 10px 0 22px;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+// ── Resumen ──────────────────────────────────────────────────
+.summary {
+  width: 100%;
+  border-radius: 16px;
+  padding: 4px 16px;
+  background: rgba(8, 7, 5, 0.45);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  margin-bottom: 24px;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.row-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.row-id {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.row-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.status-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #62d89b;
+}
+
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #62d89b;
+  box-shadow: 0 0 5px #62d89b;
+}
+
+// ── Botón ────────────────────────────────────────────────────
+.ok-btn {
+  width: 100%;
+  height: 54px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+  box-shadow:
+    0 12px 26px -10px rgba(199, 154, 50, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #2a1f06;
+}

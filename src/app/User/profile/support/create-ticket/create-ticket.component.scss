@@ -1,0 +1,187 @@
+// ── Intro ────────────────────────────────────────────────────
+.intro-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-bottom: 22px;
+  background: linear-gradient(120deg, rgba(40, 32, 12, 0.85), rgba(20, 16, 10, 0.6));
+  border: 1px solid rgba(212, 167, 60, 0.34);
+}
+
+.intro-icon-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.intro-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 200, 107, 0.35), transparent 70%);
+  filter: blur(4px);
+}
+
+.intro-icon {
+  position: relative;
+  color: var(--gold-1);
+}
+
+.intro-text { flex: 1; }
+
+.intro-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.intro-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #cbb98f;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+// ── Field label ──────────────────────────────────────────────
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.3px;
+  color: var(--gold-2);
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-left: 2px;
+}
+
+// ── Categorías ───────────────────────────────────────────────
+.cats-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: rgba(255, 255, 255, 0.022);
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(160deg, #f4dd92, #c79a32 75%, #a87e22);
+    color: #2a1f06;
+    box-shadow: 0 6px 14px -7px rgba(199, 154, 50, 0.7);
+  }
+}
+
+// ── Inputs ───────────────────────────────────────────────────
+.subject-input {
+  width: 100%;
+  height: 52px;
+  border-radius: 13px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.msg-area {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 13px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 13px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  resize: none;
+  margin-bottom: 16px;
+}
+
+// ── Adjuntar ─────────────────────────────────────────────────
+.attach-btn {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 24px;
+  border-radius: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: transparent;
+  border: 1px dashed rgba(212, 167, 60, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-1);
+
+  &--active {
+    background: rgba(212, 167, 60, 0.1);
+  }
+}
+
+// ── Submit ───────────────────────────────────────────────────
+.submit-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 15px;
+  cursor: default;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(120, 100, 50, 0.2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #7d7361;
+
+  &--ready {
+    cursor: pointer;
+    background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+    color: #2a1f06;
+    box-shadow:
+      0 12px 26px -10px rgba(199, 154, 50, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+}
+
+// ── Nota ─────────────────────────────────────────────────────
+.response-note {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.response-highlight {
+  color: var(--gold-2);
+  font-weight: 600;
+}

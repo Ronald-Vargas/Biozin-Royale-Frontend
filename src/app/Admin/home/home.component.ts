@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_CHEVRON_FWD, ICON_POWER } from 'src/app/User/shared/icons/icons';
+import { ICON_CHATBUBBLES, ICON_CHEVRON_FWD, ICON_POWER } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { AdminKpi, ADMIN_KPIS } from '../shared/admin.data';
 import { KpiCardComponent } from './Components/kpi-card/kpi-card.component';
@@ -24,6 +24,7 @@ import { KpiCardComponent } from './Components/kpi-card/kpi-card.component';
 export class HomeComponent {
   iconChevron = ICON_CHEVRON_FWD;
   iconPower   = ICON_POWER;
+  iconChatbubbles = ICON_CHATBUBBLES;
 
   kpis: AdminKpi[] = ADMIN_KPIS;
   logo = 'assets/logo.png';
@@ -32,4 +33,5 @@ export class HomeComponent {
 
   goPerfil()  { this.router.navigate(['/miperfil']); }
   logout()    { this.router.navigate(['/welcome'], { replaceUrl: true }); }
+  goSoporte() { this.router.navigate(['/admin/soporte']); }
 }

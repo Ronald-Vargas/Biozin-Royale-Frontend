@@ -1,51 +1,48 @@
-<app-screen-shell
-  title="Soporte"
-  current="perfil"
-  (back)="goBack()"
->
-  <div class="page-inner">
+<app-screen-shell title="Soporte" current="perfil" (back)="goBack()">
   <!-- Hero banner -->
   <div class="hero">
     <div class="hero-text">
       <div class="hero-title">¿Necesitas ayuda?</div>
-      <div class="hero-sub">
-        Nuestro equipo está disponible 24/7 para asistirte.
-      </div>
+      <div class="hero-sub">Nuestro equipo está disponible 24/7 para asistirte.</div>
     </div>
-
     <div class="hero-icon-wrap">
       <div class="hero-glow"></div>
       <app-icon [svg]="iconHeadset" [size]="52" class="hero-icon"></app-icon>
     </div>
 
-    <!-- Sparkles -->
+    <!-- Sparkles decorativos -->
     <div class="sparkle sparkle--1"></div>
     <div class="sparkle sparkle--2"></div>
   </div>
 
-  <app-group-label>Contacto rápido</app-group-label>
+  <!-- Crear ticket (destacado) -->
+  <div class="ticket-card" (click)="goCrearTicket()">
+    <div class="ticket-icon">
+      <app-icon [svg]="iconEdit" [size]="23" style="color:#2a1f06"></app-icon>
+    </div>
+    <div class="ticket-text">
+      <div class="ticket-title">Crear ticket</div>
+      <div class="ticket-sub">Escríbenos directamente desde la app y sigue tu caso</div>
+    </div>
+    <app-icon [svg]="iconChevron" [size]="19" style="color:var(--gold-2)"></app-icon>
+  </div>
 
-  <div class="items-list">
-    <div
-      *ngFor="let s of items"
-      class="item"
-      (click)="onPick(s.key)"
-    >
-      <div class="item-icon">
+  <!-- Contacto rápido -->
+  <app-group-label>Contacto rápido</app-group-label>
+  <div class="support-list">
+    <div *ngFor="let s of supportItems" class="support-row">
+      <div class="support-row-icon">
         <app-icon
           [svg]="s.icon"
           [size]="20"
-          [style.color]="s.iconColor"
+          [style.color]="s.key === 'wa' ? '#4fd190' : 'var(--gold-1)'"
         ></app-icon>
       </div>
-
-      <div class="item-body">
-        <div class="item-label">{{ s.label }}</div>
-        <div class="item-sub" [style.color]="s.subColor">{{ s.sub }}</div>
+      <div class="support-row-text">
+        <div class="support-row-label">{{ s.label }}</div>
+        <div class="support-row-sub" [style.color]="s.subColor">{{ s.sub }}</div>
       </div>
-
       <app-icon [svg]="iconChevron" [size]="18" style="color:#6f6757"></app-icon>
     </div>
-  </div>
   </div>
 </app-screen-shell>

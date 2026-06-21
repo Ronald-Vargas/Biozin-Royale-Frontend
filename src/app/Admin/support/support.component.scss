@@ -1,0 +1,186 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 16px 18px;
+}
+
+// ── KPIs ─────────────────────────────────────────────────────
+.kpis-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+// ── Section title ────────────────────────────────────────────
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--cream);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+// ── Status bars ──────────────────────────────────────────────
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 24px;
+}
+
+.status-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.status-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--cream);
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.bar-track {
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  opacity: 0.85;
+  transition: width 0.4s ease;
+}
+
+// ── Agents ───────────────────────────────────────────────────
+.agents-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.agents-total {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.agents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.agent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 15px;
+  background: linear-gradient(120deg, rgba(199, 154, 50, 0.07), rgba(20, 17, 24, 0.5) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.26);
+}
+
+.agent-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.top-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #0c0907;
+}
+
+.agent-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.agent-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.agent-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.agent-resolved {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.agent-track {
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  margin: 7px 0 6px;
+}
+
+.agent-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #c79a32, #f4dd92);
+  transition: width 0.4s ease;
+}
+
+.agent-meta {
+  display: flex;
+  gap: 14px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted);
+}

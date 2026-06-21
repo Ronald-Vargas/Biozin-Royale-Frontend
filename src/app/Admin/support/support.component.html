@@ -1,0 +1,67 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Soporte" (back)="goBack()"></app-admin-header>
+
+    <!-- KPIs globales -->
+    <div class="kpis-row">
+      <app-asup-kpi *ngFor="let k of kpis" [kpi]="k"></app-asup-kpi>
+    </div>
+
+    <!-- Estado de los tickets -->
+    <h3 class="section-title">Estado de los tickets</h3>
+    <div class="status-list">
+      <div *ngFor="let s of statusBars" class="status-item">
+        <div class="status-head">
+          <span class="status-name">
+            <span class="status-dot" [style.background]="s.color"></span>
+            {{ s.st }}
+          </span>
+          <span class="status-count">{{ s.n }}</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" [style.width]="barPct(s.n, maxStatus)" [style.background]="s.color"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resueltos por agente -->
+    <div class="agents-head">
+      <h3 class="section-title" style="margin:0">Resueltos por agente</h3>
+      <span class="agents-total">{{ totalWeek }} esta semana</span>
+    </div>
+    <div class="agents-list">
+      <div *ngFor="let a of agents; let i = index" class="agent-row">
+        <div class="agent-avatar-wrap">
+          <app-initials [text]="a.name" [size]="44" [tint]="agentTint(i)"></app-initials>
+          <div *ngIf="isTop(i)" class="top-badge">
+            <app-icon [svg]="iconTrophy" [size]="11" style="color:#2a1f06"></app-icon>
+          </div>
+        </div>
+
+        <div class="agent-body">
+          <div class="agent-top">
+            <span class="agent-name">{{ a.name }}</span>
+            <span class="agent-resolved">{{ a.resolved }}</span>
+          </div>
+          <div class="agent-track">
+            <div class="agent-fill" [style.width]="barPct(a.resolved, maxResolved)"></div>
+          </div>
+          <div class="agent-meta">
+            <span class="meta-item">
+              <app-icon [svg]="iconFlash" [size]="12" style="color:var(--gold-2)"></app-icon>
+              {{ a.avg }}
+            </span>
+            <span class="meta-item">
+              <app-icon [svg]="iconHappy" [size]="12" style="color:var(--gold-2)"></app-icon>
+              CSAT {{ a.csat }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-admin-nav current="reportes"></app-admin-nav>
+</div>

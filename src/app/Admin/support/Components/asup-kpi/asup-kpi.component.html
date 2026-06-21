@@ -1,0 +1,8 @@
+<div class="asup-kpi">
+  <div class="kpi-icon" [style.background]="kpi.bg">
+    <app-icon [svg]="kpi.icon" [size]="17" [style.color]="kpi.tint"></app-icon>
+  </div>
+  <div class="kpi-value">{{ kpi.value }}</div>
+  <div class="kpi-label">{{ kpi.label }}</div>
+  <div *ngIf="kpi.sub" class="kpi-sub" [style.color]="kpi.tint">{{ kpi.sub }}</div>
+</div>

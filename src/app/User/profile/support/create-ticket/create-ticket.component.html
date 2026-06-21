@@ -1,0 +1,68 @@
+<app-screen-shell title="Crear ticket" current="perfil" (back)="goBack()">
+  <!-- Intro -->
+  <div class="intro-card">
+    <div class="intro-icon-wrap">
+      <div class="intro-glow"></div>
+      <app-icon [svg]="iconChat" [size]="38" class="intro-icon"></app-icon>
+    </div>
+    <div class="intro-text">
+      <div class="intro-title">Cuéntanos qué pasó</div>
+      <div class="intro-sub">Tu ticket llega directo a nuestro equipo y podrás seguir su estado.</div>
+    </div>
+  </div>
+
+  <!-- Categoría -->
+  <div class="field-label">Categoría</div>
+  <div class="cats-wrap">
+    <button
+      *ngFor="let c of categories"
+      class="cat-chip"
+      [class.cat-chip--active]="cat === c"
+      (click)="cat = c"
+    >
+      <app-icon
+        [svg]="catIcon(c)"
+        [size]="15"
+        [style.color]="cat === c ? '#2a1f06' : 'var(--gold-2)'"
+      ></app-icon>
+      {{ c }}
+    </button>
+  </div>
+
+  <!-- Asunto -->
+  <div class="field-label">Asunto</div>
+  <input
+    class="gold-input subject-input"
+    [(ngModel)]="subject"
+    placeholder="Ej. No se refleja mi depósito"
+  />
+
+  <!-- Mensaje -->
+  <div class="field-label">Mensaje</div>
+  <textarea
+    class="gold-input msg-area"
+    [(ngModel)]="msg"
+    placeholder="Describe tu problema con el mayor detalle posible..."
+  ></textarea>
+
+  <!-- Adjuntar -->
+  <button class="attach-btn" [class.attach-btn--active]="file" (click)="toggleFile()">
+    <app-icon [svg]="iconAttach" [size]="19"></app-icon>
+    {{ file ? file + ' · quitar' : 'Adjuntar archivo (opcional)' }}
+  </button>
+
+  <!-- Enviar -->
+  <button
+    class="submit-btn"
+    [class.submit-btn--ready]="valid"
+    [disabled]="!valid"
+    (click)="submit()"
+  >
+    <app-icon [svg]="iconSend" [size]="19"></app-icon>
+    Enviar ticket
+  </button>
+
+  <div class="response-note">
+    Tiempo de respuesta promedio: <span class="response-highlight">8 minutos</span>
+  </div>
+</app-screen-shell>

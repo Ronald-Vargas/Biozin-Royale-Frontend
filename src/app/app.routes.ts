@@ -195,23 +195,35 @@ export const routes: Routes = [
     loadComponent: () => import('./Support/panel/panel.component').then(m => m.SupportPanelComponent),
   },
   {
-    path: 'soporte/ticket/:id',
+    path: 'support/ticket/:id',
     loadComponent: () => import('./Support/ticket/ticket.component').then(m => m.TicketComponent),
   },
   {
-  path: 'soporte/tickets',
+  path: 'support/tickets',
   loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
   },
   {
-    path: 'soporte/usuarios',
+    path: 'support/usuarios',
     loadComponent: () => import('./Support/users/users.component').then(m => m.UsersComponent),
   },
   {
-    path: 'soporte/reportes',
+    path: 'support/reportes',
     loadComponent: () => import('./Support/reports/reports.component').then(m => m.ReportsComponent),
   },
   {
-    path: 'soporte/ajustes',
+    path: 'support/ajustes',
     loadComponent: () => import('./Support/settings/settings.component').then(m => m.SettingsComponent),
+  },
+  {
+    path: 'create-ticket',
+    loadComponent: () => import('./User/profile/support/create-ticket/create-ticket.component').then(m => m.CreateTicketComponent),
+  },
+  {
+    path: 'ticket-ok',
+    loadComponent: () => import('./User/profile/support/ticket-ok/ticket-ok.component').then(m => m.TicketOkComponent),
+  },
+  {
+    path: 'admin/soporte',
+    loadComponent: () => import('./Admin/support/support.component').then(m => m.SupportComponent),
   },
 ];

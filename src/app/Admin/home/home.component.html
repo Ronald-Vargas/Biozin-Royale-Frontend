@@ -33,6 +33,19 @@
       <app-kpi-card *ngFor="let k of kpis" [kpi]="k"></app-kpi-card>
     </div>
 
+    <!-- Acceso rápido: Supervisión de soporte -->
+    <div class="support-card" (click)="goSoporte()">
+      <div class="support-icon">
+        <app-icon [svg]="iconChatbubbles" [size]="22" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="support-text">
+        <div class="support-title">Supervisión de soporte</div>
+        <div class="support-sub">Tickets, rendimiento por agente y resueltos</div>
+      </div>
+      <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+    </div>
+
+
     <!-- Cerrar sesión -->
     <div class="logout-wrap">
       <app-gold-button (clicked)="logout()">
