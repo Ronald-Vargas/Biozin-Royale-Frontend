@@ -226,4 +226,12 @@ export const routes: Routes = [
     path: 'admin/soporte',
     loadComponent: () => import('./Admin/support/support.component').then(m => m.SupportComponent),
   },
+  {
+  path: 'admin/bonuses',
+  loadComponent: () => import('./Admin/bonuses/bonuses.component').then(m => m.BonusesComponent),
+  },
+  {
+    path: 'admin/bonuses/new',
+    loadComponent: () => import('./Admin/bonuses/new-bonuse/new-bonuse.component').then(m => m.NewBonuseComponent),
+  },
 ];

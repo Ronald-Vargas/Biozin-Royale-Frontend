@@ -1,0 +1,293 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 24px;
+}
+
+// ── Field label ──────────────────────────────────────────────
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.3px;
+  color: var(--gold-2);
+  font-weight: 600;
+  margin-bottom: 9px;
+  margin-left: 2px;
+}
+
+// ── Tipo ─────────────────────────────────────────────────────
+.kind-row {
+  display: flex;
+  gap: 11px;
+  margin-bottom: 22px;
+}
+
+.kind-card {
+  flex: 1;
+  padding: 15px 12px;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1.4px solid rgba(212, 167, 60, 0.22);
+
+  &--active {
+    background: linear-gradient(135deg, rgba(199, 154, 50, 0.16), rgba(122, 90, 20, 0.03));
+    border-color: rgba(212, 167, 60, 0.6);
+  }
+}
+
+.kind-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kind-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  border: 1px solid;
+}
+
+.kind-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-top: 11px;
+}
+
+.kind-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+// ── Inputs ───────────────────────────────────────────────────
+.name-input {
+  width: 100%;
+  height: 52px;
+  border-radius: 13px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 22px;
+}
+
+.preset-custom {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 0 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  outline: none;
+  margin-bottom: 22px;
+}
+
+// ── Chips/presets ─────────────────────────────────────────────
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.preset-chip {
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: rgba(255, 255, 255, 0.022);
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(160deg, #f4dd92, #c79a32 75%, #a87e22);
+    color: #2a1f06;
+    box-shadow: 0 6px 14px -7px rgba(199, 154, 50, 0.7);
+  }
+}
+
+.spins-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.spin-btn {
+  flex: 1;
+  height: 54px;
+  border-radius: 13px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: rgba(255, 255, 255, 0.022);
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(160deg, #f4dd92, #c79a32 75%, #a87e22);
+    color: #2a1f06;
+    box-shadow: 0 6px 14px -7px rgba(199, 154, 50, 0.7);
+  }
+}
+
+// ── Días ─────────────────────────────────────────────────────
+.days-row {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+
+.day-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: rgba(255, 255, 255, 0.022);
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(160deg, #f4dd92, #c79a32 75%, #a87e22);
+    color: #2a1f06;
+    box-shadow: 0 6px 14px -7px rgba(199, 154, 50, 0.7);
+  }
+}
+
+// ── Toggles ──────────────────────────────────────────────────
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+
+  &--last { margin-bottom: 24px; }
+}
+
+.toggle-text { flex: 1; min-width: 0; }
+
+.toggle-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.toggle-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+// ── Vista previa ─────────────────────────────────────────────
+.preview-card {
+  display: flex;
+  gap: 14px;
+  padding: 15px 16px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  background: linear-gradient(120deg, rgba(40, 52, 90, 0.5), rgba(14, 18, 34, 0.4));
+  border: 1px solid rgba(212, 167, 60, 0.34);
+}
+
+.preview-icon {
+  width: 52px; height: 52px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #2a59b5, #0e1d44);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+}
+
+.preview-text { flex: 1; min-width: 0; }
+
+.preview-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.preview-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: var(--cream);
+  margin-top: 3px;
+}
+
+.preview-meta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+// ── Crear ────────────────────────────────────────────────────
+.create-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 15px;
+  cursor: default;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(120, 100, 50, 0.2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #7d7361;
+
+  &--ready {
+    cursor: pointer;
+    background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+    color: #2a1f06;
+    box-shadow:
+      0 12px 26px -10px rgba(199, 154, 50, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+}

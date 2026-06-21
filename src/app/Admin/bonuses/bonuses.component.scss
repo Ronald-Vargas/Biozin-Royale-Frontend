@@ -1,0 +1,160 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 16px 18px;
+}
+
+// ── Resumen ──────────────────────────────────────────────────
+.summary-row {
+  display: flex;
+  gap: 11px;
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  flex: 1;
+  border-radius: 15px;
+  padding: 14px 15px;
+  background: linear-gradient(150deg, rgba(199, 154, 50, 0.1), rgba(20, 17, 24, 0.6) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.summary-num {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1;
+}
+
+.summary-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+// ── Crear ────────────────────────────────────────────────────
+.create-btn {
+  width: 100%;
+  height: 54px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+  box-shadow:
+    0 10px 24px -10px rgba(199, 154, 50, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2a1f06;
+}
+
+// ── Lista ────────────────────────────────────────────────────
+.bonos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.bono-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 15px;
+  border-radius: 16px;
+  background: linear-gradient(120deg, rgba(199, 154, 50, 0.09), rgba(20, 17, 24, 0.5) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.34);
+  transition: opacity 0.2s;
+
+  &--disabled {
+    opacity: 0.66;
+    background: rgba(255, 255, 255, 0.018);
+    border-color: rgba(212, 167, 60, 0.16);
+  }
+}
+
+.bono-icon {
+  width: 48px; height: 48px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #2a59b5, #0e1d44);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+}
+
+.bono-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bono-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bono-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.bono-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: var(--gold-2);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.bono-meta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+// ── Toggle col ───────────────────────────────────────────────
+.bono-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.toggle-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #6f6757;
+
+  &--on { color: #62d89b; }
+}

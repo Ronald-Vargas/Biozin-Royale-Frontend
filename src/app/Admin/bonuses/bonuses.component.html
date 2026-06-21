@@ -1,0 +1,56 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Gestión de bonos" (back)="goBack()"></app-admin-header>
+
+    <!-- Resumen -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="summary-num">{{ activeCount }}</div>
+        <div class="summary-label">Activos para el usuario</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">{{ totalCount }}</div>
+        <div class="summary-label">Bonos en total</div>
+      </div>
+    </div>
+
+    <!-- Crear bono -->
+    <button class="create-btn" (click)="goNew()">
+      <app-icon [svg]="iconAddCircle" [size]="22"></app-icon>
+      Crear bono
+    </button>
+
+    <!-- Lista -->
+    <div class="bonos-list">
+      <div
+        *ngFor="let b of bonos"
+        class="bono-row"
+        [class.bono-row--disabled]="!b.enabled"
+      >
+        <div class="bono-icon">
+          <app-icon [svg]="b.icon" [size]="24" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <div class="bono-info">
+          <div class="bono-title-row">
+            <span class="bono-title">{{ b.title }}</span>
+            <app-kind-badge [kind]="b.kind"></app-kind-badge>
+          </div>
+          <div class="bono-desc">{{ b.desc }}</div>
+          <div class="bono-meta">{{ b.req }} · {{ b.time }}</div>
+        </div>
+
+        <div class="bono-toggle">
+          <app-toggle [on]="b.enabled" (changed)="toggle(b)"></app-toggle>
+          <span class="toggle-label" [class.toggle-label--on]="b.enabled">
+            {{ b.enabled ? 'Visible' : 'Oculto' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-admin-nav current="bonos"></app-admin-nav>
+</div>

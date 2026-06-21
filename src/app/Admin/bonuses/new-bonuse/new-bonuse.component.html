@@ -1,0 +1,120 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Crear bono" (back)="goBack()"></app-admin-header>
+
+    <!-- Tipo -->
+    <div class="field-label">Tipo de bono</div>
+    <div class="kind-row">
+      <button
+        *ngFor="let k of kindOptions"
+        class="kind-card"
+        [class.kind-card--active]="isKind(k)"
+        (click)="kind = k"
+      >
+        <div class="kind-card-top">
+          <div class="kind-icon" [style.background]="kindStyle(k).bg" [style.border-color]="kindStyle(k).bd">
+            <app-icon [svg]="kindStyle(k).icon" [size]="19" [style.color]="kindStyle(k).color"></app-icon>
+          </div>
+          <app-icon *ngIf="isKind(k)" [svg]="iconCheck" [size]="20" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="kind-name">{{ k }}</div>
+        <div class="kind-sub">{{ k === 'Liquidez' ? 'Dinero o fichas de regalo' : 'Giros gratis en slots' }}</div>
+      </button>
+    </div>
+
+    <!-- Nombre -->
+    <div class="field-label">Nombre del bono</div>
+    <input
+      class="gold-input name-input"
+      [(ngModel)]="title"
+      [placeholder]="kind === 'Liquidez' ? 'Ej. Bono de Recarga' : 'Ej. Giros de la Suerte'"
+    />
+
+    <!-- Liquidez: recompensa -->
+    <ng-container *ngIf="kind === 'Liquidez'">
+      <div class="field-label">Recompensa</div>
+      <div class="chips-wrap">
+        <button
+          *ngFor="let p of liqPresets"
+          class="preset-chip"
+          [class.preset-chip--active]="liq === p"
+          (click)="liq = p"
+        >{{ p }}</button>
+      </div>
+      <input
+        class="gold-input preset-custom"
+        [(ngModel)]="liq"
+        placeholder="O escribe una recompensa personalizada"
+      />
+    </ng-container>
+
+    <!-- Tiradas: giros -->
+    <ng-container *ngIf="kind === 'Tiradas'">
+      <div class="field-label">Número de giros gratis</div>
+      <div class="spins-row">
+        <button
+          *ngFor="let p of spinPresets"
+          class="spin-btn"
+          [class.spin-btn--active]="spins === p"
+          (click)="spins = p"
+        >{{ p }}</button>
+      </div>
+    </ng-container>
+
+    <!-- Validez -->
+    <div class="field-label">Validez</div>
+    <div class="days-row">
+      <button
+        *ngFor="let p of daysPresets"
+        class="day-btn"
+        [class.day-btn--active]="days === p"
+        (click)="days = p"
+      >{{ p }}d</button>
+    </div>
+
+    <!-- Toggles -->
+    <div class="toggle-row">
+      <div class="toggle-text">
+        <div class="toggle-title">Sin requisito de apuesta</div>
+        <div class="toggle-sub">Las ganancias son dinero real (bono fácil)</div>
+      </div>
+      <app-toggle [on]="noReq" (changed)="noReq = $event"></app-toggle>
+    </div>
+
+    <div class="toggle-row toggle-row--last">
+      <div class="toggle-text">
+        <div class="toggle-title">Mostrar al usuario al crear</div>
+        <div class="toggle-sub">Aparecerá en "Mis Bonos" de inmediato</div>
+      </div>
+      <app-toggle [on]="enabled" (changed)="enabled = $event"></app-toggle>
+    </div>
+
+    <!-- Vista previa -->
+    <div class="field-label">Vista previa</div>
+    <div class="preview-card">
+      <div class="preview-icon">
+        <app-icon [svg]="previewIcon" [size]="26" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="preview-text">
+        <div class="preview-title">{{ title.trim() || 'Nombre del bono' }}</div>
+        <div class="preview-desc">{{ previewDesc }}</div>
+        <div class="preview-meta">{{ previewReq }} · {{ days }} días</div>
+      </div>
+    </div>
+
+    <!-- Crear -->
+    <button
+      class="create-btn"
+      [class.create-btn--ready]="valid"
+      [disabled]="!valid"
+      (click)="submit()"
+    >
+      <app-icon [svg]="iconGift" [size]="21"></app-icon>
+      Crear bono
+    </button>
+  </div>
+
+  <app-admin-nav current="bonos"></app-admin-nav>
+</div>
