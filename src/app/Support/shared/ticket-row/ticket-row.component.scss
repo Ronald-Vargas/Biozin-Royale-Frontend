@@ -1,0 +1,76 @@
+.ticket-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(120deg, rgba(199, 154, 50, 0.06), rgba(20, 17, 24, 0.5) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.26);
+}
+
+.ticket-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ticket-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ticket-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-time {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ticket-subject {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: #cbb98f;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.meta-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-cat {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: var(--gold-2);
+  font-weight: 500;
+}
+
+.meta-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #6f6757;
+}

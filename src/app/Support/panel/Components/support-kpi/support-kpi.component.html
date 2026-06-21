@@ -1,0 +1,8 @@
+<div class="support-kpi">
+  <div class="kpi-icon" [style.background]="kpi.bg">
+    <app-icon [svg]="kpi.icon" [size]="15" [style.color]="kpi.tint"></app-icon>
+  </div>
+  <div class="kpi-label">{{ kpi.label }}</div>
+  <div class="kpi-value">{{ kpi.value }}</div>
+  <div class="kpi-delta">{{ kpi.delta }}</div>
+</div>

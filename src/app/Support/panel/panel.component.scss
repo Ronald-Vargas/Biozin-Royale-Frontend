@@ -1,0 +1,147 @@
+.support-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 16px 18px;
+}
+
+// ── KPIs ─────────────────────────────────────────────────────
+.kpis-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+// ── Tabs ─────────────────────────────────────────────────────
+.tabs-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.tab {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: transparent;
+  color: var(--cream);
+
+  &--active {
+    border-color: transparent;
+    background: linear-gradient(160deg, #f4dd92, #c79a32 75%, #a87e22);
+    color: #2a1f06;
+    box-shadow: 0 6px 14px -7px rgba(199, 154, 50, 0.7);
+  }
+}
+
+.tab-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(212, 167, 60, 0.16);
+  color: var(--gold-1);
+
+  &--active {
+    background: rgba(42, 31, 6, 0.18);
+    color: #2a1f06;
+  }
+}
+
+// ── Search ───────────────────────────────────────────────────
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8d8064;
+  z-index: 2;
+}
+
+.search-input {
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.26);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 0 14px 0 40px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  outline: none;
+}
+
+.filters-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 46px;
+  padding: 0 15px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  color: var(--gold-1);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+// ── Lista ────────────────────────────────────────────────────
+.tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 46px 0;
+}
+
+.empty-icon {
+  color: rgba(212, 167, 60, 0.4);
+  display: block;
+  margin: 0 auto 10px;
+}

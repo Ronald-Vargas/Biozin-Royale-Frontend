@@ -1,0 +1,125 @@
+<div class="ticket-screen">
+  <app-atmosphere [glow]="0.2" [count]="6"></app-atmosphere>
+
+  <!-- Header -->
+  <div class="ticket-header">
+    <button class="icon-btn" (click)="goBack()">
+      <app-icon [svg]="iconBack" [size]="21"></app-icon>
+    </button>
+    <h2 class="gold-text header-title">Gestionar Ticket</h2>
+    <button class="icon-btn icon-btn--muted">
+      <app-icon [svg]="iconDots" [size]="20"></app-icon>
+    </button>
+  </div>
+
+  <!-- Scroll body -->
+  <div class="thread-area" #threadEl>
+    <!-- User card -->
+    <div class="user-card">
+      <app-initials [text]="ticket.name" [size]="48" [tint]="tint"></app-initials>
+      <div class="user-info">
+        <div class="user-top">
+          <span class="user-name">{{ ticket.name }}</span>
+          <app-ticket-status-badge [status]="status" size="lg"></app-ticket-status-badge>
+        </div>
+        <div class="user-meta">
+          <span class="meta-id">ID: {{ ticket.id }}</span>
+          <span class="meta-sep"></span>
+          <span class="meta-email">
+            <app-icon [svg]="iconAttach" [size]="13" style="color:var(--muted)"></app-icon>
+            {{ ticket.email }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta chips -->
+    <div class="meta-chips">
+      <app-meta-chip
+        label="Categoría"
+        [icon]="catIcon"
+        [value]="ticket.cat"
+      ></app-meta-chip>
+
+      <app-meta-chip
+        label="Prioridad"
+        [dot]="prioDot"
+        [value]="ticket.prio"
+      ></app-meta-chip>
+
+      <app-meta-chip
+        label="Asignada a"
+        [icon]="iconAssign"
+        [value]="assignedLabel"
+        [clickable]="true"
+        (chipClick)="sheet = 'asignar'"
+      ></app-meta-chip>
+    </div>
+
+    <!-- Conversación -->
+    <app-bubble *ngFor="let m of msgs" [msg]="m"></app-bubble>
+  </div>
+
+  <!-- Footer: acciones + responder -->
+  <div class="ticket-footer">
+    <div class="action-row">
+      <button class="act-btn" (click)="sheet = 'asignar'">
+        <app-icon [svg]="iconAssign" [size]="16"></app-icon>
+        Asignar
+      </button>
+      <button class="act-btn" (click)="sheet = 'estado'">
+        <app-icon [svg]="iconSwap" [size]="16"></app-icon>
+        Estado
+      </button>
+      <button
+        class="act-btn act-btn--primary"
+        [class.act-btn--done]="isResolved"
+        [disabled]="isResolved"
+        (click)="resolve()"
+      >
+        <app-icon [svg]="iconResolve" [size]="16"></app-icon>
+        {{ isResolved ? 'Resuelto' : 'Resolver' }}
+      </button>
+    </div>
+
+    <div class="reply-row">
+      <button class="icon-btn icon-btn--muted">
+        <app-icon [svg]="iconAttach" [size]="20"></app-icon>
+      </button>
+      <input
+        class="reply-input"
+        [(ngModel)]="reply"
+        (keydown)="onEnter($event)"
+        placeholder="Escribe tu respuesta..."
+      />
+      <button class="send-btn" (click)="send()">Responder</button>
+    </div>
+  </div>
+
+  <!-- Sheets -->
+  <app-support-sheet
+    *ngIf="sheet === 'estado'"
+    title="Cambiar estado"
+    [options]="statusOptions"
+    [current]="status"
+    mode="status"
+    (pick)="pickStatus($event)"
+    (close)="sheet = null"
+  ></app-support-sheet>
+
+  <app-support-sheet
+    *ngIf="sheet === 'asignar'"
+    title="Asignar agente"
+    [options]="agents"
+    [current]="assigned"
+    mode="agent"
+    (pick)="pickAgent($event)"
+    (close)="sheet = null"
+  ></app-support-sheet>
+
+  <!-- Toast -->
+  <div *ngIf="toast" class="toast">
+    <app-icon [svg]="iconCheck" [size]="17" style="color:var(--gold-1)"></app-icon>
+    {{ toast }}
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="support-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Ajustes" (back)="goBack()"></app-admin-header>
+
+    <!-- Perfil del agente -->
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <image-slot
+          id="support-photo-2"
+          shape="circle"
+          placeholder="Foto"
+          style="width:56px;height:56px;display:block;background:#15110b"
+        ></image-slot>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">María G.</div>
+        <div class="profile-role">Agente de soporte</div>
+        <div class="availability" [class.availability--off]="!avail">
+          <span class="avail-dot" [class.avail-dot--off]="!avail"></span>
+          {{ avail ? 'Disponible' : 'Ausente' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferencias -->
+    <div class="prefs-card">
+      <div class="pref-row">
+        <div class="pref-icon">
+          <app-icon [svg]="iconNotifs" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="pref-text">
+          <div class="pref-title">Notificaciones push</div>
+          <div class="pref-sub">Avisos de tickets nuevos y respuestas</div>
+        </div>
+        <app-toggle [on]="notif" (changed)="notif = $event"></app-toggle>
+      </div>
+
+      <div class="pref-row pref-row--last">
+        <div class="pref-icon">
+          <app-icon [svg]="iconVolume" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="pref-text">
+          <div class="pref-title">Sonido de alerta</div>
+          <div class="pref-sub">Reproduce un sonido al llegar un ticket</div>
+        </div>
+        <app-toggle [on]="sound" (changed)="sound = $event"></app-toggle>
+      </div>
+    </div>
+
+    <!-- Cerrar sesión -->
+    <div class="logout-wrap">
+      <app-gold-button (clicked)="logout()">
+        <span class="logout-content">
+          <app-icon [svg]="iconPower" [size]="18"></app-icon>
+          Cerrar sesión
+        </span>
+      </app-gold-button>
+    </div>
+  </div>
+
+  <app-support-nav current="ajustes"></app-support-nav>
+</div>

@@ -1,0 +1,44 @@
+.support-kpi {
+  flex: 1;
+  border-radius: 15px;
+  padding: 13px 13px 14px;
+  position: relative;
+  background: linear-gradient(150deg, rgba(199, 154, 50, 0.10), rgba(20, 17, 24, 0.6) 60%);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.kpi-icon {
+  position: absolute;
+  top: 11px; right: 11px;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.kpi-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  font-weight: 600;
+  padding-right: 28px;
+  line-height: 1.2;
+}
+
+.kpi-value {
+  font-family: 'Cinzel', serif;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cream);
+  margin-top: 9px;
+}
+
+.kpi-delta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #62d89b;
+  margin-top: 5px;
+}

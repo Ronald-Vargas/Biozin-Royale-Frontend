@@ -1,0 +1,56 @@
+<div class="support-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-support-brand></app-support-brand>
+
+    <!-- KPIs -->
+    <div class="kpis-row">
+      <app-support-kpi *ngFor="let k of kpis" [kpi]="k"></app-support-kpi>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-row">
+      <button
+        *ngFor="let t of tabs"
+        class="tab"
+        [class.tab--active]="isActive(t.key)"
+        (click)="tab = t.key"
+      >
+        {{ t.key }}
+        <span class="tab-count" [class.tab-count--active]="isActive(t.key)">
+          {{ count(t.match) }}
+        </span>
+      </button>
+    </div>
+
+    <!-- Search + filtros -->
+    <div class="search-row">
+      <div class="search-wrap">
+        <app-icon [svg]="iconSearch" [size]="17" class="search-icon"></app-icon>
+        <input class="search-input" [(ngModel)]="q" placeholder="Buscar tickets..." />
+      </div>
+      <button class="filters-btn">
+        <app-icon [svg]="iconOptions" [size]="17"></app-icon>
+        Filtros
+      </button>
+    </div>
+
+    <!-- Lista -->
+    <div class="tickets-list">
+      <app-ticket-row
+        *ngFor="let t of list; let i = index"
+        [ticket]="t"
+        [idx]="i"
+        (open)="openTicket($event)"
+      ></app-ticket-row>
+    </div>
+
+    <div *ngIf="list.length === 0" class="empty">
+      <app-icon [svg]="iconEmpty" [size]="40" class="empty-icon"></app-icon>
+      No hay tickets en «{{ tab }}»
+    </div>
+  </div>
+
+  <app-support-nav current="panel"></app-support-nav>
+</div>

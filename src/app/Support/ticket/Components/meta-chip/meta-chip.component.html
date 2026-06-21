@@ -1,0 +1,14 @@
+<div
+  class="meta-chip"
+  [class.meta-chip--clickable]="clickable"
+  (click)="onClick()"
+>
+  <div class="chip-label">
+    <app-icon *ngIf="icon" [svg]="icon" [size]="12" style="color:var(--gold-2)"></app-icon>
+    {{ label }}
+  </div>
+  <div class="chip-value-row">
+    <span *ngIf="dot" class="chip-dot" [style.background]="dot" [style.box-shadow]="'0 0 5px ' + dot"></span>
+    <span class="chip-value">{{ value }}</span>
+  </div>
+</div>

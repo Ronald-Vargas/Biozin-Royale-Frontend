@@ -1,0 +1,107 @@
+.bubble {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.bubble-avatar {
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-top: 2px;
+  background: radial-gradient(circle at 50% 32%, #3a3326, #14110b);
+  border: 1.5px solid var(--gold-3);
+
+  &--support {
+    background: linear-gradient(150deg, #f4dd92, #c79a32);
+  }
+}
+
+.bubble-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.bubble-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.bubble-sender {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cream);
+
+  &--support { color: var(--gold-1); }
+}
+
+.bubble-time {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.bubble-content {
+  padding: 11px 13px;
+  border-radius: 13px;
+  border-top-left-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #e8dec4;
+  line-height: 1.5;
+
+  &--support {
+    background: rgba(212, 167, 60, 0.1);
+    border-color: rgba(212, 167, 60, 0.32);
+  }
+}
+
+// ── File card ────────────────────────────────────────────────
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgba(8, 7, 5, 0.5);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+}
+
+.file-icon { flex-shrink: 0; }
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.file-dl {
+  flex-shrink: 0;
+  cursor: pointer;
+}

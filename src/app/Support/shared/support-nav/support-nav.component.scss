@@ -1,0 +1,44 @@
+.support-nav {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 9px 6px calc(7px + var(--ion-safe-area-bottom));
+  background: linear-gradient(180deg, #0c0a10, #050407);
+  border-top: 1px solid rgba(212, 167, 60, 0.22);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  width: 58px;
+  padding: 4px 0;
+  position: relative;
+}
+
+.active-bar {
+  position: absolute;
+  top: -8px;
+  width: 26px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold-1), var(--gold-3));
+  box-shadow: 0 0 8px rgba(231, 200, 107, 0.7);
+}
+
+.nav-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  color: #6f6757;
+  text-transform: uppercase;
+
+  &--active {
+    font-weight: 700;
+    color: var(--gold-1);
+  }
+}

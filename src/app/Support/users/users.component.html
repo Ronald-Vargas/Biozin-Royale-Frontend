@@ -1,0 +1,30 @@
+<div class="support-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Usuarios" (back)="goBack()"></app-admin-header>
+
+    <div class="search-wrap">
+      <app-icon [svg]="iconSearch" [size]="17" class="search-icon"></app-icon>
+      <input class="search-input" [(ngModel)]="q" placeholder="Buscar usuario..."/>
+    </div>
+
+    <div class="users-list">
+      <div *ngFor="let u of list" class="user-row">
+        <app-initials [text]="u.name" [size]="46" [tint]="tint(u.idx)"></app-initials>
+        <div class="user-info">
+          <div class="user-name">{{ u.name }}</div>
+          <div class="user-email">{{ u.email }}</div>
+        </div>
+        <div class="user-count">
+          <div class="count-num">{{ u.tickets }}</div>
+          <div class="count-label">Tickets</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="list.length === 0" class="empty">Sin resultados</div>
+  </div>
+
+  <app-support-nav current="usuarios"></app-support-nav>
+</div>

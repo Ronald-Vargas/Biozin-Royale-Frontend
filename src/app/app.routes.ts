@@ -190,4 +190,28 @@ export const routes: Routes = [
     path: 'admin/equipo/creado',
     loadComponent: () => import('./Admin/team/member-created/member-created.component').then(m => m.MemberCreatedComponent),
   },
+  {
+    path: 'support',
+    loadComponent: () => import('./Support/panel/panel.component').then(m => m.SupportPanelComponent),
+  },
+  {
+    path: 'soporte/ticket/:id',
+    loadComponent: () => import('./Support/ticket/ticket.component').then(m => m.TicketComponent),
+  },
+  {
+  path: 'soporte/tickets',
+  loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
+  },
+  {
+    path: 'soporte/usuarios',
+    loadComponent: () => import('./Support/users/users.component').then(m => m.UsersComponent),
+  },
+  {
+    path: 'soporte/reportes',
+    loadComponent: () => import('./Support/reports/reports.component').then(m => m.ReportsComponent),
+  },
+  {
+    path: 'soporte/ajustes',
+    loadComponent: () => import('./Support/settings/settings.component').then(m => m.SettingsComponent),
+  },
 ];

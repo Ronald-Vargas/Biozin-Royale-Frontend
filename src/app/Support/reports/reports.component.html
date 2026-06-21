@@ -1,0 +1,58 @@
+<div class="support-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Reportes" (back)="goBack()"></app-admin-header>
+
+    <!-- Tasa de resolución -->
+    <div class="resolution-card">
+      <div class="ring-wrap">
+        <svg width="90" height="90" class="ring-svg">
+          <circle cx="45" cy="45" r="38" fill="none"
+                  stroke="rgba(212,167,60,0.14)" stroke-width="6"/>
+          <circle cx="45" cy="45" r="38" fill="none"
+                  stroke="#c79a32" stroke-width="6"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="circleCirc"
+                  [attr.stroke-dashoffset]="circleOffset"
+                  class="ring-progress"/>
+        </svg>
+        <div class="ring-center">
+          <span class="gold-text ring-pct">{{ rate }}%</span>
+        </div>
+      </div>
+      <div class="resolution-info">
+        <div class="resolution-title">Tasa de resolución</div>
+        <div class="resolution-sub">{{ resolved }} de {{ total }} tickets resueltos esta semana.</div>
+      </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid">
+      <div *ngFor="let s of stats" class="stat-card">
+        <app-icon [svg]="s.icon" [size]="22" [style.color]="s.tint"></app-icon>
+        <div class="stat-value">{{ s.value }}</div>
+        <div class="stat-label">{{ s.label }}</div>
+      </div>
+    </div>
+
+    <!-- Por categoría -->
+    <h3 class="cats-title">Tickets por categoría</h3>
+    <div class="cats-list">
+      <div *ngFor="let c of catBars" class="cat-item">
+        <div class="cat-head">
+          <span class="cat-name">
+            <app-icon [svg]="c.icon" [size]="15" style="color:var(--gold-2)"></app-icon>
+            {{ c.cat }}
+          </span>
+          <span class="cat-num">{{ c.n }}</span>
+        </div>
+        <div class="cat-track">
+          <div class="cat-fill" [style.width]="barPct(c.n)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-support-nav current="reportes"></app-support-nav>
+</div>
