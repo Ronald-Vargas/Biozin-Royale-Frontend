@@ -10,8 +10,8 @@
       <app-icon [svg]="iconPerson" [size]="34" style="color:var(--gold-1)"></app-icon>
     </div>
     <div class="profile-info">
-      <div class="profile-name">Juan Pérez</div>
-      <div class="profile-handle">&#64;juanperez4</div>
+      <div class="profile-name">{{ perfil?.displayName}}</div>
+      <div class="profile-handle">&#64;{{ perfil?.username}}</div>
     </div>
     <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
   </div>

@@ -93,7 +93,13 @@ export class PersonalInformationComponent implements OnInit {
     });
   }
 
+
+
+
   goBack() { this.router.navigate(['/perfil']); }
+
+
+
 
   copyId() {
     try {
@@ -102,6 +108,10 @@ export class PersonalInformationComponent implements OnInit {
     this.copied = true;
     setTimeout(() => this.copied = false, 1400);
   }
+
+
+
+
 
   editInfo() {
     if (!this.perfil) return;
@@ -120,6 +130,9 @@ export class PersonalInformationComponent implements OnInit {
     this.editMode = false;
     this.errorMsg = '';
   }
+
+
+
 
   saveInfo() {
     if (this.saving) return;
@@ -143,6 +156,10 @@ export class PersonalInformationComponent implements OnInit {
     });
   }
 
+
+
+
+
   private aplicarPerfil(perfil: PerfilResultado): void {
     this.perfil = perfil;
     this.info = [
@@ -155,6 +172,9 @@ export class PersonalInformationComponent implements OnInit {
     ];
   }
 
+
+
+  
   private aplicarEstadisticas(stats: EstadisticasResultado): void {
     this.stats = [
       { icon: ICON_ALBUMS,   value: stats.partidasJugadas.toLocaleString('en-US'),               label: 'Partidas\njugadas' },
