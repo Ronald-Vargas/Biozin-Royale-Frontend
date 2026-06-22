@@ -27,7 +27,7 @@ export class TicketsComponent {
   q = '';
   activeFilter = 'Todos';
 
-  filters = ['Todos', 'Nuevo', 'En proceso', 'Asignado', 'Resuelto'];
+  filters = ['Todos', 'Nuevo', 'En proceso', 'Resuelto'];
 
   constructor(private router: Router) {}
 

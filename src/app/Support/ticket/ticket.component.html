@@ -7,9 +7,6 @@
       <app-icon [svg]="iconBack" [size]="21"></app-icon>
     </button>
     <h2 class="gold-text header-title">Gestionar Ticket</h2>
-    <button class="icon-btn icon-btn--muted">
-      <app-icon [svg]="iconDots" [size]="20"></app-icon>
-    </button>
   </div>
 
   <!-- Scroll body -->
@@ -39,14 +36,6 @@
         label="Categoría"
         [icon]="catIcon"
         [value]="ticket.cat"
-      ></app-meta-chip>
-
-      <app-meta-chip
-        label="Asignada a"
-        [icon]="iconAssign"
-        [value]="assignedLabel"
-        [clickable]="true"
-        (chipClick)="sheet = 'asignar'"
       ></app-meta-chip>
     </div>
 

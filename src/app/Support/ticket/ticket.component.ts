@@ -133,5 +133,5 @@ export class TicketComponent implements OnInit, OnDestroy {
     if (e.key === 'Enter') this.send();
   }
 
-  goBack() { this.router.navigate(['/soporte']); }
+  goBack() { this.router.navigate(['/soporte/tickets']); }
 }
