@@ -8,6 +8,6 @@ export const environment = {
   supabaseUrl: 'https://ldolvhdrbpstmplszqav.supabase.co',
   supabaseKey: 'sb_publishable_qKrR3JEmJzXv52okPA0kMQ_EwKW-xL0',
 
-  apiUrl: 'http://localhost:5064/api'
+  apiUrl: 'http://localhost:5298/api'
 };
 
