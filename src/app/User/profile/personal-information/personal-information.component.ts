@@ -7,8 +7,8 @@ import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.co
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
 import { FieldComponent } from 'src/app/Auth/Components/field/field.component';
-import { AuthService } from 'src/app/Core/Services/auth.service';
-import { EstadisticasResultado, PerfilResultado } from 'src/app/Core/Models/auth.models';
+import { ProfileService } from 'src/app/Core/Services/profile.service';
+import { EstadisticasResultado, PerfilResultado } from 'src/app/Core/Models/profile.models';
 import { ICON_PERSON_CIRCLE, ICON_FINGERPRINT, ICON_COPY, ICON_CHECK, ICON_CALENDAR, ICON_CAMERA, ICON_EDIT, ICON_STATS, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_GLOBE, ICON_PHONE_CALL, ICON_ALBUMS, ICON_TROPHY, ICON_CASH, ICON_TRENDING } from '../../shared/icons/icons';
 
 interface InfoRow { k: string; v: string; icon: string; }
@@ -53,7 +53,7 @@ export class PersonalInformationComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {
+  constructor(private router: Router, private fb: FormBuilder, private profileService: ProfileService) {
     this.form = this.fb.group({
       displayName: [''],
       username: [''],
@@ -71,7 +71,7 @@ export class PersonalInformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    this.authService.getProfile().subscribe({
+    this.profileService.getProfile().subscribe({
       next: (res) => {
         this.loading = false;
         if (res.blnError || !res.returnValue) {
@@ -86,7 +86,7 @@ export class PersonalInformationComponent implements OnInit {
       },
     });
 
-    this.authService.getStatistics().subscribe({
+    this.profileService.getStatistics().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) this.aplicarEstadisticas(res.returnValue);
       },
@@ -139,7 +139,7 @@ export class PersonalInformationComponent implements OnInit {
     this.saving = true;
     this.errorMsg = '';
 
-    this.authService.updateProfile(this.form.value).subscribe({
+    this.profileService.updateProfile(this.form.value).subscribe({
       next: (res) => {
         this.saving = false;
         if (res.blnError || !res.returnValue) {

@@ -6,8 +6,8 @@ import { ScreenShellComponent } from '../../shared/Components/screen-shell/scree
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
 import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP } from '../../shared/icons/icons';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from 'src/app/Core/Services/auth.service';
-import { PerfilResultado } from 'src/app/Core/Models/auth.models';
+import { ProfileService } from 'src/app/Core/Services/profile.service';
+import { PerfilResultado } from 'src/app/Core/Models/profile.models';
 
 
 
@@ -49,7 +49,7 @@ export class ProfileComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {
+  constructor(private router: Router, private fb: FormBuilder, private profileService: ProfileService) {
     this.form = this.fb.group({
       displayName: [''],
       username: [''],
@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    this.authService.getProfile().subscribe({
+    this.profileService.getProfile().subscribe({
       next: (res) => {
         this.loading = false;
         if (res.blnError || !res.returnValue) {

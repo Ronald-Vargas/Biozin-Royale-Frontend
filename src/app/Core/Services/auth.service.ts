@@ -2,14 +2,8 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import {
-  ActualizarPerfilRequest,
-  ApiResponse,
-  EstadisticasResultado,
-  LoginManualRequest,
-  PerfilResultado,
-  RegistroManualRequest,
-} from '../Models/auth.models';
+import { ApiResponse, LoginManualRequest, RegistroManualRequest } from '../Models/auth.models';
+import { PerfilResultado } from '../Models/profile.models';
 
 const TOKEN_KEY = 'biozin_token';
 const PROFILE_KEY = 'biozin_profile';
@@ -17,7 +11,6 @@ const PROFILE_KEY = 'biozin_profile';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = `${environment.apiUrl}/auth`;
-  private readonly profileUrl = `${environment.apiUrl}/profile`;
 
   readonly currentProfile = signal<PerfilResultado | null>(this.readStoredProfile());
 
@@ -50,22 +43,6 @@ export class AuthService {
       .pipe(tap((res) => this.storeSession(res, supabaseAccessToken)));
   }
 
-  getProfile(): Observable<ApiResponse<PerfilResultado>> {
-    return this.http
-      .get<ApiResponse<PerfilResultado>>(this.profileUrl)
-      .pipe(tap((res) => this.storeSession(res)));
-  }
-
-  updateProfile(datos: ActualizarPerfilRequest): Observable<ApiResponse<PerfilResultado>> {
-    return this.http
-      .put<ApiResponse<PerfilResultado>>(this.profileUrl, datos)
-      .pipe(tap((res) => this.storeSession(res)));
-  }
-
-  getStatistics(): Observable<ApiResponse<EstadisticasResultado>> {
-    return this.http.get<ApiResponse<EstadisticasResultado>>(`${this.profileUrl}/statistics`);
-  }
-
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(PROFILE_KEY);
@@ -83,7 +60,9 @@ export class AuthService {
   // El backend solo manda `token` en register/login manual; en sync/get/update viene
   // null porque la sesión ya existe, así que mantenemos el que ya está guardado
   // (o el de Supabase, si se pasa como fallback explícito desde syncOAuth).
-  private storeSession(res: ApiResponse<PerfilResultado>, fallbackToken?: string): void {
+  // Pública porque ProfileService también la usa: GET/PUT /api/profile refrescan
+  // el mismo perfil cacheado que login/sync.
+  storeSession(res: ApiResponse<PerfilResultado>, fallbackToken?: string): void {
     if (res.blnError || !res.returnValue) return;
 
     const token = res.returnValue.token ?? fallbackToken ?? this.getToken();
