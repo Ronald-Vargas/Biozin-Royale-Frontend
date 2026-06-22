@@ -68,7 +68,12 @@ export class RegisterComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.errorMsg = 'Revisa los campos del formulario.';
+      this.errorMsg = this.mapFormError();
+      return;
+    }
+
+    if (this.passCtrl.value !== this.confirmCtrl.value) {
+      this.errorMsg = 'Las contraseñas no coinciden.';
       return;
     }
 
@@ -83,16 +88,62 @@ export class RegisterComponent {
         next: (res) => {
           this.loading = false;
           if (res.blnError) {
-            this.errorMsg = res.strResponseMessage || 'No se pudo completar el registro.';
+            this.errorMsg = this.mapRegisterError(res.strResponseMessage);
             return;
           }
           const faltanDatos = !!res.returnValue?.camposPendientes?.length;
           this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
         },
-        error: () => {
+        error: (err) => {
           this.loading = false;
-          this.errorMsg = 'No se pudo conectar con el servidor. Intenta de nuevo.';
+          this.errorMsg = this.mapRegisterError(err?.error?.strResponseMessage, err?.status);
         },
       });
+  }
+
+  private mapFormError(): string {
+    const n = this.nameCtrl.errors;
+    const e = this.emailCtrl.errors;
+    const p = this.phoneCtrl.errors;
+    const s = this.passCtrl.errors;
+    const c = this.confirmCtrl.errors;
+
+    if (n?.['required'] && e?.['required'] && p?.['required'] && s?.['required'] && c?.['required']) {
+      return 'Completa todos los campos para registrarte.';
+    }
+    if (n?.['required']) return 'El nombre completo es requerido.';
+    if (e?.['required']) return 'El correo electrónico es requerido.';
+    if (e?.['email'])    return 'El correo electrónico no tiene un formato válido.';
+    if (p?.['required']) return 'El número de teléfono es requerido.';
+    if (s?.['required']) return 'La contraseña es requerida.';
+    if (s?.['minlength']) return 'La contraseña debe tener al menos 8 caracteres.';
+    if (c?.['required']) return 'Debes confirmar tu contraseña.';
+    return 'Revisa los campos del formulario.';
+  }
+
+  private mapRegisterError(message?: string, status?: number): string {
+    const msg = (message ?? '').toLowerCase();
+
+    const esCorreoExistente =
+      status === 409 ||
+      msg.includes('already exists') ||
+      msg.includes('ya existe') ||
+      msg.includes('ya registrado') ||
+      msg.includes('already registered') ||
+      msg.includes('duplicate') ||
+      msg.includes('email');
+
+    const esContrasenaNoCoincide =
+      msg.includes('coincide') ||
+      msg.includes('match') ||
+      msg.includes('confirm');
+
+    if (esCorreoExistente) {
+      return 'El correo electrónico ya está registrado. Selecciona la opción "INICIAR SESIÓN" para acceder a tu cuenta.';
+    }
+    if (esContrasenaNoCoincide) {
+      return 'Las contraseñas no coinciden.';
+    }
+    return message || 'No se pudo conectar con el servidor. Intenta de nuevo.';
   }
 }

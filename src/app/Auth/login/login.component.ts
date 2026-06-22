@@ -59,7 +59,7 @@ export class LoginComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.errorMsg = 'Revisa los campos del formulario.';
+      this.errorMsg = this.mapFormError();
       return;
     }
 
@@ -73,17 +73,69 @@ export class LoginComponent {
       next: (res) => {
         this.loading = false;
         if (res.blnError) {
-          this.errorMsg = res.strResponseMessage || 'Credenciales inválidas.';
+          this.errorMsg = this.mapLoginError(res.strResponseMessage);
           return;
         }
         const faltanDatos = !!res.returnValue?.camposPendientes?.length;
         this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.errorMsg = 'No se pudo conectar con el servidor. Intenta de nuevo.';
+        this.errorMsg = this.mapLoginError(err?.error?.strResponseMessage, err?.status);
       },
     });
+  }
+
+  private mapFormError(): string {
+    const emailErr    = this.emailCtrl.errors;
+    const passwordErr = this.passwordCtrl.errors;
+
+    if (emailErr?.['required'] && passwordErr?.['required']) {
+      return 'Ingresa tu correo electrónico y contraseña.';
+    }
+    if (emailErr?.['required']) {
+      return 'El correo electrónico es requerido.';
+    }
+    if (emailErr?.['email']) {
+      return 'El correo electrónico no tiene un formato válido.';
+    }
+    if (passwordErr?.['required']) {
+      return 'La contraseña es requerida.';
+    }
+    if (passwordErr?.['minlength']) {
+      return 'La contraseña debe tener al menos 8 caracteres.';
+    }
+    return 'Revisa los campos del formulario.';
+  }
+
+  private mapLoginError(message?: string, status?: number): string {
+    const msg = (message ?? '').toLowerCase();
+
+    const esCorreoNoRegistrado =
+      status === 404 ||
+      msg.includes('not found') ||
+      msg.includes('no encontrado') ||
+      msg.includes('no registrado') ||
+      msg.includes('no existe') ||
+      msg.includes('user not found') ||
+      msg.includes('email not found');
+
+    const esContrasenaIncorrecta =
+      (!esCorreoNoRegistrado && status === 401) ||
+      msg.includes('password') ||
+      msg.includes('contraseña') ||
+      msg.includes('incorrect') ||
+      msg.includes('inválid');
+
+    if (esCorreoNoRegistrado) {
+      return 'El correo electrónico no ha sido registrado. Selecciona la opción "REGISTRARSE" para crear una cuenta.';
+    }
+
+    if (esContrasenaIncorrecta) {
+      return 'Contraseña incorrecta.';
+    }
+
+    return message || 'No se pudo conectar con el servidor. Intenta de nuevo.';
   }
 
 
