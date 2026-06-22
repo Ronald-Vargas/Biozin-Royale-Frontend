@@ -48,16 +48,6 @@
           <div class="agent-track">
             <div class="agent-fill" [style.width]="barPct(a.resolved, maxResolved)"></div>
           </div>
-          <div class="agent-meta">
-            <span class="meta-item">
-              <app-icon [svg]="iconFlash" [size]="12" style="color:var(--gold-2)"></app-icon>
-              {{ a.avg }}
-            </span>
-            <span class="meta-item">
-              <app-icon [svg]="iconHappy" [size]="12" style="color:var(--gold-2)"></app-icon>
-              CSAT {{ a.csat }}%
-            </span>
-          </div>
         </div>
       </div>
     </div>

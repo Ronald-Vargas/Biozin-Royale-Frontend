@@ -25,7 +25,7 @@
 // ── Section title ────────────────────────────────────────────
 .section-title {
   font-family: 'Cinzel', serif;
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 1px;
   color: var(--cream);
   font-weight: 600;
@@ -52,20 +52,20 @@
   align-items: center;
   gap: 8px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--cream);
   font-weight: 500;
 }
 
 .status-dot {
-  width: 9px; height: 9px;
+  width: 10px; height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .status-count {
   font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--gold-1);
 }
@@ -94,8 +94,8 @@
 
 .agents-total {
   font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 13px;
+  color: #cbb98f;
 }
 
 .agents-list {
@@ -144,7 +144,7 @@
 
 .agent-name {
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--cream);
 }
@@ -169,18 +169,4 @@
   border-radius: 4px;
   background: linear-gradient(90deg, #c79a32, #f4dd92);
   transition: width 0.4s ease;
-}
-
-.agent-meta {
-  display: flex;
-  gap: 14px;
-}
-
-.meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10.5px;
-  color: var(--muted);
 }

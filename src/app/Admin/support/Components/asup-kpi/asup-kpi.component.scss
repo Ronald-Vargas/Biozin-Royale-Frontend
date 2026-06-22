@@ -9,7 +9,7 @@
 }
 
 .kpi-icon {
-  width: 30px; height: 30px;
+  width: 35px; height: 35px;
   border-radius: 9px;
   display: grid;
   place-items: center;
@@ -18,7 +18,7 @@
 
 .kpi-value {
   font-family: 'Cinzel', serif;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--cream);
   line-height: 1;
@@ -26,9 +26,9 @@
 
 .kpi-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.4px;
-  color: var(--muted);
+  color: #cbb98f;
   font-weight: 600;
   margin-top: 6px;
   text-transform: uppercase;
