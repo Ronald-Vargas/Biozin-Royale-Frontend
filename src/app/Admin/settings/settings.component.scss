@@ -47,7 +47,7 @@
 .avatar-wrap {
   position: relative;
   flex-shrink: 0;
-  width: 84px; height: 84px;
+  width: 90px; height: 90px;
 }
 
 .avatar-ring {
@@ -63,7 +63,7 @@
   position: absolute;
   right: -2px;
   bottom: -2px;
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   background: linear-gradient(135deg, #f4dd92, #c79a32);
   display: grid;
@@ -83,7 +83,7 @@
 
 .identity-name {
   font-family: 'Cinzel', serif;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--cream);
   line-height: 1.1;
@@ -91,7 +91,7 @@
 
 .identity-sub {
   font-family: 'Montserrat', sans-serif;
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--gold-2);
   margin-top: 3px;
 }
@@ -104,8 +104,8 @@
 
   span {
     font-family: 'Montserrat', sans-serif;
-    font-size: 11.5px;
-    color: var(--muted);
+    font-size: 14px;
+    color: #cbb98f;
   }
 
   .role-value {
