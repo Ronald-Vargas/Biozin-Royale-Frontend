@@ -2,12 +2,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InitialsComponent }          from '../initials/initials.component';
 import { TicketStatusBadgeComponent } from '../ticket-status-badge/ticket-status-badge.component';
-import { PrioTagComponent }           from '../prio-tag/prio-tag.component';
 import { SupportTicket, TINTS } from '../support.data';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, InitialsComponent, TicketStatusBadgeComponent, PrioTagComponent],
+  imports: [CommonModule, InitialsComponent, TicketStatusBadgeComponent],
   selector: 'app-ticket-row',
   templateUrl: './ticket-row.component.html',
   styleUrls: ['./ticket-row.component.scss'],

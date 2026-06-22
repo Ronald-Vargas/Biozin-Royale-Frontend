@@ -15,7 +15,6 @@ export interface SupportTicket {
   email:    string;
   subject:  string;
   cat:      string;
-  prio:     'Alta' | 'Media' | 'Baja';
   status:   string;
   time:     string;
   assigned: string;
@@ -27,16 +26,10 @@ export interface StatusStyle { color: string; bg: string; bd: string; }
 export const TK_STATUS: Record<string, StatusStyle> = {
   'Nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
   'En proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)' },
-  'Asignado':   { color: '#7db4f0', bg: 'rgba(90,150,220,0.16)',  bd: 'rgba(90,150,220,0.5)' },
   'Resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)' },
   'Abierto':    { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
 };
 
-export const TK_PRIO: Record<string, string> = {
-  'Alta':  '#e06a6a',
-  'Media': '#e6b450',
-  'Baja':  '#62d89b',
-};
 
 export const CAT_ICON: Record<string, string> = {
   'Pagos':        ICON_CASH,
@@ -55,7 +48,7 @@ export const TINTS = ['#d7b48a', '#a9c2a0', '#a6bcd6', '#d3a9c0', '#c9c29a', '#a
 export const SUPPORT_TICKETS: SupportTicket[] = [
   {
     id: '#BR-45821', name: 'Juan Martínez', email: 'juan.martinez@email.com',
-    subject: 'Problema con depósito', cat: 'Pagos', prio: 'Alta', status: 'Nuevo',
+    subject: 'Problema con depósito', cat: 'Pagos', status: 'Nuevo',
     time: 'Hace 5 min', assigned: 'María G.',
     msgs: [
       { who: 'user', text: 'Realicé un depósito de $200.000 COP hace 30 minutos y aún no se refleja en mi cuenta.', t: '14:32' },
@@ -65,7 +58,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45822', name: 'Ana Sofía López', email: 'ana.lopez@email.com',
-    subject: 'Verificación de cuenta', cat: 'Cuenta', prio: 'Media', status: 'Nuevo',
+    subject: 'Verificación de cuenta', cat: 'Cuenta', status: 'Nuevo',
     time: 'Hace 12 min', assigned: 'Sin asignar',
     msgs: [
       { who: 'user', text: 'Subí mi documento de identidad hace 2 días y mi cuenta sigue sin verificarse. ¿Cuánto tarda?', t: '14:25' },
@@ -73,7 +66,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45823', name: 'Carlos Ramírez', email: 'carlos.ramirez@email.com',
-    subject: 'Bono de cumpleaños no recibido', cat: 'Bonos', prio: 'Media', status: 'Nuevo',
+    subject: 'Bono de cumpleaños no recibido', cat: 'Bonos', status: 'Nuevo',
     time: 'Hace 18 min', assigned: 'Sin asignar',
     msgs: [
       { who: 'user', text: 'Hoy es mi cumpleaños y no me ha llegado el bono que prometen. ¿Pueden revisarlo?', t: '14:19' },
@@ -81,7 +74,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45810', name: 'Valentina Cruz', email: 'valentina.cruz@email.com',
-    subject: 'Retiro demorado', cat: 'Retiros', prio: 'Alta', status: 'En proceso',
+    subject: 'Retiro demorado', cat: 'Retiros', status: 'En proceso',
     time: 'Hace 1 h', assigned: 'Carlos R.',
     msgs: [
       { who: 'user', text: 'Mi retiro lleva 3 días en proceso. Necesito ayuda urgente.', t: '12:10' },
@@ -90,7 +83,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45808', name: 'Diego Fernández', email: 'diego.fernandez@email.com',
-    subject: 'No puedo iniciar sesión', cat: 'Cuenta', prio: 'Media', status: 'En proceso',
+    subject: 'No puedo iniciar sesión', cat: 'Cuenta', status: 'En proceso',
     time: 'Hace 2 h', assigned: 'Sofía H.',
     msgs: [
       { who: 'user', text: 'Olvidé mi contraseña y el correo de recuperación no llega.', t: '11:05' },
@@ -99,7 +92,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45795', name: 'Sofía Herrera', email: 'sofia.herrera@email.com',
-    subject: 'Duda sobre límites de apuesta', cat: 'Juegos', prio: 'Baja', status: 'Asignado',
+    subject: 'Duda sobre límites de apuesta', cat: 'Juegos', status: 'Asignado',
     time: 'Hace 3 h', assigned: 'María G.',
     msgs: [
       { who: 'user', text: '¿Cuál es el límite máximo de apuesta en la ruleta VIP?', t: '10:02' },
@@ -107,7 +100,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45780', name: 'Ricardo Peña', email: 'ricardo.pena@email.com',
-    subject: 'Comprobante de verificación', cat: 'Verificación', prio: 'Baja', status: 'Asignado',
+    subject: 'Comprobante de verificación', cat: 'Verificación', status: 'Asignado',
     time: 'Hace 4 h', assigned: 'Diego F.',
     msgs: [
       { who: 'user', text: 'Envío de nuevo mi comprobante de domicilio.', t: '09:15', file: { name: 'recibo_luz.pdf', size: '780 KB' } },
@@ -115,7 +108,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45762', name: 'María Gómez', email: 'maria.gomez@email.com',
-    subject: 'Bono acreditado correctamente', cat: 'Bonos', prio: 'Baja', status: 'Resuelto',
+    subject: 'Bono acreditado correctamente', cat: 'Bonos', status: 'Resuelto',
     time: 'Ayer', assigned: 'Carlos R.',
     msgs: [
       { who: 'user', text: 'No veía mi bono de bienvenida.', t: 'Ayer 18:40' },
@@ -124,7 +117,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45751', name: 'Bryan Ruiz', email: 'bryan.ruiz@email.com',
-    subject: 'Retiro completado', cat: 'Retiros', prio: 'Media', status: 'Resuelto',
+    subject: 'Retiro completado', cat: 'Retiros', status: 'Resuelto',
     time: 'Ayer', assigned: 'Sofía H.',
     msgs: [
       { who: 'user', text: 'Mi retiro no aparecía.', t: 'Ayer 15:00' },

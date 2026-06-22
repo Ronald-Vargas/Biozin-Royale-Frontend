@@ -6,7 +6,7 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_BACK, ICON_PERSON_ADD, ICON_CHECK, ICON_ATTACH, ICON_CHECK_CIRCLE, ICON_DOTS_HORIZ, ICON_SWAP } from 'src/app/User/shared/icons/icons';
 import { InitialsComponent } from '../shared/initials/initials.component';
-import { SupportTicket, TicketMsg, AGENTS, SUPPORT_TICKETS, TINTS, CAT_ICON, TK_PRIO } from '../shared/support.data';
+import { SupportTicket, TicketMsg, AGENTS, SUPPORT_TICKETS, TINTS, CAT_ICON } from '../shared/support.data';
 import { TicketStatusBadgeComponent } from '../shared/ticket-status-badge/ticket-status-badge.component';
 import { BubbleComponent } from './Components/bubble/bubble.component';
 import { MetaChipComponent } from './Components/meta-chip/meta-chip.component';
@@ -43,7 +43,7 @@ export class TicketComponent implements OnInit, OnDestroy {
   sheet: 'estado' | 'asignar' | null = null;
   toast: string | null = null;
 
-  readonly statusOptions = ['Abierto', 'En proceso', 'Asignado', 'Resuelto'];
+  readonly statusOptions = ['Abierto', 'En proceso', 'Resuelto'];
   readonly agents = AGENTS;
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -65,7 +65,6 @@ export class TicketComponent implements OnInit, OnDestroy {
   // ── Helpers ────────────────────────────────────────────────
   get tint(): string { return TINTS[0]; }
   get catIcon(): string { return CAT_ICON[this.ticket.cat] || ''; }
-  get prioDot(): string { return TK_PRIO[this.ticket.prio] || '#e6b450'; }
   get assignedLabel(): string { return this.assigned === 'Sin asignar' ? '—' : this.assigned; }
   get isResolved(): boolean { return this.status === 'Resuelto'; }
 

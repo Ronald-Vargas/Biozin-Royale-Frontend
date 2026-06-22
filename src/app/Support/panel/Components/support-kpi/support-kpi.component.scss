@@ -18,9 +18,9 @@
 
 .kpi-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.6px;
-  color: var(--muted);
+  color: #cbb98f; 
   font-weight: 600;
   padding-right: 28px;
   line-height: 1.2;
@@ -28,7 +28,7 @@
 
 .kpi-value {
   font-family: 'Cinzel', serif;
-  font-size: 27px;
+  font-size: 29px;
   font-weight: 700;
   line-height: 1;
   color: var(--cream);
@@ -37,7 +37,7 @@
 
 .kpi-delta {
   font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   color: #62d89b;
   margin-top: 5px;

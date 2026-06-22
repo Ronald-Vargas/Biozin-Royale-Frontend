@@ -53,7 +53,6 @@ export class CreateTicketComponent {
       email:    PLAYER.email,
       subject:  this.subject.trim(),
       cat:      this.cat,
-      prio:     'Media',
       status:   'Nuevo',
       time:     'Ahora',
       assigned: 'Sin asignar',
