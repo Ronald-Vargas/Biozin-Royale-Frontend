@@ -91,8 +91,8 @@ export class NewBonuseComponent {
                : ['Gates of Biozin', 'Wanted', 'Sugar Rush'],
     };
     ADMIN_BONOS.unshift(b);
-    this.router.navigate(['/admin/bonos']);
+    this.router.navigate(['/admin/bonuses']);
   }
 
-  goBack() { this.router.navigate(['/admin/bonos']); }
+  goBack() { this.router.navigate(['/admin/bonuses']); }
 }

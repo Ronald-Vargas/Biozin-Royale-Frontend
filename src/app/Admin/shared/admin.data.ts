@@ -48,8 +48,8 @@ export interface AdminUser {
 export const ADMIN_USERS: AdminUser[] = [
   { id: 'USR-1001', name: 'Luis Maza',        role: 'Admin',   status: 'Activo',   reg: '12/04/2024' },
   { id: 'USR-1002', name: 'Catherine Rojas',  role: 'Soporte', status: 'Activo',   reg: '03/05/2024' },
-  { id: 'USR-1003', name: 'Alejandro Bustos', role: 'Cajero',  status: 'Activo',   reg: '21/06/2024' },
-  { id: 'USR-1004', name: 'Bryan Ruiz',       role: 'Cajero',  status: 'Inactivo', reg: '09/01/2024' },
+  { id: 'USR-1003', name: 'Alejandro Bustos', role: 'Admin',  status: 'Activo',   reg: '21/06/2024' },
+  { id: 'USR-1004', name: 'Bryan Ruiz',       role: 'Soporte',  status: 'Inactivo', reg: '09/01/2024' },
   { id: 'USR-1005', name: 'María Gómez',      role: 'Soporte', status: 'Activo',   reg: '17/02/2024' },
 ];
 
