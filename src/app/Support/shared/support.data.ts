@@ -100,7 +100,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
   },
   {
     id: '#BR-45780', name: 'Ricardo Peña', email: 'ricardo.pena@email.com',
-    subject: 'Comprobante de verificación', cat: 'Verificación', status: 'Asignado',
+    subject: 'Comprobante de verificación', cat: 'Bonos', status: 'Asignado',
     time: 'Hace 4 h', assigned: 'Diego F.',
     msgs: [
       { who: 'user', text: 'Envío de nuevo mi comprobante de domicilio.', t: '09:15', file: { name: 'recibo_luz.pdf', size: '780 KB' } },
