@@ -4,6 +4,11 @@
   (back)="goBack()"
 >
   <div class="page-inner">
+  <p *ngIf="loading">Cargando historial...</p>
+  <p *ngIf="errorMsg">{{ errorMsg }}</p>
+  <p *ngIf="!loading && !errorMsg && gameHist.length === 0">Todavía no has jugado ninguna partida.</p>
+
+  <ng-container *ngIf="!loading && !errorMsg && gameHist.length > 0">
   <!-- Table head -->
   <div class="table-head">
     <span class="th">Juego</span>
@@ -33,5 +38,6 @@
       >{{ fmt(g.result) }}</span>
     </div>
   </div>
+  </ng-container>
   </div>
 </app-screen-shell>
