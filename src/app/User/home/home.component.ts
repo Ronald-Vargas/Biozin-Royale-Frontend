@@ -9,9 +9,10 @@ import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.compo
 import { BottomNavComponent } from './Components/bottom-nav/bottom-nav.component';
 import { Game, GamesCardComponent } from './Components/games-card/games-card.component';
 import { SectionHeadComponent } from './Components/section-head/section-head.component';
-import { BetOutcome, SportMatch } from '../sports/sports.data';
-import { SportsService } from '../sports/sports.service';
-import { BalanceService } from '../shared/balance.service';
+import { BetOutcome, SportMatch } from '../../Core/Models/sports.models';
+import { BalanceService } from 'src/app/Core/Services/balance.service';
+import { SportsService } from 'src/app/Core/Services/sports.service';
+
 
 @Component({
   standalone: true,

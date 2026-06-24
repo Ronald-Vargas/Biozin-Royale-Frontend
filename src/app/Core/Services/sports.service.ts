@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../../Core/Models/auth.models';
-import { SportMatch } from './sports.data';
+import { SportMatch } from '../Models/sports.models';
 
 @Injectable({ providedIn: 'root' })
 export class SportsService {

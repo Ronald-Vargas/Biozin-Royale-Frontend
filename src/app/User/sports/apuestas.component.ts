@@ -5,10 +5,11 @@ import { IonContent } from '@ionic/angular/standalone';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_ARROW_BACK, ICON_CLOSE } from '../shared/icons/icons';
-import { BetOutcome, Sport, SportMatch } from './sports.data';
-import { BalanceService } from '../shared/balance.service';
-import { SportsService } from './sports.service';
-import { BetsService } from './bets.service';
+import { BetOutcome, Sport, SportMatch } from '../../Core/Models/sports.models';
+import { BalanceService } from 'src/app/Core/Services/balance.service';
+import { BetsService } from 'src/app/Core/Services/bets.service';
+import { SportsService } from 'src/app/Core/Services/sports.service';
+
 
 type Filter = 'all' | Sport;
 
