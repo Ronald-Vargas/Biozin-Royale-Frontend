@@ -14,54 +14,75 @@
       </div>
 
       <div class="filter-row">
-        <button
-          *ngFor="let f of filters"
-          class="filter-chip"
-          [class.filter-chip--active]="activeFilter === f.key"
-          (click)="activeFilter = f.key"
-        >{{ f.label }}</button>
+        @for (f of availableFilters; track f.key) {
+          <button
+            class="filter-chip"
+            [class.filter-chip--active]="activeFilter === f.key"
+            (click)="activeFilter = f.key"
+          >{{ f.label }}</button>
+        }
       </div>
 
-      <div class="matches-list">
-        <div *ngFor="let m of filtered" class="match-card">
-          <div class="match-meta">
-            <span class="match-league">{{ m.league }}</span>
-            <span class="match-time">{{ m.time }}</span>
-          </div>
-          <div class="match-teams">
-            <span class="team-name">{{ m.team1 }}</span>
-            <span class="vs-badge">VS</span>
-            <span class="team-name">{{ m.team2 }}</span>
-          </div>
-          <div class="odds-row">
-            <button
-              class="odd-btn"
-              [class.odd-btn--on]="isSelected(m.id, 'home')"
-              (click)="toggleBet(m.id, 'home')"
-            >
-              <span class="odd-lbl">1</span>
-              <span class="odd-val">{{ m.odds.home | number:'1.2-2' }}</span>
-            </button>
-            <button
-              *ngIf="m.odds.draw !== null"
-              class="odd-btn"
-              [class.odd-btn--on]="isSelected(m.id, 'draw')"
-              (click)="toggleBet(m.id, 'draw')"
-            >
-              <span class="odd-lbl">X</span>
-              <span class="odd-val">{{ m.odds.draw | number:'1.2-2' }}</span>
-            </button>
-            <button
-              class="odd-btn"
-              [class.odd-btn--on]="isSelected(m.id, 'away')"
-              (click)="toggleBet(m.id, 'away')"
-            >
-              <span class="odd-lbl">2</span>
-              <span class="odd-val">{{ m.odds.away | number:'1.2-2' }}</span>
-            </button>
-          </div>
+      @if (loading) {
+        <div class="matches-state">
+          <div class="matches-spinner"></div>
+          <span>Cargando partidos...</span>
         </div>
-      </div>
+      }
+
+      @if (loadError) {
+        <div class="matches-state matches-state--error">{{ loadError }}</div>
+      }
+
+      @if (!loading && !loadError && filtered.length === 0) {
+        <div class="matches-state">No hay partidos disponibles.</div>
+      }
+
+      @if (!loading && !loadError) {
+        <div class="matches-list">
+          @for (m of filtered; track m.id) {
+            <div class="match-card">
+              <div class="match-meta">
+                <span class="match-league">{{ m.league }}</span>
+                <span class="match-time">{{ m.time }}</span>
+              </div>
+              <div class="match-teams">
+                <span class="team-name">{{ m.team1 }}</span>
+                <span class="vs-badge">VS</span>
+                <span class="team-name">{{ m.team2 }}</span>
+              </div>
+              <div class="odds-row">
+                <button
+                  class="odd-btn"
+                  [class.odd-btn--on]="isSelected(m.id, 'home')"
+                  (click)="toggleBet(m.id, 'home')"
+                >
+                  <span class="odd-lbl">1</span>
+                  <span class="odd-val">{{ m.odds.home | number:'1.2-2' }}</span>
+                </button>
+                @if (m.odds.draw !== null) {
+                  <button
+                    class="odd-btn"
+                    [class.odd-btn--on]="isSelected(m.id, 'draw')"
+                    (click)="toggleBet(m.id, 'draw')"
+                  >
+                    <span class="odd-lbl">X</span>
+                    <span class="odd-val">{{ m.odds.draw | number:'1.2-2' }}</span>
+                  </button>
+                }
+                <button
+                  class="odd-btn"
+                  [class.odd-btn--on]="isSelected(m.id, 'away')"
+                  (click)="toggleBet(m.id, 'away')"
+                >
+                  <span class="odd-lbl">2</span>
+                  <span class="odd-val">{{ m.odds.away | number:'1.2-2' }}</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
 
     </div><!-- /scroll-area -->
 
@@ -95,13 +116,15 @@
 
       <!-- Selections -->
       <div class="selection-list">
-        <div *ngFor="let s of selectedList" class="sel-row">
-          <div class="sel-info">
-            <div class="sel-match">{{ s.match.team1 }} vs {{ s.match.team2 }}</div>
-            <div class="sel-outcome">{{ outcomeLabel(s.match, s.outcome) }}</div>
+        @for (s of selectedList; track s.match.id) {
+          <div class="sel-row">
+            <div class="sel-info">
+              <div class="sel-match">{{ s.match.team1 }} vs {{ s.match.team2 }}</div>
+              <div class="sel-outcome">{{ outcomeLabel(s.match, s.outcome) }}</div>
+            </div>
+            <span class="sel-odds">x{{ selectionOdds(s.match, s.outcome) | number:'1.2-2' }}</span>
           </div>
-          <span class="sel-odds">x{{ selectionOdds(s.match, s.outcome) | number:'1.2-2' }}</span>
-        </div>
+        }
       </div>
 
       <!-- Combined odds -->
@@ -123,7 +146,9 @@
           placeholder="0.00"
         />
       </div>
-      <div class="amount-error" *ngIf="isInsufficient">Fondos insuficientes</div>
+      @if (isInsufficient) {
+        <div class="amount-error">Fondos insuficientes</div>
+      }
 
       <!-- Quick amounts -->
       <div class="quick-row">
@@ -146,12 +171,15 @@
         </div>
       </div>
 
-      <!-- Confirm -->
+      @if (betError) {
+        <div class="bet-error">{{ betError }}</div>
+      }
+
       <button
         class="confirm-btn"
         [disabled]="!canConfirm"
         (click)="confirmBet()"
-      >Confirmar apuesta</button>
+      >{{ placing ? 'Procesando...' : 'Confirmar apuesta' }}</button>
 
     </div><!-- /bet-panel -->
 
