@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,8 @@ import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.compo
 import { BottomNavComponent } from './Components/bottom-nav/bottom-nav.component';
 import { Game, GamesCardComponent } from './Components/games-card/games-card.component';
 import { SectionHeadComponent } from './Components/section-head/section-head.component';
-import { BetOutcome, SPORT_MATCHES, SportMatch } from '../sports/sports.data';
+import { BetOutcome, SportMatch } from '../sports/sports.data';
+import { SportsService } from '../sports/sports.service';
 import { BalanceService } from '../shared/balance.service';
 
 @Component({
@@ -23,7 +24,7 @@ import { BalanceService } from '../shared/balance.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   currentNav = 'home';
 
   iconPerson = ICON_PERSON_FILLED;
@@ -35,8 +36,27 @@ export class HomeComponent {
     { name: 'Blackjack',  icon: 'blackjack', g1: '#1d5a3a', g2: '#0b2417', ic: '#a6ffc8' },
   ];
 
-  featuredMatches: SportMatch[] = SPORT_MATCHES.slice(0, 2);
+  featuredMatches: SportMatch[] = [];
   bets: Record<number, BetOutcome> = {};
+
+  readonly balance = this.balanceService.balance;
+
+  constructor(
+    private router: Router,
+    private sportsService: SportsService,
+    private balanceService: BalanceService,
+  ) {}
+
+  ngOnInit(): void {
+    this.balanceService.load();
+    this.sportsService.getMatches().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.featuredMatches = res.returnValue.slice(0, 2);
+        }
+      },
+    });
+  }
 
   isBetOn(id: number, outcome: BetOutcome): boolean {
     return this.bets[id] === outcome;
@@ -57,11 +77,6 @@ export class HomeComponent {
     if (name === 'Roulette') this.router.navigate(['/ruleta']);
     if (name === 'Blackjack') this.router.navigate(['/blackjack-lobby']);
   }
-
-  readonly balance = this.balanceService.balance;
-
-
-  constructor(private router: Router, private balanceService: BalanceService) {}
 
   goMiPerfil()  { this.router.navigate(['/miperfil']); }
   goDeposito()  { this.router.navigate(['/deposito']); }

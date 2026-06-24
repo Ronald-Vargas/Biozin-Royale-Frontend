@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonContent } from '@ionic/angular/standalone';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_ARROW_BACK, ICON_CLOSE } from '../shared/icons/icons';
-import { BetOutcome, Sport, SportMatch, SPORT_MATCHES } from './sports.data';
+import { BetOutcome, Sport, SportMatch } from './sports.data';
 import { BalanceService } from '../shared/balance.service';
+import { SportsService } from './sports.service';
+import { BetsService } from './bets.service';
 
 type Filter = 'all' | Sport;
 
@@ -17,32 +19,70 @@ type Filter = 'all' | Sport;
   templateUrl: './apuestas.component.html',
   styleUrls: ['./apuestas.component.scss'],
 })
-export class ApuestasComponent {
+export class ApuestasComponent implements OnInit {
   iconBack  = ICON_ARROW_BACK;
   iconClose = ICON_CLOSE;
 
   activeFilter: Filter = 'all';
   selections: Record<number, BetOutcome> = {};
-  matches: SportMatch[] = SPORT_MATCHES;
-
-  filters: { key: Filter; label: string }[] = [
-    { key: 'all',        label: 'Todo' },
-    { key: 'football',   label: '⚽ Fútbol' },
-    { key: 'basketball', label: '🏀 NBA' },
-  ];
+  matches: SportMatch[] = [];
+  loading   = false;
+  loadError = '';
 
   // ── Bet panel state ───────────────────────────────────────
   showBetPanel  = false;
   displayAmount = '';
   rawAmount     = 0;
   showToast     = false;
+  placing       = false;
+  betError      = '';
 
   readonly balance = this.balanceService.balance;
 
   constructor(
     private router: Router,
     private balanceService: BalanceService,
+    private sportsService: SportsService,
+    private betsService: BetsService,
   ) {}
+
+  ngOnInit(): void {
+    this.balanceService.load();
+    this.loadMatches();
+  }
+
+  private loadMatches(): void {
+    this.loading   = true;
+    this.loadError = '';
+    this.sportsService.getMatches().subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.blnError || !res.returnValue) {
+          this.loadError = res.strResponseMessage ?? 'Error al cargar los partidos.';
+          return;
+        }
+        this.matches = res.returnValue;
+      },
+      error: () => {
+        this.loading   = false;
+        this.loadError = 'Error de conexión. Intenta de nuevo.';
+      },
+    });
+  }
+
+  // ── Dynamic filter chips derived from loaded sports ───────
+  get availableFilters(): { key: Filter; label: string }[] {
+    const labels: Record<string, string> = {
+      football:   '⚽ Fútbol',
+      basketball: '🏀 NBA',
+      tennis:     '🎾 Tenis',
+    };
+    const sports = [...new Set(this.matches.map(m => m.sport))];
+    return [
+      { key: 'all', label: 'Todo' },
+      ...sports.map(s => ({ key: s as Filter, label: labels[s] ?? s })),
+    ];
+  }
 
   // ── Match filtering ───────────────────────────────────────
   get filtered(): SportMatch[] {
@@ -94,7 +134,7 @@ export class ApuestasComponent {
   }
 
   get canConfirm(): boolean {
-    return this.rawAmount > 0 && !this.isInsufficient;
+    return this.rawAmount > 0 && !this.isInsufficient && !this.placing;
   }
 
   outcomeLabel(match: SportMatch, outcome: BetOutcome): string {
@@ -110,20 +150,20 @@ export class ApuestasComponent {
   openBetPanel(): void {
     this.rawAmount     = 0;
     this.displayAmount = '';
+    this.betError      = '';
     this.showBetPanel  = true;
   }
 
   closeBetPanel(): void {
+    if (this.placing) return;
     this.showBetPanel = false;
   }
 
   onAmountInput(event: Event): void {
     const el  = event.target as HTMLInputElement;
-    // Strip everything except digits and one decimal point
     let raw   = el.value.replace(/[^\d.]/g, '');
     const dot = raw.indexOf('.');
     if (dot !== -1) raw = raw.slice(0, dot + 1) + raw.slice(dot + 1).replace(/\./g, '');
-    // Limit to 2 decimal places
     const parts = raw.split('.');
     if (parts[1] !== undefined) parts[1] = parts[1].slice(0, 2);
     raw = parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
@@ -149,11 +189,40 @@ export class ApuestasComponent {
 
   confirmBet(): void {
     if (!this.canConfirm) return;
-    this.balanceService.deduct(this.rawAmount);
-    this.selections   = {};
-    this.showBetPanel = false;
-    this.showToast    = true;
-    setTimeout(() => (this.showToast = false), 2500);
+    this.placing  = true;
+    this.betError = '';
+
+    const req = {
+      amount:    this.rawAmount,
+      totalOdds: this.totalOdds,
+      selections: this.selectedList.map(({ match, outcome }) => ({
+        matchId: match.id,
+        team1:   match.team1,
+        team2:   match.team2,
+        league:  match.league,
+        outcome,
+        odds:    match.odds[outcome] ?? 1,
+      })),
+    };
+
+    this.betsService.placeBet(req).subscribe({
+      next: (res) => {
+        this.placing = false;
+        if (res.blnError || !res.returnValue) {
+          this.betError = res.strResponseMessage ?? 'Error al realizar la apuesta.';
+          return;
+        }
+        this.balanceService.set(res.returnValue.newBalance);
+        this.selections   = {};
+        this.showBetPanel = false;
+        this.showToast    = true;
+        setTimeout(() => (this.showToast = false), 2500);
+      },
+      error: () => {
+        this.placing  = false;
+        this.betError = 'Error de conexión. Intenta de nuevo.';
+      },
+    });
   }
 
   goBack(): void { this.router.navigate(['/home']); }
