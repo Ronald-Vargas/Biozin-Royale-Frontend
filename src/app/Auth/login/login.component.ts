@@ -76,8 +76,7 @@ export class LoginComponent {
           this.errorMsg = this.mapLoginError(res.strResponseMessage);
           return;
         }
-        const faltanDatos = !!res.returnValue?.camposPendientes?.length;
-        this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
+        this.router.navigate([this.authService.getPostLoginRoute(res.returnValue!)], { replaceUrl: true });
       },
       error: (err) => {
         this.loading = false;
@@ -155,6 +154,7 @@ export class LoginComponent {
   }
 
   async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
+    this.loading = true;
     const { error } =
       await this.supabaseService.client.auth.signInWithOAuth({
         provider,
@@ -165,6 +165,8 @@ export class LoginComponent {
 
     if (error) {
       console.error(`Error iniciando sesión con ${provider}:`, error);
+      this.loading = false;
+      this.errorMsg = this.mapLoginError(error.message);
     }
   }
 

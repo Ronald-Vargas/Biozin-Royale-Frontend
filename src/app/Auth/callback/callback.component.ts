@@ -78,12 +78,17 @@ export class CallbackComponent implements OnInit, OnDestroy {
     // (teléfono, país, fecha de nacimiento).
     this.authService.syncOAuth(session.access_token).subscribe({
       next: (res) => {
-        const faltanDatos = !!res.returnValue?.camposPendientes?.length;
-        this.redirect(faltanDatos ? '/miperfil' : '/home');
+        if (res.blnError || !res.returnValue) {
+          this.fail(res.strResponseMessage || 'No se pudo sincronizar el perfil.');
+          return;
+        }
+        this.redirect(this.authService.getPostLoginRoute(res.returnValue));
       },
       error: (err) => {
         console.error('[callback] error sincronizando perfil:', err);
-        this.redirect('/home');
+        // Antes esto mandaba a /home sin perfil válido (storeSession no corre si
+        // blnError es true), dejando al usuario en una pantalla rota sin aviso.
+        this.fail('No se pudo sincronizar tu cuenta. Intenta iniciar sesión de nuevo.');
       },
     });
   }

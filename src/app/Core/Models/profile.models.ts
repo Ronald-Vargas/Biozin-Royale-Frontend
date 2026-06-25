@@ -7,6 +7,8 @@ export interface PerfilResultado {
   country: string | null;
   birthdate: string | null;
   status: string;
+  role: 'user' | 'admin' | 'soporte';
+  isGuest: boolean;
   token: string | null;
   camposPendientes: string[];
 }

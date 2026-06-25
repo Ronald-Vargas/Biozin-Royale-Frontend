@@ -80,19 +80,23 @@ export class RegisterComponent {
     this.errorMsg = '';
     this.loading = true;
 
-    const { name, email, phone, pass, confirm } = this.form.value;
+    const { name, phone, pass, confirm } = this.form.value;
+    const email = (this.emailCtrl.value || '').trim().toLowerCase();
+    const datos = { nombre: name, email, phone, password: pass, confirm };
 
-    this.authService
-      .register({ nombre: name, email, phone, password: pass, confirm })
-      .subscribe({
+    // Si ya estaba como invitado, esto reclama ese mismo perfil (y su saldo) en
+    // vez de crear una cuenta nueva desde cero.
+    const esInvitado = this.authService.currentProfile()?.isGuest;
+    const peticion = esInvitado ? this.authService.claimGuest(datos) : this.authService.register(datos);
+
+    peticion.subscribe({
         next: (res) => {
           this.loading = false;
-          if (res.blnError) {
+          if (res.blnError || !res.returnValue) {
             this.errorMsg = this.mapRegisterError(res.strResponseMessage);
             return;
           }
-          const faltanDatos = !!res.returnValue?.camposPendientes?.length;
-          this.router.navigate([faltanDatos ? '/miperfil' : '/home'], { replaceUrl: true });
+          this.router.navigate([this.authService.getPostLoginRoute(res.returnValue)], { replaceUrl: true });
         },
         error: (err) => {
           this.loading = false;

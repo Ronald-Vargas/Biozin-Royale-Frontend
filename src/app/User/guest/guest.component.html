@@ -22,12 +22,14 @@
       </p>
 
       <div class="btn-wrap">
-        <app-gold-button (clicked)="goHome()">
+        <app-gold-button [loading]="loading" (clicked)="continuarComoInvitado()">
           Continuar como invitado
         </app-gold-button>
       </div>
 
-      <p class="guest-note">
+      <p class="guest-note" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+      <p class="guest-note" *ngIf="!errorMsg">
         Podrás crear una cuenta más tarde<br />y mantener tu progreso.
       </p>
 

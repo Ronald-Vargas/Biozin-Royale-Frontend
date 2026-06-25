@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse, LoginManualRequest, RegistroManualRequest } from '../Models/auth.models';
 import { PerfilResultado } from '../Models/profile.models';
+import { SupabaseService } from './supabase.service';
 
 const TOKEN_KEY = 'biozin_token';
 const PROFILE_KEY = 'biozin_profile';
@@ -14,11 +15,33 @@ export class AuthService {
 
   readonly currentProfile = signal<PerfilResultado | null>(this.readStoredProfile());
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient, private readonly supabaseService: SupabaseService) {}
+
+  /** A dónde mandar al usuario justo después de login/registro/sync/invitado. */
+  getPostLoginRoute(perfil: PerfilResultado): string {
+    if (perfil.role === 'admin') return '/admin';
+    if (perfil.role === 'soporte') return '/support';
+    // Un invitado nunca tiene phone/country/birthdate, así que camposPendientes
+    // siempre viene lleno; no tiene sentido mandarlo a completar un perfil que
+    // todavía no existe de verdad.
+    if (!perfil.isGuest && perfil.camposPendientes.length) return '/miperfil';
+    return '/home';
+  }
 
   register(datos: RegistroManualRequest): Observable<ApiResponse<PerfilResultado>> {
     return this.http
       .post<ApiResponse<PerfilResultado>>(`${this.baseUrl}/register`, datos)
+      .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  /**
+   * Llamado cuando quien se registra ya estaba autenticado como invitado: el
+   * backend actualiza ese mismo Profile en vez de crear uno nuevo, así no se
+   * pierde el saldo/progreso de la sesión de invitado.
+   */
+  claimGuest(datos: RegistroManualRequest): Observable<ApiResponse<PerfilResultado>> {
+    return this.http
+      .post<ApiResponse<PerfilResultado>>(`${this.baseUrl}/claim-guest`, datos)
       .pipe(tap((res) => this.storeSession(res)));
   }
 
@@ -44,6 +67,9 @@ export class AuthService {
   }
 
   logout(): void {
+    // Sin esto la sesión de Supabase queda viva: un login social podría reentrar
+    // sin pedir credenciales aunque ya se haya "cerrado sesión" en la app.
+    this.supabaseService.client.auth.signOut();
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(PROFILE_KEY);
     this.currentProfile.set(null);

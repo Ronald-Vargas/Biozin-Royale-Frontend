@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from './Core/Guards/role.guard';
+import { realAccountGuard } from './Core/Guards/real-account.guard';
 
 // `depth` define el nivel jerárquico de cada pantalla. La animación
 // de rutas compara el orden entrante vs saliente: mayor = avance
@@ -70,6 +72,7 @@ export const routes: Routes = [
   {
     path: 'wallet',
     data: { depth: 5, tab: 2 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/Wallet/wallet/wallet.component').then(m => m.WalletComponent),
   },
   {
@@ -85,11 +88,13 @@ export const routes: Routes = [
   {
     path: 'deposito',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/Wallet/deposits/deposits.component').then(m => m.DepositsComponent),
   },
   {
     path: 'retirar',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/Wallet/withdrawals/withdrawals.component').then(m => m.WithdrawalsComponent),
   },
   {
@@ -100,6 +105,7 @@ export const routes: Routes = [
   {
     path: 'pagos',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent),
   },
   {
@@ -115,6 +121,7 @@ export const routes: Routes = [
   {
     path: 'miperfil',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/personal-information/personal-information.component').then(m => m.PersonalInformationComponent),
   },
   {
@@ -125,6 +132,7 @@ export const routes: Routes = [
   {
     path: 'transacciones',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/Wallet/transactions/transactions.component').then(m => m.TransactionsComponent),
   },
   {
@@ -152,86 +160,107 @@ export const routes: Routes = [
   {
     path: 'apuestas',
     data: { depth: 6 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
   {
   path: 'admin',
+  canActivate: [roleGuard(['admin'])],
   loadComponent: () => import('./Admin/home/home.component').then(m => m.HomeComponent),
   },
   {
     path: 'admin/usuarios',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/users/users.component').then(m => m.UsersComponent),
   },
   {
     path: 'admin/usuario/:id',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/users/user-detail/user-detail.component').then(m => m.UserDetailComponent),
   },
   {
     path: 'admin/finanzas',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/finance/finance.component').then(m => m.AdminFinanceComponent),
   },
   {
     path: 'admin/reportes',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/reports/reports.component').then(m => m.AdminReportsComponent),
   },
   {
     path: 'admin/ajustes',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/settings/settings.component').then(m => m.AdminSettingsComponent),
   },
   {
     path: 'admin/equipo',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/team.component').then(m => m.TeamComponent),
   },
   {
     path: 'admin/equipo/nuevo',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/new-member/new-member.component').then(m => m.NewMemberComponent),
   },
   {
     path: 'admin/equipo/creado',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/member-created/member-created.component').then(m => m.MemberCreatedComponent),
   },
   {
     path: 'support',
+    canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/panel/panel.component').then(m => m.SupportPanelComponent),
   },
   {
     path: 'soporte/ticket/:id',
+    canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/ticket/ticket.component').then(m => m.TicketComponent),
   },
   {
   path: 'soporte/tickets',
+  canActivate: [roleGuard(['soporte'])],
   loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
   },
   {
     path: 'soporte/usuarios',
+    canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/users/users.component').then(m => m.UsersComponent),
   },
   {
     path: 'soporte/reportes',
+    canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/reports/reports.component').then(m => m.ReportsComponent),
   },
   {
     path: 'soporte/ajustes',
+    canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/settings/settings.component').then(m => m.SettingsComponent),
   },
   {
     path: 'create-ticket',
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/support/create-ticket/create-ticket.component').then(m => m.CreateTicketComponent),
   },
   {
     path: 'ticket-ok',
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/support/ticket-ok/ticket-ok.component').then(m => m.TicketOkComponent),
   },
   {
     path: 'admin/soporte',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/support/support.component').then(m => m.SupportComponent),
   },
   {
   path: 'admin/bonuses',
+  canActivate: [roleGuard(['admin'])],
   loadComponent: () => import('./Admin/bonuses/bonuses.component').then(m => m.BonusesComponent),
   },
   {
     path: 'admin/bonuses/new',
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/bonuses/new-bonuse/new-bonuse.component').then(m => m.NewBonuseComponent),
   },
 ];
