@@ -46,6 +46,16 @@
     </div>
   </div>
 
+  <!-- Aviso de datos pendientes -->
+  <div class="pending-banner" *ngIf="pendingFields.length && !editMode">
+    <app-icon [svg]="iconFinger" [size]="18" style="color:var(--gold-1)"></app-icon>
+    <div class="pending-text">
+      <strong>Completa tu perfil.</strong>
+      Te falta: {{ pendingFields.join(', ') }}.
+    </div>
+    <app-gold-button (clicked)="editInfo()">Completar ahora</app-gold-button>
+  </div>
+
   <!-- Información personal -->
   <div class="section-head">
     <app-icon [svg]="iconPersonCircle" [size]="19" style="color:var(--gold-1)"></app-icon>

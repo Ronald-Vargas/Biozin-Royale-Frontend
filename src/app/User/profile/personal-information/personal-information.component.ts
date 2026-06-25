@@ -14,6 +14,12 @@ import { ICON_PERSON_CIRCLE, ICON_FINGERPRINT, ICON_COPY, ICON_CHECK, ICON_CALEN
 interface InfoRow { k: string; v: string; icon: string; }
 interface Stat    { icon: string; value: string; label: string; }
 
+const PENDING_FIELD_LABELS: Record<string, string> = {
+  phone: 'Teléfono',
+  country: 'País',
+  birthdate: 'Fecha de nacimiento',
+};
+
 @Component({
   standalone: true,
   imports: [
@@ -50,6 +56,8 @@ export class PersonalInformationComponent implements OnInit {
   info: InfoRow[] = [];
 
   stats: Stat[] = [];
+
+  pendingFields: string[] = [];
 
   form: FormGroup;
 
@@ -139,7 +147,15 @@ export class PersonalInformationComponent implements OnInit {
     this.saving = true;
     this.errorMsg = '';
 
-    this.profileService.updateProfile(this.form.value).subscribe({
+    // El form siempre manda '' en los campos vacíos (no undefined), y el backend
+    // espera birthdate como fecha ISO o ausente — un '' rompe la deserialización
+    // de DateOnly? en .NET. Se omiten los campos vacíos en vez de mandarlos como ''.
+    const datos: Record<string, string> = {};
+    for (const [campo, valor] of Object.entries(this.form.value)) {
+      if (valor) datos[campo] = valor as string;
+    }
+
+    this.profileService.updateProfile(datos).subscribe({
       next: (res) => {
         this.saving = false;
         if (res.blnError || !res.returnValue) {
@@ -162,6 +178,7 @@ export class PersonalInformationComponent implements OnInit {
 
   private aplicarPerfil(perfil: PerfilResultado): void {
     this.perfil = perfil;
+    this.pendingFields = perfil.camposPendientes.map((f) => PENDING_FIELD_LABELS[f] ?? f);
     this.info = [
       { k: 'Nombre completo',     v: perfil.displayName || '—',        icon: ICON_PERSON_OUTLINE },
       { k: 'Correo electrónico',  v: perfil.email,                     icon: ICON_MAIL },
