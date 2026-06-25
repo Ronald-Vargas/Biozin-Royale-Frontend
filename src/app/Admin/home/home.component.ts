@@ -8,6 +8,7 @@ import { ICON_CHATBUBBLES, ICON_CHEVRON_FWD, ICON_POWER } from 'src/app/User/sha
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { AdminKpi, ADMIN_KPIS } from '../shared/admin.data';
 import { KpiCardComponent } from './Components/kpi-card/kpi-card.component';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -29,9 +30,9 @@ export class HomeComponent {
   kpis: AdminKpi[] = ADMIN_KPIS;
   logo = 'assets/logo.png';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   goPerfil()  { this.router.navigate(['/miperfil']); }
-  logout()    { this.router.navigate(['/welcome'], { replaceUrl: true }); }
+  logout()    { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
   goSoporte() { this.router.navigate(['/admin/soporte']); }
 }

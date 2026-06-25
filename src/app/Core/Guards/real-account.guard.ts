@@ -8,7 +8,7 @@ export const realAccountGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (authService.currentProfile()?.isGuest) {
-    return router.createUrlTree(['/auth/register']);
+    return router.createUrlTree(['/auth/register'], { queryParams: { motivo: 'invitado' } });
   }
 
   return true;

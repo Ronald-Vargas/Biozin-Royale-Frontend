@@ -8,6 +8,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.component';
 import { ICON_NOTIFICATIONS, ICON_VOLUME, ICON_POWER } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 
 @Component({
@@ -30,8 +31,8 @@ export class SettingsComponent {
   notif      = true;
   sound      = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   goBack()  { this.router.navigate(['/soporte']); }
-  logout()  { this.router.navigate(['/welcome'], { replaceUrl: true }); }
+  logout()  { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 }

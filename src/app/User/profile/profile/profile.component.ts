@@ -7,6 +7,7 @@ import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.co
 import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP } from '../../shared/icons/icons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 import { PerfilResultado } from 'src/app/Core/Models/profile.models';
 
 
@@ -49,7 +50,12 @@ export class ProfileComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private fb: FormBuilder, private profileService: ProfileService) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private profileService: ProfileService,
+    private authService: AuthService,
+  ) {
     this.form = this.fb.group({
       displayName: [''],
       username: [''],
@@ -91,5 +97,5 @@ export class ProfileComponent implements OnInit {
   goBack()     { this.router.navigate(['/home'], { replaceUrl: true }); }
   goProfile()  { this.router.navigate(['/miperfil']); }
   goTo(route: string) { this.router.navigate([route]); }
-  logout()     { this.router.navigate(['/welcome'], { replaceUrl: true }); }
+  logout()     { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 }

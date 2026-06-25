@@ -40,14 +40,21 @@ export class GuestComponent {
     this.loading = true;
     this.errorMsg = '';
 
-    const { data, error } = await this.supabaseService.client.auth.signInAnonymously();
-    if (error || !data.session) {
+    // signInAnonymously() SIEMPRE crea una identidad nueva, aunque ya haya una
+    // sesión anónima (o de cualquier tipo) activa — por eso primero revisamos si
+    // ya hay una sesión de Supabase válida y la reutilizamos, en vez de generar
+    // un invitado distinto cada vez que se entra a esta pantalla.
+    const { data: existente } = await this.supabaseService.client.auth.getSession();
+    const session = existente.session
+      ?? (await this.supabaseService.client.auth.signInAnonymously()).data.session;
+
+    if (!session) {
       this.loading = false;
       this.errorMsg = 'No se pudo continuar como invitado. Intenta de nuevo.';
       return;
     }
 
-    this.authService.syncOAuth(data.session.access_token).subscribe({
+    this.authService.syncOAuth(session.access_token).subscribe({
       next: (res) => {
         this.loading = false;
         if (res.blnError || !res.returnValue) {

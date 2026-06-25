@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonCheckbox } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -38,7 +38,7 @@ export class RegisterComponent {
   agree   = false;
   errorMsg = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, route: ActivatedRoute) {
     this.form = this.fb.group({
       name:    ['', Validators.required],
       email:   ['', [Validators.required, Validators.email]],
@@ -46,6 +46,12 @@ export class RegisterComponent {
       pass:    ['', [Validators.required, Validators.minLength(8)]],
       confirm: ['', Validators.required],
     });
+
+    // El guard de cuentas reales manda acá con ?motivo=invitado cuando un
+    // invitado intenta entrar a una pantalla que requiere cuenta real.
+    if (route.snapshot.queryParamMap.get('motivo') === 'invitado') {
+      this.errorMsg = 'Crea una cuenta para depositar, retirar o apostar.';
+    }
   }
 
   get nameCtrl()    { return this.form.get('name')    as FormControl; }
