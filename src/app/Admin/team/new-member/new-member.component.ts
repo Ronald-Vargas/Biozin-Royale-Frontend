@@ -6,9 +6,16 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_PERSON_OUTLINE, ICON_MAIL, ICON_PHONE_CALL, ICON_SHIELD, ICON_PERSON_ADD, ICON_SPARKLES } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
-import { TeamMember, autoUsername, autoPassword, ACCESS_BY_ROLE, TEAM_MEMBERS } from '../../shared/admin.data';
+import { TeamMember } from '../../shared/admin.data';
 import { FormFieldComponent } from './Components/form-field/form-field.component';
 import { SelectFieldComponent } from './Components/select-field/select-field.component';
+import { StaffService } from 'src/app/Core/Services/staff.service';
+import { toTeamMember } from '../team.component';
+
+const ROLE_TO_BACKEND: Record<string, 'admin' | 'soporte'> = {
+  Administrador: 'admin',
+  Soporte: 'soporte',
+};
 
 @Component({
   standalone: true,
@@ -36,23 +43,26 @@ export class NewMemberComponent {
 
   roleOptions = ['Administrador', 'Soporte'];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private staffService: StaffService) {}
 
   goBack() { this.router.navigate(['/admin/equipo']); }
 
   submit() {
-    const member: TeamMember = {
-      name:      this.name,
-      email:     this.email,
-      phone:     this.phone,
-      role:      this.role,
-      status:    'Activo',
-      user:      autoUsername(this.name),
-      pass:      autoPassword(),
-      access:    ACCESS_BY_ROLE[this.role],
-      sendCreds: true,
-    };
-    TEAM_MEMBERS.unshift(member);
-    this.router.navigate(['/admin/equipo/creado'], { state: { member } });
+    this.staffService.create({
+      nombre: this.name,
+      correoContacto: this.email,
+      phone: this.phone,
+      role: ROLE_TO_BACKEND[this.role],
+    }).subscribe((res) => {
+      if (res.blnError || !res.returnValue) return;
+
+      const member: TeamMember = {
+        ...toTeamMember(res.returnValue),
+        user: res.returnValue.username,
+        pass: res.returnValue.tempPassword ?? undefined,
+        sendCreds: true,
+      };
+      this.router.navigate(['/admin/equipo/creado'], { state: { member } });
+    });
   }
 }

@@ -11,6 +11,7 @@ export interface PerfilResultado {
   isGuest: boolean;
   token: string | null;
   camposPendientes: string[];
+  tempPassword?: string | null;
 }
 
 export interface EstadisticasResultado {
