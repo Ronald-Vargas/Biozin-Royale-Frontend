@@ -1,0 +1,44 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Historial de apuestas" (back)="goBack()"></app-admin-header>
+
+    @if (loading) {
+      <div class="state-msg">Cargando historial…</div>
+    }
+
+    @if (!loading && error) {
+      <div class="state-msg state-msg--error">{{ error }}</div>
+    }
+
+    @if (!loading && !error && bets.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconDice" [size]="44" style="color:rgba(212,167,60,0.35)"></app-icon>
+        <div class="empty-title">Sin apuestas registradas</div>
+        <div class="empty-sub">Este usuario aún no tiene apuestas resueltas.</div>
+      </div>
+    }
+
+    @if (!loading && bets.length > 0) {
+      <div class="bets-list">
+        @for (b of bets; track b.id) {
+          <div class="bet-card">
+            <div class="bet-icon">
+              <app-icon [svg]="iconDice" [size]="20" style="color:var(--gold-1)"></app-icon>
+            </div>
+            <div class="bet-info">
+              <div class="bet-title">{{ gameName(b.gameType) }}</div>
+              <div class="bet-meta">Apostado: ${{ b.amount }} · {{ b.createdAt | date:'dd/MM/yyyy, h:mm a' }}</div>
+            </div>
+            <div class="bet-profit" [class.profit--win]="b.profit >= 0" [class.profit--loss]="b.profit < 0">
+              {{ fmtProfit(b.profit) }}
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

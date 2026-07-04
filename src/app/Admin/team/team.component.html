@@ -37,7 +37,13 @@
       ></app-member-row>
     </div>
 
-    <div *ngIf="list.length === 0" class="empty">Sin resultados</div>
+    @if (list.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconPeople" [size]="44" class="empty-icon"></app-icon>
+        <div class="empty-title">{{ q ? 'Sin resultados' : 'Sin miembros' }}</div>
+        <div class="empty-sub">{{ q ? 'No hay miembros que coincidan con la búsqueda.' : 'Aún no hay miembros en el equipo.' }}</div>
+      </div>
+    }
   </div>
 
   <app-admin-nav current="usuarios"></app-admin-nav>

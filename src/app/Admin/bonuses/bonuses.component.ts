@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.component';
-import { ICON_ADD_CIRCLE } from 'src/app/User/shared/icons/icons';
+import { ICON_ADD_CIRCLE, ICON_GIFT_FILLED } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { PromotionService } from 'src/app/Core/Services/promotion.service';
@@ -22,6 +22,7 @@ import { Promotion } from 'src/app/Core/Models/promotion.models';
 })
 export class BonusesComponent implements OnInit {
   iconAddCircle = ICON_ADD_CIRCLE;
+  iconGift      = ICON_GIFT_FILLED;
 
   bonos: Promotion[] = [];
   loading = true;

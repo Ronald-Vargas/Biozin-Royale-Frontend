@@ -22,7 +22,11 @@
           <app-bonus-card [bonus]="b" (viewDetails)="goDetalle($event)"></app-bonus-card>
         }
         @if (activeBonuses.length === 0 && !loading) {
-          <div class="empty-state">No hay bonos disponibles por el momento.</div>
+          <div class="empty-wrap">
+            <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
+            <div class="empty-title">Sin bonos activos</div>
+            <div class="empty-sub">No hay bonos disponibles por el momento. ¡Vuelve pronto!</div>
+          </div>
         }
       </div>
     }
@@ -46,7 +50,11 @@
       </div>
 
       @if (histList.length === 0) {
-        <div class="empty-state">Sin bonos canjeados.</div>
+        <div class="empty-wrap">
+          <app-icon [svg]="iconTrophy" [size]="44" class="empty-icon"></app-icon>
+          <div class="empty-title">Sin historial</div>
+          <div class="empty-sub">Aún no has canjeado ningún bono.</div>
+        </div>
       }
     }
   </div>

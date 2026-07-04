@@ -29,7 +29,15 @@
       <div class="state-msg state-msg--error">{{ error }}</div>
     }
 
-    @if (!loading && !error) {
+    @if (!loading && !error && bonos.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
+        <div class="empty-title">Sin bonos creados</div>
+        <div class="empty-sub">Aún no hay bonos. Crea el primero con el botón de arriba.</div>
+      </div>
+    }
+
+    @if (!loading && !error && bonos.length > 0) {
       <div class="bonos-list">
         @for (b of bonos; track b.id) {
           <div class="bono-row" [class.bono-row--disabled]="!b.isActive">

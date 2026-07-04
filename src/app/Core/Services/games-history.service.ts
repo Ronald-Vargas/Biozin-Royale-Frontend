@@ -14,4 +14,8 @@ export class GamesHistoryService {
   getHistory(): Observable<ApiResponse<HistorialJuegoResultado[]>> {
     return this.http.get<ApiResponse<HistorialJuegoResultado[]>>(this.historyUrl);
   }
+
+  adminGetHistory(userId: string): Observable<ApiResponse<HistorialJuegoResultado[]>> {
+    return this.http.get<ApiResponse<HistorialJuegoResultado[]>>(`${this.historyUrl}/admin/${userId}`);
+  }
 }

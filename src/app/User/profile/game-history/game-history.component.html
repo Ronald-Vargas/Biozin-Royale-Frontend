@@ -6,7 +6,12 @@
   <div class="page-inner">
   <p *ngIf="loading">Cargando historial...</p>
   <p *ngIf="errorMsg">{{ errorMsg }}</p>
-  <p *ngIf="!loading && !errorMsg && gameHist.length === 0">Todavía no has jugado ninguna partida.</p>
+
+  <div *ngIf="!loading && !errorMsg && gameHist.length === 0" class="empty-wrap">
+    <app-icon [svg]="iconDice" [size]="44" class="empty-icon"></app-icon>
+    <div class="empty-title">Sin partidas jugadas</div>
+    <div class="empty-sub">Aún no has jugado ninguna partida. ¡Entra a los juegos y empieza a jugar!</div>
+  </div>
 
   <ng-container *ngIf="!loading && !errorMsg && gameHist.length > 0">
   <!-- Table head -->

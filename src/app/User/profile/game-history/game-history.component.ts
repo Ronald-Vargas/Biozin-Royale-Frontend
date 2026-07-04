@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { GameThumbComponent, GameHist } from './Components/game-thumb/game-thumb.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { GamesHistoryService } from 'src/app/Core/Services/games-history.service';
 import { HistorialJuegoResultado } from 'src/app/Core/Models/games-history.models';
+import { ICON_DICE } from 'src/app/User/shared/icons/icons';
 
 // El backend solo manda `gameType` (el slug de la tabla `bets`); el resto es
 // presentación que no le compete a la API. Si llega un slug sin entrada acá,
@@ -21,12 +23,13 @@ const GAME_DISPLAY_FALLBACK = { cat: 'casino', g1: '#3a3a3a', g2: '#161616', ic:
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ScreenShellComponent, GameThumbComponent],
+  imports: [CommonModule, ScreenShellComponent, GameThumbComponent, SvgIconComponent],
   selector: 'app-game-history',
   templateUrl: './game-history.component.html',
   styleUrls: ['./game-history.component.scss'],
 })
 export class GameHistoryComponent implements OnInit {
+  iconDice = ICON_DICE;
   gameHist: GameHist[] = [];
   loading = false;
   errorMsg = '';

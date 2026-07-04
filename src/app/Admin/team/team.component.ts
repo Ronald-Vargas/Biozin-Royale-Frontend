@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_SEARCH, ICON_FUNNEL, ICON_ADD_CIRCLE } from 'src/app/User/shared/icons/icons';
+import { ICON_SEARCH, ICON_FUNNEL, ICON_ADD_CIRCLE, ICON_PEOPLE } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { TeamMember } from '../shared/admin.data';
 import { MemberRowComponent } from './Components/member-row/member-row.component';
@@ -36,6 +36,7 @@ export class TeamComponent implements OnInit {
   iconSearch    = ICON_SEARCH;
   iconFunnel    = ICON_FUNNEL;
   iconAddCircle = ICON_ADD_CIRCLE;
+  iconPeople    = ICON_PEOPLE;
 
   q = '';
   members: TeamMember[] = [];

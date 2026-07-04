@@ -7,7 +7,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { UserRowComponent } from './Components/user-row/user-row.component';
-import { ICON_SEARCH, ICON_FUNNEL, ICON_PEOPLE, ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
+import { ICON_SEARCH, ICON_FUNNEL, ICON_PEOPLE, ICON_CHEVRON_FWD, ICON_PERSON_OUTLINE } from 'src/app/User/shared/icons/icons';
 import { UserAdminService } from 'src/app/Core/Services/user-admin.service';
 import { AdminUser } from 'src/app/Core/Models/profile.models';
 import { httpErrorMsg } from 'src/app/Core/Utils/http-error';
@@ -24,10 +24,11 @@ import { httpErrorMsg } from 'src/app/Core/Utils/http-error';
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
-  iconSearch = ICON_SEARCH;
-  iconFunnel = ICON_FUNNEL;
+  iconSearch  = ICON_SEARCH;
+  iconFunnel  = ICON_FUNNEL;
   iconPeople  = ICON_PEOPLE;
   iconChevron = ICON_CHEVRON_FWD;
+  iconPerson  = ICON_PERSON_OUTLINE;
 
   q = '';
   allUsers: AdminUser[] = [];

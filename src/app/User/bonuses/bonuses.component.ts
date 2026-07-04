@@ -4,19 +4,24 @@ import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../shared/Components/screen-shell/screen-shell.component';
 import { BonusCardComponent, ActiveBonus } from './Components/bonus-card/bonus-card.component';
 import { BonusHistCardComponent, HistBonus } from './Components/bonus-hist-card/bonus-hist-card.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { PromotionService } from 'src/app/Core/Services/promotion.service';
 import { Promotion, PromotionClaim } from 'src/app/Core/Models/promotion.models';
+import { ICON_GIFT_FILLED, ICON_TROPHY } from 'src/app/User/shared/icons/icons';
 
 interface Filter { key: string; label: string; }
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ScreenShellComponent, BonusCardComponent, BonusHistCardComponent],
+  imports: [CommonModule, ScreenShellComponent, BonusCardComponent, BonusHistCardComponent, SvgIconComponent],
   selector: 'app-bonuses',
   templateUrl: './bonuses.component.html',
   styleUrls: ['./bonuses.component.scss'],
 })
 export class BonusesComponent implements OnInit {
+  iconGift   = ICON_GIFT_FILLED;
+  iconTrophy = ICON_TROPHY;
+
   tab    = 'activos';
   filter = 'todos';
   loading = true;

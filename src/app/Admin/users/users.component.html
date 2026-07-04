@@ -39,7 +39,13 @@
       ></app-user-row>
     </div>
 
-    <div *ngIf="list.length === 0" class="empty">Sin resultados</div>
+    @if (list.length === 0 && !loading) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconPerson" [size]="44" class="empty-icon"></app-icon>
+        <div class="empty-title">{{ q ? 'Sin resultados' : 'Sin usuarios' }}</div>
+        <div class="empty-sub">{{ q ? 'No hay usuarios que coincidan con la búsqueda.' : 'Aún no hay usuarios registrados.' }}</div>
+      </div>
+    }
   </div>
 
   <app-admin-nav current="usuarios"></app-admin-nav>
