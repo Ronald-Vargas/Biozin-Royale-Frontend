@@ -55,7 +55,6 @@ export class UserBonusComponent implements OnInit {
     this.promotionService.adminGrant(this.userId, {
       title: this.title.trim(),
       description: this.description.trim() || undefined,
-      promotionType: 'Liquidez',
       amount: this.amount,
       isActive: false,
     }).subscribe({

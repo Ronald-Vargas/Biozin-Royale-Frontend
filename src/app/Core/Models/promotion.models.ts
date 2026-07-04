@@ -2,7 +2,6 @@ export interface Promotion {
   id: string;
   title: string;
   description: string | null;
-  promotionType: string;
   amount: number;
   isActive: boolean;
   startsAt: string | null;
@@ -19,12 +18,3 @@ export interface PromotionClaim {
   completedAt: string | null;
 }
 
-export interface AdminUser {
-  id: string;
-  username: string;
-  displayName: string | null;
-  email: string;
-  status: string;
-  role: string;
-  createdAt: string;
-}

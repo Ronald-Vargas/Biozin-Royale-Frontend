@@ -8,8 +8,8 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { UserRowComponent } from './Components/user-row/user-row.component';
 import { ICON_SEARCH, ICON_FUNNEL, ICON_PEOPLE, ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
-import { PromotionService } from 'src/app/Core/Services/promotion.service';
-import { AdminUser } from 'src/app/Core/Models/promotion.models';
+import { UserAdminService } from 'src/app/Core/Services/user-admin.service';
+import { AdminUser } from 'src/app/Core/Models/profile.models';
 import { httpErrorMsg } from 'src/app/Core/Utils/http-error';
 
 
@@ -34,10 +34,10 @@ export class UsersComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private router: Router, private promotionService: PromotionService) {}
+  constructor(private router: Router, private userAdminService: UserAdminService) {}
 
   ngOnInit(): void {
-    this.promotionService.adminGetUsers().subscribe({
+    this.userAdminService.getAll().subscribe({
       next: (res) => {
         this.loading = false;
         if (!res.blnError && res.returnValue) {

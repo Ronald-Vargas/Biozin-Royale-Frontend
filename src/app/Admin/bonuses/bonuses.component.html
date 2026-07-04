@@ -36,7 +36,6 @@
             <div class="bono-info">
               <div class="bono-title-row">
                 <span class="bono-title">{{ b.title }}</span>
-                <app-kind-badge [kind]="b.promotionType"></app-kind-badge>
               </div>
               <div class="bono-desc">{{ b.description || ('$' + b.amount) }}</div>
               <div class="bono-meta">Monto: ${{ b.amount }}</div>

@@ -28,3 +28,13 @@ export interface ActualizarPerfilRequest {
   country?: string;
   birthdate?: string;
 }
+
+export interface AdminUser {
+  id: string;
+  username: string;
+  displayName: string | null;
+  email: string;
+  status: string;
+  role: string;
+  createdAt: string;
+}

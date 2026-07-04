@@ -26,58 +26,6 @@
   margin-left: 2px;
 }
 
-// ── Tipo ─────────────────────────────────────────────────────
-.kind-row {
-  display: flex;
-  gap: 11px;
-  margin-bottom: 22px;
-}
-
-.kind-card {
-  flex: 1;
-  padding: 15px 12px;
-  border-radius: 15px;
-  cursor: pointer;
-  text-align: left;
-  background: rgba(255, 255, 255, 0.022);
-  border: 1.4px solid rgba(212, 167, 60, 0.22);
-
-  &--active {
-    background: linear-gradient(135deg, rgba(199, 154, 50, 0.16), rgba(122, 90, 20, 0.03));
-    border-color: rgba(212, 167, 60, 0.6);
-  }
-}
-
-.kind-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.kind-icon {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  border: 1px solid;
-}
-
-.kind-name {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--cream);
-  margin-top: 11px;
-}
-
-.kind-sub {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
-  color: #cbb98f;
-  margin-top: 3px;
-  line-height: 1.35;
-}
-
 // ── Inputs ───────────────────────────────────────────────────
 .name-input {
   width: 100%;

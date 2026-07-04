@@ -5,10 +5,9 @@ import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.component';
-import { ICON_CHECK_CIRCLE, ICON_GIFT_FILLED, ICON_CASH, ICON_SYNC_CIRCLE } from 'src/app/User/shared/icons/icons';
+import { ICON_GIFT_FILLED } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
-import { BONO_KIND } from '../../shared/admin.data';
 import { PromotionService } from 'src/app/Core/Services/promotion.service';
 
 const DAYS_PRESETS = [3, 5, 7, 15, 30];
@@ -24,10 +23,9 @@ const DAYS_PRESETS = [3, 5, 7, 15, 30];
   styleUrls: ['./new-bonuse.component.scss'],
 })
 export class NewBonuseComponent {
-  iconCheck   = ICON_CHECK_CIRCLE;
+  previewIcon = ICON_GIFT_FILLED;
   iconGift    = ICON_GIFT_FILLED;
 
-  kind: 'Liquidez' | 'Tiradas' = 'Liquidez';
   title  = '';
   description = '';
   amount = 0;
@@ -37,18 +35,13 @@ export class NewBonuseComponent {
   error = '';
 
   daysPresets = DAYS_PRESETS;
-  readonly kindOptions: Array<'Liquidez' | 'Tiradas'> = ['Liquidez', 'Tiradas'];
 
   constructor(private router: Router, private promotionService: PromotionService) {}
 
   get valid(): boolean { return this.title.trim().length >= 3 && this.amount > 0; }
 
-  kindStyle(k: string) { return BONO_KIND[k] || BONO_KIND['Liquidez']; }
-  isKind(k: string): boolean { return this.kind === k; }
 
-  get previewIcon(): string {
-    return this.kind === 'Liquidez' ? ICON_CASH : ICON_SYNC_CIRCLE;
-  }
+
 
   submit(): void {
     if (!this.valid || this.saving) return;
@@ -61,7 +54,6 @@ export class NewBonuseComponent {
     this.promotionService.adminCreate({
       title: this.title.trim(),
       description: this.description.trim() || undefined,
-      promotionType: this.kind,
       amount: this.amount,
       isActive: this.enabled,
       endsAt: endsAt.toISOString(),

@@ -7,7 +7,6 @@ import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.co
 import { ICON_ADD_CIRCLE } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
-import { KindBadgeComponent } from './Components/kind-badge/kind-badge.component';
 import { PromotionService } from 'src/app/Core/Services/promotion.service';
 import { Promotion } from 'src/app/Core/Models/promotion.models';
 
@@ -15,7 +14,7 @@ import { Promotion } from 'src/app/Core/Models/promotion.models';
   standalone: true,
   imports: [
     CommonModule, AtmosphereComponent, SvgIconComponent,
-    AdminNavComponent, AdminHeaderComponent, KindBadgeComponent, ToggleComponent,
+    AdminNavComponent, AdminHeaderComponent, ToggleComponent,
   ],
   selector: 'app-bonuses',
   templateUrl: './bonuses.component.html',

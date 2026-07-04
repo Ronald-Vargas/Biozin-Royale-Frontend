@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserAvatarComponent } from '../../../shared/user-avatar/user-avatar.component';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
-import { AdminUser } from 'src/app/Core/Models/promotion.models';
+import { AdminUser } from 'src/app/Core/Models/profile.models';
 import { ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 

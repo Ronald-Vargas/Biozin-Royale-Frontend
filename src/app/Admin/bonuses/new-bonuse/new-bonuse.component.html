@@ -4,35 +4,12 @@
   <div class="scroll-body">
     <app-admin-header title="Crear bono" (back)="goBack()"></app-admin-header>
 
-    <!-- Tipo -->
-    <div class="field-label">Tipo de bono</div>
-    <div class="kind-row">
-      @for (k of kindOptions; track k) {
-        <button
-          class="kind-card"
-          [class.kind-card--active]="isKind(k)"
-          (click)="kind = k"
-        >
-          <div class="kind-card-top">
-            <div class="kind-icon" [style.background]="kindStyle(k).bg" [style.border-color]="kindStyle(k).bd">
-              <app-icon [svg]="kindStyle(k).icon" [size]="19" [style.color]="kindStyle(k).color"></app-icon>
-            </div>
-            @if (isKind(k)) {
-              <app-icon [svg]="iconCheck" [size]="20" style="color:var(--gold-1)"></app-icon>
-            }
-          </div>
-          <div class="kind-name">{{ k }}</div>
-          <div class="kind-sub">{{ k === 'Liquidez' ? 'Dinero o fichas de regalo' : 'Giros gratis en slots' }}</div>
-        </button>
-      }
-    </div>
-
     <!-- Nombre -->
     <div class="field-label">Nombre del bono</div>
     <input
       class="gold-input name-input"
       [(ngModel)]="title"
-      [placeholder]="kind === 'Liquidez' ? 'Ej. Bono de Recarga' : 'Ej. Giros de la Suerte'"
+      [placeholder]="'Ej. Bono de Recarga'"
     />
 
     <!-- Monto -->
@@ -83,7 +60,7 @@
       <div class="preview-text">
         <div class="preview-title">{{ title.trim() || 'Nombre del bono' }}</div>
         <div class="preview-desc">{{ description || '$' + (amount || 0) }}</div>
-        <div class="preview-meta">{{ kind }} · {{ days }} días</div>
+        <div class="preview-meta">{{ days }} días</div>
       </div>
     </div>
 

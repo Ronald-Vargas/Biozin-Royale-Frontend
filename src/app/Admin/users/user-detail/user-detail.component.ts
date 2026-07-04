@@ -9,8 +9,8 @@ import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
 import { DetailMenuItem } from '../../shared/admin.data';
 import { StatusBadgeComponent } from '../../shared/status-badge/status-badge.component';
 import { UserAvatarComponent } from '../../shared/user-avatar/user-avatar.component';
-import { PromotionService } from 'src/app/Core/Services/promotion.service';
-import { AdminUser } from 'src/app/Core/Models/promotion.models';
+import { UserAdminService } from 'src/app/Core/Services/user-admin.service';
+import { AdminUser } from 'src/app/Core/Models/profile.models';
 
 @Component({
   standalone: true,
@@ -41,13 +41,13 @@ export class UserDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private promotionService: PromotionService,
+    private userAdminService: UserAdminService,
   ) {}
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('id') ?? '';
 
-    this.promotionService.adminGetUsers().subscribe({
+    this.userAdminService.getAll().subscribe({
       next: (res) => {
         this.loading = false;
         this.user = res.returnValue?.find(u => u.id === this.userId) ?? null;
