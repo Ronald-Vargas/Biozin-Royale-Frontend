@@ -4,3 +4,16 @@ export interface CrearStaffMemberRequest {
   phone?: string;
   role: 'admin' | 'soporte';
 }
+
+export interface TeamMember {
+  name:       string;
+  role:       string;
+  status:     'Activo' | 'Inactivo';
+  email:      string;
+  phone?:     string;
+  user?:      string;
+  pass?:      string;
+  access?:    string;
+  sendCreds?: boolean;
+}
+

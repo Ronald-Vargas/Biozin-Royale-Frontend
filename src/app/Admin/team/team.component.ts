@@ -7,7 +7,7 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_SEARCH, ICON_FUNNEL, ICON_ADD_CIRCLE, ICON_PEOPLE } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
-import { TeamMember } from '../shared/admin.data';
+import { TeamMember } from 'src/app/Core/Models/staff.models';
 import { MemberRowComponent } from './Components/member-row/member-row.component';
 import { StaffService } from 'src/app/Core/Services/staff.service';
 import { PerfilResultado } from 'src/app/Core/Models/profile.models';

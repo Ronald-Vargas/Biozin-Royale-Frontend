@@ -6,7 +6,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_CHECK, ICON_SPARKLES, ICON_PEOPLE, ICON_ADD, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_SHIELD } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
-import { TeamMember } from '../../shared/admin.data';
+import { TeamMember } from 'src/app/Core/Models/staff.models';
 
 interface CreatedRow {
   icon:  string;

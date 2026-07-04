@@ -6,7 +6,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_PERSON_OUTLINE, ICON_MAIL, ICON_PHONE_CALL, ICON_SHIELD, ICON_PERSON_ADD, ICON_SPARKLES } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
-import { TeamMember } from '../../shared/admin.data';
+import { TeamMember } from 'src/app/Core/Models/staff.models';
 import { FormFieldComponent } from './Components/form-field/form-field.component';
 import { SelectFieldComponent } from './Components/select-field/select-field.component';
 import { StaffService } from 'src/app/Core/Services/staff.service';

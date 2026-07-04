@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TeamMember } from 'src/app/Admin/shared/admin.data';
+import { TeamMember } from 'src/app/Core/Models/staff.models';
 import { StatusBadgeComponent } from 'src/app/Admin/shared/status-badge/status-badge.component';
 import { UserAvatarComponent } from 'src/app/Admin/shared/user-avatar/user-avatar.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
