@@ -63,6 +63,53 @@
 }
 
 
+// ── Amount card ───────────────────────────────────────────────
+.amount-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 22px 28px 20px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(212, 167, 60, 0.09), rgba(199, 154, 50, 0.03));
+  border: 1px solid rgba(212, 167, 60, 0.32);
+  box-shadow: 0 6px 28px -8px rgba(199, 154, 50, 0.22),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  margin-bottom: 28px;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(212, 167, 60, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.amount-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  color: rgba(203, 185, 143, 0.65);
+  text-transform: uppercase;
+}
+
+.amount-value {
+  font-family: 'Cinzel', serif;
+  font-size: 52px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #f5e07a 0%, #c79a32 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
 // ── Section ──────────────────────────────────────────────────
 .section-label {
   font-family: 'Montserrat', sans-serif;

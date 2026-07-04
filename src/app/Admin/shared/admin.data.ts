@@ -36,23 +36,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
 
 
 
-
-export interface AdminUser {
-  id:     string;
-  name:   string;
-  role:   string;
-  status: 'Activo' | 'Inactivo';
-  reg:    string;
-}
-
-export const ADMIN_USERS: AdminUser[] = [
-  { id: 'USR-1001', name: 'Luis Maza',        role: 'Admin',   status: 'Activo',   reg: '12/04/2024' },
-  { id: 'USR-1002', name: 'Catherine Rojas',  role: 'Soporte', status: 'Activo',   reg: '03/05/2024' },
-  { id: 'USR-1003', name: 'Alejandro Bustos', role: 'Admin',  status: 'Activo',   reg: '21/06/2024' },
-  { id: 'USR-1004', name: 'Bryan Ruiz',       role: 'Soporte',  status: 'Inactivo', reg: '09/01/2024' },
-  { id: 'USR-1005', name: 'María Gómez',      role: 'Soporte', status: 'Activo',   reg: '17/02/2024' },
-];
-
 export interface StatusStyle { color: string; bg: string; bd: string; }
 
 export const STATUS_BADGE: Record<string, StatusStyle> = {
@@ -136,25 +119,6 @@ export const REP_GEN: RepGen[] = [
   { key: 'y', title: 'Reporte anual',   sub: 'Resumen del año' },
 ];
 
-
-
-
-
-
-
-
-
-export interface TeamMember {
-  name:       string;
-  role:       string;
-  status:     'Activo' | 'Inactivo';
-  email:      string;
-  phone?:     string;
-  user?:      string;
-  pass?:      string;
-  access?:    string;
-  sendCreds?: boolean;
-}
 
 
 

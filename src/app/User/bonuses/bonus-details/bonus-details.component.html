@@ -27,8 +27,10 @@
     </div>
 
     <!-- Monto -->
-    <div class="section-label">MONTO DEL BONO</div>
-    <div class="bono-amount">${{ promotion.amount }}</div>
+    <div class="amount-card">
+      <div class="amount-label">MONTO DEL BONO</div>
+      <div class="amount-value">${{ promotion.amount | number:'1.2-2' }}</div>
+    </div>
 
     @if (error) {
       <div class="state-msg state-msg--error">{{ error }}</div>
