@@ -27,7 +27,7 @@ export const ADMIN_KPIS: AdminKpi[] = [
 export const ADMIN_NAV: AdminNavItem[] = [
   { key: 'home',     label: 'Inicio',   route: '/admin',          icon: ICON_HOME_OUTLINE,   iconActive: ICON_HOME_FILLED },
   { key: 'usuarios', label: 'Usuarios', route: '/admin/usuarios', icon: ICON_PERSON_OUTLINE, iconActive: ICON_PERSON_FILLED },
-  { key: 'bonos',    label: 'Bonos',    route: '/admin/bonuses',    icon: ICON_GIFT_OUTLINE, iconActive: ICON_GIFT_FILLED },
+  { key: 'bonos',    label: 'Bonos',    route: '/admin/bonuses',  icon: ICON_GIFT_OUTLINE, iconActive: ICON_GIFT_FILLED },
   { key: 'finanzas', label: 'Finanzas', route: '/admin/finanzas', icon: ICON_WALLET_OUTLINE, iconActive: ICON_WALLET_FILLED },
   { key: 'reportes', label: 'Reportes', route: '/admin/reportes', icon: ICON_DOC,            iconActive: ICON_DOC },
   { key: 'ajustes',  label: 'Ajustes',  route: '/admin/ajustes',  icon: ICON_SETTINGS,       iconActive: ICON_SETTINGS },
