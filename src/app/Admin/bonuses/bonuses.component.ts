@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
@@ -7,9 +7,9 @@ import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.co
 import { ICON_ADD_CIRCLE } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
-import { AdminBono, ADMIN_BONOS } from '../shared/admin.data';
 import { KindBadgeComponent } from './Components/kind-badge/kind-badge.component';
-;
+import { PromotionService } from 'src/app/Core/Services/promotion.service';
+import { Promotion } from 'src/app/Core/Models/promotion.models';
 
 @Component({
   standalone: true,
@@ -21,17 +21,44 @@ import { KindBadgeComponent } from './Components/kind-badge/kind-badge.component
   templateUrl: './bonuses.component.html',
   styleUrls: ['./bonuses.component.scss'],
 })
-export class BonusesComponent {
+export class BonusesComponent implements OnInit {
   iconAddCircle = ICON_ADD_CIRCLE;
 
-  bonos: AdminBono[] = ADMIN_BONOS;
+  bonos: Promotion[] = [];
+  loading = true;
+  error = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private promotionService: PromotionService) {}
 
-  get activeCount(): number { return this.bonos.filter(b => b.enabled).length; }
+  ngOnInit(): void {
+    this.promotionService.adminGetAll().subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (!res.blnError && res.returnValue) {
+          this.bonos = res.returnValue;
+        } else {
+          this.error = res.strResponseMessage || 'No se pudieron cargar los bonos.';
+        }
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Error al conectar con el servidor.';
+      },
+    });
+  }
+
+  get activeCount(): number { return this.bonos.filter(b => b.isActive).length; }
   get totalCount():  number { return this.bonos.length; }
 
-  toggle(b: AdminBono) { b.enabled = !b.enabled; }
+  toggle(b: Promotion): void {
+    this.promotionService.adminToggle(b.id).subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          b.isActive = res.returnValue.isActive;
+        }
+      },
+    });
+  }
 
   goBack()     { this.router.navigate(['/admin']); }
   goNew()      { this.router.navigate(['/admin/bonuses/new']); }

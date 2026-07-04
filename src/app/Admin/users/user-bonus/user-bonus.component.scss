@@ -1,0 +1,116 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 24px;
+}
+
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  color: var(--gold-2);
+  font-weight: 600;
+  margin-bottom: 9px;
+  margin-left: 2px;
+}
+
+.bonus-input {
+  width: 100%;
+  height: 52px;
+  border-radius: 13px;
+  box-sizing: border-box;
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  background: rgba(255, 255, 255, 0.028);
+  color: #f3ead0;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 22px;
+
+  &::placeholder { color: rgba(243, 234, 208, 0.35); }
+  &:focus { border-color: rgba(212, 167, 60, 0.55); }
+}
+
+.error-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #e98a85;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(199, 62, 58, 0.1);
+  border: 1px solid rgba(214, 77, 72, 0.4);
+}
+
+.grant-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 15px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  background: rgba(120, 100, 50, 0.2);
+  color: #7d7361;
+  cursor: default;
+  margin-top: 8px;
+
+  &--ready {
+    cursor: pointer;
+    background: linear-gradient(160deg, #f4dd92, #e0bd5e 38%, #c89a35 72%, #a87e22);
+    color: #2a1f06;
+    box-shadow:
+      0 12px 26px -10px rgba(199, 154, 50, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+}
+
+.success-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 40px;
+  gap: 12px;
+}
+
+.success-icon {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(199,154,50,0.18), rgba(199,154,50,0.04));
+  border: 1.5px solid rgba(212, 167, 60, 0.5);
+  margin-bottom: 8px;
+}
+
+.success-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold-1);
+}
+
+.success-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+  text-align: center;
+}

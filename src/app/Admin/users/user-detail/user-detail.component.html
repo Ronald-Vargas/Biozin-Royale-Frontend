@@ -4,44 +4,56 @@
   <div class="scroll-body">
     <app-admin-header title="Detalle de Usuario" (back)="goBack()"></app-admin-header>
 
-    <!-- Profile card -->
-    <div class="detail-card">
-      <app-user-avatar [size]="64"></app-user-avatar>
-      <div class="detail-info">
-        <div class="detail-top">
-          <span class="detail-name">{{ user.name }}</span>
-          <app-status-badge [status]="user.status"></app-status-badge>
-        </div>
-        <div class="detail-role">{{ user.role }}</div>
-        <div class="detail-meta">ID: {{ user.id }}</div>
-        <div class="detail-meta">Registrado: {{ user.reg }}</div>
-      </div>
-    </div>
+    @if (loading) {
+      <div class="loading-msg">Cargando usuario…</div>
+    }
 
-    <!-- Menú -->
-    <div class="menu-list">
-      <div *ngFor="let m of menu" class="menu-item">
-        <div class="menu-icon">
-          <app-icon [svg]="m.icon" [size]="20" style="color:var(--gold-1)"></app-icon>
+    @if (!loading && user) {
+      <!-- Profile card -->
+      <div class="detail-card">
+        <app-user-avatar [size]="64"></app-user-avatar>
+        <div class="detail-info">
+          <div class="detail-top">
+            <span class="detail-name">{{ user.displayName || user.username }}</span>
+            <app-status-badge [status]="user.status === 'active' ? 'Activo' : 'Inactivo'"></app-status-badge>
+          </div>
+          <div class="detail-role">{{ user.email }}</div>
+          <div class="detail-meta">@{{ user.username }}</div>
+          <div class="detail-meta">Registrado: {{ user.createdAt | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="menu-text">
-          <div class="menu-title">{{ m.title }}</div>
-          <div class="menu-sub">{{ m.sub }}</div>
-        </div>
-        <app-icon [svg]="iconChevron" [size]="18" style="color:#6f6757"></app-icon>
       </div>
 
-      <!-- Bloquear (danger) -->
-      <div class="menu-item menu-item--danger">
-        <div class="menu-icon menu-icon--danger">
-          <app-icon [svg]="iconLock" [size]="20" style="color:#e2746f"></app-icon>
-        </div>
-        <div class="menu-text">
-          <div class="menu-title menu-title--danger">Bloquear usuario</div>
-          <div class="menu-sub menu-sub--danger">Restringir acceso a la cuenta</div>
+      <!-- Menú -->
+      <div class="menu-list">
+        @for (m of menu; track m.key) {
+          <div class="menu-item" (click)="onMenuClick(m.key)">
+            <div class="menu-icon">
+              <app-icon [svg]="m.icon" [size]="20" style="color:var(--gold-1)"></app-icon>
+            </div>
+            <div class="menu-text">
+              <div class="menu-title">{{ m.title }}</div>
+              <div class="menu-sub">{{ m.sub }}</div>
+            </div>
+            <app-icon [svg]="iconChevron" [size]="18" style="color:#6f6757"></app-icon>
+          </div>
+        }
+
+        <!-- Bloquear (danger) -->
+        <div class="menu-item menu-item--danger">
+          <div class="menu-icon menu-icon--danger">
+            <app-icon [svg]="iconLock" [size]="20" style="color:#e2746f"></app-icon>
+          </div>
+          <div class="menu-text">
+            <div class="menu-title menu-title--danger">Bloquear usuario</div>
+            <div class="menu-sub menu-sub--danger">Restringir acceso a la cuenta</div>
+          </div>
         </div>
       </div>
-    </div>
+    }
+
+    @if (!loading && !user) {
+      <div class="loading-msg">Usuario no encontrado.</div>
+    }
   </div>
 
   <app-admin-nav current="usuarios"></app-admin-nav>

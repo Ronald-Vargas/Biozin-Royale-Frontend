@@ -62,6 +62,14 @@
   &:first-of-type { margin-top: 2px; }
 }
 
+.loading-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 0;
+}
+
 // ── Menu ─────────────────────────────────────────────────────
 .menu-list {
   display: flex;

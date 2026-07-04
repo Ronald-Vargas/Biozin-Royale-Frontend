@@ -183,6 +183,16 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/users/user-detail/user-detail.component').then(m => m.UserDetailComponent),
   },
   {
+    path: 'admin/usuario/:id/bono',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/users/user-bonus/user-bonus.component').then(m => m.UserBonusComponent),
+  },
+  {
+    path: 'admin/usuario/:id/bonos',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/users/user-bonus-history/user-bonus-history.component').then(m => m.UserBonusHistoryComponent),
+  },
+  {
     path: 'admin/finanzas',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/finance/finance.component').then(m => m.AdminFinanceComponent),

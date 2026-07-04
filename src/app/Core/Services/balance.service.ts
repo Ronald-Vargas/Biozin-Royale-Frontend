@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../../Core/Models/auth.models';
 
@@ -22,6 +23,23 @@ export class BalanceService {
     });
   }
 
+  // Carga desde la API y devuelve el valor para poder usarlo directamente
+  fetch(): Observable<number> {
+    return this.http.get<ApiResponse<number>>(this.url).pipe(
+      map(res => res.returnValue ?? 0),
+      tap(b => this._balance.set(b)),
+    );
+  }
+
+  // Persiste el saldo nuevo en la DB y actualiza el signal
+  save(amount: number): Observable<number> {
+    return this.http.put<ApiResponse<number>>(this.url, amount).pipe(
+      map(res => res.returnValue ?? amount),
+      tap(b => this._balance.set(b)),
+    );
+  }
+
+  // Sólo actualiza el signal local (sin llamar la API)
   set(amount: number): void {
     this._balance.set(amount);
   }

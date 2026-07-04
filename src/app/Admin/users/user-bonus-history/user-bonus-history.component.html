@@ -1,0 +1,45 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Historial de bonos" (back)="goBack()"></app-admin-header>
+
+    @if (loading) {
+      <div class="state-msg">Cargando historial…</div>
+    }
+
+    @if (!loading && error) {
+      <div class="state-msg state-msg--error">{{ error }}</div>
+    }
+
+    @if (!loading && !error && claims.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconTrophy" [size]="44" style="color:rgba(212,167,60,0.35)"></app-icon>
+        <div class="empty-title">Sin bonos otorgados</div>
+        <div class="empty-sub">Aún no se han otorgado bonos a este usuario.</div>
+      </div>
+    }
+
+    @if (!loading && claims.length > 0) {
+      <div class="claims-list">
+        @for (c of claims; track c.id) {
+          <div class="claim-card">
+            <div class="claim-icon">
+              <app-icon [svg]="iconTrophy" [size]="20" style="color:var(--gold-1)"></app-icon>
+            </div>
+            <div class="claim-info">
+              <div class="claim-title">{{ c.promotion?.title ?? 'Bono' }}</div>
+              @if (c.promotion?.description) {
+                <div class="claim-desc">{{ c.promotion!.description }}</div>
+              }
+              <div class="claim-meta">{{ c.claimedAt | date:'dd/MM/yyyy, h:mm a' }}</div>
+            </div>
+            <div class="claim-amount">${{ c.promotion?.amount ?? 0 }}</div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

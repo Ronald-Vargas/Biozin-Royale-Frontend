@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_DIAMOND, ICON_MINUS, ICON_ADD, ICON_FLASH, ICON_SYNC, ICON_REFRESH, ICON_INFO, ICON_BACK } from '../shared/icons/icons';
+import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { EmblemComponent } from './Components/emblem/emblem.component';
 import { GemDefsComponent } from './Components/gem-defs/gem-defs.component';
 import { GemComponent } from './Components/gem/gem.component';
@@ -58,12 +59,12 @@ export class SlotsComponent implements OnInit, OnDestroy {
   private lockRef = false;
 
   constructor(
-    private router: Router, 
+    private router: Router,
+    private balanceService: BalanceService,
   ) {}
 
   ngOnInit() {
-    const stored = parseFloat(localStorage.getItem('biozin_balance') || '');
-    if (!isNaN(stored)) this.balance = stored;
+    this.balanceService.fetch().subscribe(b => { this.balance = b; });
 
     this.reels = Array.from({ length: COLS }, () => ({
       strip: [...this.randCol(), ...Array.from({ length: PAD }, () => randomSym())],
@@ -170,7 +171,7 @@ export class SlotsComponent implements OnInit, OnDestroy {
   }
 
   private saveBalance() {
-    localStorage.setItem('biozin_balance', String(this.balance));
+    this.balanceService.save(this.balance).subscribe();
   }
 
   private evalLines(grid: string[][], bet: number): { win: number; cells: Set<string>; hits: Hit[] } {

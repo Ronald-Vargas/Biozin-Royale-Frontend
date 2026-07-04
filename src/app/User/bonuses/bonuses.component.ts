@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../shared/Components/screen-shell/screen-shell.component';
 import { BonusCardComponent, ActiveBonus } from './Components/bonus-card/bonus-card.component';
 import { BonusHistCardComponent, HistBonus } from './Components/bonus-hist-card/bonus-hist-card.component';
-
+import { PromotionService } from 'src/app/Core/Services/promotion.service';
+import { Promotion, PromotionClaim } from 'src/app/Core/Models/promotion.models';
 
 interface Filter { key: string; label: string; }
 
@@ -15,9 +16,10 @@ interface Filter { key: string; label: string; }
   templateUrl: './bonuses.component.html',
   styleUrls: ['./bonuses.component.scss'],
 })
-export class BonusesComponent {
+export class BonusesComponent implements OnInit {
   tab    = 'activos';
   filter = 'todos';
+  loading = true;
 
   tabs = [
     { k: 'activos',   l: 'Activos' },
@@ -25,31 +27,70 @@ export class BonusesComponent {
   ];
 
   filters: Filter[] = [
-    { key: 'todos',    label: 'Todos' },
-    { key: 'activo',   label: 'Activos' },
-    { key: 'usado',    label: 'Usados' },
-    { key: 'expirado', label: 'Expirados' },
+    { key: 'todos',      label: 'Todos' },
+    { key: 'completado', label: 'Usados' },
   ];
 
-  activeBonuses: ActiveBonus[] = [
-    { id: 'bienvenida', title: 'Bono de Bienvenida', desc: '100% hasta $500', req: 'Requisito de apuesta: 30x', time: '6d 23h', icon: 'trophy' },
-    {id: 'cashback',   title: 'Cashback Semanal',   desc: '10% Cashback',    req: 'Sin requisitos',            time: '3d 12h', icon: 'shield' },
-  ];
+  activeBonuses: ActiveBonus[] = [];
+  histBonuses: HistBonus[] = [];
 
-  histBonuses: HistBonus[] = [
-    { title: 'Bono de Bienvenida', desc: '1,000,000 Fichas',                  status: 'usado',    date: '01/05/2024 · 14:30', icon: 'trophy' },
-    { title: 'Giro Gratis',        desc: '1 Tiro Gratis en Gates of Olympus', status: 'activo',   date: '27/04/2024 · 09:45', icon: 'sync-circle' },
-    { title: 'Bono de Recarga',    desc: '50% hasta $200',                    status: 'activo',   date: '27/04/2024 · 08:10', icon: 'wallet' },
-    { title: 'Bono Diario',        desc: '1 Royale Ficha Gratis',             status: 'expirado', date: '26/04/2024 · 23:59', icon: 'calendar' },
-  ];
+  constructor(private router: Router, private promotionService: PromotionService) {}
 
-  constructor(private router: Router) {}
+  ngOnInit(): void {
+    this.promotionService.getActive().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.activeBonuses = res.returnValue.map(this.toActiveBonus);
+        }
+      },
+    });
+
+    this.promotionService.getMyClaims().subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (!res.blnError && res.returnValue) {
+          this.histBonuses = res.returnValue.map(this.toHistBonus);
+        }
+      },
+      error: () => { this.loading = false; },
+    });
+  }
+
+  private toActiveBonus(p: Promotion): ActiveBonus {
+    return {
+      id:    p.id,
+      title: p.title,
+      desc:  p.description ?? `$${p.amount}`,
+      req:   'Sin requisitos',
+      time:  p.endsAt ? formatTimeLeft(p.endsAt) : 'Sin límite',
+      icon:  'trophy',
+    };
+  }
+
+  private toHistBonus(c: PromotionClaim): HistBonus {
+    return {
+      title:  c.promotion?.title ?? 'Bono',
+      desc:   c.promotion?.description ?? (c.promotion ? `$${c.promotion.amount}` : ''),
+      status: 'usado',
+      date:   new Date(c.claimedAt).toLocaleString('es-CR'),
+      icon:   'trophy',
+    };
+  }
 
   get histList(): HistBonus[] {
-    return this.histBonuses.filter(b => this.filter === 'todos' || b.status === this.filter);
+    return this.filter === 'todos'
+      ? this.histBonuses
+      : this.histBonuses.filter(b => b.status === this.filter);
   }
 
   goBack() { this.router.navigate(['/home'], { replaceUrl: true }); }
-  goDetalle(id?: string) { if (id) this.router.navigate(['/bono', id]);
+  goDetalle(id?: string) { if (id) this.router.navigate(['/bono', id]); }
 }
+
+function formatTimeLeft(endsAt: string): string {
+  const diff = new Date(endsAt).getTime() - Date.now();
+  if (diff <= 0) return 'Expirado';
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  return d > 0 ? `${d}d ${h}h` : `${h}h`;
 }

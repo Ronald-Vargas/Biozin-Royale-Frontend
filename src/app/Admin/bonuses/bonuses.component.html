@@ -22,34 +22,36 @@
       Crear bono
     </button>
 
-    <!-- Lista -->
-    <div class="bonos-list">
-      <div
-        *ngFor="let b of bonos"
-        class="bono-row"
-        [class.bono-row--disabled]="!b.enabled"
-      >
-        <div class="bono-icon">
-          <app-icon [svg]="b.icon" [size]="24" style="color:var(--gold-1)"></app-icon>
-        </div>
+    @if (loading) {
+      <div class="state-msg">Cargando bonos…</div>
+    }
+    @if (error && !loading) {
+      <div class="state-msg state-msg--error">{{ error }}</div>
+    }
 
-        <div class="bono-info">
-          <div class="bono-title-row">
-            <span class="bono-title">{{ b.title }}</span>
-            <app-kind-badge [kind]="b.kind"></app-kind-badge>
+    @if (!loading && !error) {
+      <div class="bonos-list">
+        @for (b of bonos; track b.id) {
+          <div class="bono-row" [class.bono-row--disabled]="!b.isActive">
+            <div class="bono-info">
+              <div class="bono-title-row">
+                <span class="bono-title">{{ b.title }}</span>
+                <app-kind-badge [kind]="b.promotionType"></app-kind-badge>
+              </div>
+              <div class="bono-desc">{{ b.description || ('$' + b.amount) }}</div>
+              <div class="bono-meta">Monto: ${{ b.amount }}</div>
+            </div>
+
+            <div class="bono-toggle">
+              <app-toggle [on]="b.isActive" (changed)="toggle(b)"></app-toggle>
+              <span class="toggle-label" [class.toggle-label--on]="b.isActive">
+                {{ b.isActive ? 'Visible' : 'Oculto' }}
+              </span>
+            </div>
           </div>
-          <div class="bono-desc">{{ b.desc }}</div>
-          <div class="bono-meta">{{ b.req }} · {{ b.time }}</div>
-        </div>
-
-        <div class="bono-toggle">
-          <app-toggle [on]="b.enabled" (changed)="toggle(b)"></app-toggle>
-          <span class="toggle-label" [class.toggle-label--on]="b.enabled">
-            {{ b.enabled ? 'Visible' : 'Oculto' }}
-          </span>
-        </div>
+        }
       </div>
-    </div>
+    }
   </div>
 
   <app-admin-nav current="bonos"></app-admin-nav>

@@ -1,0 +1,56 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Crear bono para usuario" (back)="goBack()"></app-admin-header>
+
+    @if (saved) {
+      <div class="success-wrap">
+        <div class="success-icon">
+          <app-icon [svg]="iconCheck" [size]="40" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="success-title">¡Bono otorgado!</div>
+        <div class="success-sub">El saldo fue acreditado a la billetera del usuario.</div>
+      </div>
+    } @else {
+      <div class="field-label">Nombre del bono</div>
+      <input
+        class="bonus-input"
+        [(ngModel)]="title"
+        placeholder="Ej. Bono especial de bienvenida"
+      />
+
+      <div class="field-label">Monto ($)</div>
+      <input
+        class="bonus-input"
+        type="number"
+        min="1"
+        [(ngModel)]="amount"
+        placeholder="Ej. 100"
+      />
+
+      <div class="field-label">Descripción (opcional)</div>
+      <input
+        class="bonus-input"
+        [(ngModel)]="description"
+        placeholder="Ej. Compensación por inconvenientes"
+      />
+
+      @if (error) {
+        <div class="error-msg">{{ error }}</div>
+      }
+
+      <button
+        class="grant-btn"
+        [class.grant-btn--ready]="valid"
+        [disabled]="!valid || saving"
+        (click)="submit()"
+      >
+        <app-icon [svg]="iconGift" [size]="20"></app-icon>
+        {{ saving ? 'Otorgando…' : 'Otorgar bono' }}
+      </button>
+    }
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

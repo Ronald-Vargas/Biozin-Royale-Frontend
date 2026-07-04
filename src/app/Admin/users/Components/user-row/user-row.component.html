@@ -3,11 +3,11 @@
 
   <div class="user-info">
     <div class="user-top">
-      <span class="user-name">{{ user.name }}</span>
-      <app-status-badge [status]="user.status"></app-status-badge>
+      <span class="user-name">{{ user.displayName || user.username }}</span>
+      <app-status-badge [status]="user.status === 'active' ? 'Activo' : 'Inactivo'"></app-status-badge>
     </div>
-    <div class="user-role">{{ user.role }}</div>
-    <div class="user-id">ID: {{ user.id }}</div>
+    <div class="user-role">{{ user.email }}</div>
+    <div class="user-id">@{{ user.username }}</div>
   </div>
 
   <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>

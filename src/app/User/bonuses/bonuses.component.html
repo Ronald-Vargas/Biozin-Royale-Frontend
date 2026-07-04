@@ -6,42 +6,48 @@
   <div class="page-inner">
     <!-- Tabs -->
     <div class="tabs">
-      <button
-        *ngFor="let t of tabs"
-        class="tab"
-        [class.tab--active]="tab === t.k"
-        (click)="tab = t.k"
-      >{{ t.l }}</button>
+      @for (t of tabs; track t.k) {
+        <button
+          class="tab"
+          [class.tab--active]="tab === t.k"
+          (click)="tab = t.k"
+        >{{ t.l }}</button>
+      }
     </div>
 
     <!-- Activos -->
-    <div *ngIf="tab === 'activos'" class="active-list">
-      <app-bonus-card
-        *ngFor="let b of activeBonuses"
-        [bonus]="b"
-        (viewDetails)="goDetalle($event)"
-      >
-      </app-bonus-card>
-    </div>
+    @if (tab === 'activos') {
+      <div class="active-list">
+        @for (b of activeBonuses; track b.id) {
+          <app-bonus-card [bonus]="b" (viewDetails)="goDetalle($event)"></app-bonus-card>
+        }
+        @if (activeBonuses.length === 0 && !loading) {
+          <div class="empty-state">No hay bonos disponibles por el momento.</div>
+        }
+      </div>
+    }
 
     <!-- Historial -->
-    <div *ngIf="tab === 'historial'">
+    @if (tab === 'historial') {
       <div class="filters-row">
-        <button
-          *ngFor="let f of filters"
-          class="filter-chip"
-          [class.filter-chip--active]="filter === f.key"
-          (click)="filter = f.key"
-        >{{ f.label }}</button>
+        @for (f of filters; track f.key) {
+          <button
+            class="filter-chip"
+            [class.filter-chip--active]="filter === f.key"
+            (click)="filter = f.key"
+          >{{ f.label }}</button>
+        }
       </div>
 
       <div class="hist-list">
-        <app-bonus-hist-card *ngFor="let b of histList" [bonus]="b"></app-bonus-hist-card>
+        @for (b of histList; track b.title) {
+          <app-bonus-hist-card [bonus]="b"></app-bonus-hist-card>
+        }
       </div>
 
-      <div *ngIf="histList.length === 0" class="empty-state">
-        Sin bonos en esta categoría.
-      </div>
-    </div>
+      @if (histList.length === 0) {
+        <div class="empty-state">Sin bonos canjeados.</div>
+      }
+    }
   </div>
 </app-screen-shell>

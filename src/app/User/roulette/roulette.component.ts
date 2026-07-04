@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_TRASH, ICON_REFRESH, ICON_PLAY, ICON_SYNC, ICON_BACK } from '../shared/icons/icons';
+import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { RouletteWheelComponent, numColor, REDS_EXP, rotationForWinning } from './Components/roulette-wheel/roulette-wheel.component';
 
 
@@ -63,11 +64,10 @@ export class RouletteComponent implements OnInit, OnDestroy {
     { v: 100, img: 'assets/chip-100.png' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private balanceService: BalanceService) {}
 
   ngOnInit() {
-    const stored = parseFloat(localStorage.getItem('biozin_balance') || '');
-    if (!isNaN(stored)) this.balance = stored;
+    this.balanceService.fetch().subscribe(b => { this.balance = b; });
   }
 
   ngOnDestroy() {
@@ -180,7 +180,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
   }
 
   private saveBalance() {
-    localStorage.setItem('biozin_balance', String(this.balance));
+    this.balanceService.save(this.balance).subscribe();
   }
 
   // ── Bet resolution ─────────────────────────────────────────

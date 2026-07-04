@@ -7,21 +7,24 @@
     <!-- Tipo -->
     <div class="field-label">Tipo de bono</div>
     <div class="kind-row">
-      <button
-        *ngFor="let k of kindOptions"
-        class="kind-card"
-        [class.kind-card--active]="isKind(k)"
-        (click)="kind = k"
-      >
-        <div class="kind-card-top">
-          <div class="kind-icon" [style.background]="kindStyle(k).bg" [style.border-color]="kindStyle(k).bd">
-            <app-icon [svg]="kindStyle(k).icon" [size]="19" [style.color]="kindStyle(k).color"></app-icon>
+      @for (k of kindOptions; track k) {
+        <button
+          class="kind-card"
+          [class.kind-card--active]="isKind(k)"
+          (click)="kind = k"
+        >
+          <div class="kind-card-top">
+            <div class="kind-icon" [style.background]="kindStyle(k).bg" [style.border-color]="kindStyle(k).bd">
+              <app-icon [svg]="kindStyle(k).icon" [size]="19" [style.color]="kindStyle(k).color"></app-icon>
+            </div>
+            @if (isKind(k)) {
+              <app-icon [svg]="iconCheck" [size]="20" style="color:var(--gold-1)"></app-icon>
+            }
           </div>
-          <app-icon *ngIf="isKind(k)" [svg]="iconCheck" [size]="20" style="color:var(--gold-1)"></app-icon>
-        </div>
-        <div class="kind-name">{{ k }}</div>
-        <div class="kind-sub">{{ k === 'Liquidez' ? 'Dinero o fichas de regalo' : 'Giros gratis en slots' }}</div>
-      </button>
+          <div class="kind-name">{{ k }}</div>
+          <div class="kind-sub">{{ k === 'Liquidez' ? 'Dinero o fichas de regalo' : 'Giros gratis en slots' }}</div>
+        </button>
+      }
     </div>
 
     <!-- Nombre -->
@@ -32,57 +35,37 @@
       [placeholder]="kind === 'Liquidez' ? 'Ej. Bono de Recarga' : 'Ej. Giros de la Suerte'"
     />
 
-    <!-- Liquidez: recompensa -->
-    <ng-container *ngIf="kind === 'Liquidez'">
-      <div class="field-label">Recompensa</div>
-      <div class="chips-wrap">
-        <button
-          *ngFor="let p of liqPresets"
-          class="preset-chip"
-          [class.preset-chip--active]="liq === p"
-          (click)="liq = p"
-        >{{ p }}</button>
-      </div>
-      <input
-        class="gold-input preset-custom"
-        [(ngModel)]="liq"
-        placeholder="O escribe una recompensa personalizada"
-      />
-    </ng-container>
+    <!-- Monto -->
+    <div class="field-label">Monto ($)</div>
+    <input
+      class="gold-input name-input"
+      type="number"
+      min="1"
+      [(ngModel)]="amount"
+      placeholder="Ej. 50"
+    />
 
-    <!-- Tiradas: giros -->
-    <ng-container *ngIf="kind === 'Tiradas'">
-      <div class="field-label">Número de giros gratis</div>
-      <div class="spins-row">
-        <button
-          *ngFor="let p of spinPresets"
-          class="spin-btn"
-          [class.spin-btn--active]="spins === p"
-          (click)="spins = p"
-        >{{ p }}</button>
-      </div>
-    </ng-container>
+    <!-- Descripción -->
+    <div class="field-label">Descripción (opcional)</div>
+    <input
+      class="gold-input name-input"
+      [(ngModel)]="description"
+      placeholder="Ej. 100% hasta $500"
+    />
 
     <!-- Validez -->
     <div class="field-label">Validez</div>
     <div class="days-row">
-      <button
-        *ngFor="let p of daysPresets"
-        class="day-btn"
-        [class.day-btn--active]="days === p"
-        (click)="days = p"
-      >{{ p }}d</button>
+      @for (p of daysPresets; track p) {
+        <button
+          class="day-btn"
+          [class.day-btn--active]="days === p"
+          (click)="days = p"
+        >{{ p }}d</button>
+      }
     </div>
 
-    <!-- Toggles -->
-    <div class="toggle-row">
-      <div class="toggle-text">
-        <div class="toggle-title">Sin requisito de apuesta</div>
-        <div class="toggle-sub">Las ganancias son dinero real (bono fácil)</div>
-      </div>
-      <app-toggle [on]="noReq" (changed)="noReq = $event"></app-toggle>
-    </div>
-
+    <!-- Visible al crear -->
     <div class="toggle-row toggle-row--last">
       <div class="toggle-text">
         <div class="toggle-title">Mostrar al usuario al crear</div>
@@ -99,20 +82,24 @@
       </div>
       <div class="preview-text">
         <div class="preview-title">{{ title.trim() || 'Nombre del bono' }}</div>
-        <div class="preview-desc">{{ previewDesc }}</div>
-        <div class="preview-meta">{{ previewReq }} · {{ days }} días</div>
+        <div class="preview-desc">{{ description || '$' + (amount || 0) }}</div>
+        <div class="preview-meta">{{ kind }} · {{ days }} días</div>
       </div>
     </div>
+
+    @if (error) {
+      <div class="state-msg state-msg--error">{{ error }}</div>
+    }
 
     <!-- Crear -->
     <button
       class="create-btn"
       [class.create-btn--ready]="valid"
-      [disabled]="!valid"
+      [disabled]="!valid || saving"
       (click)="submit()"
     >
       <app-icon [svg]="iconGift" [size]="21"></app-icon>
-      Crear bono
+      {{ saving ? 'Guardando…' : 'Crear bono' }}
     </button>
   </div>
 
