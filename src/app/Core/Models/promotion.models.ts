@@ -18,3 +18,19 @@ export interface PromotionClaim {
   completedAt: string | null;
 }
 
+export interface CrearPromocionRequest {
+  title: string;
+  description?: string;
+  amount: number;
+  isActive: boolean;
+  startsAt?: string | null;
+  endsAt?: string | null;
+}
+
+export interface OtorgarBonoRequest {
+  title: string;
+  description?: string;
+  amount: number;
+  isActive: boolean;
+}
+
