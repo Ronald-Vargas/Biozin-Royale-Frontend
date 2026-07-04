@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +10,8 @@ import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/
 import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/social-row.component';
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
+import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
+import { ICON_LOCK } from 'src/app/User/shared/icons/icons';
 import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 
@@ -25,25 +27,37 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
     SocialRowComponent,
     FieldComponent,
     AuthHeaderComponent,
+    SvgIconComponent,
   ],
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   private readonly supabaseService = inject(SupabaseService);
   private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+
+  iconLock = ICON_LOCK;
 
   form: FormGroup;
   loading = false;
   errorMsg = '';
+  blockedMsg = '';
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
       email:    ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
+  }
+
+  ngOnInit(): void {
+    // El callback de OAuth redirige aquí con ?blocked=<mensaje> cuando la cuenta
+    // está bloqueada; lo mostramos directamente sin que el usuario tenga que hacer nada.
+    const blocked = this.route.snapshot.queryParamMap.get('blocked');
+    if (blocked) this.blockedMsg = decodeURIComponent(blocked);
   }
 
   get emailCtrl()    { return this.form.get('email')    as FormControl; }
@@ -64,6 +78,7 @@ export class LoginComponent {
     }
 
     this.errorMsg = '';
+    this.blockedMsg = '';
     this.loading = true;
 
     const email = (this.emailCtrl.value || '').trim().toLowerCase();
@@ -80,7 +95,12 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.errorMsg = this.mapLoginError(err?.error?.strResponseMessage, err?.status);
+        const body = err?.error;
+        if (body?.strResponseTittle === 'Cuenta bloqueada') {
+          this.blockedMsg = body.strResponseMessage;
+          return;
+        }
+        this.errorMsg = this.mapLoginError(body?.strResponseMessage, err?.status);
       },
     });
   }

@@ -60,6 +60,7 @@ export class UserDetailComponent implements OnInit {
     if (key === 'bonus')      this.router.navigate(['/admin/usuario', this.userId, 'bono']);
     if (key === 'bonus-hist') this.router.navigate(['/admin/usuario', this.userId, 'bonos']);
     if (key === 'bets')       this.router.navigate(['/admin/usuario', this.userId, 'apuestas']);
+    if (key === 'block')      this.router.navigate(['/admin/usuario', this.userId, 'bloquear']);
   }
 
   goBack(): void { this.router.navigate(['/admin/usuarios']); }

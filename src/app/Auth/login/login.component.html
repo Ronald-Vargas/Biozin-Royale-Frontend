@@ -34,6 +34,14 @@
 
     <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>
 
+    <div class="blocked-banner" *ngIf="blockedMsg">
+      <app-icon [svg]="iconLock" [size]="22" class="blocked-icon"></app-icon>
+      <div class="blocked-text">
+        <div class="blocked-title">Cuenta bloqueada</div>
+        <div class="blocked-msg">{{ blockedMsg }}</div>
+      </div>
+    </div>
+
     <app-gold-button [loading]="loading" (clicked)="submit()">
       Iniciar sesión
     </app-gold-button>

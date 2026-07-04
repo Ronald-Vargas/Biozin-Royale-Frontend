@@ -38,3 +38,16 @@ export interface AdminUser {
   role: string;
   createdAt: string;
 }
+
+export interface UserBlockInfo {
+  id: string;
+  reason: string;
+  message: string;
+  blockedAt: string;
+  blockedByName: string;
+}
+
+export interface BlockUserRequest {
+  reason: string;
+  message: string;
+}

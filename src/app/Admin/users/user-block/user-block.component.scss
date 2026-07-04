@@ -1,0 +1,250 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 32px;
+}
+
+.state-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+  text-align: center;
+  padding: 48px 0;
+}
+
+// ── Tarjeta del usuario ───────────────────────────────────────
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.032);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+  margin-bottom: 24px;
+}
+
+.user-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(199, 154, 50, 0.15), rgba(199, 154, 50, 0.04));
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+
+.user-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f3ead0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+  margin-top: 3px;
+}
+
+// ── Info del bloqueo activo ───────────────────────────────────
+.block-info-card {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(199, 62, 58, 0.07);
+  border: 1px solid rgba(214, 77, 72, 0.35);
+  margin-bottom: 24px;
+}
+
+.bi-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(214, 77, 72, 0.15);
+
+  &:last-of-type { border-bottom: none; }
+}
+
+.bi-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: rgba(233, 138, 133, 0.7);
+  font-weight: 600;
+}
+
+.bi-val {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #f3ead0;
+  text-align: right;
+}
+
+.bi-message-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: rgba(233, 138, 133, 0.7);
+  font-weight: 600;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.bi-message {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #f3ead0;
+  line-height: 1.55;
+}
+
+// ── Formulario de bloqueo ─────────────────────────────────────
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-2);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+
+.label-hint {
+  font-weight: 400;
+  color: #cbb98f;
+  font-size: 11.5px;
+  margin-left: 4px;
+}
+
+.reasons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.reason-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(214, 77, 72, 0.4);
+  background: transparent;
+  color: #e98a85;
+  transition: all 0.15s;
+
+  &--active {
+    background: rgba(214, 77, 72, 0.2);
+    border-color: rgba(214, 77, 72, 0.7);
+    color: #f3b0ad;
+  }
+}
+
+.msg-input {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 13px;
+  border: 1px solid rgba(214, 77, 72, 0.3);
+  background: rgba(199, 62, 58, 0.05);
+  color: #f3ead0;
+  padding: 14px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  outline: none;
+  resize: none;
+  margin-bottom: 20px;
+
+  &::placeholder {
+    color: rgba(233, 138, 133, 0.3);
+    font-weight: 400;
+  }
+}
+
+// ── Preview ───────────────────────────────────────────────────
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 18px;
+  border-radius: 14px;
+  background: rgba(20, 10, 10, 0.55);
+  border: 1px solid rgba(214, 77, 72, 0.4);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.preview-icon { color: #e98a85; }
+
+.preview-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #e98a85;
+}
+
+.preview-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(233, 138, 133, 0.8);
+  line-height: 1.55;
+}
+
+// ── Errores ───────────────────────────────────────────────────
+.form-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #e98a85;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+// ── Botones de acción ─────────────────────────────────────────
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border: none;
+  transition: opacity 0.2s;
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  &--block {
+    background: linear-gradient(135deg, #b03030, #7a1a1a);
+    color: #fde8e8;
+    box-shadow: 0 4px 16px -4px rgba(180, 40, 40, 0.5);
+  }
+
+  &--unblock {
+    background: linear-gradient(135deg, #2a7a4a, #1a4a2a);
+    color: #d0f5e0;
+    box-shadow: 0 4px 16px -4px rgba(40, 140, 80, 0.4);
+  }
+}

@@ -1,0 +1,101 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header
+      [title]="isBlocked ? 'Desbloquear usuario' : 'Bloquear usuario'"
+      (back)="goBack()"
+    ></app-admin-header>
+
+    @if (loading) {
+      <div class="state-msg">Cargando…</div>
+    }
+
+    @if (!loading && user) {
+
+      <!-- Tarjeta del usuario -->
+      <div class="user-card">
+        <div class="user-avatar">
+          <app-icon [svg]="iconPerson" [size]="22" style="color:var(--gold-1)"></app-icon>
+        </div>
+        <div class="user-info">
+          <div class="user-name">{{ user.displayName || user.username }}</div>
+          <div class="user-email">{{ user.email }}</div>
+        </div>
+      </div>
+
+      <!-- ── ESTADO: BLOQUEADO ── -->
+      @if (isBlocked) {
+        <div class="block-info-card">
+          <div class="bi-row">
+            <span class="bi-label">Motivo</span>
+            <span class="bi-val">{{ reasonLabel }}</span>
+          </div>
+          <div class="bi-row">
+            <span class="bi-label">Bloqueado por</span>
+            <span class="bi-val">{{ blockInfo?.blockedByName ?? '—' }}</span>
+          </div>
+          <div class="bi-row">
+            <span class="bi-label">Fecha</span>
+            <span class="bi-val">{{ blockInfo?.blockedAt | date:'dd/MM/yyyy, h:mm a' }}</span>
+          </div>
+          <div class="bi-message-label">Mensaje al usuario</div>
+          <div class="bi-message">{{ blockInfo?.message }}</div>
+        </div>
+
+        @if (error) { <div class="form-error">{{ error }}</div> }
+
+        <button class="action-btn action-btn--unblock" [disabled]="submitting" (click)="confirmUnblock()">
+          <app-icon [svg]="iconShieldCheck" [size]="20"></app-icon>
+          {{ submitting ? 'Desbloqueando…' : 'Desbloquear cuenta' }}
+        </button>
+      }
+
+      <!-- ── ESTADO: ACTIVO → FORMULARIO DE BLOQUEO ── -->
+      @if (!isBlocked) {
+        <div class="section-label">Motivo del bloqueo</div>
+        <div class="reasons-grid">
+          @for (r of reasons; track r.key) {
+            <button
+              class="reason-btn"
+              [class.reason-btn--active]="reason === r.key"
+              (click)="reason = r.key"
+            >{{ r.label }}</button>
+          }
+        </div>
+
+        <div class="section-label">Mensaje para el usuario
+          <span class="label-hint">(lo verá al intentar iniciar sesión)</span>
+        </div>
+        <textarea
+          class="msg-input"
+          [(ngModel)]="message"
+          placeholder="Ej. Tu cuenta ha sido suspendida por actividad fraudulenta. Contacta soporte para más información."
+          rows="4"
+        ></textarea>
+
+        <!-- Preview -->
+        @if (message.trim()) {
+          <div class="preview-card">
+            <app-icon [svg]="iconLock" [size]="20" class="preview-icon"></app-icon>
+            <div class="preview-title">Cuenta bloqueada</div>
+            <div class="preview-msg">{{ message }}</div>
+          </div>
+        }
+
+        @if (error) { <div class="form-error">{{ error }}</div> }
+
+        <button
+          class="action-btn action-btn--block"
+          [disabled]="!message.trim() || submitting"
+          (click)="confirmBlock()"
+        >
+          <app-icon [svg]="iconLock" [size]="20"></app-icon>
+          {{ submitting ? 'Bloqueando…' : 'Bloquear cuenta' }}
+        </button>
+      }
+    }
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

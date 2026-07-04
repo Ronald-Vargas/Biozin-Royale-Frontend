@@ -15,7 +15,7 @@
         <div class="detail-info">
           <div class="detail-top">
             <span class="detail-name">{{ user.displayName || user.username }}</span>
-            <app-status-badge [status]="user.status === 'active' ? 'Activo' : 'Inactivo'"></app-status-badge>
+            <app-status-badge [status]="user.status === 'active' ? 'Activo' : user.status === 'blocked' ? 'Bloqueado' : 'Inactivo'"></app-status-badge>
           </div>
           <div class="detail-role">{{ user.email }}</div>
           <div class="detail-meta">@{{ user.username }}</div>
@@ -38,14 +38,14 @@
           </div>
         }
 
-        <!-- Bloquear (danger) -->
-        <div class="menu-item menu-item--danger">
+        <!-- Bloquear / Desbloquear -->
+        <div class="menu-item menu-item--danger" (click)="onMenuClick('block')">
           <div class="menu-icon menu-icon--danger">
             <app-icon [svg]="iconLock" [size]="20" style="color:#e2746f"></app-icon>
           </div>
           <div class="menu-text">
-            <div class="menu-title menu-title--danger">Bloquear usuario</div>
-            <div class="menu-sub menu-sub--danger">Restringir acceso a la cuenta</div>
+            <div class="menu-title menu-title--danger">{{ user.status === 'blocked' ? 'Desbloquear usuario' : 'Bloquear usuario' }}</div>
+            <div class="menu-sub menu-sub--danger">{{ user.status === 'blocked' ? 'Reactivar acceso a la cuenta' : 'Restringir acceso a la cuenta' }}</div>
           </div>
         </div>
       </div>

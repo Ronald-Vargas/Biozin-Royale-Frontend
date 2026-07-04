@@ -55,3 +55,30 @@ ion-content.auth-content { --background: var(--bg-dark); }
   text-align: center;
   margin-top: -4px;
 }
+
+.blocked-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(199, 62, 58, 0.1);
+  border: 1px solid rgba(214, 77, 72, 0.45);
+}
+
+.blocked-icon { color: #e98a85; flex-shrink: 0; margin-top: 1px; }
+
+.blocked-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e98a85;
+  margin-bottom: 5px;
+}
+
+.blocked-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(233, 138, 133, 0.85);
+  line-height: 1.5;
+}

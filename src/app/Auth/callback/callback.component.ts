@@ -27,7 +27,6 @@ export class CallbackComponent implements OnInit, OnDestroy {
   errorMsg = '';
 
   async ngOnInit(): Promise<void> {
-    // 1. Si el proveedor (Google) regresó con un error en la URL, lo mostramos.
     const params = new URLSearchParams(
       window.location.hash.replace(/^#/, '') || window.location.search
     );
@@ -37,7 +36,6 @@ export class CallbackComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 2. Nos suscribimos ANTES de consultar, para no perder el evento de login.
     const { data: listener } =
       this.supabaseService.client.auth.onAuthStateChange((_event, session) => {
         if (session) {
@@ -46,7 +44,6 @@ export class CallbackComponent implements OnInit, OnDestroy {
       });
     this.authSub = listener.subscription;
 
-    // 3. Por si la sesión ya quedó lista al cargar (detectSessionInUrl).
     const { data, error } = await this.supabaseService.client.auth.getSession();
     if (error) {
       this.fail(error.message);
@@ -57,7 +54,6 @@ export class CallbackComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 4. Si en 8s no hay sesión, no nos quedamos colgados.
     this.timeoutId = setTimeout(() => {
       this.fail('No se pudo establecer la sesión. Revisa la consola.');
     }, 8000);
@@ -73,38 +69,49 @@ export class CallbackComponent implements OnInit, OnDestroy {
     this.done = true;
     if (this.timeoutId) clearTimeout(this.timeoutId);
 
-    // Le avisamos al backend que esta sesión OAuth existe para que cree/recupere
-    // el Profile asociado, y de paso sabemos si faltan datos que Google no manda
-    // (teléfono, país, fecha de nacimiento).
     this.authService.syncOAuth(session.access_token).subscribe({
       next: (res) => {
         if (res.blnError || !res.returnValue) {
-          this.fail(res.strResponseMessage || 'No se pudo sincronizar el perfil.');
+          this.showError(res.strResponseMessage || 'No se pudo sincronizar el perfil.');
           return;
         }
         this.redirect(this.authService.getPostLoginRoute(res.returnValue));
       },
       error: (err) => {
-        console.error('[callback] error sincronizando perfil:', err);
-        // Antes esto mandaba a /home sin perfil válido (storeSession no corre si
-        // blnError es true), dejando al usuario en una pantalla rota sin aviso.
-        this.fail('No se pudo sincronizar tu cuenta. Intenta iniciar sesión de nuevo.');
+        const body = err?.error;
+        if (this.timeoutId) clearTimeout(this.timeoutId);
+
+        if (body?.strResponseTittle === 'Cuenta bloqueada') {
+          // Redirigir al login con el mensaje como query param; el login ya
+          // tiene el banner de bloqueo y no hay problemas de zona de Angular.
+          const msg = encodeURIComponent(body.strResponseMessage ?? 'Tu cuenta ha sido bloqueada.');
+          this.supabaseService.client.auth.signOut();
+          window.location.replace(`/auth/login?blocked=${msg}`);
+          return;
+        }
+
+        this.showError('No se pudo sincronizar tu cuenta. Intenta iniciar sesión de nuevo.');
       },
     });
   }
 
   private redirect(path: string): void {
-    // Recarga completa en vez de navegación interna: el IonRouterOutlet se queda
-    // atascado al navegar desde el callback de OAuth. La sesión ya está
-    // persistida en localStorage, así que la ruta destino carga ya autenticada.
     window.location.replace(path);
   }
 
+  // Muestra error en la propia pantalla del callback (errores de red/sesión).
+  // No llamar desde dentro de handleSession porque done===true y el guard
+  // dentro de fail() lo silenciaría; usar showError() en su lugar.
   private fail(message: string): void {
     if (this.done) return;
     this.done = true;
     if (this.timeoutId) clearTimeout(this.timeoutId);
-    console.error('[callback] error:', message);
+    this.errorMsg = message;
+    this.cdr.detectChanges();
+  }
+
+  private showError(message: string): void {
+    if (this.timeoutId) clearTimeout(this.timeoutId);
     this.errorMsg = message;
     this.cdr.detectChanges();
   }
