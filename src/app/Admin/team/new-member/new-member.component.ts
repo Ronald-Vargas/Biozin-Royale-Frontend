@@ -36,9 +36,9 @@ export class NewMemberComponent {
   iconSparkles  = ICON_SPARKLES;
   iconPersonAdd = ICON_PERSON_ADD;
 
-  name  = 'Andrea Salazar';
-  email = 'andrea.salazar@biozinroyale.com';
-  phone = '+52 55 9876 5432';
+  name  = '';
+  email = '';
+  phone = '';
   role  = 'Soporte';
 
   roleOptions = ['Administrador', 'Soporte'];

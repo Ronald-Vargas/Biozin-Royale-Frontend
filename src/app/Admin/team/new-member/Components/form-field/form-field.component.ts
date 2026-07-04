@@ -15,6 +15,7 @@ export class FormFieldComponent {
   @Input() icon = '';
   @Input() value = '';
   @Input() type = 'text';
+  @Input() placeholder = '';
   @Input() help = '';
   @Output() valueChange = new EventEmitter<string>();
 

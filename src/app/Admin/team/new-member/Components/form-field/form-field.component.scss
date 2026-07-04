@@ -37,6 +37,11 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   outline: none;
+
+  &::placeholder {
+    color: rgba(203, 185, 143, 0.45);
+    font-weight: 400;
+  }
 }
 
 .field-help {
