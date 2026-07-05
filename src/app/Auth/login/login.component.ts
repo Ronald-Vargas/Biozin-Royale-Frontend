@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   errorMsg = '';
   blockedMsg = '';
+  successMsg = '';
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
@@ -58,15 +59,41 @@ export class LoginComponent implements OnInit {
     // está bloqueada; lo mostramos directamente sin que el usuario tenga que hacer nada.
     const blocked = this.route.snapshot.queryParamMap.get('blocked');
     if (blocked) this.blockedMsg = decodeURIComponent(blocked);
+
+    const reset = this.route.snapshot.queryParamMap.get('reset');
+    if (reset === '1') this.successMsg = 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.';
   }
 
   get emailCtrl()    { return this.form.get('email')    as FormControl; }
   get passwordCtrl() { return this.form.get('password') as FormControl; }
 
   goBack()     { this.router.navigate(['/welcome'], { replaceUrl: true }); }
-  goForgot()   { this.router.navigate(['/auth/forgot']); }
   goRegister() { this.router.navigate(['/auth/register']); }
   goHome()     { this.router.navigate(['/home'], { replaceUrl: true }); }
+
+  goForgot(): void {
+    const email = (this.emailCtrl.value || '').trim();
+    if (!email) {
+      this.errorMsg = 'Ingresa tu correo electrónico antes de continuar.';
+      return;
+    }
+
+    this.errorMsg = '';
+    this.blockedMsg = '';
+    this.loading = true;
+
+    this.authService.forgotPassword(email).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/auth/recuperar'], { queryParams: { email } });
+      },
+      error: () => {
+        this.loading = false;
+        // Navegar igual — el backend no revela si el correo existe
+        this.router.navigate(['/auth/recuperar'], { queryParams: { email } });
+      },
+    });
+  }
 
   submit() {
     if (this.loading) return;

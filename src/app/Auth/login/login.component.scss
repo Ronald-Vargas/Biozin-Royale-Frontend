@@ -56,6 +56,18 @@ ion-content.auth-content { --background: var(--bg-dark); }
   margin-top: -4px;
 }
 
+.success-banner {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(98, 216, 155, 0.08);
+  border: 1px solid rgba(98, 216, 155, 0.35);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #62d89b;
+  text-align: center;
+}
+
 .blocked-banner {
   display: flex;
   align-items: flex-start;

@@ -47,6 +47,14 @@ export class AuthService {
       .pipe(tap((res) => this.storeSession(res)));
   }
 
+  forgotPassword(email: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(email: string, code: string, newPassword: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/reset-password`, { email, code, newPassword });
+  }
+
   login(datos: LoginManualRequest): Observable<ApiResponse<PerfilResultado>> {
     return this.http
       .post<ApiResponse<PerfilResultado>>(`${this.baseUrl}/login`, datos)

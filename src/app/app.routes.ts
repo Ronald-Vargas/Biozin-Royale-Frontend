@@ -60,6 +60,11 @@ export const routes: Routes = [
     loadComponent: () => import('./Auth/RecoverPassword/confirmation/confirmation.component').then(m => m.ConfirmationComponent),
   },
   {
+    path: 'auth/recuperar',
+    data: { depth: 5 },
+    loadComponent: () => import('./Auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+  },
+  {
     path: 'home',
     data: { depth: 5, tab: 0 },
     loadComponent: () => import('./User/home/home.component').then(m => m.HomeComponent),

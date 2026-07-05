@@ -34,6 +34,8 @@
 
     <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>
 
+    <div class="success-banner" *ngIf="successMsg">{{ successMsg }}</div>
+
     <div class="blocked-banner" *ngIf="blockedMsg">
       <app-icon [svg]="iconLock" [size]="22" class="blocked-icon"></app-icon>
       <div class="blocked-text">
