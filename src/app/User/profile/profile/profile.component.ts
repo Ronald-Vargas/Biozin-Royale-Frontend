@@ -43,7 +43,6 @@ export class ProfileComponent implements OnInit {
   menu: MenuItem[] = [
     { label: 'Métodos de pago', icon: ICON_CARD, route: '/pagos' },
     { label: 'Historial de juego', icon: ICON_TIME,         route: '/histjuegos' },
-    { label: 'Mis bonos',          icon: ICON_GIFT_OUTLINE, route: '/bonos' },
     { label: 'Configuración',      icon: ICON_SETTINGS,     route: '/config' },
     { label: 'Soporte',            icon: ICON_HELP,         route: '/soporte' },
   ];
