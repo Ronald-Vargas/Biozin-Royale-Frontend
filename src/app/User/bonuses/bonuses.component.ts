@@ -66,7 +66,6 @@ export class BonusesComponent implements OnInit {
       id:    p.id,
       title: p.title,
       desc:  p.description ?? `$${p.amount}`,
-      req:   'Sin requisitos',
       time:  p.endsAt ? formatTimeLeft(p.endsAt) : 'Sin límite',
       icon:  'trophy',
     };

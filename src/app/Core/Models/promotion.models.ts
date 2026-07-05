@@ -4,9 +4,7 @@ export interface Promotion {
   description: string | null;
   amount: number;
   isActive: boolean;
-  startsAt: string | null;
   endsAt: string | null;
-  createdAt: string;
 }
 
 export interface PromotionClaim {
@@ -15,7 +13,6 @@ export interface PromotionClaim {
   promotion: Promotion | null;
   status: string;
   claimedAt: string;
-  completedAt: string | null;
 }
 
 export interface CrearPromocionRequest {
@@ -23,7 +20,6 @@ export interface CrearPromocionRequest {
   description?: string;
   amount: number;
   isActive: boolean;
-  startsAt?: string | null;
   endsAt?: string | null;
 }
 

@@ -7,7 +7,6 @@ export interface ActiveBonus {
   id?:    string;
   title: string;
   desc:  string;
-  req:   string;
   time:  string;
   icon:  string;
 }
