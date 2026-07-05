@@ -11,6 +11,7 @@ export interface CrearStaffMemberRequest {
 }
 
 export interface TeamMember {
+  id:         string;
   name:       string;
   role:       string;
   status:     'Activo' | 'Inactivo';

@@ -1,0 +1,156 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Detalle de miembro" (back)="goBack()"></app-admin-header>
+
+    @if (loading) {
+      <div class="state-msg">Cargando miembro…</div>
+    }
+
+    @if (!loading && perfil) {
+      <!-- Tarjeta de identidad -->
+      <div class="identity-card">
+        <img class="logo-watermark" src="assets/logo.png" alt="" />
+
+        <div class="id-avatar">
+          <app-icon [svg]="iconShield" [size]="30" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <div class="id-info">
+          <div class="id-name">{{ perfil.displayName || perfil.username }}</div>
+          <div class="id-handle">&#64;{{ perfil.username }}</div>
+          <div class="id-badges">
+            <span class="role-badge" [style.background]="roleBg" [style.color]="roleColor">
+              {{ roleLabel }}
+            </span>
+            <span class="status-badge" [class.status-badge--inactive]="!isActive">
+              {{ isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="id-copy" (click)="copyUsername()">
+          <app-icon
+            [svg]="copied ? iconCheck : iconCopy"
+            [size]="16"
+            [style.color]="copied ? '#4fd190' : 'rgba(203,185,143,0.55)'"
+          ></app-icon>
+        </div>
+      </div>
+
+      <!-- Información -->
+      <div class="section-head">
+        <app-icon [svg]="iconShield" [size]="16" style="color:var(--gold-1)"></app-icon>
+        <span class="section-title">Información</span>
+      </div>
+
+      <!-- Vista lectura -->
+      <div class="info-card" *ngIf="!editMode">
+        <div
+          *ngFor="let r of info; let last = last"
+          class="info-row"
+          [class.info-row--last]="last"
+        >
+          <div class="info-icon">
+            <app-icon [svg]="r.icon" [size]="16" style="color:var(--gold-1)"></app-icon>
+          </div>
+          <span class="info-key">{{ r.k }}</span>
+          <span class="info-value">{{ r.v }}</span>
+          <span class="editable-dot" *ngIf="r.editable"></span>
+        </div>
+      </div>
+
+      <div class="editable-hint" *ngIf="!editMode">
+        <span class="editable-dot-inline"></span> Campos editables
+      </div>
+
+      <!-- Formulario edición -->
+      <form class="edit-form" *ngIf="editMode" [formGroup]="form">
+        <app-field label="Nombre completo" placeholder="Juan Pérez" [control]="displayNameCtrl"></app-field>
+        <app-field label="Teléfono" type="tel" placeholder="+506 8144 7441" [control]="phoneCtrl"></app-field>
+      </form>
+
+      <div class="form-error" *ngIf="errorMsg && !showDeleteConfirm">{{ errorMsg }}</div>
+
+      <!-- Botón editar -->
+      <button class="action-btn action-btn--edit" *ngIf="!editMode" (click)="editInfo()">
+        <app-icon [svg]="iconEdit" [size]="17"></app-icon>
+        Editar información
+      </button>
+
+      <!-- Guardar / cancelar -->
+      <div class="edit-actions" *ngIf="editMode">
+        <button class="save-btn" [disabled]="saving" (click)="saveInfo()">
+          {{ saving ? 'Guardando…' : 'Guardar cambios' }}
+        </button>
+        <button class="cancel-btn" (click)="cancelEdit()">Cancelar</button>
+      </div>
+
+      <!-- Acciones del miembro -->
+      <div class="section-head" *ngIf="!editMode" style="margin-top:8px">
+        <app-icon [svg]="iconPower" [size]="16" style="color:var(--gold-1)"></app-icon>
+        <span class="section-title">Acciones</span>
+      </div>
+
+      <div class="actions-grid" *ngIf="!editMode">
+        <!-- Restablecer contraseña (UI only) -->
+        <button class="action-tile action-tile--key" (click)="resetPassword()">
+          <app-icon [svg]="iconKey" [size]="22"></app-icon>
+          <span>Restablecer contraseña</span>
+          <span class="tile-soon">Próximamente</span>
+        </button>
+
+        <!-- Toggle activo/inactivo — deshabilitado si es uno mismo -->
+        <button
+          class="action-tile"
+          [class.action-tile--deactivate]="isActive"
+          [class.action-tile--activate]="!isActive"
+          [disabled]="isSelf || toggling"
+          (click)="toggleStatus()"
+        >
+          <app-icon [svg]="iconPower" [size]="22"></app-icon>
+          <span>{{ isActive ? 'Desactivar' : 'Activar' }}</span>
+          <span *ngIf="isSelf" class="tile-note">No puedes desactivarte a ti mismo</span>
+        </button>
+
+        <!-- Eliminar — deshabilitado si es uno mismo -->
+        <button
+          class="action-tile action-tile--delete"
+          [disabled]="isSelf"
+          (click)="requestDelete()"
+        >
+          <app-icon [svg]="iconTrash" [size]="22"></app-icon>
+          <span>Eliminar miembro</span>
+          <span *ngIf="isSelf" class="tile-note">No puedes eliminarte a ti mismo</span>
+        </button>
+      </div>
+    }
+
+    @if (!loading && errorMsg && !perfil) {
+      <div class="state-msg state-msg--error">{{ errorMsg }}</div>
+    }
+  </div>
+
+  <!-- Overlay de confirmación de eliminación -->
+  <div class="confirm-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+    <div class="confirm-card" (click)="$event.stopPropagation()">
+      <div class="confirm-icon">
+        <app-icon [svg]="iconTrash" [size]="28" style="color:#e98a85"></app-icon>
+      </div>
+      <div class="confirm-title">¿Eliminar miembro?</div>
+      <div class="confirm-body">
+        Esta acción es permanente. <strong>{{ perfil?.displayName || perfil?.username }}</strong>
+        perderá acceso al sistema y no podrá recuperarse.
+      </div>
+      <div class="confirm-actions">
+        <button class="confirm-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="confirm-delete" [disabled]="deleting" (click)="confirmDelete()">
+          {{ deleting ? 'Eliminando…' : 'Sí, eliminar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

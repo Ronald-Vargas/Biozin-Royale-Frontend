@@ -20,6 +20,22 @@ export class StaffService {
     return this.http.post<ApiResponse<PerfilResultado>>(this.staffUrl, datos);
   }
 
+  getById(id: string): Observable<ApiResponse<PerfilResultado>> {
+    return this.http.get<ApiResponse<PerfilResultado>>(`${this.staffUrl}/${id}`);
+  }
+
+  updateById(id: string, datos: ActualizarStaffMemberRequest): Observable<ApiResponse<PerfilResultado>> {
+    return this.http.put<ApiResponse<PerfilResultado>>(`${this.staffUrl}/${id}`, datos);
+  }
+
+  changeStatus(id: string, status: 'active' | 'inactive'): Observable<ApiResponse<PerfilResultado>> {
+    return this.http.put<ApiResponse<PerfilResultado>>(`${this.staffUrl}/${id}/status`, { status });
+  }
+
+  deleteById(id: string): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.staffUrl}/${id}`);
+  }
+
   getMe(): Observable<ApiResponse<PerfilResultado>> {
     return this.http.get<ApiResponse<PerfilResultado>>(`${this.staffUrl}/me`);
   }

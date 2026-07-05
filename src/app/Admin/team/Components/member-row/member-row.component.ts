@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TeamMember } from 'src/app/Core/Models/staff.models';
 import { StatusBadgeComponent } from 'src/app/Admin/shared/status-badge/status-badge.component';
@@ -16,6 +16,7 @@ import { ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
 })
 export class MemberRowComponent {
   @Input() member!: TeamMember;
+  @Output() clicked = new EventEmitter<void>();
 
   iconChevron = ICON_CHEVRON_FWD;
 }

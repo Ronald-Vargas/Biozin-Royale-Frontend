@@ -12,6 +12,8 @@ export interface PerfilResultado {
   token: string | null;
   camposPendientes: string[];
   tempPassword?: string | null;
+  createdAt?: string | null;
+  createdByName?: string | null;
 }
 
 export interface EstadisticasResultado {

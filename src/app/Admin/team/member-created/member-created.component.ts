@@ -32,6 +32,7 @@ export class MemberCreatedComponent implements OnInit {
   iconAdd      = ICON_ADD;
 
   member: TeamMember = {
+    id: '',
     name: 'Andrea Salazar',
     email: 'andrea.salazar@biozinroyale.com',
     user: 'andrea.salazar',

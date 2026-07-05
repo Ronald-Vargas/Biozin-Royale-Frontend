@@ -14,6 +14,7 @@ import { PerfilResultado } from 'src/app/Core/Models/profile.models';
 
 export function toTeamMember(perfil: PerfilResultado): TeamMember {
   return {
+    id: perfil.id,
     name: perfil.displayName ?? perfil.username,
     role: perfil.role === 'admin' ? 'Administrador' : 'Soporte',
     status: perfil.status === 'active' ? 'Activo' : 'Inactivo',
@@ -63,6 +64,7 @@ export class TeamComponent implements OnInit {
     );
   }
 
-  goBack()      { this.router.navigate(['/admin/usuarios']); }
-  goNewMember() { this.router.navigate(['/admin/equipo/nuevo']); }
+  goBack()           { this.router.navigate(['/admin/usuarios']); }
+  goNewMember()      { this.router.navigate(['/admin/equipo/nuevo']); }
+  goToDetail(id: string) { this.router.navigate(['/admin/equipo', id]); }
 }
