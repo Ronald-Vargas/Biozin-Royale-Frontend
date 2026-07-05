@@ -233,14 +233,14 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/team/new-member/new-member.component').then(m => m.NewMemberComponent),
   },
   {
-    path: 'admin/equipo/:id',
-    canActivate: [roleGuard(['admin'])],
-    loadComponent: () => import('./Admin/team/member-detail/member-detail.component').then(m => m.MemberDetailComponent),
-  },
-  {
     path: 'admin/equipo/creado',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/member-created/member-created.component').then(m => m.MemberCreatedComponent),
+  },
+  {
+    path: 'admin/equipo/:id',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/team/member-detail/member-detail.component').then(m => m.MemberDetailComponent),
   },
   {
     path: 'support',
