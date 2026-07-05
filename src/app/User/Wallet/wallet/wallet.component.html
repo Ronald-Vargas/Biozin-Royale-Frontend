@@ -10,7 +10,7 @@
     <div class="balance-label">SALDO TOTAL</div>
     <div class="balance-row">
       <span class="gold-text balance-amount">
-        {{ hidden ? '$ ••••••' : (balance() | currency:'USD':'symbol':'1.2-2') }}
+        {{ hidden ? '$ ••••••' : (balance() != null ? (balance()! | currency:'USD':'symbol':'1.2-2') : '$ ----') }}
       </span>
       <app-icon
         [svg]="hidden ? iconEyeOff : iconEye"

@@ -33,16 +33,6 @@
 
     <!-- Historial -->
     @if (tab === 'historial') {
-      <div class="filters-row">
-        @for (f of filters; track f.key) {
-          <button
-            class="filter-chip"
-            [class.filter-chip--active]="filter === f.key"
-            (click)="filter = f.key"
-          >{{ f.label }}</button>
-        }
-      </div>
-
       <div class="hist-list">
         @for (b of histList; track b.title) {
           <app-bonus-hist-card [bonus]="b"></app-bonus-hist-card>

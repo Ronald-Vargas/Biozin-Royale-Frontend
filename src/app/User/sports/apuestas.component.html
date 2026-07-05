@@ -156,7 +156,7 @@
         <button class="quick-btn" (click)="setAmount(50)">$50</button>
         <button class="quick-btn" (click)="setAmount(100)">$100</button>
         <button class="quick-btn" (click)="setAmount(500)">$500</button>
-        <button class="quick-btn quick-btn--max" (click)="setAmount(balance())">MÁX</button>
+        <button class="quick-btn quick-btn--max" (click)="setAmount(balance() ?? 0)">MÁX</button>
       </div>
 
       <!-- Balance + potential -->

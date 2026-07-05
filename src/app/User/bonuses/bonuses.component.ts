@@ -31,11 +31,6 @@ export class BonusesComponent implements OnInit {
     { k: 'historial', l: 'Historial' },
   ];
 
-  filters: Filter[] = [
-    { key: 'todos',      label: 'Todos' },
-    { key: 'completado', label: 'Usados' },
-  ];
-
   activeBonuses: ActiveBonus[] = [];
   histBonuses: HistBonus[] = [];
 

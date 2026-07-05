@@ -131,7 +131,7 @@ export class ApuestasComponent implements OnInit {
   }
 
   get isInsufficient(): boolean {
-    return this.rawAmount > 0 && this.rawAmount > this.balance();
+    return this.rawAmount > 0 && this.rawAmount > (this.balance() ?? 0);
   }
 
   get canConfirm(): boolean {
@@ -183,7 +183,7 @@ export class ApuestasComponent implements OnInit {
   }
 
   setAmount(value: number): void {
-    const capped       = Math.min(value, this.balance());
+    const capped       = Math.min(value, this.balance() ?? 0);
     this.rawAmount     = capped;
     this.displayAmount = this.fmtInput(capped.toFixed(2));
   }

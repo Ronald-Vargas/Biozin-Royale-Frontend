@@ -13,7 +13,9 @@
         </div>
 
         <div class="balance-pill">
-          <span class="balance-amount">{{ balance() | currency:'USD':'symbol':'1.2-2' }}</span>
+          <span class="balance-amount">
+            {{ balance() != null ? (balance()! | currency:'USD':'symbol':'1.2-2') : '$ ----' }}
+          </span>
           <div class="add-btn" (click)="goDeposito()">
             <app-icon [svg]="iconAdd" [size]="18" style="color:#2a1f06"></app-icon>
           </div>

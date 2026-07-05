@@ -6,19 +6,29 @@ import { ApiResponse } from '../../Core/Models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class BalanceService {
-  private _balance = signal(0);
+  private _balance = signal<number | null>(null);
+  private _loading = signal(false);
+
+  /** null = todavía no cargado; number = valor real de la DB */
   readonly balance = this._balance.asReadonly();
+  readonly loading = this._loading.asReadonly();
 
   private readonly url = `${environment.apiUrl}/wallet/balance`;
 
   constructor(private readonly http: HttpClient) {}
 
   load(): void {
+    if (this._loading()) return;
+    this._loading.set(true);
     this.http.get<ApiResponse<number>>(this.url).subscribe({
       next: (res) => {
-        if (!res.blnError && res.returnValue !== null) {
+        this._loading.set(false);
+        if (!res.blnError && res.returnValue != null) {
           this._balance.set(res.returnValue);
         }
+      },
+      error: () => {
+        this._loading.set(false);
       },
     });
   }
