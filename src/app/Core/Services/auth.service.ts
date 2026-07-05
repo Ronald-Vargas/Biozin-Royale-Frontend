@@ -19,8 +19,10 @@ export class AuthService {
 
   /** A dónde mandar al usuario justo después de login/registro/sync/invitado. */
   getPostLoginRoute(perfil: PerfilResultado): string {
-    if (perfil.role === 'admin') return '/admin';
-    if (perfil.role === 'soporte') return '/support';
+    if (perfil.role === 'admin' || perfil.role === 'soporte') {
+      if (perfil.mustChangePassword) return '/admin/cambiar-clave';
+      return perfil.role === 'admin' ? '/admin' : '/support';
+    }
     // Un invitado nunca tiene phone/country/birthdate, así que camposPendientes
     // siempre viene lleno; no tiene sentido mandarlo a completar un perfil que
     // todavía no existe de verdad.

@@ -12,6 +12,7 @@ export interface PerfilResultado {
   token: string | null;
   camposPendientes: string[];
   tempPassword?: string | null;
+  mustChangePassword?: boolean;
   createdAt?: string | null;
   createdByName?: string | null;
 }

@@ -168,6 +168,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
   {
+    path: 'admin/cambiar-clave',
+    canActivate: [roleGuard(['admin', 'soporte'])],
+    loadComponent: () => import('./Admin/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+  },
+  {
   path: 'admin',
   canActivate: [roleGuard(['admin'])],
   loadComponent: () => import('./Admin/home/home.component').then(m => m.HomeComponent),

@@ -36,6 +36,10 @@ export class StaffService {
     return this.http.delete<ApiResponse<boolean>>(`${this.staffUrl}/${id}`);
   }
 
+  changePassword(oldPassword: string, newPassword: string): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.staffUrl}/me/password`, { oldPassword, newPassword });
+  }
+
   getMe(): Observable<ApiResponse<PerfilResultado>> {
     return this.http.get<ApiResponse<PerfilResultado>>(`${this.staffUrl}/me`);
   }
