@@ -32,7 +32,7 @@ export class HomeComponent {
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  goPerfil()  { this.router.navigate(['/miperfil']); }
+  goPerfil()  { this.router.navigate(['/admin/miperfil']); }
   logout()    { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
   goSoporte() { this.router.navigate(['/admin/soporte']); }
 }

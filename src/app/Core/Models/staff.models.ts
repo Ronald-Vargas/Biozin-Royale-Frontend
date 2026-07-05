@@ -1,3 +1,8 @@
+export interface ActualizarStaffMemberRequest {
+  displayName?: string;
+  phone?: string;
+}
+
 export interface CrearStaffMemberRequest {
   nombre: string;
   correoContacto: string;

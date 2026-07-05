@@ -37,7 +37,8 @@ export class AdminSettingsComponent {
 
   constructor(private router: Router) {}
 
-  goBack()        { this.router.navigate(['/admin']); }
+  goBack(){ this.router.navigate(['/admin']); }
+  goPerfil()  { this.router.navigate(['/admin/miperfil']); }
   setNotifs(v: boolean) { this.notifs = v; }
 
   noop() {}

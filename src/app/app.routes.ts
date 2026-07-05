@@ -218,6 +218,11 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/settings/settings.component').then(m => m.AdminSettingsComponent),
   },
   {
+    path: 'admin/miperfil',
+    canActivate: [roleGuard(['admin', 'soporte'])],
+    loadComponent: () => import('./Admin/personal-info/personal-info.component').then(m => m.AdminPersonalInfoComponent),
+  },
+  {
     path: 'admin/equipo',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/team.component').then(m => m.TeamComponent),

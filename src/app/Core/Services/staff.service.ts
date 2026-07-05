@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
 import { PerfilResultado } from '../Models/profile.models';
-import { CrearStaffMemberRequest } from '../Models/staff.models';
+import { ActualizarStaffMemberRequest, CrearStaffMemberRequest } from '../Models/staff.models';
 
 @Injectable({ providedIn: 'root' })
 export class StaffService {
@@ -18,5 +18,13 @@ export class StaffService {
 
   create(datos: CrearStaffMemberRequest): Observable<ApiResponse<PerfilResultado>> {
     return this.http.post<ApiResponse<PerfilResultado>>(this.staffUrl, datos);
+  }
+
+  getMe(): Observable<ApiResponse<PerfilResultado>> {
+    return this.http.get<ApiResponse<PerfilResultado>>(`${this.staffUrl}/me`);
+  }
+
+  updateMe(datos: ActualizarStaffMemberRequest): Observable<ApiResponse<PerfilResultado>> {
+    return this.http.put<ApiResponse<PerfilResultado>>(`${this.staffUrl}/me`, datos);
   }
 }
