@@ -18,7 +18,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401) {
+      // Solo cerrar sesión y redirigir si ya había una sesión activa.
+      // Un 401 en el login es credenciales incorrectas, no sesión expirada.
+      if (err.status === 401 && authService.getToken()) {
         authService.logout();
         inject(Router).navigate(['/welcome'], { replaceUrl: true });
       }

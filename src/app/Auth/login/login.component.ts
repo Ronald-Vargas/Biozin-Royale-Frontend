@@ -127,6 +127,10 @@ export class LoginComponent implements OnInit {
           this.blockedMsg = body.strResponseMessage;
           return;
         }
+        if (body?.strResponseTittle === 'Credenciales inválidas' || err?.status === 401) {
+          this.errorMsg = 'Correo electrónico o contraseña incorrectos.';
+          return;
+        }
         this.errorMsg = this.mapLoginError(body?.strResponseMessage, err?.status);
       },
     });
@@ -166,19 +170,8 @@ export class LoginComponent implements OnInit {
       msg.includes('user not found') ||
       msg.includes('email not found');
 
-    const esContrasenaIncorrecta =
-      (!esCorreoNoRegistrado && status === 401) ||
-      msg.includes('password') ||
-      msg.includes('contraseña') ||
-      msg.includes('incorrect') ||
-      msg.includes('inválid');
-
     if (esCorreoNoRegistrado) {
       return 'El correo electrónico no ha sido registrado. Selecciona la opción "REGISTRARSE" para crear una cuenta.';
-    }
-
-    if (esContrasenaIncorrecta) {
-      return 'Contraseña incorrecta.';
     }
 
     return message || 'No se pudo conectar con el servidor. Intenta de nuevo.';
