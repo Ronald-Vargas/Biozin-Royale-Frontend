@@ -241,9 +241,6 @@
   &--key {
     border-color: rgba(212,167,60,0.3);
     color: #cbb98f;
-    opacity: 0.6;
-    cursor: default;
-    pointer-events: none;
   }
 
   &--deactivate {
@@ -329,4 +326,22 @@
   font-family: 'Montserrat', sans-serif; font-size: 14px;
   font-weight: 700; color: #fff;
   &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.confirm-ok {
+  flex: 1; height: 48px; border-radius: 12px; cursor: pointer;
+  border: none; background: linear-gradient(135deg, #c9991e, #8a6610);
+  font-family: 'Montserrat', sans-serif; font-size: 14px;
+  font-weight: 700; color: #1a1100;
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.reset-ok-banner {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 20px 16px;
+  padding: 12px 16px; border-radius: 14px;
+  background: rgba(98, 216, 155, 0.07);
+  border: 1px solid rgba(98, 216, 155, 0.3);
+  font-family: 'Montserrat', sans-serif; font-size: 13px;
+  font-weight: 600; color: #62d89b;
 }

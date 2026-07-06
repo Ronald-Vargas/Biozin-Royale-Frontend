@@ -48,8 +48,11 @@ export class MemberDetailComponent implements OnInit {
   copied    = false;
 
   showDeleteConfirm = false;
-  deleting  = false;
-  toggling  = false;
+  showResetConfirm  = false;
+  deleting    = false;
+  toggling    = false;
+  resetting   = false;
+  resetDone   = false;
 
   info: InfoRow[] = [];
   form: FormGroup;
@@ -167,8 +170,21 @@ export class MemberDetailComponent implements OnInit {
     });
   }
 
-  resetPassword() {
-    // UI-only — sin funcionalidad por ahora
+  requestReset()  { this.showResetConfirm = true; }
+  cancelReset()   { this.showResetConfirm = false; }
+
+  confirmReset() {
+    if (this.resetting) return;
+    this.resetting = true;
+
+    this.staffService.resetPasswordById(this.memberId).subscribe({
+      next: (res) => {
+        this.resetting = false;
+        this.showResetConfirm = false;
+        if (!res.blnError) this.resetDone = true;
+      },
+      error: () => { this.resetting = false; this.showResetConfirm = false; },
+    });
   }
 
   private loadMember() {

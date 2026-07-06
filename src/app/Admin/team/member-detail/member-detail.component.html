@@ -93,12 +93,22 @@
         <span class="section-title">Acciones</span>
       </div>
 
+      <!-- Banner de éxito al restablecer -->
+      <div class="reset-ok-banner" *ngIf="resetDone">
+        <app-icon [svg]="iconKey" [size]="16" style="color:#62d89b;flex-shrink:0"></app-icon>
+        Se envió una nueva contraseña temporal al correo del miembro.
+      </div>
+
       <div class="actions-grid" *ngIf="!editMode">
-        <!-- Restablecer contraseña (UI only) -->
-        <button class="action-tile action-tile--key" (click)="resetPassword()">
+        <!-- Restablecer contraseña -->
+        <button
+          class="action-tile action-tile--key"
+          [disabled]="isSelf || resetting"
+          (click)="requestReset()"
+        >
           <app-icon [svg]="iconKey" [size]="22"></app-icon>
-          <span>Restablecer contraseña</span>
-          <span class="tile-soon">Próximamente</span>
+          <span>{{ resetting ? 'Enviando…' : 'Restablecer contraseña' }}</span>
+          <span *ngIf="isSelf" class="tile-note">No puedes restablecer tu propia contraseña</span>
         </button>
 
         <!-- Toggle activo/inactivo — deshabilitado si es uno mismo -->
@@ -147,6 +157,27 @@
         <button class="confirm-cancel" (click)="cancelDelete()">Cancelar</button>
         <button class="confirm-delete" [disabled]="deleting" (click)="confirmDelete()">
           {{ deleting ? 'Eliminando…' : 'Sí, eliminar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay de confirmación de restablecer contraseña -->
+  <div class="confirm-overlay" *ngIf="showResetConfirm" (click)="cancelReset()">
+    <div class="confirm-card" (click)="$event.stopPropagation()">
+      <div class="confirm-icon">
+        <app-icon [svg]="iconKey" [size]="28" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="confirm-title">¿Restablecer contraseña?</div>
+      <div class="confirm-body">
+        Se generará una nueva contraseña temporal y se enviará al correo de
+        <strong>{{ perfil?.displayName || perfil?.username }}</strong>.
+        El miembro deberá cambiarla en su próximo inicio de sesión.
+      </div>
+      <div class="confirm-actions">
+        <button class="confirm-cancel" (click)="cancelReset()">Cancelar</button>
+        <button class="confirm-ok" [disabled]="resetting" (click)="confirmReset()">
+          {{ resetting ? 'Enviando…' : 'Sí, restablecer' }}
         </button>
       </div>
     </div>
