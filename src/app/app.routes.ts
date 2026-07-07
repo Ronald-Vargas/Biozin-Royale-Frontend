@@ -65,6 +65,11 @@ export const routes: Routes = [
     loadComponent: () => import('./Auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
   {
+    path: 'auth/verificar-email',
+    data: { depth: 5 },
+    loadComponent: () => import('./Auth/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
+  },
+  {
     path: 'home',
     data: { depth: 5, tab: 0 },
     loadComponent: () => import('./User/home/home.component').then(m => m.HomeComponent),

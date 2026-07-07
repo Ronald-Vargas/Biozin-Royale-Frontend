@@ -1,0 +1,207 @@
+.ve-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ve-body {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  padding: calc(var(--ion-safe-area-top) + 20px) 24px calc(var(--ion-safe-area-bottom) + 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ve-back {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: rgba(203, 185, 143, 0.6);
+  margin-bottom: 28px;
+  padding: 0;
+}
+
+.ve-icon-wrap { margin-bottom: 20px; }
+
+.ve-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, rgba(199, 154, 50, 0.18), rgba(20, 16, 10, 0.5));
+  border: 2px solid rgba(212, 167, 60, 0.55);
+  box-shadow: 0 0 24px rgba(199, 154, 50, 0.22), 0 0 60px rgba(199, 154, 50, 0.07);
+}
+
+.ve-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--cream);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.ve-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.ve-email-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  background: rgba(212, 167, 60, 0.06);
+  margin-bottom: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cream);
+  max-width: 100%;
+  overflow: hidden;
+
+  span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+.ve-alert {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(233, 138, 133, 0.4);
+  background: rgba(233, 138, 133, 0.08);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #e98a85;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ve-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ve-field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbb98f;
+  letter-spacing: 0.3px;
+  margin-bottom: -8px;
+}
+
+.ve-code-input {
+  width: 100%;
+  height: 58px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(212, 167, 60, 0.45);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: 'Courier New', monospace;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--cream);
+  text-align: center;
+  letter-spacing: 10px;
+  outline: none;
+  caret-color: var(--gold-1);
+  box-sizing: border-box;
+  padding: 0 12px;
+
+  &::placeholder {
+    color: rgba(203, 185, 143, 0.25);
+    letter-spacing: 8px;
+    font-size: 26px;
+  }
+
+  &:focus {
+    border-color: rgba(212, 167, 60, 0.75);
+    box-shadow: 0 0 0 3px rgba(212, 167, 60, 0.1);
+  }
+}
+
+.ve-code-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: #e98a85;
+  margin-top: -8px;
+  padding-left: 4px;
+}
+
+.ve-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #e98a85;
+  text-align: center;
+  padding: 2px 0;
+}
+
+.ve-submit {
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #c9991e, #8a6610);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1100;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 24px -6px rgba(199, 154, 50, 0.4);
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.ve-resend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.6);
+}
+
+.ve-resend-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-1);
+  padding: 0;
+  text-decoration: underline;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.ve-resent-ok {
+  color: #62d89b;
+  font-weight: 600;
+}

@@ -1,0 +1,69 @@
+<ion-content [fullscreen]="true">
+<div class="ve-screen">
+  <app-atmosphere [glow]="0.28" [count]="10"></app-atmosphere>
+
+  <div class="ve-body">
+
+    <button class="ve-back" (click)="goBack()">
+      <app-icon [svg]="iconMail" [size]="16" style="color:rgba(203,185,143,0.55)"></app-icon>
+      Volver al inicio de sesión
+    </button>
+
+    <div class="ve-icon-wrap">
+      <div class="ve-icon">
+        <app-icon [svg]="iconKeypad" [size]="36" style="color:var(--gold-1)"></app-icon>
+      </div>
+    </div>
+
+    <div class="ve-title">Verifica tu correo</div>
+    <div class="ve-subtitle">
+      Te enviamos un código de 6 dígitos al correo:
+    </div>
+
+    <div class="ve-email-badge">
+      <app-icon [svg]="iconMail" [size]="15" style="color:var(--gold-1)"></app-icon>
+      <span>{{ email }}</span>
+    </div>
+
+    <div class="ve-alert" *ngIf="unverifiedAlert">
+      Debes verificar tu correo para iniciar sesión.
+    </div>
+
+    <form class="ve-form" [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="ve-field-label">Código de verificación</div>
+      <input
+        class="ve-code-input"
+        formControlName="code"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="000000"
+        autocomplete="one-time-code"
+      />
+      <div class="ve-code-hint" *ngIf="codeCtrl.touched && codeCtrl.invalid">
+        El código debe tener exactamente 6 dígitos.
+      </div>
+
+      <div class="ve-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+      <button class="ve-submit" type="submit" [disabled]="loading">
+        {{ loading ? 'Verificando…' : 'Activar cuenta' }}
+      </button>
+    </form>
+
+    <div class="ve-resend">
+      <span *ngIf="!codeResent">¿No recibiste el código?</span>
+      <span *ngIf="codeResent" class="ve-resent-ok">¡Código reenviado!</span>
+      <button
+        class="ve-resend-btn"
+        *ngIf="!codeResent"
+        [disabled]="loadingCode"
+        (click)="resendCode()"
+      >
+        {{ loadingCode ? 'Enviando…' : 'Reenviar' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+</ion-content>

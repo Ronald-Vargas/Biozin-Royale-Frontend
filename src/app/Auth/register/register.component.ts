@@ -102,6 +102,11 @@ export class RegisterComponent {
             this.errorMsg = this.mapRegisterError(res.strResponseMessage);
             return;
           }
+          if (res.returnValue.mustVerifyEmail) {
+            const emailParam = (this.emailCtrl.value || '').trim().toLowerCase();
+            this.router.navigate(['/auth/verificar-email'], { replaceUrl: true, queryParams: { email: emailParam } });
+            return;
+          }
           this.router.navigate([this.authService.getPostLoginRoute(res.returnValue)], { replaceUrl: true });
         },
         error: (err) => {

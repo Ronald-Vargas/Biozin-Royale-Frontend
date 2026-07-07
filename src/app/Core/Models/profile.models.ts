@@ -13,6 +13,7 @@ export interface PerfilResultado {
   camposPendientes: string[];
   tempPassword?: string | null;
   mustChangePassword?: boolean;
+  mustVerifyEmail?: boolean;
   createdAt?: string | null;
   createdByName?: string | null;
 }

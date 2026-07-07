@@ -62,6 +62,9 @@ export class LoginComponent implements OnInit {
 
     const reset = this.route.snapshot.queryParamMap.get('reset');
     if (reset === '1') this.successMsg = 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.';
+
+    const verified = this.route.snapshot.queryParamMap.get('verified');
+    if (verified === '1') this.successMsg = 'Correo verificado. Ya puedes iniciar sesión.';
   }
 
   get emailCtrl()    { return this.form.get('email')    as FormControl; }
@@ -125,6 +128,11 @@ export class LoginComponent implements OnInit {
         const body = err?.error;
         if (body?.strResponseTittle === 'Cuenta bloqueada') {
           this.blockedMsg = body.strResponseMessage;
+          return;
+        }
+        if (body?.strResponseTittle === 'Email no verificado') {
+          const email = (this.emailCtrl.value || '').trim().toLowerCase();
+          this.router.navigate(['/auth/verificar-email'], { queryParams: { email, unverified: '1' } });
           return;
         }
         if (body?.strResponseTittle === 'Credenciales inválidas' || err?.status === 401) {

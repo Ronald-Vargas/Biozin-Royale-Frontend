@@ -30,6 +30,14 @@ export class AuthService {
     return '/home';
   }
 
+  verifyEmail(email: string, code: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/verify-email`, { email, code });
+  }
+
+  resendVerification(email: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/resend-verification`, { email });
+  }
+
   register(datos: RegistroManualRequest): Observable<ApiResponse<PerfilResultado>> {
     return this.http
       .post<ApiResponse<PerfilResultado>>(`${this.baseUrl}/register`, datos)
