@@ -29,11 +29,11 @@
           >{{ t.amt }}</span>
         </div>
 
-        <div class="tx-method">{{ t.method }}</div>
+        <div class="tx-method" *ngIf="t.method">{{ t.method }}</div>
 
         <div class="tx-row-bottom">
           <span class="tx-date">{{ t.date }}</span>
-          <span class="tx-status" [style.color]="statusColor(t.status)">
+          <span class="tx-status" [style.color]="t.statusColor">
             {{ t.status }}
           </span>
         </div>

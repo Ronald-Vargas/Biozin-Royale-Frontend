@@ -35,7 +35,7 @@
 
   <!-- Transactions list -->
   <div class="tx-list">
-    @for (t of transactions; track t.date) {
+    @for (t of transactions; track t.id) {
       <div class="tx-item">
         <div class="tx-icon" [style.border-color]="t.color">
           <app-icon [svg]="t.icon" [size]="18" [style.color]="t.color"></app-icon>

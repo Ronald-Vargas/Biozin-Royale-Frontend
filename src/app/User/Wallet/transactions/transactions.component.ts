@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
 import { ICON_ARROW_DOWN, ICON_ARROW_UP } from '../../shared/icons/icons';
-
+import { WalletTransactionService } from 'src/app/Core/Services/wallet-transaction.service';
+import {
+  WalletTransactionResultado,
+  isDeposit,
+  transactionTypeLabel,
+  transactionColor,
+  transactionStatusLabel,
+  transactionStatusColor,
+  formatTransactionDate,
+  formatTransactionAmount,
+} from 'src/app/Core/Models/wallet-transaction.models';
 
 interface Tx {
+  id:     string;
   type:   string;
   cat:    'deposito' | 'retiro';
   date:   string;
@@ -16,6 +27,7 @@ interface Tx {
   color:  string;
   method: string;
   status: string;
+  statusColor: string;
 }
 
 interface Filter { key: string; label: string; }
@@ -27,7 +39,7 @@ interface Filter { key: string; label: string; }
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.scss'],
 })
-export class TransactionsComponent {
+export class TransactionsComponent implements OnInit {
   filter = 'todas';
 
   filters: Filter[] = [
@@ -36,16 +48,36 @@ export class TransactionsComponent {
     { key: 'retiro',   label: 'Retiros' },
   ];
 
-  allTx: Tx[] = [
-    { type: 'Depósito', cat: 'deposito', date: '20 May 2024 · 14:35', amt: '+ $500.00', pos: true,  icon: ICON_ARROW_DOWN,  color: '#4fd190',       method: 'VISA ···4567',           status: 'Completado' },
-    { type: 'Retiro',   cat: 'retiro',   date: '18 May 2024 · 11:20', amt: '- $200.00', pos: false, icon: ICON_ARROW_UP,    color: '#e06a6a',       method: 'Transferencia bancaria', status: 'Completado' },
-    { type: 'Depósito', cat: 'deposito', date: '15 May 2024 · 20:02', amt: '+ $250.00', pos: true,  icon: ICON_ARROW_DOWN,  color: '#4fd190',       method: 'PayPal',                 status: 'Completado' },
-    { type: 'Retiro',   cat: 'retiro',   date: '12 May 2024 · 16:48', amt: '- $120.00', pos: false, icon: ICON_ARROW_UP,    color: '#e06a6a',       method: 'PayPal',                 status: 'En proceso' },
-    { type: 'Depósito', cat: 'deposito', date: '09 May 2024 · 10:21', amt: '+ $80.00',  pos: true,  icon: ICON_ARROW_DOWN,  color: '#4fd190',       method: 'Bitcoin (BTC)',          status: 'Completado' },
-    { type: 'Retiro',   cat: 'retiro',   date: '03 May 2024 · 22:30', amt: '- $300.00', pos: false, icon: ICON_ARROW_UP,    color: '#e06a6a',       method: 'Transferencia bancaria', status: 'Completado' },
-  ];
+  allTx: Tx[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private walletTransactionService: WalletTransactionService) {}
+
+  ngOnInit(): void {
+    this.walletTransactionService.getTransactions().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.allTx = res.returnValue.map(t => this.toTx(t));
+        }
+      },
+    });
+  }
+
+  private toTx(t: WalletTransactionResultado): Tx {
+    const deposit = isDeposit(t);
+    return {
+      id: t.id,
+      type: transactionTypeLabel(t),
+      cat: deposit ? 'deposito' : 'retiro',
+      date: formatTransactionDate(t.createdAt),
+      amt: formatTransactionAmount(t),
+      pos: deposit,
+      icon: deposit ? ICON_ARROW_DOWN : ICON_ARROW_UP,
+      color: transactionColor(t),
+      method: '',
+      status: transactionStatusLabel(t),
+      statusColor: transactionStatusColor(t),
+    };
+  }
 
   get list(): Tx[] {
     return this.filter === 'todas'
@@ -56,7 +88,7 @@ export class TransactionsComponent {
   goBack() { this.router.navigate(['/wallet']); }
 
   statusColor(status: string): string {
-    if (status === 'En proceso') return '#e7c86b';
-    return '#4fd190';
+    const tx = this.allTx.find(t => t.status === status);
+    return tx?.statusColor ?? '#4fd190';
   }
 }

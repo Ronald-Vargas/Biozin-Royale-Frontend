@@ -5,11 +5,20 @@ import { ScreenShellComponent } from '../../shared/Components/screen-shell/scree
 import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
-import { ICON_EYE, ICON_EYE_OFF, ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_GIFT_FILLED } from '../../shared/icons/icons';
+import { ICON_EYE, ICON_EYE_OFF, ICON_ARROW_DOWN, ICON_ARROW_UP } from '../../shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
-
+import { WalletTransactionService } from 'src/app/Core/Services/wallet-transaction.service';
+import {
+  WalletTransactionResultado,
+  isDeposit,
+  transactionTypeLabel,
+  transactionColor,
+  formatTransactionDate,
+  formatTransactionAmount,
+} from 'src/app/Core/Models/wallet-transaction.models';
 
 interface Tx {
+  id:    string;
   type:  string;
   date:  string;
   amt:   string;
@@ -17,6 +26,8 @@ interface Tx {
   icon:  string;
   color: string;
 }
+
+const PREVIEW_COUNT = 4;
 
 @Component({
   standalone: true,
@@ -36,16 +47,36 @@ export class WalletComponent implements OnInit {
 
   readonly balance = this.balanceService.balance;
 
-  transactions: Tx[] = [
-    { type: 'Depósito', date: '20 May 2024 · 14:35', amt: '+ $500.00', pos: true,  icon: ICON_ARROW_DOWN,  color: '#4fd190' },
-    { type: 'Retiro',   date: '18 May 2024 · 11:20', amt: '- $200.00', pos: false, icon: ICON_ARROW_UP,    color: '#e06a6a' },
-    { type: 'Bono',     date: '17 May 2024 · 09:15', amt: '+ $100.00', pos: true,  icon: ICON_GIFT_FILLED, color: 'var(--gold-1)' },
-  ];
+  transactions: Tx[] = [];
 
-  constructor(private router: Router, private balanceService: BalanceService) {}
+  constructor(
+    private router: Router,
+    private balanceService: BalanceService,
+    private walletTransactionService: WalletTransactionService,
+  ) {}
 
   ngOnInit(): void {
     this.balanceService.load();
+    this.walletTransactionService.getTransactions().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.transactions = res.returnValue.slice(0, PREVIEW_COUNT).map(t => this.toTx(t));
+        }
+      },
+    });
+  }
+
+  private toTx(t: WalletTransactionResultado): Tx {
+    const deposit = isDeposit(t);
+    return {
+      id: t.id,
+      type: transactionTypeLabel(t),
+      date: formatTransactionDate(t.createdAt),
+      amt: formatTransactionAmount(t),
+      pos: deposit,
+      icon: deposit ? ICON_ARROW_DOWN : ICON_ARROW_UP,
+      color: transactionColor(t),
+    };
   }
 
   toggleHidden() { this.hidden = !this.hidden; }
