@@ -57,6 +57,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   onMenuClick(key: string): void {
+    if (key === 'tx')          this.router.navigate(['/admin/usuario', this.userId, 'transacciones']);
     if (key === 'bonus')      this.router.navigate(['/admin/usuario', this.userId, 'bono']);
     if (key === 'bonus-hist') this.router.navigate(['/admin/usuario', this.userId, 'bonos']);
     if (key === 'bets')       this.router.navigate(['/admin/usuario', this.userId, 'apuestas']);

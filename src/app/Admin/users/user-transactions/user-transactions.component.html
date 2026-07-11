@@ -1,0 +1,59 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Historial de transacciones" (back)="goBack()"></app-admin-header>
+
+    @if (loading) {
+      <div class="state-msg">Cargando historial…</div>
+    }
+
+    @if (!loading && error) {
+      <div class="state-msg state-msg--error">{{ error }}</div>
+    }
+
+    @if (!loading && !error) {
+      <!-- Filtros -->
+      <div class="filter-row">
+        @for (f of filters; track f.key) {
+          <button
+            class="filter-chip"
+            [class.filter-chip--active]="filter === f.key"
+            (click)="setFilter(f.key)"
+          >{{ f.label }}</button>
+        }
+      </div>
+
+      @if (list.length === 0) {
+        <div class="empty-wrap">
+          <app-icon [svg]="iconReceipt" [size]="44" style="color:rgba(212,167,60,0.35)"></app-icon>
+          <div class="empty-title">Sin transacciones</div>
+          <div class="empty-sub">Este usuario aún no tiene transacciones registradas.</div>
+        </div>
+      }
+
+      @if (list.length > 0) {
+        <div class="tx-list">
+          @for (tx of list; track tx.id) {
+            <div class="tx-card">
+              <div class="tx-icon" [style.background]="tx.pos ? 'rgba(79,209,144,0.10)' : 'rgba(224,106,106,0.10)'"
+                   [style.border-color]="tx.pos ? 'rgba(79,209,144,0.30)' : 'rgba(224,106,106,0.30)'">
+                <app-icon [svg]="tx.icon" [size]="18" [style.color]="tx.color"></app-icon>
+              </div>
+              <div class="tx-info">
+                <div class="tx-type">{{ tx.type }}</div>
+                <div class="tx-date">{{ tx.date }}</div>
+              </div>
+              <div class="tx-right">
+                <div class="tx-amount" [style.color]="tx.color">{{ tx.amt }}</div>
+                <div class="tx-status" [style.color]="tx.statusColor">{{ tx.status }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <app-admin-nav current="usuarios"></app-admin-nav>
+</div>

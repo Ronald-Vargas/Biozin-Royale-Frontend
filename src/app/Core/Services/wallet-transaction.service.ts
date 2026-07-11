@@ -14,4 +14,10 @@ export class WalletTransactionService {
   getTransactions(): Observable<ApiResponse<WalletTransactionResultado[]>> {
     return this.http.get<ApiResponse<WalletTransactionResultado[]>>(this.url);
   }
+
+  adminGetTransactions(userId: string): Observable<ApiResponse<WalletTransactionResultado[]>> {
+    return this.http.get<ApiResponse<WalletTransactionResultado[]>>(
+      `${environment.apiUrl}/wallet/admin/${userId}/transactions`
+    );
+  }
 }
