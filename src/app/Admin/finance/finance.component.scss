@@ -110,12 +110,75 @@
   color: var(--cream);
 }
 
-.summary-status {
+.summary-period {
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
-  color: #62d89b;
+  color: rgba(203, 185, 143, 0.5);
   margin-top: 3px;
+}
+
+// ── State / Empty ─────────────────────────────────────────────
+.state-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+  text-align: center;
+  padding: 32px 24px;
+
+  &--error {
+    color: #e98a85;
+    background: rgba(199, 62, 58, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(214, 77, 72, 0.3);
+  }
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 24px;
+}
+
+.empty-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: rgba(212, 167, 60, 0.55);
+}
+
+.empty-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.55);
+  text-align: center;
+}
+
+// ── Filtros ───────────────────────────────────────────────────
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.filter-chip {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
   font-weight: 600;
+  color: rgba(203, 185, 143, 0.6);
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &--active {
+    border-color: rgba(212, 167, 60, 0.7);
+    background: rgba(212, 167, 60, 0.1);
+    color: #d4a73c;
+  }
 }
 
 // ── Recent ───────────────────────────────────────────────────
@@ -190,7 +253,6 @@
 .recent-status {
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
-  color: #62d89b;
   margin-top: 2px;
   font-weight: 600;
 }

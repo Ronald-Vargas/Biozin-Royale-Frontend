@@ -2,65 +2,101 @@
   <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
 
   <div class="scroll-body">
-    <app-admin-header
-      title="Finanzas"
-      [showFilter]="true"
-      (back)="goBack()"
-    ></app-admin-header>
+    <app-admin-header title="Finanzas" (back)="goBack()"></app-admin-header>
 
-    <!-- Buscador + filtro -->
+    <!-- Buscador -->
     <div class="search-row">
       <div class="search-wrap">
         <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
         <input
           class="search-input"
           [(ngModel)]="q"
-          placeholder="Buscar transacción..."
+          placeholder="Buscar por usuario…"
         />
       </div>
     </div>
 
     <!-- Resumen de hoy -->
     <div class="section-label">Resumen de hoy</div>
-    <div class="summary-list">
-      <div *ngFor="let s of summary" class="summary-row">
-        <app-fin-icon
-          [icon]="s.icon"
-          [color]="s.color"
-          [bg]="s.bg"
-          [bd]="s.bd"
-          [size]="46"
-        ></app-fin-icon>
-        <div class="summary-info">
-          <div class="summary-label">{{ s.label }}</div>
-          <div class="summary-count">{{ s.count }}</div>
-        </div>
-        <div class="summary-right">
-          <div class="summary-amount">{{ s.amount }}</div>
-          <div class="summary-status">Completado</div>
-        </div>
-        <app-icon [svg]="iconChevron" [size]="18" style="color:var(--gold-2)"></app-icon>
-      </div>
-    </div>
 
-    <!-- Transacciones recientes -->
+    @if (loadingSummary) {
+      <div class="state-msg">Cargando resumen…</div>
+    }
+    @if (!loadingSummary && summaryError) {
+      <div class="state-msg state-msg--error">{{ summaryError }}</div>
+    }
+    @if (!loadingSummary && !summaryError) {
+      <div class="summary-list">
+        @for (s of summary; track s.label) {
+          <div class="summary-row">
+            <app-fin-icon [icon]="s.icon" [color]="s.color" [bg]="s.bg" [bd]="s.bd" [size]="46"></app-fin-icon>
+            <div class="summary-info">
+              <div class="summary-label">{{ s.label }}</div>
+              <div class="summary-count">{{ s.count }}</div>
+            </div>
+            <div class="summary-right">
+              <div class="summary-amount" [style.color]="s.color">{{ s.amount }}</div>
+              <div class="summary-period">Hoy</div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Filtros de transacciones recientes -->
     <div class="recent-head">
       <span class="recent-label">Transacciones recientes</span>
-      <span class="gold-text recent-all">Ver todas</span>
     </div>
-    <div class="recent-list">
-      <div *ngFor="let r of recent" class="recent-row">
-        <app-fin-icon [icon]="r.icon" [color]="r.color" [size]="38"></app-fin-icon>
-        <div class="recent-info">
-          <div class="recent-type">{{ r.type }} · {{ r.user }}</div>
-          <div class="recent-when">{{ r.when }}</div>
-        </div>
-        <div class="recent-right">
-          <div class="recent-amount">{{ r.amount }}</div>
-          <div class="recent-status">Completado</div>
-        </div>
-      </div>
+
+    <div class="filter-row">
+      @for (f of filters; track f.key) {
+        <button
+          class="filter-chip"
+          [class.filter-chip--active]="filter === f.key"
+          (click)="setFilter(f.key)"
+        >{{ f.label }}</button>
+      }
     </div>
+
+    @if (loadingRecent) {
+      <div class="state-msg">Cargando transacciones…</div>
+    }
+    @if (!loadingRecent && recentError) {
+      <div class="state-msg state-msg--error">{{ recentError }}</div>
+    }
+    @if (!loadingRecent && !recentError) {
+      @if (filteredRecent.length === 0) {
+        <div class="empty-wrap">
+          <app-icon [svg]="iconDown" [size]="40" style="color:rgba(212,167,60,0.3)"></app-icon>
+          <div class="empty-title">Sin transacciones</div>
+          <div class="empty-sub">No hay transacciones que coincidan con los filtros aplicados.</div>
+        </div>
+      }
+
+      @if (filteredRecent.length > 0) {
+        <div class="recent-list">
+          @for (t of filteredRecent; track t.id) {
+            <div class="recent-row">
+              <app-fin-icon
+                [icon]="typeIcon(t.transactionType)"
+                [color]="typeColor(t.transactionType)"
+                [bg]="t.transactionType === 'deposit' ? 'rgba(79,209,144,0.10)' : 'rgba(224,106,106,0.10)'"
+                [bd]="t.transactionType === 'deposit' ? 'rgba(79,209,144,0.30)' : 'rgba(224,106,106,0.30)'"
+                [size]="38"
+              ></app-fin-icon>
+              <div class="recent-info">
+                <div class="recent-type">{{ typeLabel(t.transactionType) }} · {{ t.username }}</div>
+                <div class="recent-when">{{ fmtDate(t.createdAt) }}</div>
+              </div>
+              <div class="recent-right">
+                <div class="recent-amount" [style.color]="typeColor(t.transactionType)">{{ fmtAmount(t) }}</div>
+                <div class="recent-status" [style.color]="statusColor(t.status)">{{ statusLabel(t.status) }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
   </div>
 
   <app-admin-nav current="finanzas"></app-admin-nav>

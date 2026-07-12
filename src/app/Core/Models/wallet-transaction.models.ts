@@ -1,3 +1,22 @@
+export interface FinanzasSummaryResultado {
+  depositCount: number;
+  depositTotal: number;
+  withdrawalCount: number;
+  withdrawalTotal: number;
+  betCount: number;
+  betTotal: number;
+}
+
+export interface FinanzasTransaccionResultado {
+  id: string;
+  transactionType: string;
+  status: string;
+  amount: number;
+  createdAt: string;
+  username: string;
+  displayName: string;
+}
+
 export interface WalletTransactionResultado {
   id: string;
   transactionType: string;
