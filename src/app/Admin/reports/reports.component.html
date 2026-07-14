@@ -4,23 +4,55 @@
   <div class="scroll-body">
     <app-admin-header title="Reportes" (back)="goBack()"></app-admin-header>
 
-    <!-- Resumen general -->
-    <div class="section-label">Resumen general</div>
-    <div class="kpi-grid">
-      <app-rep-kpi *ngFor="let k of kpis" [kpi]="k"></app-rep-kpi>
-    </div>
+    <!-- KPIs -->
+    <div class="section-label">Resumen general · Hoy</div>
+
+    @if (loadingKpi) {
+      <div class="state-msg">Cargando resumen…</div>
+    }
+    @if (!loadingKpi && kpiError) {
+      <div class="state-msg state-msg--error">{{ kpiError }}</div>
+    }
+    @if (!loadingKpi && !kpiError) {
+      <div class="kpi-grid">
+        @for (k of kpis; track k.label) {
+          <app-rep-kpi [kpi]="k"></app-rep-kpi>
+        }
+      </div>
+    }
 
     <!-- Generar reportes -->
     <div class="section-label">Generar reportes</div>
     <div class="reports-list">
-      <div *ngFor="let r of reports" class="report-card">
-        <app-icon [svg]="iconDoc" [size]="26" class="report-icon"></app-icon>
-        <div class="report-text">
-          <div class="report-title">{{ r.title }}</div>
-          <div class="report-sub">{{ r.sub }}</div>
+      @for (r of reports; track r.key) {
+        <div class="report-card">
+          <app-icon [svg]="iconDoc" [size]="24" class="report-icon"></app-icon>
+          <div class="report-text">
+            <div class="report-title">{{ r.title }}</div>
+            <div class="report-sub">{{ r.sub }}</div>
+          </div>
+          <div class="report-actions">
+            <button
+              class="btn-download btn-download--pdf"
+              [disabled]="r.loadingPdf"
+              (click)="downloadPdf(r)"
+              title="Descargar PDF"
+            >
+              <app-icon [svg]="iconDownload" [size]="14"></app-icon>
+              <span>{{ r.loadingPdf ? '…' : 'PDF' }}</span>
+            </button>
+            <button
+              class="btn-download btn-download--excel"
+              [disabled]="r.loadingExcel"
+              (click)="downloadExcel(r)"
+              title="Descargar Excel"
+            >
+              <app-icon [svg]="iconDownload" [size]="14"></app-icon>
+              <span>{{ r.loadingExcel ? '…' : 'Excel' }}</span>
+            </button>
+          </div>
         </div>
-        <app-icon [svg]="iconChevron" [size]="19" class="report-chevron"></app-icon>
-      </div>
+      }
     </div>
   </div>
 
