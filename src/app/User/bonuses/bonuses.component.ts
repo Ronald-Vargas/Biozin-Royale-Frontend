@@ -40,7 +40,9 @@ export class BonusesComponent implements OnInit {
     this.promotionService.getActive().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
-          this.activeBonuses = res.returnValue.map(this.toActiveBonus);
+          this.activeBonuses = res.returnValue
+            .filter(p => !p.endsAt || new Date(p.endsAt).getTime() - Date.now() > 0)
+            .map(this.toActiveBonus);
         }
       },
     });

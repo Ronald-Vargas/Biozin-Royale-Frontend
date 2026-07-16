@@ -64,8 +64,13 @@ export class BonusDetailsComponent implements OnInit {
     return `Expira en ${d > 0 ? d + 'd ' : ''}${h}h`;
   }
 
+  get isExpired(): boolean {
+    if (!this.promotion?.endsAt) return false;
+    return new Date(this.promotion.endsAt).getTime() - Date.now() <= 0;
+  }
+
   claim(): void {
-    if (this.claiming || this.claimed || !this.promotionId) return;
+    if (this.claiming || this.claimed || !this.promotionId || this.isExpired) return;
     this.claiming = true;
     this.error = '';
 

@@ -2,7 +2,7 @@
   class="btn-gold"
   expand="block"
   shape="round"
-  [disabled]="loading"
+  [disabled]="loading || disabled"
   (click)="onClick()"
 >
   <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>

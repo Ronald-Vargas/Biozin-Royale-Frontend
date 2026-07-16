@@ -41,8 +41,8 @@
     }
 
     <div class="footer-btn">
-      <app-gold-button (clicked)="claim()" [loading]="claiming">
-        {{ claimed ? '¡Canjeado!' : 'Reclamar bono' }}
+      <app-gold-button (clicked)="claim()" [loading]="claiming" [disabled]="isExpired">
+        {{ claimed ? '¡Canjeado!' : (isExpired ? 'Bono expirado' : 'Reclamar bono') }}
       </app-gold-button>
     </div>
   }
