@@ -19,6 +19,14 @@ export class BalanceService {
 
   load(): void {
     if (this._loading()) return;
+    this._doLoad();
+  }
+
+  reload(): void {
+    this._doLoad();
+  }
+
+  private _doLoad(): void {
     this._loading.set(true);
     this.http.get<ApiResponse<number>>(this.url).subscribe({
       next: (res) => {

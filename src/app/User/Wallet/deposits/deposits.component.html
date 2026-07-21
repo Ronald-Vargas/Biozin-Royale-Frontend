@@ -1,86 +1,127 @@
-<app-screen-shell
-  title="Depósito"
-  current="wallet"
-  (back)="goBack()"
->
-  <!-- Método de pago -->
-  <div class="section-label">MÉTODO DE PAGO</div>
-  <div class="methods-list">
-    <div
-      *ngFor="let m of payMethods"
-      class="method-item"
-      [class.method-item--active]="isMethodActive(m.key)"
-      (click)="selectMethod(m.key)"
-    >
-      <div class="method-icon" [class.method-icon--active]="isMethodActive(m.key)">
-        <app-icon
-          [svg]="m.icon"
-          [size]="18"
-          [style.color]="isMethodActive(m.key) ? 'var(--gold-1)' : '#9a8a68'"
-        ></app-icon>
-      </div>
-      <span class="method-label">{{ m.label }}</span>
-      <app-method-badge [kind]="m.badge"></app-method-badge>
-      <div class="radio" [class.radio--active]="isMethodActive(m.key)">
-        <div *ngIf="isMethodActive(m.key)" class="radio-dot"></div>
-      </div>
-    </div>
-  </div>
+<app-screen-shell title="Depósito" current="wallet" (back)="goBack()">
 
-  <!-- Selección de cuenta/tarjeta -->
-  <div class="accounts-header">
-    <span class="section-label">{{ sectionLabel }}</span>
-    <span class="add-link" (click)="goPagos()">
-      <app-icon [svg]="iconAdd" [size]="14"></app-icon>
-      Agregar
-    </span>
-  </div>
+  <!-- ── SELECCIÓN ─────────────────────────────────────────────── -->
+  @if (step === 'select') {
 
-  <div class="accounts-list">
-    <div
-      *ngFor="let a of accounts"
-      class="account-item"
-      [class.account-item--active]="isAccountActive(a.id)"
-      (click)="selectAccount(a.id)"
-    >
-      <div class="account-brand-wrap">
-        <app-account-brand [brand]="a.brand"></app-account-brand>
-      </div>
-
-      <div class="account-body">
-        <div class="account-title-row">
-          <span class="account-label">{{ a.label }}</span>
-          <span *ngIf="a.principal" class="principal-badge">Principal</span>
+    <div class="section-label">MÉTODO DE PAGO</div>
+    <div class="methods-list">
+      @for (m of payMethods; track m.key) {
+        <div
+          class="method-item"
+          [class.method-item--active]="isMethodActive(m.key)"
+          (click)="selectMethod(m.key)"
+        >
+          <div class="method-icon" [class.method-icon--active]="isMethodActive(m.key)">
+            <app-icon
+              [svg]="m.icon"
+              [size]="18"
+              [style.color]="isMethodActive(m.key) ? 'var(--gold-1)' : '#9a8a68'"
+            ></app-icon>
+          </div>
+          <span class="method-label">{{ m.label }}</span>
+          <app-method-badge [kind]="m.badge"></app-method-badge>
+          <div class="radio" [class.radio--active]="isMethodActive(m.key)">
+            @if (isMethodActive(m.key)) { <div class="radio-dot"></div> }
+          </div>
         </div>
-        <div class="account-sub">{{ a.sub }}</div>
-      </div>
+      }
+    </div>
 
-      <div class="radio" [class.radio--active]="isAccountActive(a.id)">
-        <div *ngIf="isAccountActive(a.id)" class="radio-dot"></div>
+    <div class="section-label" style="margin-top:20px">MONTO</div>
+    <div class="amounts-grid">
+      @for (a of amounts; track a) {
+        <button
+          class="amount-btn"
+          [class.amount-btn--active]="isAmountActive(a)"
+          (click)="selectAmount(a)"
+        >${{ a }}</button>
+      }
+    </div>
+    <input
+      class="other-input"
+      [value]="other"
+      (input)="onOtherInput($any($event.target).value)"
+      placeholder="Otro monto"
+      inputmode="decimal"
+    />
+
+    @if (errorMsg) {
+      <div class="field-error">{{ errorMsg }}</div>
+    }
+
+    <div class="footer-btn">
+      <app-gold-button (clicked)="deposit()">
+        {{ loading ? 'Procesando…' : 'Depositar' }}
+      </app-gold-button>
+    </div>
+  }
+
+  <!-- ── FORMULARIO STRIPE ─────────────────────────────────────── -->
+  @if (step === 'stripe-form') {
+    <div class="payment-area">
+      <div class="amount-display">${{ finalAmount.toFixed(2) }}</div>
+      <div class="section-label">DATOS DE LA TARJETA</div>
+      <div class="stripe-card-wrap">
+        <div id="stripe-card-element"></div>
+      </div>
+      @if (stripeError) {
+        <div class="field-error">{{ stripeError }}</div>
+      }
+      <div class="footer-btn">
+        <app-gold-button (clicked)="confirmStripePayment()">
+          {{ loading ? 'Verificando…' : 'Confirmar pago' }}
+        </app-gold-button>
+      </div>
+      <button class="cancel-link" (click)="cancelar()">Cancelar</button>
+    </div>
+  }
+
+  <!-- ── BOTONES PAYPAL ─────────────────────────────────────────── -->
+  @if (step === 'paypal-button') {
+    <div class="payment-area">
+      <div class="amount-display">${{ finalAmount.toFixed(2) }}</div>
+      <div class="section-label">PAGAR CON PAYPAL</div>
+      <div class="paypal-note">Hacé click en el botón para continuar con tu cuenta de PayPal</div>
+      <div id="paypal-button-container" class="paypal-btn-container"></div>
+      <button class="cancel-link" (click)="cancelar()">Cancelar</button>
+    </div>
+  }
+
+  <!-- ── PROCESANDO ─────────────────────────────────────────────── -->
+  @if (step === 'processing') {
+    <div class="state-view">
+      <div class="spinner"></div>
+      <p class="state-msg">Confirmando pago…</p>
+    </div>
+  }
+
+  <!-- ── ÉXITO ──────────────────────────────────────────────────── -->
+  @if (step === 'success') {
+    <div class="state-view">
+      <div class="state-icon state-icon--success">✓</div>
+      <h3 class="state-title">¡Depósito exitoso!</h3>
+      <p class="deposited-amount">${{ depositedAmount.toFixed(2) }}</p>
+      @if (newBalance !== null) {
+        <p class="state-sub">Nuevo saldo: <strong>${{ newBalance.toFixed(2) }}</strong></p>
+      } @else {
+        <p class="state-sub">Tu saldo se actualizará en breve.</p>
+      }
+      <div style="margin-top:28px">
+        <app-gold-button (clicked)="goWallet()">Ir a mi billetera</app-gold-button>
       </div>
     </div>
-  </div>
+  }
 
-  <!-- Monto -->
-  <div class="section-label">MONTO</div>
-  <div class="amounts-grid">
-    <button
-      *ngFor="let a of amounts"
-      class="amount-btn"
-      [class.amount-btn--active]="isAmountActive(a)"
-      (click)="selectAmount(a)"
-    >${{ a }}</button>
-  </div>
+  <!-- ── ERROR ──────────────────────────────────────────────────── -->
+  @if (step === 'error') {
+    <div class="state-view">
+      <div class="state-icon state-icon--error">✕</div>
+      <h3 class="state-title">Pago no completado</h3>
+      <p class="state-sub">{{ errorMsg }}</p>
+      <div style="margin-top:28px">
+        <app-gold-button (clicked)="step = 'select'">Intentar de nuevo</app-gold-button>
+      </div>
+    </div>
+  }
 
-  <input
-    class="other-input"
-    [value]="other"
-    (input)="onOtherInput($any($event.target).value)"
-    placeholder="Otro"
-    inputmode="decimal"
-  />
-
-  <div class="footer-btn">
-    <app-gold-button (clicked)="confirm()">Depositar</app-gold-button>
-  </div>
 </app-screen-shell>
