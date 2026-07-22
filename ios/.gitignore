@@ -1,0 +1,8 @@
+# Cordova plugins for Capacitor
+capacitor-cordova-ios-plugins
+
+# Copied web assets
+App/App/public
+
+# Generated Config files
+App/App/capacitor.config.json
