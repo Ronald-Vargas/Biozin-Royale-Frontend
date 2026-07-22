@@ -10,7 +10,8 @@
     title="Contraseña"
     [lines]="passLines"
     [btnIcon]="iconEdit"
-    btnLabel="Cambiar contraseña"
+    [btnLabel]="hasPassword ? 'Cambiar contraseña' : 'Cuenta de Google'"
+    [disabled]="!hasPassword"
     (btnClick)="changePass()"
   ></app-sec-card>
 

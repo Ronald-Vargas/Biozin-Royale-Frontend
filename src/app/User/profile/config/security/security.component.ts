@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from 'src/app/User/shared/Components/screen-shell/screen-shell.component';
@@ -6,6 +6,8 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_LOCK_FILLED, ICON_KEYPAD, ICON_EDIT, ICON_SHIELD, ICON_DOTS_VERT, ICON_TRASH, ICON_PHONE, ICON_TABLET, ICON_LOGIN, ICON_KEY, ICON_ARROW_UP } from 'src/app/User/shared/icons/icons';
 import { SecCardComponent, SecLine } from './components/sec-card/sec-card.component';
 import { SectionHeadSecComponent } from './components/section-head-sec/section-head-sec.component';
+import { AuthService } from 'src/app/Core/Services/auth.service';
+import { ProfileService } from 'src/app/Core/Services/profile.service';
 
 interface Session {
   device: string;
@@ -33,7 +35,7 @@ interface HistEntry {
   templateUrl: './security.component.html',
   styleUrls: ['./security.component.scss'],
 })
-export class SecurityComponent {
+export class SecurityComponent implements OnInit {
   iconLock    = ICON_LOCK_FILLED;
   iconKeypad  = ICON_KEYPAD;
   iconEdit    = ICON_EDIT;
@@ -41,11 +43,20 @@ export class SecurityComponent {
   iconDots    = ICON_DOTS_VERT;
   iconTrash   = ICON_TRASH;
 
+  get hasPassword(): boolean {
+    return this.authService.currentProfile()?.hasPassword ?? true;
+  }
+
   // Líneas de cada SecCard
-  passLines: SecLine[] = [
-    { label: 'Última actualización:' },
-    { label: 'Hace 45 días', strong: true },
-  ];
+  get passLines(): SecLine[] {
+    if (!this.hasPassword) {
+      return [{ label: 'Iniciaste sesión con Google, no tienes contraseña configurada.' }];
+    }
+    return [
+      { label: 'Última actualización:' },
+      { label: 'Hace 45 días', strong: true },
+    ];
+  }
 
   twoFaLines: SecLine[] = [
     { label: 'Estado: ', value: 'Activado', valueColor: '#4fd190', dot: true },
@@ -81,10 +92,20 @@ export class SecurityComponent {
     { label: 'Retiro realizado',     date: '10 mayo · 08:30 p.m.', icon: ICON_ARROW_UP, color: 'var(--gold-1)' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private profileService: ProfileService,
+  ) {}
+
+  ngOnInit(): void {
+    // Refresca el perfil cacheado para que `hasPassword` refleje el dato real,
+    // ya que sesiones guardadas antes de este campo no lo traen.
+    this.profileService.getProfile().subscribe();
+  }
 
   goBack()      { this.router.navigate(['/config']); }
-  changePass()  { /* placeholder */ }
+  changePass()  { if (this.hasPassword) this.router.navigate(['/seguridad/cambiar-contrasena']); }
   manage2FA()   { /* placeholder */ }
   changePin()   { /* placeholder */ }
   closeAll()    { /* placeholder */ }

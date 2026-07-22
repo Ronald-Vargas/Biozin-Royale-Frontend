@@ -9,6 +9,7 @@ export interface PerfilResultado {
   status: string;
   role: 'user' | 'admin' | 'soporte';
   isGuest: boolean;
+  hasPassword: boolean;
   token: string | null;
   camposPendientes: string[];
   tempPassword?: string | null;

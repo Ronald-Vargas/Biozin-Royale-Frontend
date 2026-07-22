@@ -25,6 +25,7 @@ export class SecCardComponent {
   @Input() lines: SecLine[] = [];
   @Input() btnIcon    = '';
   @Input() btnLabel   = '';
+  @Input() disabled   = false;
 
   @Output() btnClick = new EventEmitter<void>();
 

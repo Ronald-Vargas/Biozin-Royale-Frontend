@@ -35,7 +35,7 @@
   </div>
 
   <!-- Botón -->
-  <button class="sec-btn" (click)="btnClick.emit()">
+  <button class="sec-btn" [disabled]="disabled" (click)="btnClick.emit()">
     <app-icon [svg]="btnIcon" [size]="17"></app-icon>
     <span>{{ btnLabel }}</span>
   </button>

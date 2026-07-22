@@ -140,6 +140,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/config/security/security.component').then(m => m.SecurityComponent),
   },
   {
+    path: 'seguridad/cambiar-contrasena',
+    data: { depth: 8 },
+    loadComponent: () => import('./User/profile/config/security/change-password/change-password.component').then(m => m.ChangePasswordUserComponent),
+  },
+  {
     path: 'transacciones',
     data: { depth: 6 },
     canActivate: [realAccountGuard],

@@ -27,4 +27,8 @@ export class ProfileService {
   getStatistics(): Observable<ApiResponse<EstadisticasResultado>> {
     return this.http.get<ApiResponse<EstadisticasResultado>>(`${this.profileUrl}/statistics`);
   }
+
+  changePassword(oldPassword: string, newPassword: string): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/password`, { oldPassword, newPassword });
+  }
 }
