@@ -162,8 +162,9 @@ export class DepositsComponent {
   private async renderPayPalButtons(orderId: string) {
     try {
       const paypal = await loadScript({
-        clientId: environment.paypalClientId,
-        currency:  'USD',
+        clientId:       environment.paypalClientId,
+        currency:       'USD',
+        disableFunding: 'card,credit,paylater',
       });
       if (!paypal?.Buttons) return;
 
