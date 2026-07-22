@@ -1,125 +1,211 @@
-// ── Balance ──────────────────────────────────────────────────
+// ── Balance card ──────────────────────────────────────────────
 .balance-card {
-  padding: 18px 20px;
-  border-radius: 16px;
-  margin-bottom: 22px;
   position: relative;
+  padding: 20px 20px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(199, 154, 50, 0.1), rgba(80, 60, 10, 0.05));
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  margin-bottom: 26px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(199, 154, 50, 0.14), rgba(122, 90, 20, 0.03));
-  border: 1px solid rgba(212, 167, 60, 0.32);
-}
-
-.balance-label {
-  font-size: 18px;
-  letter-spacing: 1px;
-  color: #cbb98f;
-  font-weight: 500;
-}
-
-.balance-amount {
-  font-family: 'Cinzel', serif;
-  font-size: 30px;
-  font-weight: 700;
-  margin-top: 4px;
+  text-align: center;
 }
 
 .balance-glow {
   position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 110px; height: 80px;
-  background: radial-gradient(closest-side, rgba(214, 158, 52, 0.4), transparent);
-  filter: blur(8px);
+  top: -30px; left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 80px;
+  background: radial-gradient(ellipse, rgba(212, 167, 60, 0.2), transparent 70%);
+  pointer-events: none;
 }
 
-// ── Field label ──────────────────────────────────────────────
-.field-label {
+.balance-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 16px;
-  color: var(--cream);
-  font-weight: 500;
-  margin-bottom: 9px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(203, 185, 143, 0.65);
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }
 
-// ── Dropdown ─────────────────────────────────────────────────
-.dropdown-wrap {
-  position: relative;
-  margin-bottom: 20px;
+.balance-amount {
+  font-family: 'Cinzel', serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--gold-1);
+  letter-spacing: 1px;
 }
 
-.dropdown-trigger {
-  width: 100%;
-  height: 50px;
-  border-radius: 12px;
-  cursor: pointer;
+.balance-loading { opacity: 0.4; }
+
+// ── Section label ─────────────────────────────────────────────
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #cbb98f;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+// ── Loading ───────────────────────────────────────────────────
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+// ── No accounts ───────────────────────────────────────────────
+.no-accounts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0 8px;
+  margin-bottom: 8px;
+}
+
+.no-accounts-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.65);
+}
+
+// ── Accounts list ─────────────────────────────────────────────
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 4px;
+}
+
+.account-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  background: rgba(255, 255, 255, 0.028);
-  border: 1px solid rgba(212, 167, 60, 0.3);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 16px;
-  color: var(--cream);
-}
-
-.chevron {
-  transition: transform 0.2s;
-  &--open { transform: rotate(180deg); }
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 56px;
-  left: 0; right: 0;
-  z-index: 5;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #15110b;
-  border: 1px solid rgba(212, 167, 60, 0.4);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-}
-
-.dropdown-option {
-  padding: 13px 16px;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 13px;
   cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 17px;
-  color: var(--cream);
-  border-bottom: 1px solid rgba(212, 167, 60, 0.12);
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.18);
+  transition: all .2s;
 
   &--active {
-    color: var(--gold-1);
-    background: rgba(212, 167, 60, 0.1);
+    background: linear-gradient(120deg, rgba(199, 154, 50, 0.16), rgba(122, 90, 20, 0.04));
+    border-color: rgba(212, 167, 60, 0.6);
   }
 }
 
-// ── Amount ───────────────────────────────────────────────────
-.amount-display {
-  height: 52px;
-  border-radius: 12px;
-  margin-bottom: 11px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  background: rgba(255, 255, 255, 0.028);
-  border: 1px solid rgba(212, 167, 60, 0.3);
-  font-family: 'Cinzel', serif;
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--gold-1);
+.method-icon {
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+
+  &--paypal {
+    background: rgba(39, 144, 195, 0.12);
+    border: 1px solid rgba(39, 144, 195, 0.35);
+  }
 }
 
+.card-badge {
+  width: 42px; height: 28px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+
+  &--visa       { background: #1a1f71; color: #fff; }
+  &--mastercard { background: linear-gradient(90deg, #eb001b 35%, #f79e1b); color: #fff; }
+  &--amex       { background: #007bc1; color: #fff; }
+  &--other      { background: rgba(212,167,60,.1); border: 1px solid rgba(212,167,60,.3); color: var(--gold-1); }
+}
+
+.account-body  { flex: 1; min-width: 0; }
+
+.account-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.account-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.principal-badge {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--gold-1);
+  background: rgba(199, 154, 50, 0.14);
+  border: 1px solid rgba(212, 167, 60, 0.45);
+  border-radius: 20px;
+  padding: 2px 7px;
+}
+
+.account-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: #cbb98f;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(212, 167, 60, 0.4);
+  display: grid;
+  place-items: center;
+
+  &--active { border-color: var(--gold-1); }
+}
+
+.radio-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold-1);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-2);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  transition: color .15s;
+
+  &--sm { font-size: 12px; margin-top: 4px; opacity: 0.8; }
+  &:hover { color: var(--gold-1); }
+}
+
+// ── Amounts ───────────────────────────────────────────────────
 .amounts-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 11px;
 }
 
 .amount-btn {
-  height: 44px;
+  height: 46px;
   border-radius: 11px;
   cursor: pointer;
   font-family: 'Cinzel', serif;
@@ -141,100 +227,126 @@
   width: 100%;
   height: 48px;
   border-radius: 12px;
-  border: 1px solid rgba(212, 167, 60, 0.3);
+  border: 1px solid rgba(212, 167, 60, 0.26);
   background: rgba(255, 255, 255, 0.028);
   color: #f3ead0;
   padding: 0 16px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 17px;
+  font-size: 18px;
   outline: none;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
 
-  &--filled { border-color: rgba(227, 194, 103, 0.7); }
   &::placeholder { color: rgba(200, 180, 140, 0.55); }
 }
 
-// ── Info dinámica (banco / crypto / paypal) ──────────────────
-.info-header {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 10px;
-}
-
-.info-title {
+.field-error {
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
-  color: var(--gold-2);
-  font-weight: 600;
+  color: #E57373;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(229, 115, 115, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(229, 115, 115, 0.25);
 }
 
-.info-card {
-  border-radius: 13px;
-  overflow: hidden;
-  border: 1px solid rgba(212, 167, 60, 0.26);
-  margin-bottom: 16px;
-}
-
-.info-row {
-  display: flex;
-  align-items: center;
-  padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.018);
-  border-bottom: 1px solid rgba(212, 167, 60, 0.16);
-
-  &--last { border-bottom: none; }
-}
-
-.info-key {
-  width: 84px;
+.info-note {
   font-family: 'Montserrat', sans-serif;
-  font-size: 15px;
-  color: #cbb98f;
-  flex-shrink: 0;
+  font-size: 12px;
+  color: rgba(203, 185, 143, 0.55);
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(212, 167, 60, 0.05);
+  border: 1px solid rgba(212, 167, 60, 0.15);
+  margin-bottom: 12px;
 }
 
-.info-value {
-  flex: 1;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  color: var(--cream);
-  font-weight: 500;
-  text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-// ── Cambiar datos ────────────────────────────────────────────
-.change-btn {
-  width: 100%;
-  height: 44px;
-  border-radius: 11px;
-  cursor: pointer;
-  margin-bottom: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: transparent;
-  border: 1px dashed rgba(212, 167, 60, 0.45);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--gold-1);
-}
-
-
-// ── Footer ───────────────────────────────────────────────────
-.footer-btn { margin-top: auto; }
+.footer-btn  { margin-top: auto; }
 
 .footer-note {
-  text-align: center;
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  color: #cbb98f;
-  margin-top: 14px;
-  margin-bottom: 0;
+  font-size: 12px;
+  color: rgba(203, 185, 143, 0.5);
+  text-align: center;
+  margin-top: 10px;
+}
+
+// ── Spinner ───────────────────────────────────────────────────
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(212, 167, 60, 0.15);
+  border-top-color: var(--gold-1);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+
+  &--lg { width: 52px; height: 52px; border-width: 4px; margin-bottom: 20px; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── State views ───────────────────────────────────────────────
+.state-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.state-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  font-size: 28px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+
+  &--success {
+    background: rgba(76, 175, 80, 0.12);
+    border: 2px solid rgba(76, 175, 80, 0.45);
+    color: #81C784;
+  }
+
+  &--error {
+    background: rgba(229, 115, 115, 0.12);
+    border: 2px solid rgba(229, 115, 115, 0.45);
+    color: #E57373;
+  }
+}
+
+.state-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.withdrawn-amount {
+  font-family: 'Cinzel', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold-1);
+  margin: 4px 0 12px;
+  letter-spacing: 1px;
+}
+
+.state-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: rgba(203, 185, 143, 0.75);
+  line-height: 1.55;
+
+  strong { color: var(--gold-1); font-weight: 700; }
+}
+
+.state-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: rgba(203, 185, 143, 0.7);
+  margin-top: 16px;
+  line-height: 1.5;
 }

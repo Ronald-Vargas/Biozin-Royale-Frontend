@@ -1,89 +1,149 @@
-<app-screen-shell
-  title="Retirar"
-  current="wallet"
-  (back)="goBack()"
->
-  <!-- Saldo -->
-  <div class="balance-card">
-    <div class="balance-label">Saldo disponible</div>
-    <div class="gold-text balance-amount">$1,250.00</div>
-    <div class="balance-glow"></div>
-  </div>
+<app-screen-shell title="Retirar" current="wallet" (back)="goBack()">
 
-  <!-- Método de retiro -->
-  <div class="field-label">Método de retiro</div>
-  <div class="dropdown-wrap">
-    <button class="dropdown-trigger" (click)="toggleDropdown()">
-      {{ method }}
-      <app-icon
-        [svg]="iconChevronDown"
-        [size]="18"
-        class="chevron"
-        [class.chevron--open]="open"
-        style="color:var(--gold-2)"
-      ></app-icon>
-    </button>
+  <!-- ── Selección ──────────────────────────────────────────── -->
+  <ng-container *ngIf="step === 'select'">
 
-    <div *ngIf="open" class="dropdown-menu">
-      <div
-        *ngFor="let m of methods"
-        class="dropdown-option"
-        [class.dropdown-option--active]="m === method"
-        (click)="selectMethod(m)"
-      >{{ m }}</div>
+    <div class="balance-card">
+      <div class="balance-label">Saldo disponible</div>
+      <div class="balance-amount">
+        <ng-container *ngIf="balance() !== null">${{ balance()!.toFixed(2) }}</ng-container>
+        <span *ngIf="balance() === null" class="balance-loading">—</span>
+      </div>
+      <div class="balance-glow"></div>
     </div>
-  </div>
 
-  <!-- Monto a retirar -->
-  <div class="field-label">Monto a retirar</div>
-  <div class="amount-display">$ {{ shown }}</div>
+    <div class="section-label">Cuenta de destino</div>
 
-  <div class="amounts-grid">
-    <button
-      *ngFor="let a of amounts"
-      class="amount-btn"
-      [class.amount-btn--active]="isAmountActive(a)"
-      (click)="selectAmount(a)"
-    >${{ a }}</button>
-  </div>
+    <div *ngIf="loading" class="loading-wrap"><div class="spinner"></div></div>
 
-  <input
-    class="other-input"
-    [class.other-input--filled]="other !== ''"
-    [value]="other"
-    (input)="onOtherInput($any($event.target).value)"
-    placeholder="Otro monto"
-    inputmode="decimal"
-  />
+    <ng-container *ngIf="!loading">
+      <div *ngIf="metodos.length === 0" class="no-accounts">
+        <p class="no-accounts-text">No tenés métodos de pago registrados.</p>
+        <button class="link-btn" (click)="goMetodosPago()">
+          Agregar en Métodos de pago →
+        </button>
+      </div>
 
-  <!-- Datos de retiro (dinámico) -->
-<div class="info-header">
-  <app-icon [svg]="info.icon" [size]="16" style="color:var(--gold-2)"></app-icon>
-  <span class="info-title">{{ info.title }}</span>
-</div>
+      <div class="accounts-list" *ngIf="metodos.length > 0">
+        <div
+          *ngFor="let m of metodos"
+          class="account-item"
+          [class.account-item--active]="isMethodActive(m)"
+          (click)="selectMethod(m)"
+        >
+          <!-- Ícono según tipo -->
+          <div *ngIf="m.type === 'paypal'" class="method-icon method-icon--paypal">
+            <app-icon [svg]="iconPaypal" [size]="17" style="color:#2790c3"></app-icon>
+          </div>
+          <div *ngIf="m.type === 'card'" class="card-badge" [class]="'card-badge--' + (m.network ?? 'other')">
+            {{ networkLabel(m) }}
+          </div>
 
-<div class="info-card">
-  <div
-    *ngFor="let row of info.rows; let last = last"
-    class="info-row"
-    [class.info-row--last]="last"
-  >
-    <span class="info-key">{{ row.k }}</span>
-    <span class="info-value">{{ row.v }}</span>
-  </div>
-</div>
+          <div class="account-body">
+            <div class="account-title-row">
+              <span class="account-label">{{ methodLabel(m) }}</span>
+              <span *ngIf="m.isDefault" class="principal-badge">Principal</span>
+            </div>
+            <div class="account-sub">{{ methodSub(m) }}</div>
+          </div>
 
-<!-- Cambiar datos -->
-<button class="change-btn" (click)="changeInfo()">
-  <app-icon [svg]="iconEdit" [size]="16"></app-icon>
-  Cambiar datos de destino
-</button>
+          <div class="radio" [class.radio--active]="isMethodActive(m)">
+            <div *ngIf="isMethodActive(m)" class="radio-dot"></div>
+          </div>
+        </div>
 
+        <button class="link-btn link-btn--sm" (click)="goMetodosPago()">
+          Administrar métodos de pago →
+        </button>
+      </div>
+    </ng-container>
 
+    <div class="section-label" style="margin-top:20px">Monto a retirar</div>
 
+    <div class="amounts-grid">
+      <button
+        *ngFor="let a of amounts"
+        class="amount-btn"
+        [class.amount-btn--active]="isAmountActive(a)"
+        (click)="selectAmount(a)"
+      >${{ a }}</button>
+    </div>
 
-  <div class="footer-btn">
-    <app-gold-button (clicked)="confirm()">Retirar</app-gold-button>
-    <p class="footer-note">El retiro será procesado en 24 a 48 horas hábiles.</p>
-  </div>
+    <input
+      class="other-input"
+      [value]="other"
+      (input)="onOtherInput($any($event.target).value)"
+      placeholder="Otro monto"
+      inputmode="decimal"
+    />
+
+    <div *ngIf="finalAmount > 0 && finalAmount > currentBalance" class="field-error">
+      Saldo insuficiente.
+    </div>
+    <div *ngIf="finalAmount > 0 && finalAmount < 5 && !(finalAmount > currentBalance)" class="field-error">
+      El monto mínimo de retiro es $5.
+    </div>
+
+    <!-- Nota según método seleccionado -->
+    <div *ngIf="selectedMethod?.type === 'card'" class="info-note">
+      Los retiros a tarjeta se procesan en 1–3 días hábiles.
+    </div>
+
+    <div class="footer-btn">
+      <app-gold-button (clicked)="retirar()" [disabled]="!canWithdraw || loading">
+        Retirar
+      </app-gold-button>
+      <p *ngIf="selectedMethod?.type === 'paypal'" class="footer-note">
+        El retiro se acredita en tu cuenta de PayPal inmediatamente.
+      </p>
+      <p *ngIf="selectedMethod?.type === 'card'" class="footer-note">
+        El retiro será procesado en 1 a 3 días hábiles.
+      </p>
+    </div>
+  </ng-container>
+
+  <!-- ── Procesando ─────────────────────────────────────────── -->
+  <ng-container *ngIf="step === 'processing'">
+    <div class="state-view">
+      <div class="spinner spinner--lg"></div>
+      <div class="state-title">Procesando retiro…</div>
+      <div class="state-msg">Enviando ${{ withdrawnAmount.toFixed(2) }}.</div>
+    </div>
+  </ng-container>
+
+  <!-- ── Éxito ──────────────────────────────────────────────── -->
+  <ng-container *ngIf="step === 'success'">
+    <div class="state-view">
+      <div class="state-icon state-icon--success">✓</div>
+      <div class="state-title">¡Retiro exitoso!</div>
+      <div class="withdrawn-amount">${{ withdrawnAmount.toFixed(2) }}</div>
+      <div class="state-sub">
+        <ng-container *ngIf="selectedMethod?.type === 'paypal'">
+          El dinero fue enviado a tu cuenta de PayPal.<br>
+        </ng-container>
+        <ng-container *ngIf="selectedMethod?.type === 'card'">
+          Tu retiro fue solicitado y se procesará en 1–3 días hábiles.<br>
+        </ng-container>
+        <span *ngIf="newBalance !== null">
+          Tu nuevo saldo es <strong>${{ newBalance.toFixed(2) }}</strong>.
+        </span>
+      </div>
+      <div class="footer-btn" style="margin-top:32px">
+        <app-gold-button (clicked)="goWallet()">Ir a mi billetera</app-gold-button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── Error ──────────────────────────────────────────────── -->
+  <ng-container *ngIf="step === 'error'">
+    <div class="state-view">
+      <div class="state-icon state-icon--error">✕</div>
+      <div class="state-title">Error en el retiro</div>
+      <div class="state-msg">{{ errorMsg }}</div>
+      <div class="footer-btn" style="margin-top:32px">
+        <app-gold-button (clicked)="reintentar()">Intentar de nuevo</app-gold-button>
+      </div>
+    </div>
+  </ng-container>
+
 </app-screen-shell>
