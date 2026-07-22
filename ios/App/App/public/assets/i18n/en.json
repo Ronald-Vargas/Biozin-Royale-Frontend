@@ -1,0 +1,41 @@
+{
+  "settings": {
+    "title": "Settings",
+    "section_account": "Account",
+    "personal_info": "Personal information",
+    "security": "Security",
+    "section_preferences": "Preferences",
+    "sounds": "Sound",
+    "language": "Language",
+    "theme": "Theme",
+    "theme_value": "Dark",
+    "section_general": "General",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy"
+  },
+  "security": {
+    "title": "Security",
+    "password_title": "Password",
+    "password_last_update": "Last updated:",
+    "password_days_ago": "45 days ago",
+    "password_no_password": "You signed in with Google — no password is set.",
+    "change_password": "Change password",
+    "google_account": "Google account",
+    "twofa_title": "Two-factor authentication",
+    "twofa_status": "Status: ",
+    "twofa_enabled": "Enabled",
+    "twofa_app": "App: Google Authenticator",
+    "manage_2fa": "Manage 2FA",
+    "pin_title": "Transaction PIN",
+    "pin_desc": "Used for withdrawals and important account changes",
+    "change_pin": "Change PIN",
+    "active_sessions": "Active sessions",
+    "view_all": "View all",
+    "close_all_sessions": "Close all sessions",
+    "security_history": "Security history",
+    "view_all_history": "View all"
+  },
+  "language_picker": {
+    "title": "Language"
+  }
+}

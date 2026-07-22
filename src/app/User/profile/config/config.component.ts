@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 import { GroupCardComponent } from '../../shared/Components/group-card/group-card.component';
 import { GroupLabelComponent } from '../../shared/Components/group-label/group-label.component';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
@@ -22,6 +23,9 @@ import { ICON_PERSON_CIRCLE, ICON_LOCK, ICON_VOLUME, ICON_GLOBE, ICON_MOON, ICON
 export class ConfigComponent {
   sounds = true;
 
+  private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
+  private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
+
   iconPerson   = ICON_PERSON_CIRCLE;
   iconLock     = ICON_LOCK;
   iconVolume   = ICON_VOLUME;
@@ -36,4 +40,7 @@ export class ConfigComponent {
   goMiPerfil()  { this.router.navigate(['/miperfil']); }
   goSeguridad() { this.router.navigate(['/seguridad']); }
   noop()        { /* placeholder */ }
+
+  goTerminos() { Browser.open({ url: this.termsUrl }); }
+  goPoliticas() { Browser.open({ url: this.privacyUrl }); }
 }

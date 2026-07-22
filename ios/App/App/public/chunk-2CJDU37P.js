@@ -1,0 +1,1 @@
+import{a as s}from"./chunk-ECQZOFKS.js";import{Db as n,E as e,H as o}from"./chunk-HCECNS2K.js";var m=(()=>{let t=class t{constructor(i){this.http=i,this.url=`${s.apiUrl}/sports/matches`}getMatches(){return this.http.get(this.url)}};t.\u0275fac=function(a){return new(a||t)(o(n))},t.\u0275prov=e({token:t,factory:t.\u0275fac,providedIn:"root"});let r=t;return r})();export{m as a};
