@@ -91,6 +91,14 @@
             </div>
           </div>
         </div>
+
+        <div class="home-slip" *ngIf="betSelectionCount > 0">
+          <span class="home-slip-info">
+            <span class="home-slip-badge">{{ betSelectionCount }}</span>
+            Selección{{ betSelectionCount !== 1 ? 'es' : '' }}
+          </span>
+          <button class="home-slip-btn" (click)="goApuestas()">Apostar</button>
+        </div>
       </div>
 
     </div><!-- /scroll-area -->

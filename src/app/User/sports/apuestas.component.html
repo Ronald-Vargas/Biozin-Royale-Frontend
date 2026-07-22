@@ -18,10 +18,22 @@
           <button
             class="filter-chip"
             [class.filter-chip--active]="activeFilter === f.key"
-            (click)="activeFilter = f.key"
+            (click)="selectSport(f.key)"
           >{{ f.label }}</button>
         }
       </div>
+
+      @if (availableLeagues.length > 2) {
+        <div class="filter-row filter-row--leagues">
+          @for (l of availableLeagues; track l.key) {
+            <button
+              class="filter-chip filter-chip--league"
+              [class.filter-chip--active]="activeLeague === l.key"
+              (click)="selectLeague(l.key)"
+            >{{ l.label }}</button>
+          }
+        </div>
+      }
 
       @if (loading) {
         <div class="matches-state">

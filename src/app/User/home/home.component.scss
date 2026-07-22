@@ -208,3 +208,54 @@ ion-content.home-content { --background: var(--bg-dark); }
   color: var(--cream);
   transition: color 0.2s;
 }
+
+// ── Mini bet slip (preview) ───────────────────────────────────
+.home-slip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(212, 167, 60, 0.08);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.home-slip-info {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.home-slip-badge {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  display: grid;
+  place-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1a1000;
+}
+
+.home-slip-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f4dd92, #c79a32);
+  border: none;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1a1000;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+
+  &:active { opacity: 0.85; }
+}

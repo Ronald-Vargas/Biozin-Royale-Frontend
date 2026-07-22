@@ -12,6 +12,7 @@ import { SectionHeadComponent } from './Components/section-head/section-head.com
 import { BetOutcome, SportMatch } from '../../Core/Models/sports.models';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
+import { BetSlipService } from 'src/app/Core/Services/bet-slip.service';
 
 
 @Component({
@@ -38,7 +39,6 @@ export class HomeComponent implements OnInit {
   ];
 
   featuredMatches: SportMatch[] = [];
-  bets: Record<number, BetOutcome> = {};
 
   readonly balance = this.balanceService.balance;
 
@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private sportsService: SportsService,
     private balanceService: BalanceService,
+    private betSlipService: BetSlipService,
   ) {}
 
   ngOnInit(): void {
@@ -59,18 +60,16 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  get betSelectionCount(): number {
+    return this.betSlipService.count;
+  }
+
   isBetOn(id: number, outcome: BetOutcome): boolean {
-    return this.bets[id] === outcome;
+    return this.betSlipService.isSelected(id, outcome);
   }
 
   toggleBet(id: number, outcome: BetOutcome): void {
-    if (this.bets[id] === outcome) {
-      const next = { ...this.bets };
-      delete next[id];
-      this.bets = next;
-    } else {
-      this.bets = { ...this.bets, [id]: outcome };
-    }
+    this.betSlipService.toggle(id, outcome);
   }
 
   onGameClick(name: string) {

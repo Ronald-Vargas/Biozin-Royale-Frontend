@@ -61,6 +61,8 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
   margin-bottom: 18px;
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
+
+  &--leagues { margin-bottom: 16px; margin-top: -8px; }
 }
 
 .filter-chip {
@@ -80,6 +82,15 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
     background: rgba(212, 167, 60, 0.14);
     border-color: rgba(212, 167, 60, 0.6);
     color: var(--gold-1);
+  }
+
+  &--league {
+    padding: 4px 12px;
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(212, 167, 60, 0.12);
+    color: rgba(203, 185, 143, 0.75);
   }
 }
 

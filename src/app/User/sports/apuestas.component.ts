@@ -9,6 +9,7 @@ import { BetOutcome, Sport, SportMatch } from '../../Core/Models/sports.models';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { BetsService } from 'src/app/Core/Services/bets.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
+import { BetSlipService } from 'src/app/Core/Services/bet-slip.service';
 
 
 type Filter = 'all' | Sport;
@@ -25,7 +26,7 @@ export class ApuestasComponent implements OnInit {
   iconClose = ICON_CLOSE;
 
   activeFilter: Filter = 'all';
-  selections: Record<number, BetOutcome> = {};
+  activeLeague: 'all' | string = 'all';
   matches: SportMatch[] = [];
   loading   = false;
   loadError = '';
@@ -45,6 +46,7 @@ export class ApuestasComponent implements OnInit {
     private balanceService: BalanceService,
     private sportsService: SportsService,
     private betsService: BetsService,
+    private betSlipService: BetSlipService,
   ) {}
 
   ngOnInit(): void {
@@ -85,35 +87,51 @@ export class ApuestasComponent implements OnInit {
     ];
   }
 
-  // ── Match filtering ───────────────────────────────────────
-  get filtered(): SportMatch[] {
-    return this.activeFilter === 'all'
-      ? this.matches
-      : this.matches.filter(m => m.sport === this.activeFilter);
+  selectSport(key: Filter): void {
+    this.activeFilter = key;
+    this.activeLeague = 'all';
   }
 
-  // ── Bet selection ─────────────────────────────────────────
+  // ── Dynamic league chips, scoped to the active sport ──────
+  get availableLeagues(): { key: string; label: string }[] {
+    const pool = this.activeFilter === 'all'
+      ? this.matches
+      : this.matches.filter(m => m.sport === this.activeFilter);
+    const leagues = [...new Set(pool.map(m => m.league))].sort();
+    return [
+      { key: 'all', label: 'Todas las ligas' },
+      ...leagues.map(l => ({ key: l, label: l })),
+    ];
+  }
+
+  selectLeague(key: string): void {
+    this.activeLeague = key;
+  }
+
+  // ── Match filtering ───────────────────────────────────────
+  get filtered(): SportMatch[] {
+    return this.matches.filter(m =>
+      (this.activeFilter === 'all' || m.sport === this.activeFilter) &&
+      (this.activeLeague === 'all' || m.league === this.activeLeague)
+    );
+  }
+
+  // ── Bet selection (compartida con el preview de Home) ─────
   get selectionCount(): number {
-    return Object.keys(this.selections).length;
+    return this.betSlipService.count;
   }
 
   isSelected(id: number, outcome: BetOutcome): boolean {
-    return this.selections[id] === outcome;
+    return this.betSlipService.isSelected(id, outcome);
   }
 
   toggleBet(id: number, outcome: BetOutcome): void {
-    if (this.selections[id] === outcome) {
-      const next = { ...this.selections };
-      delete next[id];
-      this.selections = next;
-    } else {
-      this.selections = { ...this.selections, [id]: outcome };
-    }
+    this.betSlipService.toggle(id, outcome);
   }
 
   // ── Bet panel ─────────────────────────────────────────────
   get selectedList(): { match: SportMatch; outcome: BetOutcome }[] {
-    return Object.entries(this.selections).map(([idStr, outcome]) => ({
+    return Object.entries(this.betSlipService.selections()).map(([idStr, outcome]) => ({
       match: this.matches.find(m => m.id === +idStr)!,
       outcome,
     }));
@@ -214,7 +232,7 @@ export class ApuestasComponent implements OnInit {
           return;
         }
         this.balanceService.set(res.returnValue.newBalance);
-        this.selections   = {};
+        this.betSlipService.clear();
         this.showBetPanel = false;
         this.showToast    = true;
         setTimeout(() => (this.showToast = false), 2500);
