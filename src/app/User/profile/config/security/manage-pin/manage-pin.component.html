@@ -1,0 +1,81 @@
+<app-screen-shell
+  title="PIN de transacciones"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+
+    <ng-container *ngIf="!hasPin">
+      <p class="pin-intro">Crea un PIN de 4 dígitos para proteger tus retiros y depósitos.</p>
+
+      <div class="pin-block">
+        <div class="pin-label">Nuevo PIN</div>
+        <app-pin-input [value]="newPinValue" (valueChange)="newPinValue = $event"></app-pin-input>
+      </div>
+
+      <div class="pin-block">
+        <div class="pin-label">Confirmar PIN</div>
+        <app-pin-input [value]="confirmPinValue" (valueChange)="confirmPinValue = $event"></app-pin-input>
+      </div>
+
+      <div class="pin-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <div class="pin-success" *ngIf="successMsg">{{ successMsg }}</div>
+
+      <button class="pin-submit" type="button" [disabled]="loading" (click)="submitCreate()">
+        {{ loading ? 'Creando…' : 'Crear PIN' }}
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="hasPin">
+      <div class="pin-status-row">
+        <div>
+          <div class="pin-status-label">Estado del PIN</div>
+          <div class="pin-status-value" [style.color]="pinEnabled ? '#4fd190' : '#e06a6a'">
+            {{ pinEnabled ? 'Activado' : 'Desactivado' }}
+          </div>
+        </div>
+        <app-toggle [on]="pinEnabled" (changed)="askToggle($event)"></app-toggle>
+      </div>
+
+      <ng-container *ngIf="showToggleConfirm">
+        <p class="pin-intro">
+          Ingresa tu PIN actual para {{ toggleTargetValue ? 'activarlo' : 'desactivarlo' }}.
+        </p>
+        <app-pin-input [value]="togglePinValue" (valueChange)="togglePinValue = $event"></app-pin-input>
+        <div class="pin-confirm-row">
+          <button class="pin-submit pin-submit--ghost" type="button" (click)="cancelToggle()">Cancelar</button>
+          <button class="pin-submit" type="button" [disabled]="loading" (click)="confirmToggle()">
+            {{ loading ? 'Guardando…' : 'Confirmar' }}
+          </button>
+        </div>
+      </ng-container>
+
+      <div class="pin-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <div class="pin-success" *ngIf="successMsg">{{ successMsg }}</div>
+
+      <div class="pin-divider"></div>
+
+      <p class="pin-intro">Cambiar PIN</p>
+
+      <div class="pin-block">
+        <div class="pin-label">PIN actual</div>
+        <app-pin-input [value]="oldPinValue" (valueChange)="oldPinValue = $event"></app-pin-input>
+      </div>
+
+      <div class="pin-block">
+        <div class="pin-label">Nuevo PIN</div>
+        <app-pin-input [value]="changeNewPinValue" (valueChange)="changeNewPinValue = $event"></app-pin-input>
+      </div>
+
+      <div class="pin-block">
+        <div class="pin-label">Confirmar nuevo PIN</div>
+        <app-pin-input [value]="changeConfirmValue" (valueChange)="changeConfirmValue = $event"></app-pin-input>
+      </div>
+
+      <button class="pin-submit" type="button" [disabled]="loading" (click)="submitChange()">
+        {{ loading ? 'Guardando…' : 'Cambiar PIN' }}
+      </button>
+    </ng-container>
+
+  </div>
+</app-screen-shell>

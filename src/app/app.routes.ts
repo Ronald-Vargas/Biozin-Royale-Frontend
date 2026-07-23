@@ -145,6 +145,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/config/security/change-password/change-password.component').then(m => m.ChangePasswordUserComponent),
   },
   {
+    path: 'seguridad/pin',
+    data: { depth: 8 },
+    loadComponent: () => import('./User/profile/config/security/manage-pin/manage-pin.component').then(m => m.ManagePinComponent),
+  },
+  {
     path: 'transacciones',
     data: { depth: 6 },
     canActivate: [realAccountGuard],

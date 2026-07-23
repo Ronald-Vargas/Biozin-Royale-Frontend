@@ -10,6 +10,8 @@ export interface PerfilResultado {
   role: 'user' | 'admin' | 'soporte';
   isGuest: boolean;
   hasPassword: boolean;
+  hasPin: boolean;
+  pinEnabled: boolean;
   token: string | null;
   camposPendientes: string[];
   tempPassword?: string | null;

@@ -31,4 +31,16 @@ export class ProfileService {
   changePassword(oldPassword: string, newPassword: string): Observable<ApiResponse<boolean>> {
     return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/password`, { oldPassword, newPassword });
   }
+
+  createPin(pin: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.profileUrl}/pin`, { pin });
+  }
+
+  changePin(oldPin: string, newPin: string): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/pin`, { oldPin, newPin });
+  }
+
+  setPinEnabled(pin: string, enabled: boolean): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/pin/estado`, { pin, enabled });
+  }
 }

@@ -63,9 +63,26 @@ export class SecurityComponent implements OnInit {
     { label: 'Aplicación: Google Authenticator' },
   ];
 
-  pinLines: SecLine[] = [
-    { label: 'Usado para retiros y cambios importantes en la cuenta' },
-  ];
+  get hasPin(): boolean {
+    return this.authService.currentProfile()?.hasPin ?? false;
+  }
+
+  get pinEnabled(): boolean {
+    return this.authService.currentProfile()?.pinEnabled ?? false;
+  }
+
+  get pinLines(): SecLine[] {
+    if (!this.hasPin) {
+      return [{ label: 'Usado para retiros y cambios importantes en la cuenta' }];
+    }
+    return this.pinEnabled
+      ? [{ label: 'Estado: ', value: 'Activado', valueColor: '#4fd190', dot: true }]
+      : [{ label: 'Estado: ', value: 'Desactivado', valueColor: '#e06a6a', dot: true }];
+  }
+
+  get pinBtnLabel(): string {
+    return this.hasPin ? 'Gestionar PIN' : 'Configurar PIN';
+  }
 
   sessions: Session[] = [
     {
@@ -107,6 +124,6 @@ export class SecurityComponent implements OnInit {
   goBack()      { this.router.navigate(['/config']); }
   changePass()  { if (this.hasPassword) this.router.navigate(['/seguridad/cambiar-contrasena']); }
   manage2FA()   { /* placeholder */ }
-  changePin()   { /* placeholder */ }
+  changePin()   { this.router.navigate(['/seguridad/pin']); }
   closeAll()    { /* placeholder */ }
 }

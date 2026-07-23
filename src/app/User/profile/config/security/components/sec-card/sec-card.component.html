@@ -24,7 +24,12 @@
       [style.marginTop.px]="i === 0 ? 5 : 2"
       [style.fontWeight]="l.strong ? 600 : 400"
     >
-      <span *ngIf="l.dot" class="status-dot"></span>
+      <span
+        *ngIf="l.dot"
+        class="status-dot"
+        [style.background]="l.valueColor || '#4fd190'"
+        [style.box-shadow]="'0 0 6px ' + (l.valueColor || '#4fd190')"
+      ></span>
       <span>{{ l.label }}</span>
       <span
         *ngIf="l.value"

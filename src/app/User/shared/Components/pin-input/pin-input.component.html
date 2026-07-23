@@ -1,0 +1,14 @@
+<div class="pin-input-row">
+  <input
+    *ngFor="let d of digits; let i = index; trackBy: trackByIndex"
+    #box
+    class="pin-input-box"
+    [class.pin-input-box--filled]="!!d"
+    [value]="d"
+    (input)="setAt(i, $any($event.target).value)"
+    (keydown)="onKey(i, $event)"
+    type="password"
+    inputmode="numeric"
+    maxlength="1"
+  />
+</div>
