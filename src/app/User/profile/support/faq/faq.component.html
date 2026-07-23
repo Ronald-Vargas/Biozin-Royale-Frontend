@@ -1,0 +1,64 @@
+<app-screen-shell title="Preguntas Frecuentes" current="perfil" (back)="goBack()">
+
+  <!-- Hero -->
+  <div class="faq-hero">
+    <div class="faq-hero-icon">
+      <div class="faq-hero-glow"></div>
+      <app-icon [svg]="iconHelp" [size]="38" style="color:var(--gold-1);position:relative"></app-icon>
+    </div>
+    <div class="faq-hero-text">
+      <div class="faq-hero-title">Preguntas Frecuentes</div>
+      <div class="faq-hero-sub">Encontrá respuestas rápidas sobre juegos, pagos, bonos y más.</div>
+    </div>
+  </div>
+
+  <!-- Secciones -->
+  <div class="faq-sections">
+    <div *ngFor="let section of sections" class="faq-section">
+
+      <!-- Header de sección -->
+      <button class="section-btn" [class.section-btn--open]="activeSection === section.id"
+              (click)="toggleSection(section.id)">
+        <div class="section-btn-left">
+          <div class="section-icon-wrap">
+            <app-icon [svg]="section.icon" [size]="19" [style.color]="section.iconColor"></app-icon>
+          </div>
+          <span class="section-label">{{ section.title }}</span>
+        </div>
+        <div class="section-count" *ngIf="activeSection !== section.id">
+          {{ section.items.length }} preguntas
+        </div>
+        <app-icon [svg]="iconChevron" [size]="17"
+                  class="section-chevron"
+                  [class.section-chevron--open]="activeSection === section.id"
+                  style="color:var(--gold-2);flex-shrink:0"></app-icon>
+      </button>
+
+      <!-- Preguntas de la sección -->
+      <div class="section-body" [class.section-body--open]="activeSection === section.id">
+        <div *ngFor="let item of section.items; let last = last"
+             class="faq-item" [class.faq-item--last]="last">
+          <button class="faq-q" [class.faq-q--open]="item.open" (click)="toggleItem(item)">
+            <span class="faq-q-text">{{ item.question }}</span>
+            <app-icon [svg]="iconChevron" [size]="15"
+                      class="faq-q-chevron"
+                      [class.faq-q-chevron--open]="item.open"
+                      style="color:rgba(212,167,60,0.6);flex-shrink:0"></app-icon>
+          </button>
+          <div class="faq-answer" [class.faq-answer--open]="item.open">
+            <p class="faq-answer-text">{{ item.answer }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Banner soporte -->
+  <div class="support-banner">
+    <div class="support-banner-title">¿No encontraste tu respuesta?</div>
+    <div class="support-banner-sub">Nuestro equipo de soporte está disponible 24/7 para ayudarte.</div>
+    <button class="support-banner-btn" (click)="goBack()">Contactar soporte</button>
+  </div>
+
+</app-screen-shell>

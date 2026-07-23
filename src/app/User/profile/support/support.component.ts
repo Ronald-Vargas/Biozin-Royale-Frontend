@@ -58,4 +58,8 @@ export class SupportComponent{
 
   goBack()        { this.router.navigate(['/perfil']); }
   goCrearTicket() { this.router.navigate(['/create-ticket']); }
+
+  onSupportItem(key: string): void {
+    if (key === 'faq') { this.router.navigate(['/faq']); }
+  }
 }

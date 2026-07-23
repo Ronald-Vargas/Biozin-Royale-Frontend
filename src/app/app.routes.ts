@@ -129,6 +129,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/support/support.component').then(m => m.SupportComponent),
   },
   {
+    path: 'faq',
+    data: { depth: 7 },
+    loadComponent: () => import('./User/profile/support/faq/faq.component').then(m => m.FaqComponent),
+  },
+  {
     path: 'miperfil',
     data: { depth: 6 },
     canActivate: [realAccountGuard],

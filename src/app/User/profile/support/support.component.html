@@ -30,7 +30,7 @@
   <!-- Contacto rápido -->
   <app-group-label>Contacto rápido</app-group-label>
   <div class="support-list">
-    <div *ngFor="let s of supportItems" class="support-row">
+    <div *ngFor="let s of supportItems" class="support-row" (click)="onSupportItem(s.key)">
       <div class="support-row-icon">
         <app-icon
           [svg]="s.icon"
