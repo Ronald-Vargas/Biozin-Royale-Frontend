@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonContent } from '@ionic/angular/standalone';
@@ -7,7 +7,7 @@ import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.compo
 import { ICON_ARROW_BACK, ICON_CLOSE } from '../shared/icons/icons';
 import { BetOutcome, Sport, SportMatch } from '../../Core/Models/sports.models';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
-import { BetsService } from 'src/app/Core/Services/bets.service';
+import { BetsService, MyBet } from 'src/app/Core/Services/bets.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
 import { BetSlipService } from 'src/app/Core/Services/bet-slip.service';
 
@@ -21,7 +21,7 @@ type Filter = 'all' | Sport;
   templateUrl: './apuestas.component.html',
   styleUrls: ['./apuestas.component.scss'],
 })
-export class ApuestasComponent implements OnInit {
+export class ApuestasComponent implements OnInit, OnDestroy {
   iconBack  = ICON_ARROW_BACK;
   iconClose = ICON_CLOSE;
 
@@ -38,6 +38,12 @@ export class ApuestasComponent implements OnInit {
   showToast     = false;
   placing       = false;
   betError      = '';
+
+  // ── Mis apuestas ───────────────────────────────────────────
+  showMyBets    = false;
+  myBets: MyBet[] = [];
+  loadingMyBets = false;
+  private myBetsPoll?: ReturnType<typeof setInterval>;
 
   readonly balance = this.balanceService.balance;
 
@@ -245,4 +251,52 @@ export class ApuestasComponent implements OnInit {
   }
 
   goBack(): void { this.router.navigate(['/home']); }
+
+  ngOnDestroy(): void {
+    this.stopMyBetsPoll();
+  }
+
+  // ── Mis apuestas ─────────────────────────────────────────
+  openMyBets(): void {
+    this.showMyBets = true;
+    this.loadMyBets();
+    this.myBetsPoll = setInterval(() => this.loadMyBets(), 60000);
+  }
+
+  closeMyBets(): void {
+    this.showMyBets = false;
+    this.stopMyBetsPoll();
+  }
+
+  private stopMyBetsPoll(): void {
+    if (this.myBetsPoll) {
+      clearInterval(this.myBetsPoll);
+      this.myBetsPoll = undefined;
+    }
+  }
+
+  private loadMyBets(): void {
+    this.loadingMyBets = true;
+    this.betsService.getMyBets().subscribe({
+      next: (res) => {
+        this.loadingMyBets = false;
+        if (!res.blnError && res.returnValue) {
+          this.myBets = res.returnValue;
+        }
+      },
+      error: () => { this.loadingMyBets = false; },
+    });
+  }
+
+  myBetOutcomeLabel(s: MyBet['selections'][number]): string {
+    if (s.outcome === 'home') return `1 — Gana ${s.team1}`;
+    if (s.outcome === 'draw') return 'X — Empate';
+    return `2 — Gana ${s.team2}`;
+  }
+
+  myBetStatusLabel(status: MyBet['status']): string {
+    if (status === 'won') return 'Ganada';
+    if (status === 'lost') return 'Perdida';
+    return 'Pendiente';
+  }
 }

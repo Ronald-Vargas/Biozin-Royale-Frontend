@@ -91,6 +91,12 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
     background: rgba(255, 255, 255, 0.02);
     border-color: rgba(212, 167, 60, 0.12);
     color: rgba(203, 185, 143, 0.75);
+
+    &.filter-chip--active {
+      background: rgba(212, 167, 60, 0.14);
+      border-color: rgba(212, 167, 60, 0.6);
+      color: var(--gold-1);
+    }
   }
 }
 
@@ -562,6 +568,117 @@ ion-content.apuestas-content { --background: var(--bg-dark); }
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
+  }
+}
+
+// ── Mis apuestas button ─────────────────────────────────────────
+.mybets-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 167, 60, 0.18);
+  color: #cbb98f;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+// ── Mis apuestas overlay + panel ─────────────────────────────────
+.mybets-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+.mybets-panel {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 21;
+  max-height: 82%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #1c1709 0%, #0d0a05 100%);
+  border-radius: 24px 24px 0 0;
+  border-top: 1px solid rgba(212, 167, 60, 0.32);
+  padding: 10px 20px calc(20px + var(--ion-safe-area-bottom));
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &--open { transform: translateY(0); }
+}
+
+.mybets-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mybet-item {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 167, 60, 0.16);
+  padding: 12px 14px;
+}
+
+.mybet-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.mybet-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(200, 185, 150, 0.45);
+}
+
+.mybet-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(212, 167, 60, 0.1);
+}
+
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &--pending {
+    background: rgba(212, 167, 60, 0.14);
+    color: var(--gold-1);
+  }
+
+  &--won {
+    background: rgba(79, 209, 144, 0.16);
+    color: #4fd190;
+  }
+
+  &--lost {
+    background: rgba(224, 106, 106, 0.16);
+    color: #e06a6a;
   }
 }
 

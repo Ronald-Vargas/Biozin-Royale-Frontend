@@ -25,6 +25,29 @@ export interface BetResult {
   potentialWin: number;
 }
 
+export type MyBetStatus = 'pending' | 'won' | 'lost';
+
+export interface MyBetSelection {
+  team1: string;
+  team2: string;
+  league: string;
+  outcome: string;
+  odds: number;
+  status: MyBetStatus;
+}
+
+export interface MyBet {
+  id: string;
+  amount: number;
+  totalOdds: number;
+  potentialWin: number;
+  status: MyBetStatus;
+  payout: number;
+  createdAt: string;
+  settledAt: string | null;
+  selections: MyBetSelection[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class BetsService {
   private readonly url = `${environment.apiUrl}/bets`;
@@ -33,5 +56,9 @@ export class BetsService {
 
   placeBet(request: BetRequest): Observable<ApiResponse<BetResult>> {
     return this.http.post<ApiResponse<BetResult>>(this.url, request);
+  }
+
+  getMyBets(): Observable<ApiResponse<MyBet[]>> {
+    return this.http.get<ApiResponse<MyBet[]>>(`${this.url}/mine`);
   }
 }

@@ -21,6 +21,7 @@
             (click)="selectSport(f.key)"
           >{{ f.label }}</button>
         }
+        <button class="mybets-btn" (click)="openMyBets()">Mis apuestas</button>
       </div>
 
       @if (availableLeagues.length > 2) {
@@ -199,6 +200,72 @@
     <div class="bet-toast" [class.bet-toast--visible]="showToast">
       ✓ &nbsp;¡Apuesta realizada!
     </div>
+
+    <!-- ── Mis apuestas overlay ── -->
+    <div
+      class="mybets-overlay"
+      [class.mybets-overlay--visible]="showMyBets"
+      (click)="closeMyBets()"
+    ></div>
+
+    <!-- ── Mis apuestas panel ── -->
+    <div class="mybets-panel" [class.mybets-panel--open]="showMyBets">
+
+      <div class="panel-handle"></div>
+
+      <div class="panel-header">
+        <span class="gold-text panel-title">Mis apuestas</span>
+        <button class="panel-close" (click)="closeMyBets()">
+          <app-icon [svg]="iconClose" [size]="15"></app-icon>
+        </button>
+      </div>
+
+      <div class="mybets-list">
+        @if (loadingMyBets && myBets.length === 0) {
+          <div class="matches-state">Cargando...</div>
+        }
+
+        @if (!loadingMyBets && myBets.length === 0) {
+          <div class="matches-state">No tenés apuestas activas ni recientes.</div>
+        }
+
+        @for (b of myBets; track b.id) {
+          <div class="mybet-item">
+            <div class="mybet-item-header">
+              <span
+                class="status-badge"
+                [class.status-badge--pending]="b.status === 'pending'"
+                [class.status-badge--won]="b.status === 'won'"
+                [class.status-badge--lost]="b.status === 'lost'"
+              >{{ myBetStatusLabel(b.status) }}</span>
+              <span class="mybet-date">{{ b.createdAt | date:'dd/MM HH:mm' }}</span>
+            </div>
+
+            @for (s of b.selections; track $index) {
+              <div class="sel-row">
+                <div class="sel-info">
+                  <div class="sel-match">{{ s.team1 }} vs {{ s.team2 }}</div>
+                  <div class="sel-outcome">{{ myBetOutcomeLabel(s) }}</div>
+                </div>
+                <span class="sel-odds">x{{ s.odds | number:'1.2-2' }}</span>
+              </div>
+            }
+
+            <div class="mybet-item-footer">
+              <div class="info-item">
+                <div class="info-lbl">Monto</div>
+                <div class="info-val">{{ b.amount | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+              <div class="info-item info-item--right">
+                <div class="info-lbl">{{ b.status === 'won' ? 'Ganancia' : 'Ganancia potencial' }}</div>
+                <div class="info-val info-val--gold">{{ (b.status === 'won' ? b.payout : b.potentialWin) | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div><!-- /mybets-panel -->
 
   </div>
 </ion-content>
