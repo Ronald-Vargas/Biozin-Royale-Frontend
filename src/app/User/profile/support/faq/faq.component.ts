@@ -51,11 +51,6 @@ export class FaqComponent {
           open: false,
         },
         {
-          question: '¿Puedo practicar sin dinero real?',
-          answer: 'Algunos juegos ofrecen modo demo o de práctica sin necesidad de apostar dinero real. Busca la opción "Demo" en la ficha de cada juego.',
-          open: false,
-        },
-        {
           question: '¿Qué sucede si se corta la conexión durante un juego?',
           answer: 'El estado de tu partida queda guardado en el servidor. Al reconectarte, podrás retomar exactamente donde lo dejaste. Si el resultado ya fue determinado, se acreditará automáticamente.',
           open: false,
@@ -90,7 +85,7 @@ export class FaqComponent {
         },
         {
           question: '¿Hay límites de depósito o retiro?',
-          answer: 'El monto mínimo de depósito es de $5 USD y el mínimo de retiro es de $10 USD. Para conocer los límites máximos de tu cuenta, contactá al soporte.',
+          answer: 'No existe un limite máximo de depósito o retiro.',
           open: false,
         },
         {
@@ -108,17 +103,12 @@ export class FaqComponent {
       items: [
         {
           question: '¿Qué es un bono de bienvenida?',
-          answer: 'Es un beneficio otorgado a los nuevos usuarios al realizar su primer depósito. Generalmente consiste en crédito extra o giros gratuitos, según la promoción vigente.',
+          answer: 'Es un beneficio otorgado a los nuevos usuarios. Generalmente consiste en un crédito extra, según la promoción vigente.',
           open: false,
         },
         {
           question: '¿Cómo canjeo un bono?',
           answer: 'Los bonos disponibles aparecen en la sección "Bonos" del menú inferior. Seleccioná el que querés activar y seguí las instrucciones indicadas.',
-          open: false,
-        },
-        {
-          question: '¿Los bonos tienen condiciones?',
-          answer: 'Sí. Cada bono tiene requisitos de apuesta (rollover) que deben cumplirse antes de poder retirar las ganancias generadas con ese bono. Revisá los términos de cada promoción.',
           open: false,
         },
         {
@@ -152,11 +142,6 @@ export class FaqComponent {
         {
           question: '¿Qué hago si olvidé mi contraseña?',
           answer: 'En la pantalla de inicio de sesión, tocá "¿Olvidaste tu contraseña?". Te enviaremos un correo con instrucciones para restablecerla.',
-          open: false,
-        },
-        {
-          question: '¿Puedo tener más de una cuenta?',
-          answer: 'No. Las políticas de la plataforma permiten una sola cuenta por persona. El uso de múltiples cuentas puede resultar en la suspensión permanente.',
           open: false,
         },
         {
