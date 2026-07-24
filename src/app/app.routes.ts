@@ -70,6 +70,11 @@ export const routes: Routes = [
     loadComponent: () => import('./Auth/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
   },
   {
+    path: 'auth/verificar-2fa',
+    data: { depth: 5 },
+    loadComponent: () => import('./Auth/verify-2fa/verify-2fa.component').then(m => m.Verify2faComponent),
+  },
+  {
     path: 'home',
     data: { depth: 5, tab: 0 },
     loadComponent: () => import('./User/home/home.component').then(m => m.HomeComponent),
@@ -148,6 +153,11 @@ export const routes: Routes = [
     path: 'seguridad/pin',
     data: { depth: 8 },
     loadComponent: () => import('./User/profile/config/security/manage-pin/manage-pin.component').then(m => m.ManagePinComponent),
+  },
+  {
+    path: 'seguridad/2fa',
+    data: { depth: 8 },
+    loadComponent: () => import('./User/profile/config/security/manage-two-factor/manage-two-factor.component').then(m => m.ManageTwoFactorComponent),
   },
   {
     path: 'transacciones',

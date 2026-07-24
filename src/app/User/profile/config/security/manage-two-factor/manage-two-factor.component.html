@@ -1,0 +1,50 @@
+<app-screen-shell
+  title="Autenticación en dos pasos"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+
+    <p class="tf-intro">
+      Cuando esta opción está activa, te enviamos un código de 6 dígitos a tu correo cada vez que inicias sesión con tu contraseña.
+    </p>
+
+    <div class="tf-status-row">
+      <div>
+        <div class="tf-status-label">Estado</div>
+        <div class="tf-status-value" [style.color]="twoFaEnabled ? '#4fd190' : '#e06a6a'">
+          {{ twoFaEnabled ? 'Activado' : 'Desactivado' }}
+        </div>
+      </div>
+      <app-toggle [on]="twoFaEnabled" (changed)="askToggle($event)"></app-toggle>
+    </div>
+
+    <ng-container *ngIf="showToggleConfirm">
+      <p class="tf-intro" *ngIf="hasPassword">
+        Ingresa tu contraseña actual para {{ toggleTargetValue ? 'activar' : 'desactivar' }} la autenticación en dos pasos.
+      </p>
+      <p class="tf-intro" *ngIf="!hasPassword">
+        ¿Confirmas que deseas {{ toggleTargetValue ? 'activar' : 'desactivar' }} la autenticación en dos pasos?
+      </p>
+
+      <app-field
+        *ngIf="hasPassword"
+        label="Contraseña actual"
+        placeholder="Ingresa tu contraseña actual"
+        [password]="true"
+        [control]="passwordCtrl"
+      ></app-field>
+
+      <div class="tf-confirm-row">
+        <button class="tf-submit tf-submit--ghost" type="button" (click)="cancelToggle()">Cancelar</button>
+        <button class="tf-submit" type="button" [disabled]="loading" (click)="confirmToggle()">
+          {{ loading ? 'Guardando…' : 'Confirmar' }}
+        </button>
+      </div>
+    </ng-container>
+
+    <div class="tf-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+    <div class="tf-success" *ngIf="successMsg">{{ successMsg }}</div>
+
+  </div>
+</app-screen-shell>

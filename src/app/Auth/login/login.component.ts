@@ -135,6 +135,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/auth/verificar-email'], { queryParams: { email, unverified: '1' } });
           return;
         }
+        if (body?.strResponseTittle === '2FA requerido') {
+          const email = (this.emailCtrl.value || '').trim().toLowerCase();
+          this.router.navigate(['/auth/verificar-2fa'], { queryParams: { email } });
+          return;
+        }
         if (body?.strResponseTittle === 'Credenciales inválidas' || err?.status === 401) {
           this.errorMsg = 'Correo electrónico o contraseña incorrectos.';
           return;

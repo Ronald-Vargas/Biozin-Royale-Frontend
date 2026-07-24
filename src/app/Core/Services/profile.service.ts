@@ -43,4 +43,8 @@ export class ProfileService {
   setPinEnabled(pin: string, enabled: boolean): Observable<ApiResponse<boolean>> {
     return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/pin/estado`, { pin, enabled });
   }
+
+  setTwoFactorEnabled(password: string, enabled: boolean): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/2fa/estado`, { password, enabled });
+  }
 }

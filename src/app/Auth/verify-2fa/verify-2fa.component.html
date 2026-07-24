@@ -1,0 +1,65 @@
+<ion-content [fullscreen]="true">
+<div class="v2fa-screen">
+  <app-atmosphere [glow]="0.28" [count]="10"></app-atmosphere>
+
+  <div class="v2fa-body">
+
+    <button class="v2fa-back" (click)="goBack()">
+      <app-icon [svg]="iconMail" [size]="16" style="color:#cbb98f"></app-icon>
+      Volver al inicio de sesión
+    </button>
+
+    <div class="v2fa-icon-wrap">
+      <div class="v2fa-icon">
+        <app-icon [svg]="iconShield" [size]="36" style="color:var(--gold-1)"></app-icon>
+      </div>
+    </div>
+
+    <div class="v2fa-title">Verificación en dos pasos</div>
+    <div class="v2fa-subtitle">
+      Te enviamos un código de 6 dígitos al correo:
+    </div>
+
+    <div class="v2fa-email-badge">
+      <app-icon [svg]="iconMail" [size]="15" style="color:var(--gold-1)"></app-icon>
+      <span>{{ email }}</span>
+    </div>
+
+    <form class="v2fa-form" [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="v2fa-field-label">Código de verificación</div>
+      <input
+        class="v2fa-code-input"
+        formControlName="code"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="000000"
+        autocomplete="one-time-code"
+      />
+      <div class="v2fa-code-hint" *ngIf="codeCtrl.touched && codeCtrl.invalid">
+        El código debe tener exactamente 6 dígitos.
+      </div>
+
+      <div class="v2fa-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+      <button class="v2fa-submit" type="submit" [disabled]="loading">
+        {{ loading ? 'Verificando…' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <div class="v2fa-resend">
+      <span *ngIf="!codeResent">¿No recibiste el código?</span>
+      <span *ngIf="codeResent" class="v2fa-resent-ok">¡Código reenviado!</span>
+      <button
+        class="v2fa-resend-btn"
+        *ngIf="!codeResent"
+        [disabled]="loadingCode"
+        (click)="resendCode()"
+      >
+        {{ loadingCode ? 'Enviando…' : 'Reenviar' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+</ion-content>

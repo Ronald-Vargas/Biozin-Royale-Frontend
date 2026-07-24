@@ -69,6 +69,16 @@ export class AuthService {
       .pipe(tap((res) => this.storeSession(res)));
   }
 
+  verifyTwoFactor(email: string, code: string): Observable<ApiResponse<PerfilResultado>> {
+    return this.http
+      .post<ApiResponse<PerfilResultado>>(`${this.baseUrl}/verify-2fa`, { email, code })
+      .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  resendTwoFactor(email: string): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/resend-2fa`, { email });
+  }
+
   /**
    * Llamado por el callback de OAuth justo después de que Supabase confirma la sesión.
    * El token de Supabase se manda explícito porque el interceptor todavía no tiene

@@ -58,10 +58,22 @@ export class SecurityComponent implements OnInit {
     ];
   }
 
-  twoFaLines: SecLine[] = [
-    { label: 'Estado: ', value: 'Activado', valueColor: '#4fd190', dot: true },
-    { label: 'Aplicación: Google Authenticator' },
-  ];
+  get twoFaEnabled(): boolean {
+    return this.authService.currentProfile()?.twoFactorEnabled ?? false;
+  }
+
+  get twoFaLines(): SecLine[] {
+    return this.twoFaEnabled
+      ? [
+          { label: 'Estado: ', value: 'Activado', valueColor: '#4fd190', dot: true },
+          { label: 'Se envía un código a tu correo en cada inicio de sesión.' },
+        ]
+      : [{ label: 'Estado: ', value: 'Desactivado', valueColor: '#e06a6a', dot: true }];
+  }
+
+  get twoFaBtnLabel(): string {
+    return this.twoFaEnabled ? 'Gestionar 2FA' : 'Activar 2FA';
+  }
 
   get hasPin(): boolean {
     return this.authService.currentProfile()?.hasPin ?? false;
@@ -123,7 +135,7 @@ export class SecurityComponent implements OnInit {
 
   goBack()      { this.router.navigate(['/config']); }
   changePass()  { if (this.hasPassword) this.router.navigate(['/seguridad/cambiar-contrasena']); }
-  manage2FA()   { /* placeholder */ }
+  manage2FA()   { this.router.navigate(['/seguridad/2fa']); }
   changePin()   { this.router.navigate(['/seguridad/pin']); }
   closeAll()    { /* placeholder */ }
 }
