@@ -30,7 +30,12 @@
 
     <!-- KPI grid -->
     <div class="kpi-grid">
-      <app-kpi-card *ngFor="let k of kpis" [kpi]="k"></app-kpi-card>
+      <ng-container *ngIf="!loadingKpis; else kpiSkeleton">
+        <app-kpi-card *ngFor="let k of kpis" [kpi]="k"></app-kpi-card>
+      </ng-container>
+      <ng-template #kpiSkeleton>
+        <div class="kpi-skeleton" *ngFor="let i of [1,2,3,4]"></div>
+      </ng-template>
     </div>
 
     <!-- Acceso rápido: Supervisión de soporte -->

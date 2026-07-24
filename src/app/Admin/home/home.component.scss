@@ -107,6 +107,23 @@
   gap: 13px;
 }
 
+.kpi-skeleton {
+  height: 100px;
+  border-radius: 14px;
+  background: linear-gradient(90deg,
+    rgba(212,167,60,0.06) 25%,
+    rgba(212,167,60,0.12) 50%,
+    rgba(212,167,60,0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 
 
 .support-card {
