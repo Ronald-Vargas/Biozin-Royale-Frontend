@@ -15,7 +15,7 @@
         ></image-slot>
       </div>
       <div class="profile-info">
-        <div class="profile-name">María G.</div>
+        <div class="profile-name">{{ perfil()?.displayName || perfil()?.username || 'Agente' }}</div>
         <div class="profile-role">Agente de soporte</div>
       </div>
     </div>

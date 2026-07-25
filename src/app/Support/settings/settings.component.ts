@@ -31,8 +31,10 @@ export class SettingsComponent {
   notif      = true;
   sound      = false;
 
+  readonly perfil = this.authService.currentProfile;
+
   constructor(private router: Router, private authService: AuthService) {}
 
-  goBack()  { this.router.navigate(['/soporte']); }
+  goBack()  { this.router.navigate(['/support']); }
   logout()  { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 }
