@@ -45,21 +45,18 @@
     placeholder="Describe tu problema con el mayor detalle posible..."
   ></textarea>
 
-  <!-- Adjuntar -->
-  <button class="attach-btn" [class.attach-btn--active]="file" (click)="toggleFile()">
-    <app-icon [svg]="iconAttach" [size]="19"></app-icon>
-    {{ file ? file + ' · quitar' : 'Adjuntar archivo (opcional)' }}
-  </button>
+  <!-- Error -->
+  <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
 
   <!-- Enviar -->
   <button
     class="submit-btn"
-    [class.submit-btn--ready]="valid"
-    [disabled]="!valid"
+    [class.submit-btn--ready]="valid && !loading"
+    [disabled]="!valid || loading"
     (click)="submit()"
   >
     <app-icon [svg]="iconSend" [size]="19"></app-icon>
-    Enviar ticket
+    {{ loading ? 'Enviando...' : 'Enviar ticket' }}
   </button>
 
   <div class="response-note">

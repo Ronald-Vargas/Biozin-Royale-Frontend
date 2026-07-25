@@ -25,8 +25,11 @@ export interface StatusStyle { color: string; bg: string; bd: string; }
 
 export const TK_STATUS: Record<string, StatusStyle> = {
   'Nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
+  'nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
   'En proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)' },
+  'en_proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)' },
   'Resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)' },
+  'resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)' },
   'Abierto':    { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
 };
 
@@ -133,6 +136,23 @@ export interface SupportKpi {
   icon:  string;
   tint:  string;
   bg:    string;
+}
+
+export function statusLabel(s: string): string {
+  const map: Record<string, string> = {
+    nuevo: 'Nuevo', en_proceso: 'En proceso', resuelto: 'Resuelto',
+  };
+  return map[s] || s;
+}
+
+export function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1)  return 'Ahora';
+  if (m < 60) return `Hace ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `Hace ${h} h`;
+  return 'Ayer';
 }
 
 export function supportKpis(): SupportKpi[] {

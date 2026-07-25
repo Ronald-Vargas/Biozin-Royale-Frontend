@@ -17,16 +17,20 @@
     <div class="summary">
       <div class="summary-row">
         <span class="row-label">N° de ticket</span>
-        <span class="gold-text row-id">{{ ticket.id }}</span>
+        <span class="gold-text row-id">{{ ticketLabel }}</span>
       </div>
       <div class="summary-row">
         <span class="row-label">Categoría</span>
-        <span class="row-value">{{ ticket.cat }}</span>
+        <span class="row-value">{{ ticket.category || '—' }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="row-label">Asunto</span>
+        <span class="row-value">{{ ticket.subject || '—' }}</span>
       </div>
       <div class="summary-row summary-row--last">
         <span class="row-label">Estado</span>
         <span class="status-value">
-          <span class="status-dot"></span>Enviado
+          <span class="status-dot"></span>Nuevo
         </span>
       </div>
     </div>
