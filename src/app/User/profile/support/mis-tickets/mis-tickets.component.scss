@@ -1,0 +1,156 @@
+// ── Estados (cargando / error / vacío) ──────────────────────
+.state-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+}
+
+.state-icon { color: var(--gold-2); opacity: 0.55; }
+.state-icon.error { color: #e06a6a; }
+
+.state-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  color: #9a9080;
+  text-align: center;
+}
+
+.spinner {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(212, 167, 60, 0.15);
+  border-top-color: var(--gold-1);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Empty ────────────────────────────────────────────────────
+.empty-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 28px 40px;
+  text-align: center;
+}
+
+.empty-glow {
+  position: absolute;
+  top: 40px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 200, 107, 0.18), transparent 70%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.empty-icon {
+  position: relative;
+  color: var(--gold-2);
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-1);
+  margin-top: 4px;
+}
+
+.empty-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: #9a9080;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+// ── Lista de tickets ─────────────────────────────────────────
+.tk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tk-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(212, 167, 60, 0.24);
+  transition: background 0.15s;
+
+  &:active { background: rgba(212, 167, 60, 0.06); }
+}
+
+.tk-cat-icon {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: rgba(212, 167, 60, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.28);
+}
+
+.tk-body { flex: 1; min-width: 0; }
+
+.tk-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.tk-number {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-2);
+  letter-spacing: 0.3px;
+}
+
+.tk-badge {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  line-height: 1.6;
+}
+
+.tk-subject {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tk-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    color: #807562;
+  }
+}
+
+.tk-cat { color: #a09070 !important; }
