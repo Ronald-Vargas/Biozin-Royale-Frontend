@@ -66,6 +66,6 @@ export class MisTicketsComponent implements OnInit {
     return d.toLocaleDateString('es-CR', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
-  goBack()             { this.router.navigate(['/soporte']); }
+  goBack()               { this.router.navigate(['/soporte']); }
   openTicket(id: string) { this.router.navigate(['/mis-tickets', id]); }
 }

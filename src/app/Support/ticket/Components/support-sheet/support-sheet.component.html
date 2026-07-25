@@ -4,39 +4,52 @@
     <h3 class="gold-text sheet-title">{{ title }}</h3>
 
     <div class="sheet-options">
-      <div
-        *ngFor="let o of options"
-        class="sheet-option"
-        [class.sheet-option--selected]="isSel(o)"
-        (click)="onPick(o)"
-      >
-        <!-- Modo estado -->
-        <ng-container *ngIf="mode === 'status'">
+
+      <!-- Estado: siempre usa options[] de strings -->
+      <ng-container *ngIf="mode === 'status'">
+        <div
+          *ngFor="let o of options"
+          class="sheet-option"
+          [class.sheet-option--selected]="isSel(o)"
+          (click)="onPick(o)"
+        >
           <app-ticket-status-badge [status]="o" size="lg"></app-ticket-status-badge>
           <span class="opt-spacer"></span>
-        </ng-container>
+          <app-icon *ngIf="isSel(o)" [svg]="iconCheck" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+      </ng-container>
 
-        <!-- Modo agente -->
-        <ng-container *ngIf="mode === 'agent'">
+      <!-- Agente con staff real (API) -->
+      <ng-container *ngIf="useStaffOptions">
+        <div
+          *ngFor="let s of staffOptions"
+          class="sheet-option"
+          [class.sheet-option--selected]="isSelStaff(s.id)"
+          (click)="onPickStaff(s)"
+        >
+          <app-initials [text]="s.displayName" [size]="34" [tint]="agentTint(s.displayName)"></app-initials>
+          <span class="opt-name">{{ s.displayName }}</span>
+          <app-icon *ngIf="isSelStaff(s.id)" [svg]="iconCheck" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+      </ng-container>
+
+      <!-- Agente fallback (options[] de strings) -->
+      <ng-container *ngIf="mode === 'agent' && !useStaffOptions">
+        <div
+          *ngFor="let o of options"
+          class="sheet-option"
+          [class.sheet-option--selected]="isSel(o)"
+          (click)="onPick(o)"
+        >
           <div *ngIf="o === 'Sin asignar'" class="no-agent">
             <app-icon [svg]="iconPersonRemove" [size]="16" style="color:var(--muted)"></app-icon>
           </div>
-          <app-initials
-            *ngIf="o !== 'Sin asignar'"
-            [text]="o"
-            [size]="34"
-            [tint]="agentTint(o)"
-          ></app-initials>
+          <app-initials *ngIf="o !== 'Sin asignar'" [text]="o" [size]="34" [tint]="agentTint(o)"></app-initials>
           <span class="opt-name">{{ o }}</span>
-        </ng-container>
+          <app-icon *ngIf="isSel(o)" [svg]="iconCheck" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+      </ng-container>
 
-        <app-icon
-          *ngIf="isSel(o)"
-          [svg]="iconCheck"
-          [size]="19"
-          style="color:var(--gold-1)"
-        ></app-icon>
-      </div>
     </div>
   </div>
 </div>

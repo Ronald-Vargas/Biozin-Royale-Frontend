@@ -20,3 +20,29 @@ export interface TicketResultado {
   userEmail?: string | null;
   userUsername?: string | null;
 }
+
+export interface TicketMessage {
+  id: string;
+  senderName: string;
+  senderRole: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface EnviarMensajeRequest {
+  body: string;
+}
+
+export interface AsignarTicketRequest {
+  staffMemberId: string;
+}
+
+export interface CambiarEstadoRequest {
+  status: string;
+}
+
+export interface StaffSimple {
+  id: string;
+  displayName: string;
+  role: string;
+}

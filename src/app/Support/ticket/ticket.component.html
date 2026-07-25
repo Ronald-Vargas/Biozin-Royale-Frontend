@@ -39,6 +39,12 @@
       ></app-meta-chip>
     </div>
 
+    <!-- Descripción original del ticket -->
+    <div *ngIf="ticketDescription" class="desc-card">
+      <div class="desc-label">Descripción inicial</div>
+      <div class="desc-text">{{ ticketDescription }}</div>
+    </div>
+
     <!-- Conversación -->
     <app-bubble *ngFor="let m of msgs" [msg]="m"></app-bubble>
   </div>
@@ -93,8 +99,8 @@
   <app-support-sheet
     *ngIf="sheet === 'asignar'"
     title="Asignar agente"
-    [options]="agents"
-    [current]="assigned"
+    [staffOptions]="staffOptions"
+    [current]="assignedId"
     mode="agent"
     (pick)="pickAgent($event)"
     (close)="sheet = null"

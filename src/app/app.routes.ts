@@ -314,6 +314,12 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/support/mis-tickets/mis-tickets.component').then(m => m.MisTicketsComponent),
   },
   {
+    path: 'mis-tickets/:id',
+    data: { depth: 8 },
+    canActivate: [realAccountGuard],
+    loadComponent: () => import('./User/profile/support/user-ticket/user-ticket.component').then(m => m.UserTicketComponent),
+  },
+  {
     path: 'admin/soporte',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/support/support.component').then(m => m.SupportComponent),

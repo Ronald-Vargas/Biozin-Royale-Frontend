@@ -245,3 +245,30 @@
   0% { opacity: 0; transform: translate(-50%, -10px); }
   100% { opacity: 1; transform: translate(-50%, 0); }
 }
+// ── Descripción inicial ──────────────────────────────────────
+.desc-card {
+  margin: 0 0 8px;
+  padding: 12px 14px;
+  border-radius: 13px;
+  background: rgba(212, 167, 60, 0.06);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+}
+
+.desc-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold-2);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+}
+
+.desc-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #c8bfad;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

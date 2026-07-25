@@ -1,0 +1,83 @@
+<app-screen-shell [title]="ticketLabel()" current="perfil" (back)="goBack()">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-center">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && errorMsg" class="state-center">
+    <div class="state-label">{{ errorMsg }}</div>
+  </div>
+
+  <!-- Contenido -->
+  <ng-container *ngIf="!loading && !errorMsg && ticket">
+
+    <!-- Header del ticket -->
+    <div class="tk-header">
+      <div class="tk-meta-row">
+        <span class="tk-badge"
+          [style.color]="statusStyle().color"
+          [style.background]="statusStyle().bg"
+          [style.border-color]="statusStyle().bd">
+          {{ statusDisplay() }}
+        </span>
+        <span class="tk-cat">{{ ticket.category }}</span>
+      </div>
+      <div class="tk-subject">{{ ticket.subject }}</div>
+      <div class="tk-agent" *ngIf="ticket.assignedToName">
+        <app-icon [svg]="iconHeadset" [size]="13" style="color:#9a9080"></app-icon>
+        <span>{{ ticket.assignedToName }}</span>
+      </div>
+    </div>
+
+    <!-- Hilo de mensajes -->
+    <div class="thread" #threadEl>
+
+      <!-- Descripción inicial -->
+      <div class="desc-bubble">
+        <div class="desc-label">Descripción del ticket</div>
+        <div class="desc-text">{{ ticket.description }}</div>
+      </div>
+
+      <!-- Mensajes -->
+      <ng-container *ngFor="let m of messages">
+        <div class="msg-row" [class.msg-row--mine]="isUserMsg(m)">
+          <div class="bubble" [class.bubble--mine]="isUserMsg(m)" [class.bubble--support]="!isUserMsg(m)">
+            <div class="bubble-name">
+              <app-icon
+                [svg]="isUserMsg(m) ? iconPerson : iconHeadset"
+                [size]="12"
+                style="opacity:.7"
+              ></app-icon>
+              {{ m.senderName }}
+            </div>
+            <div class="bubble-body">{{ m.body }}</div>
+            <div class="bubble-time">{{ formatTime(m.createdAt) }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Vacío -->
+      <div *ngIf="messages.length === 0" class="no-msgs">
+        Aún no hay mensajes. Escribe para iniciar la conversación.
+      </div>
+    </div>
+
+    <!-- Input de respuesta -->
+    <div class="reply-bar">
+      <textarea
+        class="reply-input"
+        [(ngModel)]="reply"
+        (keydown)="onEnter($event)"
+        placeholder="Escribe tu mensaje…"
+        rows="1"
+      ></textarea>
+      <button class="send-btn" [disabled]="!reply.trim() || sending" (click)="send()">
+        <app-icon [svg]="iconSend" [size]="20"></app-icon>
+      </button>
+    </div>
+
+  </ng-container>
+
+</app-screen-shell>
