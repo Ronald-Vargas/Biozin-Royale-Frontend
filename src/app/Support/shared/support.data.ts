@@ -6,7 +6,7 @@ export interface TicketMsg {
   name?: string;
   text:  string;
   t:     string;
-  file?: { name: string; size: string };
+  file?: { name: string; size: string; url?: string };
 }
 
 export interface SupportTicket {

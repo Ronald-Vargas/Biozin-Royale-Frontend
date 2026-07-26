@@ -26,11 +26,15 @@ export interface TicketMessage {
   senderName: string;
   senderRole: string;
   body: string;
+  fileUrl?: string | null;
+  fileName?: string | null;
   createdAt: string;
 }
 
 export interface EnviarMensajeRequest {
   body: string;
+  fileUrl?: string;
+  fileName?: string;
 }
 
 export interface AsignarTicketRequest {

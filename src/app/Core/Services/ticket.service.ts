@@ -38,8 +38,9 @@ export class TicketService {
     return this.http.get<ApiResponse<TicketMessage[]>>(`${this.url}/${ticketId}/messages`);
   }
 
-  enviarMensaje(ticketId: string, body: string): Observable<ApiResponse<TicketMessage>> {
-    return this.http.post<ApiResponse<TicketMessage>>(`${this.url}/${ticketId}/messages`, { body } as EnviarMensajeRequest);
+  enviarMensaje(ticketId: string, body: string, fileUrl?: string, fileName?: string): Observable<ApiResponse<TicketMessage>> {
+    const payload: EnviarMensajeRequest = { body, fileUrl, fileName };
+    return this.http.post<ApiResponse<TicketMessage>>(`${this.url}/${ticketId}/messages`, payload);
   }
 
   // ── Gestión ──────────────────────────────────────────────

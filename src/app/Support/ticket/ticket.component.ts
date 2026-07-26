@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { MetaChipComponent } from './Components/meta-chip/meta-chip.component';
 import { SupportSheetComponent } from './Components/support-sheet/support-sheet.component';
 import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado, TicketMessage, StaffSimple } from 'src/app/Core/Models/ticket.models';
+import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
 
 @Component({
   standalone: true,
@@ -35,6 +36,7 @@ export class TicketComponent implements OnInit, OnDestroy {
   iconCheck     = ICON_CHECK;
 
   @ViewChild('threadEl') threadEl!: ElementRef<HTMLDivElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   // Datos del ticket (shape que usa el template)
   ticket: SupportTicket = {
@@ -54,6 +56,8 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   staffOptions: StaffSimple[] = [];
   loading = true;
+  selectedFile: File | null = null;
+  uploadError = '';
 
   readonly statusOptions = ['Nuevo', 'En proceso', 'Resuelto'];
 
@@ -65,6 +69,8 @@ export class TicketComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private ticketService: TicketService,
+    private storage: SupabaseStorageService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -159,12 +165,42 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   // ── Acciones ───────────────────────────────────────────────
 
-  send(): void {
-    if (!this.reply.trim()) return;
+  pickFile(): void { this.fileInput?.nativeElement.click(); }
+
+  onFileChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.uploadError = '';
+    if (!file) return;
+    const err = this.storage.validate(file);
+    if (err) { this.uploadError = err; return; }
+    this.selectedFile = file;
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  clearFile(): void { this.selectedFile = null; this.uploadError = ''; }
+
+  async send(): Promise<void> {
+    if (!this.reply.trim() && !this.selectedFile) return;
     const body = this.reply.trim();
     this.reply = '';
 
-    this.ticketService.enviarMensaje(this.ticketId, body).subscribe({
+    let fileUrl: string | undefined;
+    let fileName: string | undefined;
+
+    if (this.selectedFile) {
+      try {
+        const r = await this.storage.upload(this.ticketId, this.selectedFile);
+        fileUrl = r.url;
+        fileName = r.name;
+        this.selectedFile = null;
+      } catch {
+        this.reply = body;
+        this.uploadError = 'No se pudo subir el archivo. Intenta de nuevo.';
+        return;
+      }
+    }
+
+    this.ticketService.enviarMensaje(this.ticketId, body, fileUrl, fileName).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
           this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
@@ -252,6 +288,7 @@ export class TicketComponent implements OnInit, OnDestroy {
       name: m.senderName,
       text: m.body,
       t:    new Date(m.createdAt).toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' }),
+      file: m.fileName ? { name: m.fileName, size: '', url: m.fileUrl ?? undefined } : undefined,
     };
   }
 }

@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScreenShellComponent } from 'src/app/User/shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_SEND, ICON_TIME, ICON_HEADSET, ICON_PERSON } from 'src/app/User/shared/icons/icons';
+import { ICON_SEND, ICON_TIME, ICON_HEADSET, ICON_PERSON, ICON_ATTACH, ICON_DOWNLOAD } from 'src/app/User/shared/icons/icons';
 import { TK_STATUS, CAT_ICON, statusLabel } from 'src/app/Support/shared/support.data';
 import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado, TicketMessage } from 'src/app/Core/Models/ticket.models';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
 
 @Component({
   standalone: true,
@@ -18,12 +19,15 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
   styleUrls: ['./user-ticket.component.scss'],
 })
 export class UserTicketComponent implements OnInit, OnDestroy {
-  iconSend    = ICON_SEND;
-  iconTime    = ICON_TIME;
-  iconHeadset = ICON_HEADSET;
-  iconPerson  = ICON_PERSON;
+  iconSend     = ICON_SEND;
+  iconTime     = ICON_TIME;
+  iconHeadset  = ICON_HEADSET;
+  iconPerson   = ICON_PERSON;
+  iconAttach   = ICON_ATTACH;
+  iconDownload = ICON_DOWNLOAD;
 
   @ViewChild('threadEl') threadEl!: ElementRef<HTMLDivElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   ticket: TicketResultado | null = null;
   messages: TicketMessage[] = [];
@@ -32,6 +36,8 @@ export class UserTicketComponent implements OnInit, OnDestroy {
   loading = true;
   sending = false;
   errorMsg = '';
+  selectedFile: File | null = null;
+  uploadError = '';
 
   private ticketId = '';
   private pollInterval: ReturnType<typeof setInterval> | null = null;
@@ -42,6 +48,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     private router: Router,
     private ticketService: TicketService,
     private authService: AuthService,
+    private storage: SupabaseStorageService,
   ) {}
 
   ngOnInit(): void {
@@ -95,15 +102,48 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── Archivos ──────────────────────────────────────────────
+
+  pickFile(): void { this.fileInput?.nativeElement.click(); }
+
+  onFileChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.uploadError = '';
+    if (!file) return;
+    const err = this.storage.validate(file);
+    if (err) { this.uploadError = err; return; }
+    this.selectedFile = file;
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  clearFile(): void { this.selectedFile = null; this.uploadError = ''; }
+
   // ── Enviar ────────────────────────────────────────────────
 
-  send(): void {
-    if (!this.reply.trim() || this.sending) return;
+  async send(): Promise<void> {
+    if ((!this.reply.trim() && !this.selectedFile) || this.sending) return;
     this.sending = true;
     const body = this.reply.trim();
     this.reply = '';
 
-    this.ticketService.enviarMensaje(this.ticketId, body).subscribe({
+    let fileUrl: string | undefined;
+    let fileName: string | undefined;
+
+    if (this.selectedFile) {
+      try {
+        const r = await this.storage.upload(this.ticketId, this.selectedFile);
+        fileUrl = r.url;
+        fileName = r.name;
+        this.selectedFile = null;
+      } catch {
+        this.reply = body;
+        this.sending = false;
+        this.uploadError = 'No se pudo subir el archivo. Intenta de nuevo.';
+        return;
+      }
+    }
+
+    this.ticketService.enviarMensaje(this.ticketId, body, fileUrl, fileName).subscribe({
       next: (res) => {
         this.sending = false;
         if (!res.blnError && res.returnValue) {

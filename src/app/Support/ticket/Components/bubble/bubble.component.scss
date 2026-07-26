@@ -105,3 +105,9 @@
   flex-shrink: 0;
   cursor: pointer;
 }
+.file-dl-btn {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+}

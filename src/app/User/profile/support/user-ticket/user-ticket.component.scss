@@ -172,14 +172,105 @@
   padding: 20px 0;
 }
 
+// ── Archivo adjunto ───────────────────────────────────────────
+.file-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: rgba(212, 167, 60, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+}
+
+.file-chip-name {
+  flex: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: var(--gold-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-chip-rm {
+  background: none;
+  border: none;
+  color: #9a9080;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.upload-err {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #e06a6a;
+  margin-top: 4px;
+}
+
+// ── Tarjeta de archivo en burbuja ─────────────────────────────
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 167, 60, 0.25);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-dl-btn {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gold-2);
+  text-decoration: none;
+}
+
 // ── Reply bar ─────────────────────────────────────────────────
 .reply-bar {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 8px;
   padding: 12px 0 4px;
   border-top: 1px solid rgba(212, 167, 60, 0.18);
   margin-top: 8px;
+}
+
+.attach-btn {
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 167, 60, 0.25);
+  color: #9a9080;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:active { color: var(--gold-1); }
 }
 
 .reply-input {

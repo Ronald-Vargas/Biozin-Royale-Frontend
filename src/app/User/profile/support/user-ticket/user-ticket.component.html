@@ -52,7 +52,16 @@
               ></app-icon>
               {{ m.senderName }}
             </div>
-            <div class="bubble-body">{{ m.body }}</div>
+            <div *ngIf="m.body" class="bubble-body">{{ m.body }}</div>
+            <div *ngIf="m.fileName" class="file-card">
+              <app-icon [svg]="iconAttach" [size]="20" style="color:var(--gold-1);flex-shrink:0"></app-icon>
+              <div class="file-info">
+                <div class="file-name">{{ m.fileName }}</div>
+              </div>
+              <a *ngIf="m.fileUrl" [href]="m.fileUrl" target="_blank" rel="noopener" class="file-dl-btn">
+                <app-icon [svg]="iconDownload" [size]="18" style="color:var(--gold-2)"></app-icon>
+              </a>
+            </div>
             <div class="bubble-time">{{ formatTime(m.createdAt) }}</div>
           </div>
         </div>
@@ -64,8 +73,20 @@
       </div>
     </div>
 
+    <!-- Archivo seleccionado -->
+    <div *ngIf="selectedFile" class="file-chip">
+      <app-icon [svg]="iconAttach" [size]="14" style="color:var(--gold-2);flex-shrink:0"></app-icon>
+      <span class="file-chip-name">{{ selectedFile.name }}</span>
+      <button class="file-chip-rm" (click)="clearFile()">✕</button>
+    </div>
+    <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+
     <!-- Input de respuesta -->
     <div class="reply-bar">
+      <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
+      <button class="attach-btn" (click)="pickFile()" title="Adjuntar archivo">
+        <app-icon [svg]="iconAttach" [size]="20"></app-icon>
+      </button>
       <textarea
         class="reply-input"
         [(ngModel)]="reply"
@@ -73,7 +94,7 @@
         placeholder="Escribe tu mensaje…"
         rows="1"
       ></textarea>
-      <button class="send-btn" [disabled]="!reply.trim() || sending" (click)="send()">
+      <button class="send-btn" [disabled]="(!reply.trim() && !selectedFile) || sending" (click)="send()">
         <app-icon [svg]="iconSend" [size]="20"></app-icon>
       </button>
     </div>

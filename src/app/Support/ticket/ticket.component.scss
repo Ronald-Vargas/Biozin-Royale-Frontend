@@ -272,3 +272,44 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+// ── Archivo seleccionado ──────────────────────────────────��──
+.file-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  margin: 0 0 6px;
+  border-radius: 10px;
+  background: rgba(212, 167, 60, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  max-width: 100%;
+}
+
+.file-chip-name {
+  flex: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: var(--gold-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-chip-rm {
+  background: none;
+  border: none;
+  color: #9a9080;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.upload-err {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #e06a6a;
+  margin-bottom: 4px;
+  padding: 0 4px;
+}

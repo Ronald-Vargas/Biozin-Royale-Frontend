@@ -71,8 +71,16 @@
       </button>
     </div>
 
+    <!-- Chip archivo seleccionado -->
+    <div *ngIf="selectedFile" class="file-chip">
+      <span class="file-chip-name">{{ selectedFile.name }}</span>
+      <button class="file-chip-rm" (click)="clearFile()">✕</button>
+    </div>
+    <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+
     <div class="reply-row">
-      <button class="icon-btn icon-btn--muted">
+      <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
+      <button class="icon-btn icon-btn--muted" (click)="pickFile()">
         <app-icon [svg]="iconAttach" [size]="20"></app-icon>
       </button>
       <input
