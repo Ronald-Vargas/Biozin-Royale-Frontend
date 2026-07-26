@@ -9,7 +9,7 @@ import {
   ICON_PEOPLE, ICON_WALLET_FILLED, ICON_CASH, ICON_STATS,
 } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
-import { AdminKpi } from '../shared/admin.data';
+import { AdminKpi } from 'src/app/Core/Models/admin.models';
 import { KpiCardComponent } from './Components/kpi-card/kpi-card.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { ReportesService } from 'src/app/Core/Services/reportes.service';

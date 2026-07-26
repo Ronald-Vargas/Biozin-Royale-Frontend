@@ -6,7 +6,7 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_FLASH, ICON_CHECK_DONE, ICON_REFRESH, ICON_HAPPY } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
-import { SUPPORT_TICKETS, CAT_ICON } from '../shared/support.data';
+import { CAT_ICON } from '../shared/support.data';
 
 
 interface StatCard { label: string; value: string; icon: string; tint: string; }
@@ -30,31 +30,23 @@ export class ReportsComponent {
 
   constructor(private router: Router) {}
 
-  get total(): number    { return SUPPORT_TICKETS.length; }
-  get resolved(): number { return SUPPORT_TICKETS.filter(t => t.status === 'Resuelto').length; }
-  get rate(): number     { return Math.round((this.resolved / this.total) * 100); }
-  get circleOffset(): number {
-    const R = 38;
-    return 2 * Math.PI * R * (1 - this.rate / 100);
-  }
-  get circleCirc(): number { return 2 * Math.PI * 38; }
+  // ── Stats (pendiente conectar API) ───────────────────────────
+  total    = 0;
+  resolved = 0;
+  get rate(): number        { return this.total ? Math.round((this.resolved / this.total) * 100) : 0; }
+  get circleOffset(): number { return 2 * Math.PI * 38 * (1 - this.rate / 100); }
+  get circleCirc(): number   { return 2 * Math.PI * 38; }
 
   get stats(): StatCard[] {
     return [
-      { label: 'Tiempo medio de respuesta', value: '8 min',                         icon: ICON_FLASH,      tint: '#e6b450' },
+      { label: 'Tiempo medio de respuesta', value: '—',                              icon: ICON_FLASH,      tint: '#e6b450' },
       { label: 'Tickets resueltos',          value: `${this.resolved}/${this.total}`, icon: ICON_CHECK_DONE, tint: '#62d89b' },
-      { label: 'Satisfacción (CSAT)',         value: '94%',                          icon: ICON_HAPPY,      tint: '#6aa6e0' },
-      { label: 'Reabiertos',                 value: '2',                             icon: ICON_REFRESH,    tint: '#e06a6a' },
+      { label: 'Satisfacción (CSAT)',         value: '—',                            icon: ICON_HAPPY,      tint: '#6aa6e0' },
+      { label: 'Reabiertos',                 value: '—',                             icon: ICON_REFRESH,    tint: '#e06a6a' },
     ];
   }
 
-  get catBars(): CatBar[] {
-    const map: Record<string, number> = {};
-    SUPPORT_TICKETS.forEach(t => { map[t.cat] = (map[t.cat] || 0) + 1; });
-    return Object.entries(map)
-      .sort((a, b) => b[1] - a[1])
-      .map(([cat, n]) => ({ cat, n, icon: CAT_ICON[cat] || '' }));
-  }
+  get catBars(): CatBar[] { return []; }
 
   get maxCat(): number {
     return Math.max(...this.catBars.map(c => c.n));

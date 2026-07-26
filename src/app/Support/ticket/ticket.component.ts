@@ -6,7 +6,8 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_BACK, ICON_PERSON_ADD, ICON_CHECK, ICON_ATTACH, ICON_CHECK_CIRCLE, ICON_DOTS_HORIZ, ICON_SWAP } from 'src/app/User/shared/icons/icons';
 import { InitialsComponent } from '../shared/initials/initials.component';
-import { SupportTicket, TicketMsg, TINTS, CAT_ICON, statusLabel } from '../shared/support.data';
+import { SupportTicket, TicketMsg } from 'src/app/Core/Models/ticket.models';
+import { TINTS, CAT_ICON, statusLabel } from '../shared/support.data';
 import { TicketStatusBadgeComponent } from '../shared/ticket-status-badge/ticket-status-badge.component';
 import { BubbleComponent } from './Components/bubble/bubble.component';
 import { MetaChipComponent } from './Components/meta-chip/meta-chip.component';

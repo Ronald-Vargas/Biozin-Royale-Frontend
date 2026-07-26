@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TK_STATUS, StatusStyle } from '../support.data';
+import { TK_STATUS } from '../support.data';
 
 @Component({
   standalone: true,
@@ -13,7 +13,7 @@ export class TicketStatusBadgeComponent {
   @Input() status = 'Nuevo';
   @Input() size: 'sm' | 'lg' = 'sm';
 
-  get style(): StatusStyle {
+  get style(): { color: string; bg: string; bd: string } {
     return TK_STATUS[this.status] || TK_STATUS['Nuevo'];
   }
 

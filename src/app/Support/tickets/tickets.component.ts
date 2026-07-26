@@ -7,7 +7,8 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
-import { SupportTicket, statusLabel, relativeTime } from '../shared/support.data';
+import { SupportTicket } from 'src/app/Core/Models/ticket.models';
+import { statusLabel, relativeTime } from '../shared/support.data';
 import { TicketRowComponent } from '../shared/ticket-row/ticket-row.component';
 import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado } from 'src/app/Core/Models/ticket.models';

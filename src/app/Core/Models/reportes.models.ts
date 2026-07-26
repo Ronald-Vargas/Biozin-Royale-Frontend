@@ -4,3 +4,10 @@ export interface ReportesKpiResultado {
   withdrawalTotal: number;
   netProfit: number;
 }
+
+export interface RepKpi {
+  label: string;
+  value: string;
+  sub:   string;
+  icon:  string;
+}

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { InitialsComponent } from 'src/app/Support/shared/initials/initials.component';
-import { SUPPORT_TICKETS, TK_STATUS, TINTS } from 'src/app/Support/shared/support.data';
+import { TK_STATUS, TINTS } from 'src/app/Support/shared/support.data';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_TROPHY, ICON_FLASH, ICON_HAPPY, ICON_CHATBUBBLES, ICON_CHECK_DONE, ICON_TIME } from 'src/app/User/shared/icons/icons';
@@ -34,11 +34,11 @@ export class SupportComponent {
 
   constructor(private router: Router) {}
 
-  // ── Stats globales ──────────────────────────────────────────
-  get total():    number { return SUPPORT_TICKETS.length; }
-  get resolved(): number { return SUPPORT_TICKETS.filter(t => t.status === 'Resuelto').length; }
-  get pending():  number { return this.total - this.resolved; }
-  get rate():     number { return Math.round((this.resolved / this.total) * 100); }
+  // ── Stats globales (pendiente conectar API) ─────────────────
+  total    = 0;
+  resolved = 0;
+  get pending(): number { return this.total - this.resolved; }
+  get rate():    number { return this.total ? Math.round((this.resolved / this.total) * 100) : 0; }
 
   get kpis(): ASupKpi[] {
     return [
@@ -51,9 +51,7 @@ export class SupportComponent {
   // ── Distribución por estado ─────────────────────────────────
   get statusBars(): StatusBar[] {
     return ['Nuevo', 'En proceso', 'Resuelto'].map(st => ({
-      st,
-      n:     SUPPORT_TICKETS.filter(t => t.status === st).length,
-      color: TK_STATUS[st]?.color || '#c79a32',
+      st, n: 0, color: TK_STATUS[st]?.color || '#c79a32',
     }));
   }
 

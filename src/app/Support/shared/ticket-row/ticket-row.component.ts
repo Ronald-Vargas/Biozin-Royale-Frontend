@@ -2,7 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InitialsComponent }          from '../initials/initials.component';
 import { TicketStatusBadgeComponent } from '../ticket-status-badge/ticket-status-badge.component';
-import { SupportTicket, TINTS } from '../support.data';
+import { SupportTicket } from 'src/app/Core/Models/ticket.models';
+import { TINTS } from '../support.data';
 
 @Component({
   standalone: true,

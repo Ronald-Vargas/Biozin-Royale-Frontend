@@ -6,7 +6,6 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_CHEVRON_FWD, ICON_LOCK, ICON_RECEIPT, ICON_DICE, ICON_GIFT_FILLED, ICON_TROPHY } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
-import { DetailMenuItem } from '../../shared/admin.data';
 import { StatusBadgeComponent } from '../../shared/status-badge/status-badge.component';
 import { UserAvatarComponent } from '../../shared/user-avatar/user-avatar.component';
 import { UserAdminService } from 'src/app/Core/Services/user-admin.service';
@@ -29,7 +28,7 @@ export class UserDetailComponent implements OnInit {
   user: AdminUser | null = null;
   loading = true;
 
-  menu: DetailMenuItem[] = [
+  menu: { key: string; icon: string; title: string; sub: string }[] = [
     { key: 'tx',           icon: ICON_RECEIPT,    title: 'Historial de transacciones', sub: 'Ver todas las transacciones' },
     { key: 'bets',         icon: ICON_DICE,       title: 'Historial de apuestas',      sub: 'Ver todas las apuestas' },
     { key: 'bonus',        icon: ICON_GIFT_FILLED, title: 'Crear bono',               sub: 'Otorgar un bono directamente al usuario' },

@@ -50,3 +50,32 @@ export interface StaffSimple {
   displayName: string;
   role: string;
 }
+
+export interface TicketMsg {
+  who:   'user' | 'support';
+  name?: string;
+  text:  string;
+  t:     string;
+  file?: { name: string; size: string; url?: string };
+}
+
+export interface SupportTicket {
+  id:       string;
+  name:     string;
+  email:    string;
+  subject:  string;
+  cat:      string;
+  status:   string;
+  time:     string;
+  assigned: string;
+  msgs:     TicketMsg[];
+}
+
+export interface SupportKpi {
+  label: string;
+  value: number;
+  delta: string;
+  icon:  string;
+  tint:  string;
+  bg:    string;
+}
