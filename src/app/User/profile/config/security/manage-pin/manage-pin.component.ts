@@ -123,6 +123,10 @@ export class ManagePinComponent implements OnInit {
         this.showToggleConfirm = false;
         this.togglePinValue = '';
         this.refreshProfile();
+
+        if (!this.toggleTargetValue) {
+          this.router.navigate(['/seguridad']);
+        }
       },
       error: (err) => {
         this.loading = false;

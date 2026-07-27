@@ -98,6 +98,23 @@ export class AuthService {
     // Sin esto la sesión de Supabase queda viva: un login social podría reentrar
     // sin pedir credenciales aunque ya se haya "cerrado sesión" en la app.
     this.supabaseService.client.auth.signOut();
+
+    // Sin esto la Session del backend (ver AuthLN.GenerarTokenConSesion) nunca se
+    // marca IsActive = false: cada login vuelve a crear una fila nueva, así que
+    // cerrar sesión varias veces desde el mismo dispositivo dejaba varias tarjetas
+    // "activas" acumuladas en vez de reemplazar la anterior. Se manda el token
+    // explícito porque ya lo vamos a borrar de localStorage a continuación.
+    const token = this.getToken();
+    if (token) {
+      this.http
+        .post<ApiResponse<boolean>>(
+          `${environment.apiUrl}/profile/sessions/logout`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .subscribe({ error: () => {} });
+    }
+
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(PROFILE_KEY);
     this.currentProfile.set(null);
