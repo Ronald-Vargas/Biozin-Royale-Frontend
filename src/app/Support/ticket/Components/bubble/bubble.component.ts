@@ -20,11 +20,10 @@ export class BubbleComponent {
   iconDownload = ICON_DOWNLOAD;
 
   get isSupport(): boolean { return this.msg.who === 'support'; }
+  get isSystem():  boolean { return this.msg.who === 'system'; }
 
   get senderName(): string {
-    if (this.isSupport) {
-      return this.msg.name ? `Soporte (${this.msg.name})` : 'Soporte';
-    }
+    if (this.isSupport) return this.msg.name ? `Soporte (${this.msg.name})` : 'Soporte';
     return 'Usuario';
   }
 }

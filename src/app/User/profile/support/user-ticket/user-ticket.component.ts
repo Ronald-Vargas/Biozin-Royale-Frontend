@@ -35,9 +35,11 @@ export class UserTicketComponent implements OnInit, OnDestroy {
 
   loading = true;
   sending = false;
+  reopening = false;
   errorMsg = '';
   selectedFile: File | null = null;
   uploadError = '';
+  hoverRating = 0;
 
   private ticketId = '';
   private pollInterval: ReturnType<typeof setInterval> | null = null;
@@ -161,6 +163,39 @@ export class UserTicketComponent implements OnInit, OnDestroy {
   }
 
   // ── Helpers ───────────────────────────────────────────────
+
+  get isResolved(): boolean { return this.ticket?.status === 'resuelto'; }
+  get isRated(): boolean    { return !!this.ticket?.rating; }
+  get currentRating(): number { return this.ticket?.rating ?? 0; }
+
+  readonly stars = [1, 2, 3, 4, 5];
+  readonly starLabels = ['Muy malo', 'Malo', 'Regular', 'Bueno', '¡Excelente!'];
+
+  reopen(): void {
+    if (this.reopening) return;
+    this.reopening = true;
+    this.ticketService.reopen(this.ticketId).subscribe({
+      next: (res) => {
+        this.reopening = false;
+        if (!res.blnError && res.returnValue) {
+          this.ticket = res.returnValue;
+          this.hoverRating = 0;
+        }
+      },
+      error: () => { this.reopening = false; },
+    });
+  }
+
+  submitRating(rating: number): void {
+    if (this.isRated) return;
+    this.ticketService.rate(this.ticketId, rating).subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.ticket = res.returnValue;
+        }
+      },
+    });
+  }
 
   isUserMsg(m: TicketMessage): boolean {
     return m.senderRole === 'user' || m.senderRole === 'authenticated';

@@ -164,6 +164,19 @@
   text-align: right;
 }
 
+.system-msg {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #8a8070;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .no-msgs {
   font-family: 'Montserrat', sans-serif;
   font-size: 12.5px;
@@ -256,6 +269,100 @@
   padding: 12px 0 4px;
   border-top: 1px solid rgba(212, 167, 60, 0.18);
   margin-top: 8px;
+}
+
+// ── Panel de ticket resuelto ──────────────────────────────────
+.resolved-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0 6px;
+  border-top: 1px solid rgba(212, 167, 60, 0.18);
+  margin-top: 8px;
+}
+
+.rating-card {
+  width: 100%;
+  text-align: center;
+}
+
+.rating-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.rating-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #9a9080;
+  margin-bottom: 14px;
+}
+
+.stars-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: rgba(212, 167, 60, 0.2);
+  cursor: pointer;
+  transition: color 0.12s, transform 0.1s;
+  line-height: 1;
+
+  &--active { color: var(--gold-1); }
+  &:active   { transform: scale(0.9); }
+}
+
+.star-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: var(--gold-2);
+  min-height: 18px;
+}
+
+.rated-thanks {
+  text-align: center;
+}
+
+.rated-stars {
+  font-size: 26px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+
+  span { color: rgba(212, 167, 60, 0.2); }
+  .star-on { color: var(--gold-1); }
+}
+
+.rated-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #9a9080;
+}
+
+.reopen-btn {
+  width: 100%;
+  padding: 11px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  background: rgba(212, 167, 60, 0.07);
+  color: var(--gold-2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:not(:disabled):active { background: rgba(212, 167, 60, 0.15); }
+  &:disabled { opacity: 0.5; cursor: default; }
 }
 
 .attach-btn {

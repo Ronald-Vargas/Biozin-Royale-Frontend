@@ -285,7 +285,9 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   private mapMsg(m: TicketMessage): TicketMsg {
     return {
-      who:  (m.senderRole === 'soporte' || m.senderRole === 'admin') ? 'support' : 'user',
+      who:  m.senderRole === 'system' ? 'system'
+          : (m.senderRole === 'soporte' || m.senderRole === 'admin') ? 'support'
+          : 'user',
       name: m.senderName,
       text: m.body,
       t:    new Date(m.createdAt).toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' }),

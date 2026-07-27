@@ -56,4 +56,12 @@ export class TicketService {
   listarAgentes(): Observable<ApiResponse<StaffSimple[]>> {
     return this.http.get<ApiResponse<StaffSimple[]>>(`${this.url}/agents`);
   }
+
+  reopen(ticketId: string): Observable<ApiResponse<TicketResultado>> {
+    return this.http.post<ApiResponse<TicketResultado>>(`${this.url}/${ticketId}/reopen`, {});
+  }
+
+  rate(ticketId: string, rating: number): Observable<ApiResponse<TicketResultado>> {
+    return this.http.post<ApiResponse<TicketResultado>>(`${this.url}/${ticketId}/rate`, { rating });
+  }
 }

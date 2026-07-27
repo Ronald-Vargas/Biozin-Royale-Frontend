@@ -1,4 +1,6 @@
-<div class="bubble">
+<div *ngIf="isSystem" class="system-msg">{{ msg.text }}</div>
+
+<div *ngIf="!isSystem" class="bubble">
   <div class="bubble-avatar" [class.bubble-avatar--support]="isSupport">
     <app-icon
       [svg]="isSupport ? iconHeadset : iconPerson"
@@ -34,3 +36,4 @@
     </div>
   </div>
 </div>
+

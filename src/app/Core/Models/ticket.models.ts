@@ -19,6 +19,7 @@ export interface TicketResultado {
   userDisplayName?: string | null;
   userEmail?: string | null;
   userUsername?: string | null;
+  rating?: number | null;
 }
 
 export interface TicketMessage {
@@ -52,7 +53,7 @@ export interface StaffSimple {
 }
 
 export interface TicketMsg {
-  who:   'user' | 'support';
+  who:   'user' | 'support' | 'system';
   name?: string;
   text:  string;
   t:     string;

@@ -42,7 +42,8 @@
 
       <!-- Mensajes -->
       <ng-container *ngFor="let m of messages">
-        <div class="msg-row" [class.msg-row--mine]="isUserMsg(m)">
+        <div *ngIf="m.senderRole === 'system'" class="system-msg">{{ m.body }}</div>
+        <div *ngIf="m.senderRole !== 'system'" class="msg-row" [class.msg-row--mine]="isUserMsg(m)">
           <div class="bubble" [class.bubble--mine]="isUserMsg(m)" [class.bubble--support]="!isUserMsg(m)">
             <div class="bubble-name">
               <app-icon
@@ -73,31 +74,67 @@
       </div>
     </div>
 
-    <!-- Archivo seleccionado -->
-    <div *ngIf="selectedFile" class="file-chip">
-      <app-icon [svg]="iconAttach" [size]="14" style="color:var(--gold-2);flex-shrink:0"></app-icon>
-      <span class="file-chip-name">{{ selectedFile.name }}</span>
-      <button class="file-chip-rm" (click)="clearFile()">✕</button>
-    </div>
-    <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+    <!-- Panel de ticket resuelto -->
+    <div *ngIf="isResolved; else replySection" class="resolved-panel">
 
-    <!-- Input de respuesta -->
-    <div class="reply-bar">
-      <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
-      <button class="attach-btn" (click)="pickFile()" title="Adjuntar archivo">
-        <app-icon [svg]="iconAttach" [size]="20"></app-icon>
-      </button>
-      <textarea
-        class="reply-input"
-        [(ngModel)]="reply"
-        (keydown)="onEnter($event)"
-        placeholder="Escribe tu mensaje…"
-        rows="1"
-      ></textarea>
-      <button class="send-btn" [disabled]="(!reply.trim() && !selectedFile) || sending" (click)="send()">
-        <app-icon [svg]="iconSend" [size]="20"></app-icon>
+      <!-- Valoración -->
+      <div *ngIf="!isRated; else ratedThanks" class="rating-card">
+        <div class="rating-title">¿Cómo fue tu experiencia?</div>
+        <div class="rating-sub">Valora la atención recibida</div>
+        <div class="stars-row">
+          <button
+            *ngFor="let s of stars"
+            class="star-btn"
+            [class.star-btn--active]="s <= (hoverRating || currentRating)"
+            (mouseenter)="hoverRating = s"
+            (mouseleave)="hoverRating = 0"
+            (click)="submitRating(s)"
+          >★</button>
+        </div>
+        <div *ngIf="hoverRating" class="star-label">{{ starLabels[hoverRating - 1] }}</div>
+      </div>
+
+      <ng-template #ratedThanks>
+        <div class="rated-thanks">
+          <div class="rated-stars">
+            <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
+          </div>
+          <div class="rated-msg">¡Gracias por tu valoración!</div>
+        </div>
+      </ng-template>
+
+      <!-- Reabrir -->
+      <button class="reopen-btn" [disabled]="reopening" (click)="reopen()">
+        {{ reopening ? 'Reabriendo…' : 'Reabrir ticket' }}
       </button>
     </div>
+
+    <!-- Barra de respuesta (solo cuando NO está resuelto) -->
+    <ng-template #replySection>
+      <div *ngIf="selectedFile" class="file-chip">
+        <app-icon [svg]="iconAttach" [size]="14" style="color:var(--gold-2);flex-shrink:0"></app-icon>
+        <span class="file-chip-name">{{ selectedFile.name }}</span>
+        <button class="file-chip-rm" (click)="clearFile()">✕</button>
+      </div>
+      <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+
+      <div class="reply-bar">
+        <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
+        <button class="attach-btn" (click)="pickFile()" title="Adjuntar archivo">
+          <app-icon [svg]="iconAttach" [size]="20"></app-icon>
+        </button>
+        <textarea
+          class="reply-input"
+          [(ngModel)]="reply"
+          (keydown)="onEnter($event)"
+          placeholder="Escribe tu mensaje…"
+          rows="1"
+        ></textarea>
+        <button class="send-btn" [disabled]="(!reply.trim() && !selectedFile) || sending" (click)="send()">
+          <app-icon [svg]="iconSend" [size]="20"></app-icon>
+        </button>
+      </div>
+    </ng-template>
 
   </ng-container>
 
