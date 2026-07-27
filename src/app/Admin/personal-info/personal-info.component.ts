@@ -76,7 +76,10 @@ export class AdminPersonalInfoComponent implements OnInit {
     });
   }
 
-  goBack() { this.router.navigate(['/admin/ajustes']); }
+  goBack() {
+    const ruta = this.perfil?.role === 'soporte' ? '/soporte/ajustes' : '/admin/ajustes';
+    this.router.navigate([ruta]);
+  }
 
   copyUsername() {
     try {
