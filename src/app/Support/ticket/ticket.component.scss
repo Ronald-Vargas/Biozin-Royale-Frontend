@@ -1,7 +1,13 @@
+:host {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .ticket-screen {
   position: relative;
-  height: 100%;
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
