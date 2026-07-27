@@ -1,6 +1,6 @@
 <div class="section-head">
   <span class="section-title">{{ title }}</span>
-  <span class="section-action">
+  <span class="section-action" *ngIf="action" (click)="actionClick.emit()">
     {{ action }}
     <app-icon [svg]="iconChevron" [size]="13"></app-icon>
   </span>

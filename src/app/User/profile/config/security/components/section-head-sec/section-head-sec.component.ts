@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
@@ -13,6 +13,7 @@ import { ICON_CHEVRON_FWD } from 'src/app/User/shared/icons/icons';
 export class SectionHeadSecComponent {
   @Input() title  = '';
   @Input() action = '';
+  @Output() actionClick = new EventEmitter<void>();
 
   iconChevron = ICON_CHEVRON_FWD;
 }

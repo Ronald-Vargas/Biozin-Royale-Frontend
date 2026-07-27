@@ -22,6 +22,14 @@ export interface PerfilResultado {
   createdByName?: string | null;
 }
 
+export interface SessionResultado {
+  id: string;
+  deviceLabel: string | null;
+  ipAddress: string | null;
+  createdAt: string;
+  isCurrent: boolean;
+}
+
 export interface EstadisticasResultado {
   partidasJugadas: number;
   partidasGanadas: number;

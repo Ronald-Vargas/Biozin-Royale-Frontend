@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
-import { ActualizarPerfilRequest, EstadisticasResultado, PerfilResultado } from '../Models/profile.models';
+import { ActualizarPerfilRequest, EstadisticasResultado, PerfilResultado, SessionResultado } from '../Models/profile.models';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -46,5 +46,17 @@ export class ProfileService {
 
   setTwoFactorEnabled(password: string, enabled: boolean): Observable<ApiResponse<boolean>> {
     return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/2fa/estado`, { password, enabled });
+  }
+
+  getSessions(): Observable<ApiResponse<SessionResultado[]>> {
+    return this.http.get<ApiResponse<SessionResultado[]>>(`${this.profileUrl}/sessions`);
+  }
+
+  closeSession(id: string): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.profileUrl}/sessions/${id}`);
+  }
+
+  closeOtherSessions(): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.profileUrl}/sessions/close-others`, {});
   }
 }

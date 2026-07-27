@@ -92,6 +92,24 @@
   color: #cbb98f;
 }
 
+.session-close-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+}
+
+.sessions-empty {
+  padding: 16px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.6);
+}
+
 // ── Cerrar todas ─────────────────────────────────────────────
 .close-all-btn {
   width: 100%;

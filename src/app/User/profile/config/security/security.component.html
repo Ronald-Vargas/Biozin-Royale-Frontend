@@ -37,17 +37,21 @@
 
   <!-- Sesiones activas -->
   <div class="sessions-block">
-    <app-section-head-sec title="Sesiones activas" action="Ver todas"></app-section-head-sec>
+    <app-section-head-sec
+      title="Sesiones activas"
+      [action]="sessionsAction"
+      (actionClick)="showAllSessionsClick()"
+    ></app-section-head-sec>
 
     <div class="sessions-card">
       <div
-        *ngFor="let s of sessions; let last = last"
+        *ngFor="let s of visibleSessions; let last = last"
         class="session-row"
         [class.session-row--last]="last"
       >
         <span
           class="status-led"
-          [class.status-led--active]="s.active"
+          [class.status-led--active]="s.isCurrent"
         ></span>
 
         <div class="session-icon">
@@ -56,20 +60,29 @@
 
         <div class="session-body">
           <div class="session-device">{{ s.device }}</div>
-          <div class="session-meta">{{ s.loc }} · IP: {{ s.ip }}</div>
+          <div class="session-meta">IP: {{ s.ip }}</div>
         </div>
 
-        <span *ngIf="s.active" class="active-badge">Activo ahora</span>
-        <span *ngIf="!s.active" class="session-when">{{ s.when }}</span>
+        <span *ngIf="s.isCurrent" class="active-badge">Este dispositivo</span>
+        <span *ngIf="!s.isCurrent" class="session-when">{{ s.when }}</span>
 
-        <app-icon [svg]="iconDots" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+        <button
+          *ngIf="!s.isCurrent"
+          class="session-close-btn"
+          type="button"
+          (click)="closeSession(s.id)"
+        >
+          <app-icon [svg]="iconTrash" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+        </button>
       </div>
+
+      <div class="sessions-empty" *ngIf="!sessions.length">No hay sesiones activas.</div>
     </div>
 
-    <!-- Cerrar todas -->
-    <button class="close-all-btn" (click)="closeAll()">
+    <!-- Cerrar otras -->
+    <button class="close-all-btn" (click)="closeAll()" *ngIf="sessions.length > 1">
       <app-icon [svg]="iconTrash" [size]="18"></app-icon>
-      Cerrar todas las sesiones
+      Cerrar otras sesiones
     </button>
   </div>
 
