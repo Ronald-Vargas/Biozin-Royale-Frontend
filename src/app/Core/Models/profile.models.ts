@@ -30,6 +30,11 @@ export interface SessionResultado {
   isCurrent: boolean;
 }
 
+export interface SecurityEventResultado {
+  eventType: string;
+  createdAt: string;
+}
+
 export interface EstadisticasResultado {
   partidasJugadas: number;
   partidasGanadas: number;

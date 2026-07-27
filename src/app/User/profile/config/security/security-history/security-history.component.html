@@ -1,0 +1,28 @@
+<app-screen-shell
+  title="Historial de seguridad"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+
+    <div class="history-card" *ngIf="history.length">
+      <div
+        *ngFor="let h of history; let last = last"
+        class="history-row"
+        [class.history-row--last]="last"
+      >
+        <div class="history-icon" [style.border-color]="h.color">
+          <app-icon [svg]="h.icon" [size]="17" [style.color]="h.color"></app-icon>
+        </div>
+
+        <div class="history-body">
+          <div class="history-label">{{ h.label }}</div>
+          <div class="history-date">{{ h.date }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-empty" *ngIf="!loading && !history.length">Sin actividad reciente.</div>
+
+  </div>
+</app-screen-shell>

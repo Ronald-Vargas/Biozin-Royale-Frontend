@@ -1,0 +1,50 @@
+<app-screen-shell
+  title="Sesiones activas"
+  current="perfil"
+  (back)="goBack()"
+>
+  <div class="page-inner">
+
+    <div class="sessions-card" *ngIf="sessions.length">
+      <div
+        *ngFor="let s of sessions; let last = last"
+        class="session-row"
+        [class.session-row--last]="last"
+      >
+        <span
+          class="status-led"
+          [class.status-led--active]="s.isCurrent"
+        ></span>
+
+        <div class="session-icon">
+          <app-icon [svg]="s.icon" [size]="19" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <div class="session-body">
+          <div class="session-device">{{ s.device }}</div>
+          <div class="session-meta">IP: {{ s.ip }}</div>
+        </div>
+
+        <span *ngIf="s.isCurrent" class="active-badge">Este dispositivo</span>
+        <span *ngIf="!s.isCurrent" class="session-when">{{ s.when }}</span>
+
+        <button
+          *ngIf="!s.isCurrent"
+          class="session-close-btn"
+          type="button"
+          (click)="closeSession(s.id)"
+        >
+          <app-icon [svg]="iconTrash" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="sessions-empty" *ngIf="!loading && !sessions.length">No hay sesiones activas.</div>
+
+    <button class="close-all-btn" (click)="closeAll()" *ngIf="sessions.length > 1">
+      <app-icon [svg]="iconTrash" [size]="18"></app-icon>
+      Cerrar otras sesiones
+    </button>
+
+  </div>
+</app-screen-shell>

@@ -40,7 +40,7 @@
     <app-section-head-sec
       title="Sesiones activas"
       [action]="sessionsAction"
-      (actionClick)="showAllSessionsClick()"
+      (actionClick)="goSesiones()"
     ></app-section-head-sec>
 
     <div class="sessions-card">
@@ -88,11 +88,15 @@
 
   <!-- Historial de seguridad -->
   <div class="history-block">
-    <app-section-head-sec title="Historial de seguridad" action="Ver todo"></app-section-head-sec>
+    <app-section-head-sec
+      title="Historial de seguridad"
+      [action]="historyAction"
+      (actionClick)="goHistorial()"
+    ></app-section-head-sec>
 
     <div class="history-card">
       <div
-        *ngFor="let h of history; let last = last"
+        *ngFor="let h of visibleHistory; let last = last"
         class="history-row"
         [class.history-row--last]="last"
       >
@@ -105,6 +109,8 @@
           <div class="history-date">{{ h.date }}</div>
         </div>
       </div>
+
+      <div class="sessions-empty" *ngIf="!history.length">Sin actividad reciente.</div>
     </div>
   </div>
   </div>

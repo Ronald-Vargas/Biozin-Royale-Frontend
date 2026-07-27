@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
-import { ActualizarPerfilRequest, EstadisticasResultado, PerfilResultado, SessionResultado } from '../Models/profile.models';
+import { ActualizarPerfilRequest, EstadisticasResultado, PerfilResultado, SessionResultado, SecurityEventResultado } from '../Models/profile.models';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -58,5 +58,9 @@ export class ProfileService {
 
   closeOtherSessions(): Observable<ApiResponse<boolean>> {
     return this.http.post<ApiResponse<boolean>>(`${this.profileUrl}/sessions/close-others`, {});
+  }
+
+  getSecurityHistory(): Observable<ApiResponse<SecurityEventResultado[]>> {
+    return this.http.get<ApiResponse<SecurityEventResultado[]>>(`${this.profileUrl}/security-history`);
   }
 }

@@ -160,6 +160,16 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/config/security/manage-two-factor/manage-two-factor.component').then(m => m.ManageTwoFactorComponent),
   },
   {
+    path: 'seguridad/historial',
+    data: { depth: 8 },
+    loadComponent: () => import('./User/profile/config/security/security-history/security-history.component').then(m => m.SecurityHistoryComponent),
+  },
+  {
+    path: 'seguridad/sesiones',
+    data: { depth: 8 },
+    loadComponent: () => import('./User/profile/config/security/active-sessions/active-sessions.component').then(m => m.ActiveSessionsComponent),
+  },
+  {
     path: 'transacciones',
     data: { depth: 6 },
     canActivate: [realAccountGuard],
