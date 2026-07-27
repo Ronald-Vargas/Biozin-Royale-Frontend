@@ -15,6 +15,7 @@ import { SupportSheetComponent } from './Components/support-sheet/support-sheet.
 import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado, TicketMessage, StaffSimple } from 'src/app/Core/Models/ticket.models';
 import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -72,7 +73,10 @@ export class TicketComponent implements OnInit, OnDestroy {
     private ticketService: TicketService,
     private storage: SupabaseStorageService,
     private cdr: ChangeDetectorRef,
+    private authService: AuthService,
   ) {}
+
+  get isAdmin(): boolean { return this.authService.currentProfile()?.role === 'admin'; }
 
   ngOnInit(): void {
     this.ticketId = this.route.snapshot.paramMap.get('id') ?? '';
@@ -261,7 +265,9 @@ export class TicketComponent implements OnInit, OnDestroy {
     if (e.key === 'Enter') this.send();
   }
 
-  goBack(): void { this.router.navigate(['/soporte/tickets']); }
+  goBack(): void {
+    this.router.navigate(this.isAdmin ? ['/admin/tickets'] : ['/soporte/tickets']);
+  }
 
   // ── Mapeo ──────────────────────────────────────────────────
 

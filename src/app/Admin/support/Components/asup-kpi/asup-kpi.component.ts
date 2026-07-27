@@ -4,7 +4,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 
 export interface ASupKpi {
   label: string;
-  value: number;
+  value: number | string;
   icon:  string;
   tint:  string;
   bg:    string;
