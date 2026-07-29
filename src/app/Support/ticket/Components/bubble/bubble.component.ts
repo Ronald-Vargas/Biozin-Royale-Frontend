@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TicketMsg } from 'src/app/Support/shared/support.data';
+import { TicketMsg } from 'src/app/Core/Models/ticket.models';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_DOC_ATTACH, ICON_DOWNLOAD, ICON_HEADSET, ICON_PERSON } from 'src/app/User/shared/icons/icons';
 
@@ -20,11 +20,10 @@ export class BubbleComponent {
   iconDownload = ICON_DOWNLOAD;
 
   get isSupport(): boolean { return this.msg.who === 'support'; }
+  get isSystem():  boolean { return this.msg.who === 'system'; }
 
   get senderName(): string {
-    if (this.isSupport) {
-      return this.msg.name ? `Soporte (${this.msg.name})` : 'Soporte';
-    }
+    if (this.isSupport) return this.msg.name ? `Soporte (${this.msg.name})` : 'Soporte';
     return 'Usuario';
   }
 }

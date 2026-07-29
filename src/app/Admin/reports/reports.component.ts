@@ -9,7 +9,7 @@ import {
 } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
-import { RepKpi } from '../shared/admin.data';
+import { RepKpi } from 'src/app/Core/Models/reportes.models';
 import { RepKpiComponent } from './Components/rep-kpi/rep-kpi.component';
 import { ReportesService, ReportPeriod } from 'src/app/Core/Services/reportes.service';
 

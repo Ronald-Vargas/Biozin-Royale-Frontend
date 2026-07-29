@@ -35,7 +35,10 @@ ion-content.shell-content { --background: var(--bg-dark); }
 }
 
 .screen-header {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg-dark);
   display: flex;
   align-items: center;
   justify-content: center;

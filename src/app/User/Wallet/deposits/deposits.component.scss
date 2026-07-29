@@ -115,9 +115,150 @@
 
 .footer-btn { margin-top: auto; }
 
+.field-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #E57373;
+  margin: -14px 0 16px;
+  padding: 8px 12px;
+  background: rgba(229, 115, 115, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(229, 115, 115, 0.25);
+}
 
+// ── Payment area (Stripe/PayPal form) ────────────────────────
+.payment-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
-// ── Accounts section ─────────────────────────────────────────
+.amount-display {
+  font-family: 'Cinzel', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--gold-1);
+  text-align: center;
+  margin: 16px 0 28px;
+  letter-spacing: 1px;
+}
+
+// Stripe card element container
+.stripe-card-wrap {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  #stripe-card-element { min-height: 24px; }
+}
+
+// PayPal button container
+.paypal-btn-container {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.paypal-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: rgba(203, 185, 143, 0.65);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.cancel-link {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #cbb98f; 
+  cursor: pointer;
+  text-align: center;
+  padding: 12px;
+  margin-top: 4px;
+  transition: color .15s;
+  &:hover { color: rgba(203, 185, 143, 0.85); }
+}
+
+// ── State views (processing / success / error) ───────────────
+.state-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.state-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  font-size: 28px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+
+  &--success {
+    background: rgba(76, 175, 80, 0.12);
+    border: 2px solid rgba(76, 175, 80, 0.45);
+    color: #81C784;
+  }
+  &--error {
+    background: rgba(229, 115, 115, 0.12);
+    border: 2px solid rgba(229, 115, 115, 0.45);
+    color: #E57373;
+  }
+}
+
+.state-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.deposited-amount {
+  font-family: 'Cinzel', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold-1);
+  margin: 4px 0 12px;
+  letter-spacing: 1px;
+}
+
+.state-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: rgba(203, 185, 143, 0.75);
+  strong { color: var(--gold-1); font-weight: 700; }
+}
+
+.state-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: rgba(203, 185, 143, 0.7);
+  margin-top: 16px;
+}
+
+// Spinner
+.spinner {
+  width: 48px; height: 48px;
+  border: 3px solid rgba(212, 167, 60, 0.15);
+  border-top-color: var(--gold-1);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Accounts section (legacy styles kept for compatibility) ──
 .accounts-header {
   display: flex;
   align-items: center;

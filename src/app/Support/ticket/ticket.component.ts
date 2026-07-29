@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,12 +6,16 @@ import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/a
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_BACK, ICON_PERSON_ADD, ICON_CHECK, ICON_ATTACH, ICON_CHECK_CIRCLE, ICON_DOTS_HORIZ, ICON_SWAP } from 'src/app/User/shared/icons/icons';
 import { InitialsComponent } from '../shared/initials/initials.component';
-import { SupportTicket, TicketMsg, AGENTS, SUPPORT_TICKETS, TINTS, CAT_ICON } from '../shared/support.data';
+import { SupportTicket, TicketMsg } from 'src/app/Core/Models/ticket.models';
+import { TINTS, CAT_ICON, statusLabel } from '../shared/support.data';
 import { TicketStatusBadgeComponent } from '../shared/ticket-status-badge/ticket-status-badge.component';
 import { BubbleComponent } from './Components/bubble/bubble.component';
 import { MetaChipComponent } from './Components/meta-chip/meta-chip.component';
 import { SupportSheetComponent } from './Components/support-sheet/support-sheet.component';
-
+import { TicketService } from 'src/app/Core/Services/ticket.service';
+import { TicketResultado, TicketMessage, StaffSimple } from 'src/app/Core/Models/ticket.models';
+import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -34,41 +38,118 @@ export class TicketComponent implements OnInit, OnDestroy {
   iconCheck     = ICON_CHECK;
 
   @ViewChild('threadEl') threadEl!: ElementRef<HTMLDivElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  ticket!: SupportTicket;
+  // Datos del ticket (shape que usa el template)
+  ticket: SupportTicket = {
+    id: '', name: '', email: '', subject: '', cat: '',
+    status: 'Nuevo', time: '', assigned: 'Sin asignar', msgs: [],
+  };
+  ticketId = '';
+
   msgs: TicketMsg[] = [];
-  status    = 'Abierto';
+  ticketDescription = '';
+  status    = 'Nuevo';
   assigned  = 'Sin asignar';
+  assignedId = '';
   reply     = '';
   sheet: 'estado' | 'asignar' | null = null;
   toast: string | null = null;
 
-  readonly statusOptions = ['Abierto', 'En proceso', 'Resuelto'];
-  readonly agents = AGENTS;
+  staffOptions: StaffSimple[] = [];
+  loading = true;
+  selectedFile: File | null = null;
+  uploadError = '';
+
+  readonly statusOptions = ['Nuevo', 'En proceso', 'Resuelto'];
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private lastMsgCount = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private ticketService: TicketService,
+    private storage: SupabaseStorageService,
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+  ) {}
 
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.ticket = SUPPORT_TICKETS.find(t => t.id === id) || SUPPORT_TICKETS[0];
-    this.msgs     = [...this.ticket.msgs];
-    this.status   = this.ticket.status === 'Nuevo' ? 'Abierto' : this.ticket.status;
-    this.assigned = this.ticket.assigned;
+  get isAdmin(): boolean { return this.authService.currentProfile()?.role === 'admin'; }
+
+  ngOnInit(): void {
+    this.ticketId = this.route.snapshot.paramMap.get('id') ?? '';
+    if (!this.ticketId) { this.goBack(); return; }
+
+    this.loadTicket();
+    this.loadMessages();
+    this.loadAgentes();
+
+    this.pollInterval = setInterval(() => this.pollMessages(), 4000);
   }
 
-  ngOnDestroy() {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
+  ngOnDestroy(): void {
+    if (this.toastTimer)  clearTimeout(this.toastTimer);
+    if (this.pollInterval) clearInterval(this.pollInterval);
+  }
+
+  // ── Carga inicial ──────────────────────────────────────────
+
+  private loadTicket(): void {
+    this.ticketService.obtener(this.ticketId).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (!res.blnError && res.returnValue) {
+          this.mapFromResultado(res.returnValue);
+        }
+      },
+      error: () => { this.loading = false; },
+    });
+  }
+
+  private loadMessages(): void {
+    this.ticketService.listarMensajes(this.ticketId).subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.msgs = res.returnValue.map(m => this.mapMsg(m));
+          this.lastMsgCount = this.msgs.length;
+          this.scrollDown();
+        }
+      },
+    });
+  }
+
+  private loadAgentes(): void {
+    this.ticketService.listarAgentes().subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.staffOptions = res.returnValue;
+        }
+      },
+    });
+  }
+
+  private pollMessages(): void {
+    this.ticketService.listarMensajes(this.ticketId).subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue && res.returnValue.length !== this.lastMsgCount) {
+          this.msgs = res.returnValue.map(m => this.mapMsg(m));
+          this.lastMsgCount = this.msgs.length;
+          this.scrollDown();
+        }
+      },
+    });
   }
 
   // ── Helpers ────────────────────────────────────────────────
+
   get tint(): string { return TINTS[0]; }
   get catIcon(): string { return CAT_ICON[this.ticket.cat] || ''; }
   get assignedLabel(): string { return this.assigned === 'Sin asignar' ? '—' : this.assigned; }
   get isResolved(): boolean { return this.status === 'Resuelto'; }
 
-  flash(msg: string) {
+  flash(msg: string): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toast = msg;
     this.toastTimer = setTimeout(() => this.toast = null, 1800);
@@ -79,7 +160,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
 
-  private scrollDown() {
+  private scrollDown(): void {
     setTimeout(() => {
       if (this.threadEl?.nativeElement) {
         this.threadEl.nativeElement.scrollTop = this.threadEl.nativeElement.scrollHeight;
@@ -88,50 +169,135 @@ export class TicketComponent implements OnInit, OnDestroy {
   }
 
   // ── Acciones ───────────────────────────────────────────────
-  send() {
-    if (!this.reply.trim()) return;
-    const nm: TicketMsg = {
-      who:  'support',
-      name: this.assigned === 'Sin asignar' ? 'Tú' : this.assigned,
-      text: this.reply.trim(),
-      t:    this.now(),
-    };
-    this.msgs = [...this.msgs, nm];
-    this.ticket.msgs = this.msgs;
+
+  pickFile(): void { this.fileInput?.nativeElement.click(); }
+
+  onFileChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.uploadError = '';
+    if (!file) return;
+    const err = this.storage.validate(file);
+    if (err) { this.uploadError = err; return; }
+    this.selectedFile = file;
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  clearFile(): void { this.selectedFile = null; this.uploadError = ''; }
+
+  async send(): Promise<void> {
+    if (!this.reply.trim() && !this.selectedFile) return;
+    const body = this.reply.trim();
     this.reply = '';
-    if (this.status === 'Abierto' || this.status === 'Nuevo') {
-      this.status = 'En proceso';
-      this.ticket.status = 'En proceso';
+
+    let fileUrl: string | undefined;
+    let fileName: string | undefined;
+
+    if (this.selectedFile) {
+      try {
+        const r = await this.storage.upload(this.ticketId, this.selectedFile);
+        fileUrl = r.url;
+        fileName = r.name;
+        this.selectedFile = null;
+      } catch {
+        this.reply = body;
+        this.uploadError = 'No se pudo subir el archivo. Intenta de nuevo.';
+        return;
+      }
     }
-    this.scrollDown();
+
+    this.ticketService.enviarMensaje(this.ticketId, body, fileUrl, fileName).subscribe({
+      next: (res) => {
+        if (!res.blnError && res.returnValue) {
+          this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
+          this.lastMsgCount = this.msgs.length;
+          if (this.status === 'Nuevo') { this.status = 'En proceso'; this.ticket.status = 'En proceso'; }
+          this.scrollDown();
+        }
+      },
+      error: () => { this.reply = body; },
+    });
   }
 
-  resolve() {
+  resolve(): void {
     if (this.isResolved) return;
-    this.status = 'Resuelto';
-    this.ticket.status = 'Resuelto';
-    this.flash('Ticket marcado como resuelto');
+    this.ticketService.cambiarEstado(this.ticketId, 'resuelto').subscribe({
+      next: (res) => {
+        if (!res.blnError) {
+          this.status = 'Resuelto';
+          this.ticket.status = 'Resuelto';
+          this.flash('Ticket marcado como resuelto');
+        }
+      },
+    });
   }
 
-  pickStatus(s: string) {
-    this.status = s;
-    this.ticket.status = s === 'Abierto' ? 'Nuevo' : s;
-    this.flash('Estado: ' + s);
+  pickStatus(s: string): void {
+    const dbMap: Record<string, string> = { 'Nuevo': 'nuevo', 'En proceso': 'en_proceso', 'Resuelto': 'resuelto' };
+    const dbStatus = dbMap[s] ?? s;
+    this.ticketService.cambiarEstado(this.ticketId, dbStatus).subscribe({
+      next: (res) => {
+        if (!res.blnError) {
+          this.status = s;
+          this.ticket.status = s;
+          this.flash('Estado: ' + s);
+        }
+      },
+    });
   }
 
-  pickAgent(a: string) {
-    this.assigned = a;
-    this.ticket.assigned = a;
-    if (a !== 'Sin asignar' && this.status === 'Abierto') {
-      this.status = 'Asignado';
-      this.ticket.status = 'Asignado';
-    }
-    this.flash(a === 'Sin asignar' ? 'Sin asignar' : 'Asignado a ' + a);
+  pickAgent(staffId: string): void {
+    const staff = this.staffOptions.find(s => s.id === staffId);
+    if (!staff) return;
+
+    this.ticketService.asignar(this.ticketId, staffId).subscribe({
+      next: (res) => {
+        if (!res.blnError) {
+          this.assigned   = staff.displayName;
+          this.assignedId = staffId;
+          this.ticket.assigned = staff.displayName;
+          this.flash('Asignado a ' + staff.displayName);
+        }
+      },
+    });
   }
 
-  onEnter(e: KeyboardEvent) {
+  onEnter(e: KeyboardEvent): void {
     if (e.key === 'Enter') this.send();
   }
 
-  goBack() { this.router.navigate(['/soporte/tickets']); }
+  goBack(): void {
+    this.router.navigate(this.isAdmin ? ['/admin/tickets'] : ['/soporte/tickets']);
+  }
+
+  // ── Mapeo ──────────────────────────────────────────────────
+
+  private mapFromResultado(t: TicketResultado): void {
+    this.ticket = {
+      id:       `#BR-${t.ticketNumber}`,
+      name:     t.userDisplayName || t.userUsername || 'Usuario',
+      email:    t.userEmail || '',
+      subject:  t.subject,
+      cat:      t.category,
+      status:   statusLabel(t.status),
+      time:     '',
+      assigned: t.assignedToName || 'Sin asignar',
+      msgs:     [],
+    };
+    this.status             = statusLabel(t.status);
+    this.assigned           = t.assignedToName || 'Sin asignar';
+    this.assignedId         = t.assignedTo || '';
+    this.ticketDescription  = t.description || '';
+  }
+
+  private mapMsg(m: TicketMessage): TicketMsg {
+    return {
+      who:  m.senderRole === 'system' ? 'system'
+          : (m.senderRole === 'soporte' || m.senderRole === 'admin') ? 'support'
+          : 'user',
+      name: m.senderName,
+      text: m.body,
+      t:    new Date(m.createdAt).toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' }),
+      file: m.fileName ? { name: m.fileName, size: '', url: m.fileUrl ?? undefined } : undefined,
+    };
+  }
 }

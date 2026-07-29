@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
@@ -39,7 +40,7 @@ const PREVIEW_COUNT = 4;
   templateUrl: './wallet.component.html',
   styleUrls: ['./wallet.component.scss'],
 })
-export class WalletComponent implements OnInit {
+export class WalletComponent implements OnInit, ViewWillEnter {
   hidden = false;
 
   iconEye    = ICON_EYE;
@@ -57,6 +58,15 @@ export class WalletComponent implements OnInit {
 
   ngOnInit(): void {
     this.balanceService.load();
+    this.cargarTransacciones();
+  }
+
+  ionViewWillEnter(): void {
+    this.balanceService.reload();
+    this.cargarTransacciones();
+  }
+
+  private cargarTransacciones(): void {
     this.walletTransactionService.getTransactions().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {

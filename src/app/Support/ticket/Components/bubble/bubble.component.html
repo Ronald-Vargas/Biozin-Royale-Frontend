@@ -1,4 +1,6 @@
-<div class="bubble">
+<div *ngIf="isSystem" class="system-msg">{{ msg.text }}</div>
+
+<div *ngIf="!isSystem" class="bubble">
   <div class="bubble-avatar" [class.bubble-avatar--support]="isSupport">
     <app-icon
       [svg]="isSupport ? iconHeadset : iconPerson"
@@ -16,16 +18,22 @@
     </div>
 
     <div class="bubble-content" [class.bubble-content--support]="isSupport">
-      {{ msg.text }}
+      <span *ngIf="msg.text">{{ msg.text }}</span>
 
-      <div *ngIf="msg.file" class="file-card">
+      <div *ngIf="msg.file" class="file-card" [class.file-card--link]="msg.file.url">
         <app-icon [svg]="iconAttach" [size]="22" style="color:var(--gold-1)" class="file-icon"></app-icon>
         <div class="file-info">
           <div class="file-name">{{ msg.file.name }}</div>
           <div class="file-size">{{ msg.file.size }}</div>
         </div>
-        <app-icon [svg]="iconDownload" [size]="19" style="color:var(--gold-2)" class="file-dl"></app-icon>
+        <a *ngIf="msg.file.url" [href]="msg.file.url" target="_blank" rel="noopener" class="file-dl-btn">
+          <app-icon [svg]="iconDownload" [size]="19" style="color:var(--gold-2)"></app-icon>
+        </a>
+        <span *ngIf="!msg.file.url" class="file-dl">
+          <app-icon [svg]="iconDownload" [size]="19" style="color:#6f6757"></app-icon>
+        </span>
       </div>
     </div>
   </div>
 </div>
+

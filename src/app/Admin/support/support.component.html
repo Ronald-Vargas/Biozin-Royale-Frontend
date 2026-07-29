@@ -9,9 +9,23 @@
       <app-asup-kpi *ngFor="let k of kpis" [kpi]="k"></app-asup-kpi>
     </div>
 
+    <!-- Acceso directo a tickets -->
+    <div class="tickets-banner" (click)="goTickets()">
+      <div class="tickets-banner-text">
+        <div class="tickets-banner-title">Supervisar tickets</div>
+        <div class="tickets-banner-sub">Ver lista completa, buscar y filtrar por estado</div>
+      </div>
+      <app-icon [svg]="iconChatbubbles" [size]="20" style="color:var(--gold-2);flex-shrink:0"></app-icon>
+    </div>
+
     <!-- Estado de los tickets -->
     <h3 class="section-title">Estado de los tickets</h3>
-    <div class="status-list">
+
+    <div *ngIf="loading" class="loading-row">
+      <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+    </div>
+
+    <div *ngIf="!loading" class="status-list">
       <div *ngFor="let s of statusBars" class="status-item">
         <div class="status-head">
           <span class="status-name">
@@ -29,9 +43,14 @@
     <!-- Resueltos por agente -->
     <div class="agents-head">
       <h3 class="section-title" style="margin:0">Resueltos por agente</h3>
-      <span class="agents-total">{{ totalWeek }} esta semana</span>
+      <span class="agents-total">{{ totalResolved }} en total</span>
     </div>
-    <div class="agents-list">
+
+    <div *ngIf="!loading && agents.length === 0" class="no-agents">
+      Aún no hay tickets resueltos asignados.
+    </div>
+
+    <div *ngIf="!loading && agents.length > 0" class="agents-list">
       <div *ngFor="let a of agents; let i = index" class="agent-row">
         <div class="agent-avatar-wrap">
           <app-initials [text]="a.name" [size]="44" [tint]="agentTint(i)"></app-initials>

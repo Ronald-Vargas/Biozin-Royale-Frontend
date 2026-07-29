@@ -2,106 +2,212 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { loadScript } from '@paypal/paypal-js';
+import { environment } from 'src/environments/environment';
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
-import { ICON_CARD, ICON_BITCOIN, ICON_PAYPAL, ICON_ADD } from '../../shared/icons/icons';
-import { AccountBrandComponent } from './Components/account-brand/account-brand.component';
 import { MethodBadgeComponent } from './Components/method-badge/method-badge.component';
+import { ICON_CARD, ICON_PAYPAL } from '../../shared/icons/icons';
+import { DepositosService } from 'src/app/Core/Services/depositos.service';
+import { BalanceService } from 'src/app/Core/Services/balance.service';
 
-interface PayMethod {
-  key:   string;
-  label: string;
-  icon:  string;
-  badge: string;
-}
+type DepositStep = 'select' | 'stripe-form' | 'paypal-button' | 'processing' | 'success' | 'error';
 
-interface SavedAccount {
-  id:         string;
-  brand:      'visa' | 'master' | 'btc' | 'paypal';
-  label:      string;
-  sub:        string;
-  principal?: boolean;
-}
+interface PayMethod { key: string; label: string; icon: string; badge: string; }
 
 @Component({
   standalone: true,
   imports: [
     CommonModule, FormsModule, ScreenShellComponent,
-    SvgIconComponent, GoldButtonComponent,
-    MethodBadgeComponent, AccountBrandComponent,
+    SvgIconComponent, GoldButtonComponent, MethodBadgeComponent,
   ],
   selector: 'app-deposits',
   templateUrl: './deposits.component.html',
   styleUrls: ['./deposits.component.scss'],
 })
 export class DepositsComponent {
-  method = 'crypto';
-  account: string | null = 'btc';
-  amount: number | null = null;
+  step: DepositStep = 'select';
+  method = 'card';
+  amount: number | null = 100;
   other  = '';
+  loading = false;
 
-  iconCard    = ICON_CARD;
-  iconBitcoin = ICON_BITCOIN;
-  iconPaypal  = ICON_PAYPAL;
-  iconAdd     = ICON_ADD;
+  stripeError = '';
+  newBalance: number | null = null;
+  depositedAmount = 0;
+  errorMsg = '';
+
+  private stripe: Stripe | null = null;
+  private cardElement: StripeCardElement | null = null;
+  private clientSecret = '';
+
+  iconCard   = ICON_CARD;
+  iconPaypal = ICON_PAYPAL;
 
   payMethods: PayMethod[] = [
-    { key: 'card',   label: 'Tarjeta de crédito/débito', icon: ICON_CARD,    badge: 'cards' },
-    { key: 'crypto', label: 'Criptomonedas',             icon: ICON_BITCOIN, badge: 'btc' },
-    { key: 'paypal', label: 'PayPal',                    icon: ICON_PAYPAL,  badge: 'paypal' },
+    { key: 'card',   label: 'Tarjeta de crédito/débito', icon: ICON_CARD,   badge: 'cards'  },
+    { key: 'paypal', label: 'PayPal',                     icon: ICON_PAYPAL, badge: 'paypal' },
   ];
 
-  savedAccounts: Record<string, SavedAccount[]> = {
-    card: [
-      { id: 'visa',   brand: 'visa',   label: 'VISA',       sub: '•••• 4567', principal: true },
-      { id: 'master', brand: 'master', label: 'Mastercard', sub: '•••• 4567' },
-    ],
-    crypto: [
-      { id: 'btc', brand: 'btc', label: 'Bitcoin (BTC)', sub: 'bc1q···4gf8' },
-    ],
-    paypal: [
-      { id: 'pp1', brand: 'paypal', label: 'PayPal', sub: 'juanperez@gmail.com' },
-    ],
-  };
+  amounts = [20, 50, 100, 200, 500];
 
-  amounts = [20, 50, 100, 200];
+  constructor(
+    private router: Router,
+    private depositosService: DepositosService,
+    private balanceService: BalanceService,
+  ) {}
 
-  constructor(private router: Router) {}
-
-  get accounts(): SavedAccount[] {
-    return this.savedAccounts[this.method] || [];
+  get finalAmount(): number {
+    if (this.other) return parseFloat(this.other) || 0;
+    return this.amount ?? 0;
   }
 
-  get sectionLabel(): string {
-    if (this.method === 'card')   return 'SELECCIONA TARJETA';
-    if (this.method === 'crypto') return 'SELECCIONA BILLETERA';
-    return 'SELECCIONA CUENTA';
+  selectMethod(key: string) { this.method = key; }
+  selectAmount(a: number)   { this.amount = a; this.other = ''; }
+  onOtherInput(val: string) { this.other = val.replace(/[^0-9.]/g, ''); this.amount = null; }
+  isMethodActive(k: string) { return this.method === k; }
+  isAmountActive(a: number) { return this.amount === a && !this.other; }
+
+  async deposit() {
+    if (this.finalAmount < 1 || this.loading) return;
+    this.loading = true;
+    this.errorMsg = '';
+
+    if (this.method === 'card') {
+      try {
+        const res = await firstValueFrom(this.depositosService.iniciarStripe(this.finalAmount));
+        if (res.blnError || !res.returnValue?.clientSecret) {
+          this.errorMsg = res.strResponseMessage || 'No se pudo iniciar el pago.';
+          this.loading  = false;
+          return;
+        }
+        this.clientSecret    = res.returnValue.clientSecret;
+        this.depositedAmount = this.finalAmount;
+        this.loading = false;
+        this.step    = 'stripe-form';
+        setTimeout(() => this.mountStripeElement(), 100);
+      } catch {
+        this.errorMsg = 'Error de conexión. Intentá de nuevo.';
+        this.loading  = false;
+      }
+    } else {
+      try {
+        const res = await firstValueFrom(this.depositosService.iniciarPayPal(this.finalAmount));
+        if (res.blnError || !res.returnValue?.orderId) {
+          this.errorMsg = res.strResponseMessage || 'No se pudo iniciar el pago.';
+          this.loading  = false;
+          return;
+        }
+        const orderId        = res.returnValue.orderId;
+        this.depositedAmount = this.finalAmount;
+        this.loading  = false;
+        this.step     = 'paypal-button';
+        setTimeout(() => this.renderPayPalButtons(orderId), 100);
+      } catch {
+        this.errorMsg = 'Error de conexión. Intentá de nuevo.';
+        this.loading  = false;
+      }
+    }
   }
 
-  selectMethod(key: string) {
-    this.method = key;
-    const first = this.accounts[0];
-    this.account = first ? first.id : null;
+  private async mountStripeElement() {
+    if (!this.stripe) {
+      this.stripe = await loadStripe(environment.stripePublishableKey);
+    }
+    if (!this.stripe) return;
+
+    const elements = this.stripe.elements();
+    this.cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#C8C4A8',
+          fontFamily: 'Montserrat, system-ui, sans-serif',
+          fontSize:   '15px',
+          '::placeholder': { color: '#7A7060' },
+        },
+        invalid: { color: '#E57373' },
+      },
+      hidePostalCode: true,
+    });
+    this.cardElement.mount('#stripe-card-element');
+    this.cardElement.on('change', evt => {
+      this.stripeError = evt.error?.message ?? '';
+    });
   }
 
-  selectAccount(id: string) { this.account = id; }
+  async confirmStripePayment() {
+    if (!this.stripe || !this.cardElement || this.loading) return;
+    this.loading     = true;
+    this.stripeError = '';
 
-  selectAmount(a: number) {
-    this.amount = a;
-    this.other = '';
+    const { error, paymentIntent } = await this.stripe.confirmCardPayment(this.clientSecret, {
+      payment_method: { card: this.cardElement },
+    });
+
+    if (error) {
+      this.stripeError = error.message ?? 'Error al procesar la tarjeta.';
+      this.loading     = false;
+      return;
+    }
+
+    if (paymentIntent?.status === 'succeeded') {
+      this.loading = false;
+      this.step    = 'success';
+    }
   }
 
-  onOtherInput(value: string) {
-    this.other = value.replace(/[^0-9.]/g, '');
-    this.amount = null;
+  private async renderPayPalButtons(orderId: string) {
+    try {
+      const paypal = await loadScript({
+        clientId:       environment.paypalClientId,
+        currency:       'USD',
+        disableFunding: 'card,credit,paylater',
+      });
+      if (!paypal?.Buttons) return;
+
+      await paypal.Buttons({
+        createOrder: () => Promise.resolve(orderId),
+        onApprove:   async () => {
+          this.step = 'processing';
+          try {
+            const res = await firstValueFrom(this.depositosService.capturarPayPal(orderId));
+            if (!res.blnError && res.returnValue != null) {
+              this.newBalance = res.returnValue;
+              this.step       = 'success';
+            } else {
+              this.errorMsg = res.strResponseMessage || 'No se pudo confirmar el pago.';
+              this.step     = 'error';
+            }
+          } catch {
+            this.errorMsg = 'Error al confirmar el pago con PayPal.';
+            this.step     = 'error';
+          }
+        },
+        onError:  () => { this.errorMsg = 'Error al procesar el pago con PayPal.'; this.step = 'error'; },
+        onCancel: () => { this.step = 'select'; },
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
+      }).render('#paypal-button-container');
+    } catch {
+      this.errorMsg = 'No se pudo cargar el módulo de PayPal.';
+      this.step     = 'error';
+    }
   }
 
-  isMethodActive(key: string): boolean { return this.method === key; }
-  isAccountActive(id: string): boolean { return this.account === id; }
-  isAmountActive(a: number): boolean { return this.amount === a && this.other === ''; }
+  cancelar() { this.step = 'select'; }
 
-  goBack()    { this.router.navigate(['/wallet']); }
-  goPagos()   { this.router.navigate(['/pagos']); }
-  confirm()   { this.router.navigate(['/wallet']); }
+  goBack() {
+    if (this.step === 'select') { this.router.navigate(['/wallet']); }
+    else                        { this.cancelar(); }
+  }
+
+  goWallet() {
+    if (this.newBalance !== null && this.newBalance > 0) {
+      this.balanceService.set(this.newBalance);
+    }
+    this.router.navigate(['/wallet']);
+  }
+
 }

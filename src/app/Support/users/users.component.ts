@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,8 +8,9 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 import { InitialsComponent } from '../shared/initials/initials.component';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
-import { SUPPORT_TICKETS, TINTS } from '../shared/support.data';
-
+import { TINTS } from '../shared/support.data';
+import { TicketService } from 'src/app/Core/Services/ticket.service';
+import { TicketResultado } from 'src/app/Core/Models/ticket.models';
 
 interface SupportUser {
   name:    string;
@@ -28,33 +29,32 @@ interface SupportUser {
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
   iconSearch = ICON_SEARCH;
+
   q = '';
+  loading = true;
 
-  constructor(private router: Router) {}
+  private allUsers: SupportUser[] = [];
 
-  get users(): SupportUser[] {
-    const seen: Record<string, boolean> = {};
-    const result: SupportUser[] = [];
-    SUPPORT_TICKETS.forEach((t, i) => {
-      if (!seen[t.email]) {
-        seen[t.email] = true;
-        result.push({
-          name:    t.name,
-          email:   t.email,
-          tickets: SUPPORT_TICKETS.filter(x => x.email === t.email).length,
-          idx:     i,
-        });
-      }
+  constructor(private router: Router, private ticketService: TicketService) {}
+
+  ngOnInit(): void {
+    this.ticketService.listarTodos().subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (!res.blnError && res.returnValue) {
+          this.allUsers = this.buildUsers(res.returnValue);
+        }
+      },
+      error: () => { this.loading = false; },
     });
-    return result;
   }
 
   get list(): SupportUser[] {
     const query = this.q.trim().toLowerCase();
-    if (!query) return this.users;
-    return this.users.filter(u =>
+    if (!query) return this.allUsers;
+    return this.allUsers.filter(u =>
       u.name.toLowerCase().includes(query) ||
       u.email.toLowerCase().includes(query)
     );
@@ -62,5 +62,22 @@ export class UsersComponent {
 
   tint(idx: number): string { return TINTS[idx % TINTS.length]; }
 
-  goBack() { this.router.navigate(['/soporte']); }
+  goBack() { this.router.navigate(['/support']); }
+
+  private buildUsers(tickets: TicketResultado[]): SupportUser[] {
+    const seen = new Map<string, SupportUser>();
+    tickets.forEach((t, i) => {
+      const key = t.userEmail || t.id;
+      if (!seen.has(key)) {
+        seen.set(key, {
+          name:    t.userDisplayName || t.userUsername || `Usuario ${i + 1}`,
+          email:   t.userEmail || '—',
+          tickets: 0,
+          idx:     seen.size,
+        });
+      }
+      seen.get(key)!.tickets++;
+    });
+    return Array.from(seen.values());
+  }
 }

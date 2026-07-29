@@ -134,6 +134,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/support/support.component').then(m => m.SupportComponent),
   },
   {
+    path: 'faq',
+    data: { depth: 7 },
+    loadComponent: () => import('./User/profile/support/faq/faq.component').then(m => m.FaqComponent),
+  },
+  {
     path: 'miperfil',
     data: { depth: 6 },
     canActivate: [realAccountGuard],
@@ -299,8 +304,13 @@ export const routes: Routes = [
   },
   {
     path: 'soporte/ticket/:id',
-    canActivate: [roleGuard(['soporte'])],
+    canActivate: [roleGuard(['soporte', 'admin'])],
     loadComponent: () => import('./Support/ticket/ticket.component').then(m => m.TicketComponent),
+  },
+  {
+    path: 'admin/tickets',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/tickets/tickets.component').then(m => m.AdminTicketsComponent),
   },
   {
   path: 'soporte/tickets',
@@ -331,6 +341,18 @@ export const routes: Routes = [
     path: 'ticket-ok',
     canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/support/ticket-ok/ticket-ok.component').then(m => m.TicketOkComponent),
+  },
+  {
+    path: 'mis-tickets',
+    data: { depth: 7 },
+    canActivate: [realAccountGuard],
+    loadComponent: () => import('./User/profile/support/mis-tickets/mis-tickets.component').then(m => m.MisTicketsComponent),
+  },
+  {
+    path: 'mis-tickets/:id',
+    data: { depth: 8 },
+    canActivate: [realAccountGuard],
+    loadComponent: () => import('./User/profile/support/user-ticket/user-ticket.component').then(m => m.UserTicketComponent),
   },
   {
     path: 'admin/soporte',

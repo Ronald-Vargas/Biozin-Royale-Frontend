@@ -14,6 +14,8 @@ export function roleGuard(roles: Array<'admin' | 'soporte' | 'user'>): CanActiva
 
     const perfil = authService.currentProfile();
     if (!perfil || !roles.includes(perfil.role)) {
+      if (perfil?.role === 'soporte') return router.createUrlTree(['/support']);
+      if (perfil?.role === 'admin')   return router.createUrlTree(['/admin']);
       return router.createUrlTree(['/home']);
     }
 

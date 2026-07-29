@@ -1,0 +1,59 @@
+<app-screen-shell title="Mis tickets" current="perfil" (back)="goBack()">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-wrap">
+    <div class="spinner"></div>
+    <div class="state-label">Cargando tickets…</div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && errorMsg" class="state-wrap">
+    <app-icon [svg]="iconEmpty" [size]="52" class="state-icon error"></app-icon>
+    <div class="state-label">{{ errorMsg }}</div>
+  </div>
+
+  <!-- Estado vacío -->
+  <ng-container *ngIf="!loading && !errorMsg && tickets.length === 0">
+    <div class="empty-wrap">
+      <div class="empty-glow"></div>
+      <app-icon [svg]="iconEmpty" [size]="58" class="empty-icon"></app-icon>
+      <div class="empty-title">Sin tickets aún</div>
+      <div class="empty-sub">Cuando envíes una consulta al equipo de soporte, podrás hacer seguimiento desde aquí.</div>
+    </div>
+  </ng-container>
+
+  <!-- Lista de tickets -->
+  <ng-container *ngIf="!loading && !errorMsg && tickets.length > 0">
+    <div class="tk-list">
+      <div *ngFor="let t of tickets" class="tk-row" (click)="openTicket(t.id)">
+
+        <!-- Icono de categoría -->
+        <div class="tk-cat-icon">
+          <app-icon [svg]="catIcon(t.category)" [size]="20" style="color:var(--gold-1)"></app-icon>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="tk-body">
+          <div class="tk-top">
+            <span class="tk-number">{{ ticketLabel(t) }}</span>
+            <span class="tk-badge"
+              [style.color]="statusStyle(t.status).color"
+              [style.background]="statusStyle(t.status).bg"
+              [style.border-color]="statusStyle(t.status).bd">
+              {{ statusDisplay(t.status) }}
+            </span>
+          </div>
+          <div class="tk-subject">{{ t.subject }}</div>
+          <div class="tk-meta">
+            <app-icon [svg]="iconTime" [size]="12" style="color:#807562; flex-shrink:0"></app-icon>
+            <span>{{ formatDate(t.createdAt) }}</span>
+            <span class="tk-cat">· {{ t.category }}</span>
+          </div>
+        </div>
+
+        <app-icon [svg]="iconChevron" [size]="17" style="color:#6f6757; flex-shrink:0"></app-icon>
+      </div>
+    </div>
+  </ng-container>
+
+</app-screen-shell>

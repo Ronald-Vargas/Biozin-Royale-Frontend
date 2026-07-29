@@ -5,7 +5,7 @@ import { ScreenShellComponent } from '../../shared/Components/screen-shell/scree
 import { SvgIconComponent }     from '../../shared/Components/svg-icons/svg-icons.component';
 import {
   ICON_HEADSET, ICON_CHEVRON_FWD, ICON_EDIT,
-  ICON_WHATSAPP, ICON_MAIL, ICON_HELP_CIRC,
+  ICON_WHATSAPP, ICON_MAIL, ICON_HELP_CIRC, ICON_RECEIPT,
 } from '../../shared/icons/icons';
 import { GroupLabelComponent } from '../../shared/Components/group-label/group-label.component';
 
@@ -29,6 +29,7 @@ export class SupportComponent{
   iconHeadset = ICON_HEADSET;
   iconChevron = ICON_CHEVRON_FWD;
   iconEdit    = ICON_EDIT;
+  iconReceipt = ICON_RECEIPT;
 
   supportItems: SupportItem[] = [
     {
@@ -56,6 +57,11 @@ export class SupportComponent{
 
   constructor(private router: Router) {}
 
-  goBack()        { this.router.navigate(['/perfil']); }
-  goCrearTicket() { this.router.navigate(['/create-ticket']); }
+  goBack()          { this.router.navigate(['/perfil']); }
+  goCrearTicket()   { this.router.navigate(['/create-ticket']); }
+  goMisTickets()    { this.router.navigate(['/mis-tickets']); }
+
+  onSupportItem(key: string): void {
+    if (key === 'faq') { this.router.navigate(['/faq']); }
+  }
 }

@@ -1,95 +1,174 @@
-<app-screen-shell
-  title="Métodos de pago"
-  current="perfil"
-  (back)="goBack()"
->
+<app-screen-shell title="Métodos de pago" current="perfil" (back)="goBack()">
   <div class="page-inner">
-  <p class="intro">
-    Administra tus métodos de pago para depósitos y retiros
-    de forma rápida y segura.
-  </p>
+    <p class="intro">Administrá tus tarjetas y cuentas de PayPal para realizar retiros.</p>
 
-  <!-- TARJETAS -->
-  <app-pay-section
-    [icon]="iconCard"
-    title="Tarjetas"
-    addLabel="Agregar tarjeta"
-  >
-    <!-- VISA principal -->
-    <div class="method-card method-card--principal">
-      <div class="method-body">
-        <span class="visa-mark">VISA</span>
-        <div class="card-number">•••• •••• •••• 4567</div>
-        <div class="principal-row">
-          <span class="principal-badge">Principal</span>
-          <app-icon [svg]="iconStar" [size]="15" style="color:var(--gold-1)"></app-icon>
+    <div *ngIf="successMsg" class="alert alert--success">{{ successMsg }}</div>
+
+    <div *ngIf="loading" class="empty-state"><div class="spinner"></div></div>
+
+    <ng-container *ngIf="!loading">
+
+      <!-- ══ TARJETAS ════════════════════════════════════════════ -->
+      <div class="section-header">
+        <div class="section-title-row">
+          <div class="method-icon-sm method-icon-sm--card">
+            <app-icon [svg]="iconCard" [size]="15" style="color:var(--gold-1)"></app-icon>
+          </div>
+          <span class="section-title">Tarjetas</span>
+        </div>
+        <button class="add-btn" (click)="mostrarFormCard()" *ngIf="formMode !== 'card' && metodos.length < 10">
+          + Agregar
+        </button>
+      </div>
+
+      <div *ngIf="cardMetodos.length === 0 && formMode !== 'card'" class="empty-hint">
+        No tenés tarjetas registradas.
+      </div>
+
+      <div class="metodos-list">
+        <div *ngFor="let m of cardMetodos" class="metodo-card" [class.metodo-card--principal]="m.isDefault">
+          <div class="card-network-badge" [class]="'card-network-badge--' + (m.network ?? 'other')">
+            {{ networkLabel(m) }}
+          </div>
+          <div class="metodo-body">
+            <div class="metodo-title-row">
+              <span class="metodo-label">•••• •••• •••• {{ m.lastFour }}</span>
+              <span *ngIf="m.isDefault" class="principal-badge">Principal</span>
+            </div>
+            <div class="metodo-sub">{{ m.cardHolder }} · vence {{ expiryLabel(m) }}</div>
+            <div *ngIf="m.alias" class="metodo-alias">{{ m.alias }}</div>
+          </div>
+          <div class="metodo-actions">
+            <button *ngIf="!m.isDefault" class="action-btn action-btn--star" (click)="setPrincipal(m)" title="Establecer como principal">
+              <app-icon [svg]="iconStar" [size]="15"></app-icon>
+            </button>
+            <button class="action-btn action-btn--trash" (click)="eliminar(m)" title="Eliminar">
+              <app-icon [svg]="iconTrash" [size]="15"></app-icon>
+            </button>
+          </div>
         </div>
       </div>
-      <app-kebab id="visa"></app-kebab>
-    </div>
 
-    <!-- Mastercard -->
-    <div class="method-card">
-      <span class="mc-mark">
-        <span class="mc-red"></span>
-        <span class="mc-yellow"></span>
-      </span>
-      <div class="method-body">
-        <div class="card-number">•••• •••• •••• 4567</div>
-      </div>
-      <app-kebab id="master"></app-kebab>
-    </div>
-  </app-pay-section>
+      <!-- Formulario agregar tarjeta -->
+      <div *ngIf="formMode === 'card'" class="add-form">
+        <div class="form-title">Nueva tarjeta</div>
 
-  <!-- CRIPTOMONEDAS -->
-  <app-pay-section
-    [icon]="iconBitcoin"
-    title="Criptomonedas"
-    addLabel="Agregar crypto"
-  >
-    <div class="method-card">
-      <div class="crypto-circle">
-        <app-icon [svg]="iconBitcoin" [size]="22" style="color:#fff"></app-icon>
-      </div>
-      <div class="method-body">
-        <div class="method-title">Bitcoin (BTC)</div>
-        <div class="method-sub">bc1q...4gf8</div>
-      </div>
-      <app-kebab id="btc"></app-kebab>
-    </div>
-  </app-pay-section>
+        <label class="form-label">Número de tarjeta *</label>
+        <input class="form-input" type="text" inputmode="numeric"
+          [value]="cardNumber" (input)="onCardNumberInput($any($event.target).value)"
+          placeholder="0000 0000 0000 0000" maxlength="19" />
 
-  <!-- PAYPAL -->
-  <app-pay-section
-    [icon]="iconPaypal"
-    title="PayPal"
-    addLabel="Agregar cuenta"
-  >
-    <div class="method-card">
-      <div class="paypal-circle">
-        <app-icon [svg]="iconPaypal" [size]="22" style="color:#2790c3"></app-icon>
-      </div>
-      <div class="method-body">
-        <div class="method-title">PayPal</div>
-        <div class="method-sub">juanperez&#64;gmail.com</div>
-      </div>
-      <app-kebab id="paypal"></app-kebab>
-    </div>
-  </app-pay-section>
+        <label class="form-label">Titular de la tarjeta *</label>
+        <input class="form-input" type="text" [(ngModel)]="cardHolder"
+          placeholder="Nombre como aparece en la tarjeta" autocomplete="cc-name" />
 
-  <!-- Seguridad -->
-  <div class="security-banner">
-    <div class="security-icon-wrap">
-      <div class="security-glow"></div>
-      <app-icon [svg]="iconShield" [size]="34" style="color:var(--gold-1);position:relative"></app-icon>
-    </div>
-    <div>
-      <div class="security-title">Tu seguridad es nuestra prioridad</div>
-      <div class="security-body">
-        Todos los métodos de pago están encriptados y protegidos
-        con estándares de seguridad.
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label">Vencimiento *</label>
+            <input class="form-input" type="text" inputmode="numeric"
+              [value]="cardExpiry" (input)="onExpiryInput($any($event.target).value)"
+              placeholder="MM/AA" maxlength="5" />
+          </div>
+          <div class="form-col">
+            <label class="form-label">Alias (opcional)</label>
+            <input class="form-input" type="text" [(ngModel)]="cardAlias" placeholder="Mi Visa" />
+          </div>
+        </div>
+
+        <label class="form-check" *ngIf="metodos.length > 0">
+          <input type="checkbox" [(ngModel)]="cardDefault" />
+          Establecer como método principal
+        </label>
+
+        <div *ngIf="errorMsg && formMode === 'card'" class="alert alert--error">{{ errorMsg }}</div>
+
+        <div class="form-actions">
+          <button class="cancel-btn" (click)="cancelar()">Cancelar</button>
+          <app-gold-button (clicked)="guardarTarjeta()"
+            [disabled]="saving || !cardNumber || !cardHolder || !cardExpiry">
+            {{ saving ? 'Guardando...' : 'Guardar' }}
+          </app-gold-button>
+        </div>
+      </div>
+
+      <!-- ══ PAYPAL ══════════════════════════════════════════════ -->
+      <div class="section-header" style="margin-top:24px">
+        <div class="section-title-row">
+          <div class="method-icon-sm method-icon-sm--paypal">
+            <app-icon [svg]="iconPaypal" [size]="15" style="color:#2790c3"></app-icon>
+          </div>
+          <span class="section-title">PayPal</span>
+        </div>
+        <button class="add-btn" (click)="mostrarFormPayPal()" *ngIf="formMode !== 'paypal' && metodos.length < 10">
+          + Agregar
+        </button>
+      </div>
+
+      <div *ngIf="paypalMetodos.length === 0 && formMode !== 'paypal'" class="empty-hint">
+        No tenés cuentas de PayPal registradas.
+      </div>
+
+      <div class="metodos-list">
+        <div *ngFor="let m of paypalMetodos" class="metodo-card" [class.metodo-card--principal]="m.isDefault">
+          <div class="method-icon-sm method-icon-sm--paypal">
+            <app-icon [svg]="iconPaypal" [size]="15" style="color:#2790c3"></app-icon>
+          </div>
+          <div class="metodo-body">
+            <div class="metodo-title-row">
+              <span class="metodo-label">{{ m.alias || 'PayPal' }}</span>
+              <span *ngIf="m.isDefault" class="principal-badge">Principal</span>
+            </div>
+            <div class="metodo-sub">{{ m.email }}</div>
+          </div>
+          <div class="metodo-actions">
+            <button *ngIf="!m.isDefault" class="action-btn action-btn--star" (click)="setPrincipal(m)" title="Establecer como principal">
+              <app-icon [svg]="iconStar" [size]="15"></app-icon>
+            </button>
+            <button class="action-btn action-btn--trash" (click)="eliminar(m)" title="Eliminar">
+              <app-icon [svg]="iconTrash" [size]="15"></app-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario agregar PayPal -->
+      <div *ngIf="formMode === 'paypal'" class="add-form">
+        <div class="form-title">Nueva cuenta de PayPal</div>
+
+        <label class="form-label">Correo de PayPal *</label>
+        <input class="form-input" type="email" [(ngModel)]="ppEmail"
+          placeholder="ejemplo@gmail.com" autocomplete="email" inputmode="email" />
+
+        <label class="form-label">Alias (opcional)</label>
+        <input class="form-input" type="text" [(ngModel)]="ppAlias" placeholder="Mi PayPal" />
+
+        <label class="form-check" *ngIf="metodos.length > 0">
+          <input type="checkbox" [(ngModel)]="ppDefault" />
+          Establecer como método principal
+        </label>
+
+        <div *ngIf="errorMsg && formMode === 'paypal'" class="alert alert--error">{{ errorMsg }}</div>
+
+        <div class="form-actions">
+          <button class="cancel-btn" (click)="cancelar()">Cancelar</button>
+          <app-gold-button (clicked)="guardarPayPal()" [disabled]="saving || !ppEmail.trim()">
+            {{ saving ? 'Guardando...' : 'Guardar' }}
+          </app-gold-button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- Seguridad -->
+    <div class="security-banner">
+      <div class="security-icon-wrap">
+        <div class="security-glow"></div>
+        <app-icon [svg]="iconShield" [size]="34" style="color:var(--gold-1);position:relative"></app-icon>
+      </div>
+      <div>
+        <div class="security-title">Tu seguridad es nuestra prioridad</div>
+        <div class="security-body">Tus métodos de pago están protegidos y solo se usan para procesar retiros.</div>
       </div>
     </div>
-  </div>
   </div>
 </app-screen-shell>

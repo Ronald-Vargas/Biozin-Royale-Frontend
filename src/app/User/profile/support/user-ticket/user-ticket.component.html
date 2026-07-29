@@ -1,0 +1,161 @@
+<app-screen-shell [title]="ticketLabel()" current="perfil" (back)="goBack()">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-center">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && errorMsg" class="state-center">
+    <div class="state-label">{{ errorMsg }}</div>
+  </div>
+
+  <!-- Contenido -->
+  <ng-container *ngIf="!loading && !errorMsg && ticket">
+
+    <!-- Header del ticket -->
+    <div class="tk-header">
+      <div class="tk-meta-row">
+        <span class="tk-badge"
+          [style.color]="statusStyle().color"
+          [style.background]="statusStyle().bg"
+          [style.border-color]="statusStyle().bd">
+          {{ statusDisplay() }}
+        </span>
+        <span class="tk-cat">{{ ticket.category }}</span>
+      </div>
+      <div class="tk-subject">{{ ticket.subject }}</div>
+      <div class="tk-agent" *ngIf="ticket.assignedToName">
+        <app-icon [svg]="iconHeadset" [size]="13" style="color:#9a9080"></app-icon>
+        <span>{{ ticket.assignedToName }}</span>
+      </div>
+    </div>
+
+    <!-- Hilo de mensajes -->
+    <div class="thread" #threadEl>
+
+      <!-- Descripción inicial -->
+      <div class="desc-bubble">
+        <div class="desc-label">Descripción del ticket</div>
+        <div class="desc-text">{{ ticket.description }}</div>
+      </div>
+
+      <!-- Mensajes -->
+      <ng-container *ngFor="let m of messages">
+        <div *ngIf="m.senderRole === 'system'" class="system-msg">{{ m.body }}</div>
+        <div *ngIf="m.senderRole !== 'system'" class="msg-row" [class.msg-row--mine]="isUserMsg(m)">
+          <div class="bubble" [class.bubble--mine]="isUserMsg(m)" [class.bubble--support]="!isUserMsg(m)">
+            <div class="bubble-name">
+              <app-icon
+                [svg]="isUserMsg(m) ? iconPerson : iconHeadset"
+                [size]="12"
+                style="opacity:.7"
+              ></app-icon>
+              {{ m.senderName }}
+            </div>
+            <div *ngIf="m.body" class="bubble-body">{{ m.body }}</div>
+            <div *ngIf="m.fileName" class="file-card">
+              <app-icon [svg]="iconAttach" [size]="20" style="color:var(--gold-1);flex-shrink:0"></app-icon>
+              <div class="file-info">
+                <div class="file-name">{{ m.fileName }}</div>
+              </div>
+              <a *ngIf="m.fileUrl" [href]="m.fileUrl" target="_blank" rel="noopener" class="file-dl-btn">
+                <app-icon [svg]="iconDownload" [size]="18" style="color:var(--gold-2)"></app-icon>
+              </a>
+            </div>
+            <div class="bubble-time">{{ formatTime(m.createdAt) }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Vacío -->
+      <div *ngIf="messages.length === 0" class="no-msgs">
+        Aún no hay mensajes. Escribe para iniciar la conversación.
+      </div>
+    </div>
+
+    <!-- Ticket cerrado definitivamente -->
+    <div *ngIf="isClosed" class="closed-panel">
+      <div class="closed-icon">✓</div>
+      <div class="closed-title">Ticket cerrado</div>
+      <div class="closed-sub">Este ticket fue cerrado definitivamente. Si necesitas más ayuda, crea un nuevo ticket.</div>
+      <div *ngIf="isRated" class="closed-rating">
+        <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
+      </div>
+    </div>
+
+    <!-- Panel de ticket resuelto -->
+    <div *ngIf="isResolved && !isClosed" class="resolved-panel">
+
+      <!-- Sin valorar aún -->
+      <div *ngIf="!isRated" class="rating-card">
+        <div class="rating-title">¿Cómo fue tu experiencia?</div>
+        <div class="rating-sub">Tu valoración decide el siguiente paso</div>
+        <div class="stars-row">
+          <button
+            *ngFor="let s of stars"
+            class="star-btn"
+            [class.star-btn--active]="s <= (hoverRating || currentRating)"
+            (mouseenter)="hoverRating = s"
+            (mouseleave)="hoverRating = 0"
+            (click)="submitRating(s)"
+          >★</button>
+        </div>
+        <div class="star-label">
+          <ng-container *ngIf="hoverRating">{{ starLabels[hoverRating - 1] }}</ng-container>
+        </div>
+        <div class="rating-hints">
+          <span class="hint hint--bad">1–2 ★ reabre el ticket</span>
+          <span class="hint-sep">·</span>
+          <span class="hint hint--good">4–5 ★ lo cierra</span>
+        </div>
+      </div>
+
+      <!-- Valorado con 3 estrellas → el usuario elige -->
+      <div *ngIf="needsChoice" class="choice-panel">
+        <div class="rated-stars">
+          <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
+        </div>
+        <div class="choice-title">¿Qué deseas hacer?</div>
+        <div class="choice-btns">
+          <button class="choice-btn choice-btn--reopen" [disabled]="reopening" (click)="reopen()">
+            {{ reopening ? 'Reabriendo…' : 'Reabrir ticket' }}
+          </button>
+          <button class="choice-btn choice-btn--close" [disabled]="closing" (click)="cerrar()">
+            {{ closing ? 'Cerrando…' : 'Cerrar definitivamente' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Barra de respuesta (ticket abierto: nuevo o en_proceso) -->
+    <ng-container *ngIf="!isResolved && !isClosed">
+      <div *ngIf="selectedFile" class="file-chip">
+        <app-icon [svg]="iconAttach" [size]="14" style="color:var(--gold-2);flex-shrink:0"></app-icon>
+        <span class="file-chip-name">{{ selectedFile.name }}</span>
+        <button class="file-chip-rm" (click)="clearFile()">✕</button>
+      </div>
+      <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+
+      <div class="reply-bar">
+        <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
+        <button class="attach-btn" (click)="pickFile()" title="Adjuntar archivo">
+          <app-icon [svg]="iconAttach" [size]="20"></app-icon>
+        </button>
+        <textarea
+          class="reply-input"
+          [(ngModel)]="reply"
+          (keydown)="onEnter($event)"
+          placeholder="Escribe tu mensaje…"
+          rows="1"
+        ></textarea>
+        <button class="send-btn" [disabled]="(!reply.trim() && !selectedFile) || sending" (click)="send()">
+          <app-icon [svg]="iconSend" [size]="20"></app-icon>
+        </button>
+      </div>
+    </ng-container>
+
+  </ng-container>
+
+</app-screen-shell>

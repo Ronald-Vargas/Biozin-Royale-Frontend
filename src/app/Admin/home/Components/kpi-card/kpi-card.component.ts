@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminKpi } from '../../../shared/admin.data';
+import { AdminKpi } from 'src/app/Core/Models/admin.models';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
 @Component({
