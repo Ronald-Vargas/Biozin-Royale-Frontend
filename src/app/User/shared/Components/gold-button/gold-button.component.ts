@@ -10,14 +10,8 @@ import { IonButton, IonSpinner } from '@ionic/angular/standalone';
   styleUrls: ['./gold-button.component.scss'],
 })
 export class GoldButtonComponent {
-<<<<<<< HEAD
   @Input()  loading = false;
   @Input()  disabled = false;
   @Output() clicked = new EventEmitter<void>();
-=======
-  @Input()  loading  = false;
-  @Input()  disabled = false;
-  @Output() clicked  = new EventEmitter<void>();
->>>>>>> develop
   onClick() { if (!this.loading && !this.disabled) this.clicked.emit(); }
 }
