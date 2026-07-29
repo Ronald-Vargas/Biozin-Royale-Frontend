@@ -36,6 +36,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
   loading = true;
   sending = false;
   reopening = false;
+  closing = false;
   errorMsg = '';
   selectedFile: File | null = null;
   uploadError = '';
@@ -164,9 +165,11 @@ export class UserTicketComponent implements OnInit, OnDestroy {
 
   // ── Helpers ───────────────────────────────────────────────
 
-  get isResolved(): boolean { return this.ticket?.status === 'resuelto'; }
-  get isRated(): boolean    { return !!this.ticket?.rating; }
+  get isResolved(): boolean  { return this.ticket?.status === 'resuelto'; }
+  get isClosed(): boolean    { return this.ticket?.status === 'cerrado'; }
+  get isRated(): boolean     { return !!this.ticket?.rating; }
   get currentRating(): number { return this.ticket?.rating ?? 0; }
+  get needsChoice(): boolean { return this.isResolved && this.isRated && this.currentRating === 3; }
 
   readonly stars = [1, 2, 3, 4, 5];
   readonly starLabels = ['Muy malo', 'Malo', 'Regular', 'Bueno', '¡Excelente!'];
@@ -186,12 +189,27 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     });
   }
 
+  cerrar(): void {
+    if (this.closing) return;
+    this.closing = true;
+    this.ticketService.cerrar(this.ticketId).subscribe({
+      next: (res) => {
+        this.closing = false;
+        if (!res.blnError && res.returnValue) {
+          this.ticket = res.returnValue;
+        }
+      },
+      error: () => { this.closing = false; },
+    });
+  }
+
   submitRating(rating: number): void {
     if (this.isRated) return;
     this.ticketService.rate(this.ticketId, rating).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
           this.ticket = res.returnValue;
+          this.hoverRating = 0;
         }
       },
     });

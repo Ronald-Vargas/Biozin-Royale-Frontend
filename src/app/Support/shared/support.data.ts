@@ -2,13 +2,15 @@ import { ICON_CASH, ICON_PERSON_CIRCLE, ICON_GIFT_OUTLINE, ICON_SHIELD_CHECK, IC
 
 
 export const TK_STATUS: Record<string, { color: string; bg: string; bd: string }> = {
-  'Nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
-  'nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
-  'En proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)' },
-  'en_proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)' },
-  'Resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)' },
-  'resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)' },
-  'Abierto':    { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)' },
+  'Nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)'  },
+  'nuevo':      { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)'  },
+  'En proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)'  },
+  'en_proceso': { color: '#e6b450', bg: 'rgba(212,167,60,0.16)',  bd: 'rgba(212,167,60,0.5)'  },
+  'Resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)'},
+  'resuelto':   { color: '#9aa0ab', bg: 'rgba(150,160,175,0.14)', bd: 'rgba(150,160,175,0.45)'},
+  'Cerrado':    { color: '#6a7080', bg: 'rgba(90,100,115,0.14)',  bd: 'rgba(90,100,115,0.4)'  },
+  'cerrado':    { color: '#6a7080', bg: 'rgba(90,100,115,0.14)',  bd: 'rgba(90,100,115,0.4)'  },
+  'Abierto':    { color: '#62d89b', bg: 'rgba(63,174,110,0.16)',  bd: 'rgba(63,174,110,0.5)'  },
 };
 
 
@@ -35,7 +37,7 @@ export interface SupportKpi {
 
 export function statusLabel(s: string): string {
   const map: Record<string, string> = {
-    nuevo: 'Nuevo', en_proceso: 'En proceso', resuelto: 'Resuelto',
+    nuevo: 'Nuevo', en_proceso: 'En proceso', resuelto: 'Resuelto', cerrado: 'Cerrado',
   };
   return map[s] || s;
 }

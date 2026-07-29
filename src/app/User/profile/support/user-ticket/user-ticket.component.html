@@ -74,13 +74,23 @@
       </div>
     </div>
 
-    <!-- Panel de ticket resuelto -->
-    <div *ngIf="isResolved; else replySection" class="resolved-panel">
+    <!-- Ticket cerrado definitivamente -->
+    <div *ngIf="isClosed" class="closed-panel">
+      <div class="closed-icon">✓</div>
+      <div class="closed-title">Ticket cerrado</div>
+      <div class="closed-sub">Este ticket fue cerrado definitivamente. Si necesitas más ayuda, crea un nuevo ticket.</div>
+      <div *ngIf="isRated" class="closed-rating">
+        <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
+      </div>
+    </div>
 
-      <!-- Valoración -->
-      <div *ngIf="!isRated; else ratedThanks" class="rating-card">
+    <!-- Panel de ticket resuelto -->
+    <div *ngIf="isResolved && !isClosed" class="resolved-panel">
+
+      <!-- Sin valorar aún -->
+      <div *ngIf="!isRated" class="rating-card">
         <div class="rating-title">¿Cómo fue tu experiencia?</div>
-        <div class="rating-sub">Valora la atención recibida</div>
+        <div class="rating-sub">Tu valoración decide el siguiente paso</div>
         <div class="stars-row">
           <button
             *ngFor="let s of stars"
@@ -91,26 +101,36 @@
             (click)="submitRating(s)"
           >★</button>
         </div>
-        <div *ngIf="hoverRating" class="star-label">{{ starLabels[hoverRating - 1] }}</div>
+        <div class="star-label">
+          <ng-container *ngIf="hoverRating">{{ starLabels[hoverRating - 1] }}</ng-container>
+        </div>
+        <div class="rating-hints">
+          <span class="hint hint--bad">1–2 ★ reabre el ticket</span>
+          <span class="hint-sep">·</span>
+          <span class="hint hint--good">4–5 ★ lo cierra</span>
+        </div>
       </div>
 
-      <ng-template #ratedThanks>
-        <div class="rated-thanks">
-          <div class="rated-stars">
-            <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
-          </div>
-          <div class="rated-msg">¡Gracias por tu valoración!</div>
+      <!-- Valorado con 3 estrellas → el usuario elige -->
+      <div *ngIf="needsChoice" class="choice-panel">
+        <div class="rated-stars">
+          <span *ngFor="let s of stars" [class.star-on]="s <= currentRating">★</span>
         </div>
-      </ng-template>
+        <div class="choice-title">¿Qué deseas hacer?</div>
+        <div class="choice-btns">
+          <button class="choice-btn choice-btn--reopen" [disabled]="reopening" (click)="reopen()">
+            {{ reopening ? 'Reabriendo…' : 'Reabrir ticket' }}
+          </button>
+          <button class="choice-btn choice-btn--close" [disabled]="closing" (click)="cerrar()">
+            {{ closing ? 'Cerrando…' : 'Cerrar definitivamente' }}
+          </button>
+        </div>
+      </div>
 
-      <!-- Reabrir -->
-      <button class="reopen-btn" [disabled]="reopening" (click)="reopen()">
-        {{ reopening ? 'Reabriendo…' : 'Reabrir ticket' }}
-      </button>
     </div>
 
-    <!-- Barra de respuesta (solo cuando NO está resuelto) -->
-    <ng-template #replySection>
+    <!-- Barra de respuesta (ticket abierto: nuevo o en_proceso) -->
+    <ng-container *ngIf="!isResolved && !isClosed">
       <div *ngIf="selectedFile" class="file-chip">
         <app-icon [svg]="iconAttach" [size]="14" style="color:var(--gold-2);flex-shrink:0"></app-icon>
         <span class="file-chip-name">{{ selectedFile.name }}</span>
@@ -134,7 +154,7 @@
           <app-icon [svg]="iconSend" [size]="20"></app-icon>
         </button>
       </div>
-    </ng-template>
+    </ng-container>
 
   </ng-container>
 

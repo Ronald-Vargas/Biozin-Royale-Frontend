@@ -64,4 +64,8 @@ export class TicketService {
   rate(ticketId: string, rating: number): Observable<ApiResponse<TicketResultado>> {
     return this.http.post<ApiResponse<TicketResultado>>(`${this.url}/${ticketId}/rate`, { rating });
   }
+
+  cerrar(ticketId: string): Observable<ApiResponse<TicketResultado>> {
+    return this.http.post<ApiResponse<TicketResultado>>(`${this.url}/${ticketId}/cerrar`, {});
+  }
 }
