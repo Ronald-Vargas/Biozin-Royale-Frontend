@@ -106,9 +106,11 @@ export class AuthService {
     // explícito porque ya lo vamos a borrar de localStorage a continuación.
     const token = this.getToken();
     if (token) {
+      const esStaff = this.currentProfile()?.role !== 'user';
+      const recurso = esStaff ? 'staff' : 'profile';
       this.http
         .post<ApiResponse<boolean>>(
-          `${environment.apiUrl}/profile/sessions/logout`,
+          `${environment.apiUrl}/${recurso}/sessions/logout`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         )

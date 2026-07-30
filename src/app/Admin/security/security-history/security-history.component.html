@@ -1,0 +1,28 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Historial de seguridad" (back)="goBack()"></app-admin-header>
+
+    <div class="history-card" *ngIf="history.length">
+      <div
+        *ngFor="let h of history; let last = last"
+        class="history-row"
+        [class.history-row--last]="last"
+      >
+        <div class="history-icon" [style.border-color]="h.color">
+          <app-icon [svg]="h.icon" [size]="17" [style.color]="h.color"></app-icon>
+        </div>
+
+        <div class="history-body">
+          <div class="history-label">{{ h.label }}</div>
+          <div class="history-date">{{ h.date }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-empty" *ngIf="!loading && !history.length">Sin actividad reciente.</div>
+  </div>
+
+  <app-admin-nav current="ajustes"></app-admin-nav>
+</div>

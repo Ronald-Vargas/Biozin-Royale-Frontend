@@ -1,0 +1,183 @@
+.admin-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(14px + var(--ion-safe-area-top)) 18px 32px;
+}
+
+.sessions-block {
+  margin-top: 20px;
+}
+
+.sessions-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 167, 60, 0.26);
+  margin-bottom: 13px;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.018);
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.status-led {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #5a5240;
+
+  &--active {
+    background: #4fd190;
+    box-shadow: 0 0 6px #4fd190;
+  }
+}
+
+.session-icon {
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--gold-3);
+  background: rgba(212, 167, 60, 0.06);
+}
+
+.session-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.session-device {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.session-meta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active-badge {
+  flex-shrink: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #4fd190;
+  background: rgba(79, 209, 144, 0.12);
+  border: 1px solid rgba(79, 209, 144, 0.4);
+  border-radius: 20px;
+  padding: 4px 9px;
+}
+
+.session-when {
+  flex-shrink: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+}
+
+.session-close-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+}
+
+.sessions-empty {
+  padding: 16px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.6);
+}
+
+.close-all-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: rgba(224, 106, 106, 0.06);
+  border: 1px solid rgba(224, 106, 106, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #d65f5f;
+}
+
+.history-block {
+  margin-top: 26px;
+}
+
+.history-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 167, 60, 0.26);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.018);
+  border-bottom: 1px solid rgba(212, 167, 60, 0.14);
+
+  &--last { border-bottom: none; }
+}
+
+.history-icon {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-body { flex: 1; }
+
+.history-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.history-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+  margin-top: 2px;
+}

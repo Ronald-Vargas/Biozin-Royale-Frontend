@@ -278,6 +278,26 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/personal-info/personal-info.component').then(m => m.AdminPersonalInfoComponent),
   },
   {
+    path: 'admin/seguridad',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/security/security.component').then(m => m.AdminSecurityComponent),
+  },
+  {
+    path: 'admin/seguridad/cambiar-contrasena',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/security/change-password/change-password.component').then(m => m.AdminSecurityChangePasswordComponent),
+  },
+  {
+    path: 'admin/seguridad/sesiones',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/security/active-sessions/active-sessions.component').then(m => m.AdminActiveSessionsComponent),
+  },
+  {
+    path: 'admin/seguridad/historial',
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/security/security-history/security-history.component').then(m => m.AdminSecurityHistoryComponent),
+  },
+  {
     path: 'admin/equipo',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/team/team.component').then(m => m.TeamComponent),

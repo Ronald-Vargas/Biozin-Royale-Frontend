@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
-import { PerfilResultado } from '../Models/profile.models';
+import { PerfilResultado, SessionResultado, SecurityEventResultado } from '../Models/profile.models';
 import { ActualizarStaffMemberRequest, CrearStaffMemberRequest } from '../Models/staff.models';
 import { AuthService } from './auth.service';
 
@@ -54,5 +54,21 @@ export class StaffService {
   updateMe(datos: ActualizarStaffMemberRequest): Observable<ApiResponse<PerfilResultado>> {
     return this.http.put<ApiResponse<PerfilResultado>>(`${this.staffUrl}/me`, datos)
       .pipe(tap((res) => this.authService.storeSession(res)));
+  }
+
+  getSessions(): Observable<ApiResponse<SessionResultado[]>> {
+    return this.http.get<ApiResponse<SessionResultado[]>>(`${this.staffUrl}/sessions`);
+  }
+
+  closeSession(id: string): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.staffUrl}/sessions/${id}`);
+  }
+
+  closeOtherSessions(): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.staffUrl}/sessions/close-others`, {});
+  }
+
+  getSecurityHistory(): Observable<ApiResponse<SecurityEventResultado[]>> {
+    return this.http.get<ApiResponse<SecurityEventResultado[]>>(`${this.staffUrl}/security-history`);
   }
 }

@@ -46,7 +46,7 @@
         [icon]="iconLock"
         label="Seguridad"
         [last]="true"
-        (rowClick)="noop()"
+        (rowClick)="goSeguridad()"
       ></app-setting-row>
     </app-group-card>
 
@@ -78,13 +78,13 @@
       <app-setting-row
         [icon]="iconDoc"
         label="Términos y Condiciones"
-        (rowClick)="noop()"
+        (rowClick)="goTerminos()"
       ></app-setting-row>
       <app-setting-row
         [icon]="iconShield"
         label="Políticas de Privacidad"
         [last]="true"
-        (rowClick)="noop()"
+        (rowClick)="goPoliticas()"
       ></app-setting-row>
     </app-group-card>
   </div>

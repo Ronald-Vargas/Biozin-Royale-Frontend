@@ -1,6 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { GroupCardComponent } from 'src/app/User/shared/Components/group-card/group-card.component';
 import { GroupLabelComponent } from 'src/app/User/shared/Components/group-label/group-label.component';
@@ -35,11 +36,18 @@ export class AdminSettingsComponent {
   notifs = true;
   logo = 'assets/logo.png';
 
+  private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
+  private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
+
   constructor(private router: Router) {}
 
   goBack(){ this.router.navigate(['/admin']); }
   goPerfil()  { this.router.navigate(['/admin/miperfil']); }
+  goSeguridad() { this.router.navigate(['/admin/seguridad']); }
   setNotifs(v: boolean) { this.notifs = v; }
+
+  goTerminos()  { Browser.open({ url: this.termsUrl }); }
+  goPoliticas() { Browser.open({ url: this.privacyUrl }); }
 
   noop() {}
 }
