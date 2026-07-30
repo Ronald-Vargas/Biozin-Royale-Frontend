@@ -1,0 +1,98 @@
+<div class="support-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Seguridad" (back)="goBack()"></app-admin-header>
+
+    <!-- Contraseña -->
+    <app-sec-card
+      [icon]="iconLock"
+      title="Contraseña"
+      [lines]="passLines"
+      [btnIcon]="iconEdit"
+      [btnLabel]="hasPassword ? 'Cambiar contraseña' : 'Cuenta de Google'"
+      [disabled]="!hasPassword"
+      (btnClick)="changePass()"
+    ></app-sec-card>
+
+    <!-- Sesiones activas -->
+    <div class="sessions-block">
+      <app-section-head-sec
+        title="Sesiones activas"
+        [action]="sessionsAction"
+        (actionClick)="goSesiones()"
+      ></app-section-head-sec>
+
+      <div class="sessions-card">
+        <div
+          *ngFor="let s of visibleSessions; let last = last"
+          class="session-row"
+          [class.session-row--last]="last"
+        >
+          <span
+            class="status-led"
+            [class.status-led--active]="s.isCurrent"
+          ></span>
+
+          <div class="session-icon">
+            <app-icon [svg]="s.icon" [size]="19" style="color:var(--gold-1)"></app-icon>
+          </div>
+
+          <div class="session-body">
+            <div class="session-device">{{ s.device }}</div>
+            <div class="session-meta">IP: {{ s.ip }}</div>
+          </div>
+
+          <span *ngIf="s.isCurrent" class="active-badge">Este dispositivo</span>
+          <span *ngIf="!s.isCurrent" class="session-when">{{ s.when }}</span>
+
+          <button
+            *ngIf="!s.isCurrent"
+            class="session-close-btn"
+            type="button"
+            (click)="closeSession(s.id)"
+          >
+            <app-icon [svg]="iconTrash" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+          </button>
+        </div>
+
+        <div class="sessions-empty" *ngIf="!sessions.length">No hay sesiones activas.</div>
+      </div>
+
+      <button class="close-all-btn" (click)="closeAll()" *ngIf="sessions.length > 1">
+        <app-icon [svg]="iconTrash" [size]="18"></app-icon>
+        Cerrar otras sesiones
+      </button>
+    </div>
+
+    <!-- Historial de seguridad -->
+    <div class="history-block">
+      <app-section-head-sec
+        title="Historial de seguridad"
+        [action]="historyAction"
+        (actionClick)="goHistorial()"
+      ></app-section-head-sec>
+
+      <div class="history-card">
+        <div
+          *ngFor="let h of visibleHistory; let last = last"
+          class="history-row"
+          [class.history-row--last]="last"
+        >
+          <div class="history-icon" [style.border-color]="h.color">
+            <app-icon [svg]="h.icon" [size]="17" [style.color]="h.color"></app-icon>
+          </div>
+
+          <div class="history-body">
+            <div class="history-label">{{ h.label }}</div>
+            <div class="history-date">{{ h.date }}</div>
+          </div>
+        </div>
+
+        <div class="sessions-empty" *ngIf="!history.length">Sin actividad reciente.</div>
+      </div>
+    </div>
+  </div>
+
+  <app-support-nav current="ajustes"></app-support-nav>
+</div>

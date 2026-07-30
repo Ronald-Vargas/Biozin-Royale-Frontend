@@ -353,6 +353,26 @@ export const routes: Routes = [
     loadComponent: () => import('./Support/settings/settings.component').then(m => m.SettingsComponent),
   },
   {
+    path: 'soporte/seguridad',
+    canActivate: [roleGuard(['soporte'])],
+    loadComponent: () => import('./Support/security/security.component').then(m => m.SupportSecurityComponent),
+  },
+  {
+    path: 'soporte/seguridad/cambiar-contrasena',
+    canActivate: [roleGuard(['soporte'])],
+    loadComponent: () => import('./Support/security/change-password/change-password.component').then(m => m.SupportSecurityChangePasswordComponent),
+  },
+  {
+    path: 'soporte/seguridad/sesiones',
+    canActivate: [roleGuard(['soporte'])],
+    loadComponent: () => import('./Support/security/active-sessions/active-sessions.component').then(m => m.SupportActiveSessionsComponent),
+  },
+  {
+    path: 'soporte/seguridad/historial',
+    canActivate: [roleGuard(['soporte'])],
+    loadComponent: () => import('./Support/security/security-history/security-history.component').then(m => m.SupportSecurityHistoryComponent),
+  },
+  {
     path: 'create-ticket',
     canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/support/create-ticket/create-ticket.component').then(m => m.CreateTicketComponent),

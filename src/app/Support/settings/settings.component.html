@@ -6,44 +6,84 @@
 
     <!-- Perfil del agente -->
     <div class="profile-card">
-      <div class="profile-avatar">
-        <image-slot
-          id="support-photo-2"
-          shape="circle"
-          placeholder="Foto"
-          style="width:56px;height:56px;display:block;background:#15110b"
-        ></image-slot>
+      <img [src]="logo" alt="" class="profile-watermark"/>
+
+      <div class="avatar-wrap">
+        <div class="avatar-ring">
+          <image-slot
+            id="support-photo-2"
+            shape="circle"
+            placeholder="Foto"
+            style="width:78px;height:78px;display:block;background:#15110b"
+          ></image-slot>
+        </div>
+        <div class="camera-btn">
+          <app-icon [svg]="iconCamera" [size]="14" style="color:#2a1f06"></app-icon>
+        </div>
       </div>
-      <div class="profile-info">
-        <div class="profile-name">{{ perfil()?.displayName || perfil()?.username || 'Agente' }}</div>
-        <div class="profile-role">Agente de soporte</div>
+
+      <div class="identity">
+        <div class="identity-name">{{ perfil()?.displayName || perfil()?.username || 'Agente' }}</div>
+        <div class="identity-sub">Panel de soporte</div>
+        <div class="identity-role">
+          <app-icon [svg]="iconShield" [size]="14" style="color:var(--gold-1)"></app-icon>
+          <span>Rol: <span class="role-value">Agente de soporte</span></span>
+        </div>
       </div>
     </div>
+
+    <!-- Cuenta -->
+    <app-group-label>Cuenta</app-group-label>
+    <app-group-card>
+      <app-setting-row
+        [icon]="iconLock"
+        label="Seguridad"
+        [last]="true"
+        (rowClick)="goSeguridad()"
+      ></app-setting-row>
+    </app-group-card>
 
     <!-- Preferencias -->
-    <div class="prefs-card">
-      <div class="pref-row">
-        <div class="pref-icon">
-          <app-icon [svg]="iconNotifs" [size]="19" style="color:var(--gold-1)"></app-icon>
+    <app-group-label>Preferencias</app-group-label>
+    <app-group-card>
+      <div class="row-with-toggle">
+        <app-setting-row
+          [icon]="iconNotifs"
+          label="Notificaciones push"
+          [showChevron]="false"
+        ></app-setting-row>
+        <div class="toggle-overlay">
+          <app-toggle [on]="notif" (changed)="notif = $event"></app-toggle>
         </div>
-        <div class="pref-text">
-          <div class="pref-title">Notificaciones push</div>
-          <div class="pref-sub">Avisos de tickets nuevos y respuestas</div>
-        </div>
-        <app-toggle [on]="notif" (changed)="notif = $event"></app-toggle>
       </div>
+      <div class="row-with-toggle">
+        <app-setting-row
+          [icon]="iconVolume"
+          label="Sonido de alerta"
+          [showChevron]="false"
+          [last]="true"
+        ></app-setting-row>
+        <div class="toggle-overlay">
+          <app-toggle [on]="sound" (changed)="sound = $event"></app-toggle>
+        </div>
+      </div>
+    </app-group-card>
 
-      <div class="pref-row pref-row--last">
-        <div class="pref-icon">
-          <app-icon [svg]="iconVolume" [size]="19" style="color:var(--gold-1)"></app-icon>
-        </div>
-        <div class="pref-text">
-          <div class="pref-title">Sonido de alerta</div>
-          <div class="pref-sub">Reproduce un sonido al llegar un ticket</div>
-        </div>
-        <app-toggle [on]="sound" (changed)="sound = $event"></app-toggle>
-      </div>
-    </div>
+    <!-- General -->
+    <app-group-label>General</app-group-label>
+    <app-group-card>
+      <app-setting-row
+        [icon]="iconDoc"
+        label="Términos y Condiciones"
+        (rowClick)="goTerminos()"
+      ></app-setting-row>
+      <app-setting-row
+        [icon]="iconShield"
+        label="Políticas de Privacidad"
+        [last]="true"
+        (rowClick)="goPoliticas()"
+      ></app-setting-row>
+    </app-group-card>
 
     <!-- Cerrar sesión -->
     <div class="logout-wrap">
