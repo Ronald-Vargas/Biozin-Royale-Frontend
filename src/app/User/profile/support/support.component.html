@@ -57,4 +57,51 @@
       <app-icon [svg]="iconChevron" [size]="18" style="color:#6f6757"></app-icon>
     </div>
   </div>
+
+  <!-- Sheet de contacto rápido -->
+  <ng-container *ngIf="sheet">
+    <div class="sheet-backdrop" (click)="closeSheet()"></div>
+    <div class="sheet-panel">
+      <div class="sheet-handle"></div>
+
+      <div class="sheet-header">
+        <app-icon
+          [svg]="sheet === 'wa' ? iconWhatsApp : iconMail"
+          [size]="22"
+          [style.color]="sheet === 'wa' ? '#4fd190' : 'var(--gold-1)'"
+        ></app-icon>
+        <div class="sheet-title">
+          {{ sheet === 'wa' ? 'Contactar por WhatsApp' : 'Enviar correo' }}
+        </div>
+      </div>
+
+      <div class="sheet-sub">Selecciona la categoría y describe brevemente tu consulta</div>
+
+      <div class="sheet-cats">
+        <button
+          *ngFor="let c of categories"
+          class="cat-chip"
+          [class.cat-chip--active]="sheetCat === c"
+          (click)="sheetCat = c"
+        >{{ c }}</button>
+      </div>
+
+      <textarea
+        class="sheet-textarea"
+        [(ngModel)]="sheetNote"
+        placeholder="Describe tu consulta (opcional)…"
+        rows="3"
+      ></textarea>
+
+      <button class="sheet-btn" [disabled]="!sheetCat" (click)="openChannel()">
+        <app-icon
+          [svg]="sheet === 'wa' ? iconWhatsApp : iconMail"
+          [size]="18"
+          style="color:#2a1f06"
+        ></app-icon>
+        {{ sheet === 'wa' ? 'Abrir WhatsApp' : 'Abrir correo' }}
+      </button>
+    </div>
+  </ng-container>
+
 </app-screen-shell>

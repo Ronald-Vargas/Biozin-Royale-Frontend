@@ -10,4 +10,10 @@ export const environment = {
   // TODO: reemplazar con las claves de producción de Stripe/PayPal cuando se publique.
   stripePublishableKey: 'pk_test_51TvP0QLykFqgZ5b0ZzqETbn1AnAuUV6U4oEHVGJRcDNrdtYWY2GIKflPTTsbIK0ImyWQJyKKSkwOxOlZloEwgikm00KUuGrOE2',
   paypalClientId:       'BAAK0KMW7nvXjZLoH480rOmAz6f_v-KY_U4H3ZelTE1Ar9LSN88znDRUpnTRgUC29YryDqcDxFi6sdKpQI',
+
+  support: {
+    waNumber:  '50685348693',
+    waDisplay: '+506 8534-8693',
+    email:     'soporte@tudominio.com', // TODO: correo real al desplegar
+  },
 };
