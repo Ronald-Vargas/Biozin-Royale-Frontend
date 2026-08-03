@@ -86,7 +86,7 @@ export class ApuestasComponent implements OnInit, OnDestroy {
       basketball: '🏀 NBA',
       tennis:     '🎾 Tenis',
     };
-    const sports = [...new Set(this.matches.map(m => m.sport))];
+    const sports = [...new Set(this.matches.map(m => m.sport))].filter(s => s !== 'football');
     return [
       { key: 'all', label: 'Todo' },
       ...sports.map(s => ({ key: s as Filter, label: labels[s] ?? s })),
