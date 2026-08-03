@@ -4,8 +4,7 @@ export const environment = {
   supabaseUrl: 'https://ldolvhdrbpstmplszqav.supabase.co',
   supabaseKey: 'sb_publishable_qKrR3JEmJzXv52okPA0kMQ_EwKW-xL0',
 
-  // TODO: actualizar cuando el backend tenga una URL de producción.
-  apiUrl: 'http://localhost:5298/api',
+  apiUrl: 'https://biozin-api-fff5bjgtghgcdxat.centralus-01.azurewebsites.net/api',
 
   // TODO: reemplazar con las claves de producción de Stripe/PayPal cuando se publique.
   stripePublishableKey: 'pk_test_51TvP0QLykFqgZ5b0ZzqETbn1AnAuUV6U4oEHVGJRcDNrdtYWY2GIKflPTTsbIK0ImyWQJyKKSkwOxOlZloEwgikm00KUuGrOE2',
