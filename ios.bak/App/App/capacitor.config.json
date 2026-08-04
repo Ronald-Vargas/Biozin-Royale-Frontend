@@ -1,0 +1,13 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Biozin Royale",
+	"webDir": "www",
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"PreferencesPlugin",
+		"StatusBarPlugin"
+	]
+}
