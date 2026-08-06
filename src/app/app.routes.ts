@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './Core/Guards/role.guard';
 import { realAccountGuard } from './Core/Guards/real-account.guard';
+import { pinTransaccionGuard } from './Core/Guards/pin-transaccion.guard';
 
 // `depth` define el nivel jerárquico de cada pantalla. La animación
 // de rutas compara el orden entrante vs saliente: mayor = avance
@@ -103,13 +104,13 @@ export const routes: Routes = [
   {
     path: 'deposito',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
+    canActivate: [realAccountGuard, pinTransaccionGuard],
     loadComponent: () => import('./User/Wallet/deposits/deposits.component').then(m => m.DepositsComponent),
   },
   {
     path: 'retirar',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
+    canActivate: [realAccountGuard, pinTransaccionGuard],
     loadComponent: () => import('./User/Wallet/withdrawals/withdrawals.component').then(m => m.WithdrawalsComponent),
   },
   {

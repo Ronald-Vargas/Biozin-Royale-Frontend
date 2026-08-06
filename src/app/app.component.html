@@ -2,4 +2,10 @@
   <div class="route-host" [@routeAnimations]="getOrder(outlet)">
     <router-outlet #outlet="outlet"></router-outlet>
   </div>
+
+  <app-pin-confirm-modal
+    *ngIf="pinGateService.visible()"
+    (confirmed)="pinGateService.resolve(true)"
+    (closed)="pinGateService.resolve(false)"
+  ></app-pin-confirm-modal>
 </ion-app>
