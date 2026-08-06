@@ -14,7 +14,7 @@
 
         <app-emblem></app-emblem>
 
-        <div class="balance-pill">
+        <div class="balance-pill" [class.balance-pill--win]="balanceWin">
           <app-icon [svg]="iconDiamond" [size]="18" style="color:var(--gold-1)"></app-icon>
           <span class="balance-amt">{{ fmtMoney(balance) }}</span>
         </div>
@@ -37,8 +37,9 @@
             >
               <div
                 class="reel-strip"
-                [style.transform]="reelTransform(rl)"
-                [style.transition]="reelTransition(rl)"
+                [class.reel-strip--spin]="rl.spinning"
+                [style.transform]="rl.spinning ? null : reelTransform(rl)"
+                [style.transition]="rl.spinning ? null : reelTransition(rl)"
               >
                 <div
                   *ngFor="let sym of rl.strip; let idx = index"
