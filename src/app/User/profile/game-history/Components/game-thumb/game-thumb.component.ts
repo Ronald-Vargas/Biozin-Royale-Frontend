@@ -9,6 +9,7 @@ export interface GameHist {
   date:   string;
   time:   string;
   bet:    number;
+  payout: number;
   result: number;
   g1:     string;
   g2:     string;

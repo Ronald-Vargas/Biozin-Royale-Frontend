@@ -62,13 +62,18 @@ export class GameHistoryComponent implements OnInit {
       ...display,
       date: fecha.toLocaleDateString('es-CR'),
       time: fecha.toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' }),
-      bet: g.amount,
+      bet:    g.amount,
+      payout: g.payout,
       result: g.profit,
     };
   }
 
+  fmtAmt(n: number): string {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   fmt(n: number): string {
-    return (n >= 0 ? '+$' : '-$') + Math.abs(n).toFixed(0);
+    return (n >= 0 ? '+$' : '-$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   goBack() { this.router.navigate(['/perfil']); }
