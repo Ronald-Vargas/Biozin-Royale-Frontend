@@ -1,5 +1,48 @@
 ion-content.slots-content { --background: #0a0712; }
 
+// ── Toast inline ──────────────────────────────────────────────
+.slots-toast-wrap {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 0.9, 0.36, 1);
+
+  &--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.slots-toast-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, #1e1408 0%, #140f04 100%);
+  border: 1.5px solid rgba(199, 154, 50, 0.55);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65), 0 0 16px rgba(199, 154, 50, 0.18);
+  white-space: nowrap;
+}
+
+.slots-toast-icon {
+  font-size: 16px;
+  line-height: 1;
+  color: #f3923a;
+}
+
+.slots-toast-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8d49a;
+  letter-spacing: 0.2px;
+}
+
 .slots-root {
   position: relative;
   height: 100%;

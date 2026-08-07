@@ -6,7 +6,8 @@ import { firstValueFrom } from 'rxjs';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_DIAMOND, ICON_MINUS, ICON_ADD, ICON_FLASH, ICON_SYNC, ICON_REFRESH, ICON_INFO, ICON_BACK } from '../shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
-import { SlotsService } from 'src/app/Core/Services/slots.service';
+import { SlotsService, SlotsSpinResult } from 'src/app/Core/Services/slots.service';
+import { ApiResponse } from 'src/app/Core/Models/auth.models';
 import { EmblemComponent } from './Components/emblem/emblem.component';
 import { GemDefsComponent } from './Components/gem-defs/gem-defs.component';
 import { GemComponent } from './Components/gem/gem.component';
@@ -43,6 +44,9 @@ export class SlotsComponent implements OnInit, OnDestroy {
 
   balance    = 0;
   betIdx     = 1;
+  toastMsg   = '';
+  toastVisible = false;
+  private toastTimer: any;
   reels: Reel[] = [];
   winCells   = new Set<string>();
   spinning   = false;
@@ -79,7 +83,7 @@ export class SlotsComponent implements OnInit, OnDestroy {
     this.syncReels();
   }
 
-  ngOnDestroy() { this.destroyed = true; }
+  ngOnDestroy() { this.destroyed = true; clearTimeout(this.toastTimer); }
 
   // Publica reelData → this.reels (único punto de escritura al template)
   private syncReels() {
@@ -112,8 +116,19 @@ export class SlotsComponent implements OnInit, OnDestroy {
     this.betIdx = Math.max(0, Math.min(BET_STEPS.length - 1, this.betIdx + d));
   }
 
+  private showToast(message: string) {
+    clearTimeout(this.toastTimer);
+    this.toastMsg     = message;
+    this.toastVisible = true;
+    this.toastTimer   = setTimeout(() => { this.toastVisible = false; }, 3000);
+  }
+
   async spin() {
-    if (this.lockRef || this.spinning || this.balance < this.bet) return;
+    if (this.lockRef || this.spinning) return;
+    if (this.balance < this.bet) {
+      this.showToast('Saldo insuficiente para esta apuesta');
+      return;
+    }
     this.lockRef  = true;
     const isTurbo = this.turbo;
 
@@ -136,10 +151,17 @@ export class SlotsComponent implements OnInit, OnDestroy {
     this.syncReels();
 
     // Esperar la API (los carretes siguen girando mientras tanto)
-    const response = await spinCall;
+    let response: ApiResponse<SlotsSpinResult> | null = null;
+    let errorMsg = 'No se pudo procesar la apuesta';
+    try {
+      response = await spinCall;
+    } catch (err: any) {
+      // HTTP 4xx/5xx: Angular lanza una excepción con el body en err.error
+      errorMsg = err?.error?.strResponseMessage || err?.error?.title || errorMsg;
+    }
     if (this.destroyed) return;
 
-    if (!response.blnError && response.returnValue) {
+    if (response && !response.blnError && response.returnValue) {
       const { grid, win, newBalance } = response.returnValue;
 
       // Mostrar balance post-apuesta de inmediato
@@ -172,12 +194,14 @@ export class SlotsComponent implements OnInit, OnDestroy {
         this.balanceWin = false;
       }
     } else {
-      // Error: detener todos sin resultado y refrescar balance
+      // Error: detener todos sin resultado, mostrar motivo y refrescar balance
       this.reelData.forEach((r, c) => {
         this.reelData[c] = { ...r, spinning: false };
       });
       this.syncReels();
       this.spinning = false;
+      const msg = response?.strResponseMessage || errorMsg;
+      this.showToast(msg);
       this.balanceService.reload();
       this.balanceService.fetch().subscribe(b => { this.balance = b; });
     }
