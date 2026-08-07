@@ -10,7 +10,8 @@
         <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
         <input
           class="search-input"
-          [(ngModel)]="q"
+          [ngModel]="q"
+          (ngModelChange)="onSearch($event)"
           placeholder="Buscar por usuario…"
         />
       </div>
@@ -75,7 +76,7 @@
 
       @if (filteredRecent.length > 0) {
         <div class="recent-list">
-          @for (t of filteredRecent; track t.id) {
+          @for (t of pagedRecent; track t.id) {
             <div class="recent-row">
               <app-fin-icon
                 [icon]="typeIcon(t.transactionType)"
@@ -95,6 +96,31 @@
             </div>
           }
         </div>
+
+        <!-- Paginación -->
+        @if (totalPages > 1) {
+          <div class="pagination">
+            <button
+              class="page-arrow"
+              [disabled]="page === 0"
+              (click)="goPage(page - 1)"
+            >‹</button>
+
+            @for (p of pageNumbers; track p) {
+              <button
+                class="page-btn"
+                [class.page-btn--active]="page === p"
+                (click)="goPage(p)"
+              >{{ p + 1 }}</button>
+            }
+
+            <button
+              class="page-arrow"
+              [disabled]="page === totalPages - 1"
+              (click)="goPage(page + 1)"
+            >›</button>
+          </div>
+        }
       }
     }
   </div>

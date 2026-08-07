@@ -14,35 +14,53 @@
   </div>
 
   <ng-container *ngIf="!loading && !errorMsg && gameHist.length > 0">
-  <!-- Table head -->
-  <div class="table-head">
-    <span class="th">Juego</span>
-    <span class="th th--center">Fecha</span>
-    <span class="th th--right">Apuesta</span>
-    <span class="th th--right">Resultado</span>
-  </div>
 
-  <!-- Rows -->
-  <div class="table-body">
-    <div *ngFor="let g of gameHist" class="table-row">
-      <div class="cell-game">
-        <app-game-thumb [game]="g"></app-game-thumb>
-        <span class="game-name">{{ g.name }}</span>
+  <div class="hist-list">
+    <div *ngFor="let g of gameHist" class="hist-row">
+
+      <!-- Línea superior: juego + fecha -->
+      <div class="row-top">
+        <div class="cell-game">
+          <app-game-thumb [game]="g"></app-game-thumb>
+          <span class="game-name">{{ g.name }}</span>
+        </div>
+        <div class="cell-date">
+          <span class="date-day">{{ g.date }}</span>
+          <span class="date-time">{{ g.time }}</span>
+        </div>
       </div>
 
-      <div class="cell-date">
-        <div class="date-day">{{ g.date }}</div>
-        <div class="date-time">{{ g.time }}</div>
+      <!-- Línea inferior: desglose financiero -->
+      <div class="row-fin">
+        <div class="fin-block">
+          <span class="fin-label">Apostado</span>
+          <span class="fin-value">${{ fmtAmt(g.bet) }}</span>
+        </div>
+
+        <span class="fin-arrow">→</span>
+
+        <div class="fin-block">
+          <span class="fin-label">Ganancia</span>
+          <span class="fin-value fin-value--payout">
+            {{ g.payout > 0 ? '$' + fmtAmt(g.payout) : '—' }}
+          </span>
+        </div>
+
+        <span class="fin-arrow">=</span>
+
+        <div class="fin-block fin-block--result">
+          <span class="fin-label">Neto</span>
+          <span
+            class="fin-value fin-value--net"
+            [class.fin-value--pos]="g.result > 0"
+            [class.fin-value--neg]="g.result < 0"
+          >{{ fmt(g.result) }}</span>
+        </div>
       </div>
 
-      <span class="cell-bet">${{ g.bet }}</span>
-
-      <span
-        class="cell-result"
-        [style.color]="g.result >= 0 ? '#4fd190' : '#e06a6a'"
-      >{{ fmt(g.result) }}</span>
     </div>
   </div>
+
   </ng-container>
   </div>
 </app-screen-shell>
