@@ -6,12 +6,13 @@ import { ICON_SEARCH } from '../shared/icons/icons';
 import { ScreenShellComponent } from '../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BigGameCardComponent, GameItem } from './Components/big-game-card/big-game-card.component';
+import { UnderConstructionComponent } from './Components/under-construction/under-construction.component';
 
 interface Filter { key: string; label: string; }
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, ScreenShellComponent, SvgIconComponent, BigGameCardComponent],
+  imports: [CommonModule, FormsModule, ScreenShellComponent, SvgIconComponent, BigGameCardComponent, UnderConstructionComponent],
   selector: 'app-games',
   templateUrl: './games.component.html',
   styleUrls: ['./games.component.scss'],
@@ -22,6 +23,9 @@ export class GamesComponent {
   filter = 'todos';
   query  = '';
 
+  showUnderConstruct = false;
+  underConstGameName = '';
+
   filters: Filter[] = [
     { key: 'todos', label: 'Todos' },
     { key: 'slots', label: 'Slots' },
@@ -29,6 +33,7 @@ export class GamesComponent {
   ];
 
   allGames: GameItem[] = [
+    { name: 'Slots',              cat: 'slots', icon: 'cube',        g1: '#4a2a6e', g2: '#1c0f33', ic: '#e9c0ff' },
     { name: 'Sweet Bonanza',      cat: 'slots', icon: 'ice-cream',   g1: '#b1318f', g2: '#3a1142', ic: '#ffd9f3' },
     { name: 'Gates of Olympus',   cat: 'slots', icon: 'flash',       g1: '#2a59b5', g2: '#0e1d44', ic: '#ffe6a6' },
     { name: 'Wanted',             cat: 'slots', icon: 'skull',       g1: '#9c5a23', g2: '#341a0c', ic: '#ffd9a6' },
@@ -55,8 +60,17 @@ export class GamesComponent {
   goRuleta() { this.router.navigate(['/ruleta']); }
 
   onGameClick(g: GameItem) {
-  if (g.cat === 'slots')        this.goSlots();
-  else if (g.name === 'Roulette' || g.name === 'Lightning Roulette') this.goRuleta();
-  else if (g.name === 'Blackjack' || g.cat === 'mesa') this.router.navigate(['/blackjack-lobby']);
-}
+    if (g.name === 'Slots') {
+      this.goSlots();
+    } else if (g.name === 'Roulette') {
+      this.goRuleta();
+    } else if (g.name === 'Blackjack') {
+      this.router.navigate(['/blackjack-lobby']);
+    } else {
+      this.underConstGameName = g.name;
+      this.showUnderConstruct = true;
+    }
+  }
+
+  closeUnderConstruct() { this.showUnderConstruct = false; }
 }

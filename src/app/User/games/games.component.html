@@ -1,3 +1,9 @@
+<app-under-construction
+  *ngIf="showUnderConstruct"
+  [gameName]="underConstGameName"
+  (closed)="closeUnderConstruct()"
+></app-under-construction>
+
 <app-screen-shell
   title="Todos los juegos"
   current="juegos"

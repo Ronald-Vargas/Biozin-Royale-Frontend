@@ -1,0 +1,192 @@
+// ── Backdrop ──────────────────────────────────────────────────
+.uc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 3, 12, 0.88);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ucFadeIn 0.22s ease-out both;
+}
+
+// ── Card ──────────────────────────────────────────────────────
+.uc-card {
+  background: linear-gradient(160deg, #1a1206 0%, #0d0a02 100%);
+  border: 1.5px solid rgba(199, 154, 50, 0.45);
+  border-radius: 20px;
+  padding: 24px 22px 28px;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(199, 154, 50, 0.12);
+  animation: ucSlideUp 0.28s cubic-bezier(0.22, 0.9, 0.36, 1) both;
+}
+
+// ── SVG scene ─────────────────────────────────────────────────
+.uc-scene {
+  width: 100%;
+  max-width: 240px;
+}
+
+.uc-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+
+  // Obrero sube/baja en el andamio
+  .worker {
+    animation: workerBob 1.4s ease-in-out infinite alternate;
+    transform-origin: 110px 92px;
+  }
+
+  // Brazo con martillo — golpea hacia abajo
+  .hammer-arm {
+    animation: hammerSwing 0.7s ease-in-out infinite alternate;
+    transform-origin: 102px 81px;
+  }
+
+  // Engranaje gira continuamente
+  .gear {
+    animation: gearSpin 4s linear infinite;
+    transform-origin: 185px 28px;
+  }
+
+  // Chispas del martillo
+  .spark {
+    animation: sparkPop 0.7s ease-out infinite;
+    &.s1 { animation-delay: 0s; }
+    &.s2 { animation-delay: 0.18s; }
+    &.s3 { animation-delay: 0.35s; }
+    &.s4 { animation-delay: 0.52s; }
+  }
+}
+
+// ── Texto ──────────────────────────────────────────────────────
+.uc-game-name {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(199, 154, 50, 0.6);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.uc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #c79a32;
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 18px rgba(199, 154, 50, 0.45);
+}
+
+.uc-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: rgba(203, 185, 143, 0.75);
+  text-align: center;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 300px;
+}
+
+// ── Barra de progreso fake ─────────────────────────────────────
+.uc-progress-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.uc-progress-track {
+  width: 100%;
+  max-width: 280px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.uc-progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #8a6a1e, #c79a32, #f3d24e);
+  animation: fakeProgress 3.2s ease-in-out infinite;
+}
+
+.uc-progress-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  color: rgba(203, 185, 143, 0.45);
+  letter-spacing: 0.3px;
+}
+
+// ── Botón ──────────────────────────────────────────────────────
+.uc-btn {
+  margin-top: 4px;
+  padding: 12px 32px;
+  border-radius: 99px;
+  border: 1.5px solid rgba(199, 154, 50, 0.6);
+  background: linear-gradient(135deg, rgba(199, 154, 50, 0.15) 0%, rgba(199, 154, 50, 0.05) 100%);
+  color: #c79a32;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+
+  &:hover, &:active {
+    background: linear-gradient(135deg, rgba(199, 154, 50, 0.28) 0%, rgba(199, 154, 50, 0.12) 100%);
+    border-color: rgba(199, 154, 50, 0.85);
+    box-shadow: 0 0 14px rgba(199, 154, 50, 0.25);
+  }
+}
+
+// ── Keyframes ─────────────────────────────────────────────────
+@keyframes ucFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ucSlideUp {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)     scale(1);    }
+}
+
+@keyframes workerBob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
+}
+
+@keyframes hammerSwing {
+  from { transform: rotate(-18deg); }
+  to   { transform: rotate(12deg); }
+}
+
+@keyframes gearSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes sparkPop {
+  0%   { opacity: 0;   transform: scale(0.4) translate(0, 0); }
+  40%  { opacity: 1;   transform: scale(1.1) translate(-3px, -4px); }
+  100% { opacity: 0;   transform: scale(0.2) translate(-6px, -8px); }
+}
+
+@keyframes fakeProgress {
+  0%   { width: 8%;   opacity: 1; }
+  55%  { width: 82%;  opacity: 1; }
+  80%  { width: 88%;  opacity: 1; }
+  90%  { width: 92%;  opacity: 0.7; }
+  100% { width: 8%;   opacity: 0; }
+}
