@@ -5,10 +5,11 @@ import { IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
-import { ICON_TRASH, ICON_REFRESH, ICON_PLAY, ICON_SYNC, ICON_BACK } from '../shared/icons/icons';
+import { ICON_TRASH, ICON_REFRESH, ICON_PLAY, ICON_SYNC, ICON_BACK, ICON_INFO } from '../shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { RuletaService } from 'src/app/Core/Services/ruleta.service';
 import { RouletteWheelComponent, numColor, REDS_EXP, rotationForWinning } from './Components/roulette-wheel/roulette-wheel.component';
+import { RoulettePaytableComponent } from './Components/roulette-paytable/roulette-paytable.component';
 
 interface Chip   { v: number; img: string; }
 interface BetMap { [key: string]: number; }
@@ -18,7 +19,7 @@ interface Toast  { msg: string; kind?: 'win' | 'lose'; }
   standalone: true,
   imports: [
     CommonModule, IonicModule, AtmosphereComponent, SvgIconComponent,
-    RouletteWheelComponent,
+    RouletteWheelComponent, RoulettePaytableComponent,
   ],
   selector: 'app-roulette',
   templateUrl: './roulette.component.html',
@@ -30,9 +31,11 @@ export class RouletteComponent implements OnInit, OnDestroy {
   iconRefresh = ICON_REFRESH;
   iconPlay    = ICON_PLAY;
   iconSync    = ICON_SYNC;
+  iconInfo    = ICON_INFO;
 
   readonly balance = this.balanceService.balance;
 
+  showPaytable    = false;
   chip            = 5;
   bets: BetMap    = {};
   rotation        = 0;
@@ -131,7 +134,9 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.bets = { ...this.lastBets };
   }
 
-  goBack() { this.router.navigate(['/home']); }
+  goBack()         { this.router.navigate(['/home']); }
+  openPaytable()   { this.showPaytable = true; }
+  closePaytable()  { this.showPaytable = false; }
 
   flash(msg: string, kind?: 'win' | 'lose') {
     if (this.toastTimer) clearTimeout(this.toastTimer);

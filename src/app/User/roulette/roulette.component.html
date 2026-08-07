@@ -150,6 +150,10 @@
           <app-icon [svg]="iconRefresh" [size]="18"></app-icon>
         </button>
 
+        <button class="action-btn" (click)="openPaytable()" aria-label="Tabla de pagos">
+          <app-icon [svg]="iconInfo" [size]="18" style="color:var(--gold-1)"></app-icon>
+        </button>
+
         <div class="footer-info footer-info--right">
           <div class="info-label">APUESTA</div>
           <div class="info-value info-value--cream">{{ fmtMoney(total) }}</div>
@@ -177,5 +181,11 @@
       class="toast"
       [class.toast--win]="toast.kind === 'win'"
     >{{ toast.msg }}</div>
+
+    <!-- Paytable modal -->
+    <app-roulette-paytable
+      *ngIf="showPaytable"
+      (closed)="closePaytable()"
+    ></app-roulette-paytable>
   </div>
 </ion-content>
