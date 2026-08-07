@@ -13,6 +13,7 @@ import { BetOutcome, SportMatch } from '../../Core/Models/sports.models';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
 import { BetSlipService } from 'src/app/Core/Services/bet-slip.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 
 @Component({
@@ -47,10 +48,15 @@ export class HomeComponent implements OnInit {
     private sportsService: SportsService,
     private balanceService: BalanceService,
     private betSlipService: BetSlipService,
+    private authService: AuthService,
   ) {}
 
+  get isGuest(): boolean {
+    return !!this.authService.currentProfile()?.isGuest;
+  }
+
   ngOnInit(): void {
-    this.balanceService.load();
+    if (!this.isGuest) this.balanceService.load();
     this.sportsService.getMatches().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {

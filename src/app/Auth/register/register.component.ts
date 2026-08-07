@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonCheckbox } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { Browser } from '@capacitor/browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { DividerComponent } from 'src/app/User/shared/Components/divider/divider.component';
@@ -33,6 +34,8 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
 export class RegisterComponent {
   private readonly authService = inject(AuthService);
 
+  private readonly termsUrl = 'https://bjimenez867.github.io/biozin-pages/terms.html';
+
   form: FormGroup;
   loading = false;
   agree   = false;
@@ -60,9 +63,10 @@ export class RegisterComponent {
   get passCtrl()    { return this.form.get('pass')    as FormControl; }
   get confirmCtrl() { return this.form.get('confirm') as FormControl; }
 
-  goBack()  { this.router.navigate(['/welcome'], { replaceUrl: true }); }
-  goLogin() { this.router.navigate(['/auth/login']); }
-  goHome()  { this.router.navigate(['/home'], { replaceUrl: true }); }
+  goBack()     { this.router.navigate(['/welcome'], { replaceUrl: true }); }
+  goLogin()    { this.router.navigate(['/auth/login']); }
+  goHome()     { this.router.navigate(['/home'], { replaceUrl: true }); }
+  goTerminos() { Browser.open({ url: this.termsUrl }); }
 
   submit() {
     if (this.loading) return;
