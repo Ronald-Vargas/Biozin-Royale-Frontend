@@ -26,7 +26,7 @@
 
       <!-- Wheel -->
       <div class="wheel-area">
-        <app-roulette-wheel [rotation]="rotation" [size]="224"></app-roulette-wheel>
+        <app-roulette-wheel [rotation]="rotation" [size]="224" [freeSpinning]="wheelFreeSpinning"></app-roulette-wheel>
 
         <div *ngIf="last !== null" class="result-badge">
           <span class="result-label">ÚLTIMO</span>
@@ -139,7 +139,7 @@
       <div class="footer-row">
         <div class="footer-info">
           <div class="info-label">SALDO</div>
-          <div class="gold-text info-value">{{ fmtMoney(balance) }}</div>
+          <div class="gold-text info-value">{{ fmtMoney(currentBalance) }}</div>
         </div>
 
         <button class="action-btn action-btn--danger" (click)="clearBets()" aria-label="Limpiar">
