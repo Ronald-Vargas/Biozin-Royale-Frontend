@@ -2,10 +2,9 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
-import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import {
-  ICON_CHATBUBBLES, ICON_CHEVRON_FWD, ICON_POWER,
+  ICON_CHATBUBBLES, ICON_CHEVRON_FWD,
   ICON_PEOPLE, ICON_WALLET_FILLED, ICON_CASH, ICON_STATS,
 } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
@@ -17,7 +16,7 @@ import { ReportesService } from 'src/app/Core/Services/reportes.service';
 @Component({
   standalone: true,
   imports: [
-    CommonModule, AtmosphereComponent, GoldButtonComponent,
+    CommonModule, AtmosphereComponent,
     SvgIconComponent, AdminNavComponent, KpiCardComponent,
   ],
   selector: 'app-home',
@@ -27,7 +26,6 @@ import { ReportesService } from 'src/app/Core/Services/reportes.service';
 })
 export class HomeComponent implements OnInit {
   iconChevron     = ICON_CHEVRON_FWD;
-  iconPower       = ICON_POWER;
   iconChatbubbles = ICON_CHATBUBBLES;
 
   logo        = 'assets/logo.png';
