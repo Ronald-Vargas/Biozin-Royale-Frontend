@@ -114,6 +114,35 @@
   letter-spacing: 0.3px;
 }
 
+.tx-receipt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(212, 167, 60, 0.06);
+  border: 1px solid rgba(212, 167, 60, 0.18);
+}
+
+.tx-receipt-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(203, 185, 143, 0.55);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.tx-receipt-num {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c79a32;
+  letter-spacing: 1px;
+}
+
 // ── Empty ────────────────────────────────────────────────────
 .empty-state {
   text-align: center;

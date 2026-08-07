@@ -128,6 +128,10 @@
           Tu nuevo saldo es <strong>${{ newBalance.toFixed(2) }}</strong>.
         </span>
       </div>
+      <div *ngIf="receiptNumber" class="receipt-box">
+        <span class="receipt-label">Comprobante</span>
+        <span class="receipt-num">{{ receiptNumber }}</span>
+      </div>
       <div class="footer-btn" style="margin-top:32px">
         <app-gold-button (clicked)="goWallet()">Ir a mi billetera</app-gold-button>
       </div>

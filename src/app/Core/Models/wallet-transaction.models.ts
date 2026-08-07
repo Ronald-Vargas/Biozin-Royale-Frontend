@@ -15,6 +15,7 @@ export interface FinanzasTransaccionResultado {
   createdAt: string;
   username: string;
   displayName: string;
+  receiptNumber: string | null;
 }
 
 export interface WalletTransactionResultado {
@@ -25,6 +26,7 @@ export interface WalletTransactionResultado {
   balanceBefore: number;
   balanceAfter: number;
   referenceType: string | null;
+  receiptNumber: string | null;
   createdAt: string;
 }
 

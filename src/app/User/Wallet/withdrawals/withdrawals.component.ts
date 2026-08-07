@@ -35,8 +35,9 @@ export class WithdrawalsComponent implements OnInit, ViewWillEnter {
   loading  = false;
   errorMsg = '';
 
-  newBalance: number | null = null;
+  newBalance:    number | null = null;
   withdrawnAmount = 0;
+  receiptNumber: string | null = null;
 
   iconPaypal = ICON_PAYPAL;
   iconCard   = ICON_CARD;
@@ -128,8 +129,9 @@ export class WithdrawalsComponent implements OnInit, ViewWillEnter {
         this.errorMsg = res.strResponseMessage || 'No se pudo procesar el retiro.';
         this.step     = 'error';
       } else {
-        this.newBalance = res.returnValue.newBalance;
-        this.step       = 'success';
+        this.newBalance    = res.returnValue.newBalance;
+        this.receiptNumber = res.returnValue.receiptNumber ?? null;
+        this.step          = 'success';
       }
     } catch {
       this.errorMsg = 'Error de conexión. Intentá de nuevo.';

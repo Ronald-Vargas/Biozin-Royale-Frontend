@@ -88,6 +88,9 @@
               <div class="recent-info">
                 <div class="recent-type">{{ typeLabel(t.transactionType) }} · {{ t.username }}</div>
                 <div class="recent-when">{{ fmtDate(t.createdAt) }}</div>
+                @if (t.receiptNumber) {
+                  <div class="recent-receipt">{{ t.receiptNumber }}</div>
+                }
               </div>
               <div class="recent-right">
                 <div class="recent-amount" [style.color]="typeColor(t.transactionType)">{{ fmtAmount(t) }}</div>

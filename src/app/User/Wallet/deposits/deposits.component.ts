@@ -38,11 +38,13 @@ export class DepositsComponent {
   stripeError = '';
   newBalance: number | null = null;
   depositedAmount = 0;
+  receiptNumber: string | null = null;
   errorMsg = '';
 
   private stripe: Stripe | null = null;
   private cardElement: StripeCardElement | null = null;
   private clientSecret = '';
+  private pendingReceipt = '';
 
   iconCard   = ICON_CARD;
   iconPaypal = ICON_PAYPAL;
@@ -86,6 +88,7 @@ export class DepositsComponent {
         }
         this.clientSecret    = res.returnValue.clientSecret;
         this.depositedAmount = this.finalAmount;
+        this.pendingReceipt  = res.returnValue.receiptNumber ?? '';
         this.loading = false;
         this.step    = 'stripe-form';
         setTimeout(() => this.mountStripeElement(), 100);
@@ -103,6 +106,7 @@ export class DepositsComponent {
         }
         const orderId        = res.returnValue.orderId;
         this.depositedAmount = this.finalAmount;
+        this.pendingReceipt  = res.returnValue.receiptNumber ?? '';
         this.loading  = false;
         this.step     = 'paypal-button';
         setTimeout(() => this.renderPayPalButtons(orderId), 100);
@@ -154,6 +158,7 @@ export class DepositsComponent {
     }
 
     if (paymentIntent?.status === 'succeeded') {
+      this.receiptNumber = this.pendingReceipt || null;
       this.loading = false;
       this.step    = 'success';
     }
@@ -175,8 +180,9 @@ export class DepositsComponent {
           try {
             const res = await firstValueFrom(this.depositosService.capturarPayPal(orderId));
             if (!res.blnError && res.returnValue != null) {
-              this.newBalance = res.returnValue;
-              this.step       = 'success';
+              this.newBalance    = res.returnValue;
+              this.receiptNumber = this.pendingReceipt || null;
+              this.step          = 'success';
             } else {
               this.errorMsg = res.strResponseMessage || 'No se pudo confirmar el pago.';
               this.step     = 'error';
