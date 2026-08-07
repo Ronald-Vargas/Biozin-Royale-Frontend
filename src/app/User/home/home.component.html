@@ -12,7 +12,7 @@
           <app-icon [svg]="iconPerson" [size]="27" style="color:var(--gold-1)"></app-icon>
         </div>
 
-        <div class="balance-pill">
+        <div class="balance-pill" *ngIf="!isGuest">
           <span class="balance-amount">
             {{ balance() != null ? (balance()! | currency:'USD':'symbol':'1.2-2') : '$ ----' }}
           </span>

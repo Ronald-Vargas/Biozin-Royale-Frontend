@@ -23,7 +23,7 @@
         (ionChange)="agree = $event.detail.checked"
       ></ion-checkbox>
       <span class="agree-text">
-        Acepto los <span class="link-gold">Términos y Condiciones</span>
+        Acepto los <span class="link-gold" (click)="goTerminos(); $event.stopPropagation()">Términos y Condiciones</span>
       </span>
     </label>
 

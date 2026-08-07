@@ -1,15 +1,20 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { IonApp } from '@ionic/angular/standalone';
 import { routeAnimations } from './route-animations';
+import { PinGateService } from './Core/Services/pin-gate.service';
+import { PinConfirmModalComponent } from './User/shared/Components/pin-confirm-modal/pin-confirm-modal.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, RouterOutlet],
+  imports: [CommonModule, IonApp, RouterOutlet, PinConfirmModalComponent],
   animations: [routeAnimations],
 })
 export class AppComponent {
+  constructor(readonly pinGateService: PinGateService) {}
+
   // Valor que ordena las pantallas para la animación. Combinamos el
   // `depth` jerárquico con el índice de pestaña (`tab`) del bottom-nav:
   // así las pestañas que comparten depth (todas en 5) quedan ordenadas

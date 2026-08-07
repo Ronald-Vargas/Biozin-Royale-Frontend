@@ -1,0 +1,1 @@
+function s(e){let r=e?.status??0,n=e?.error?.strResponseMessage??"";return r===0?"No se pudo conectar con el servidor. \xBFEst\xE1 el backend corriendo?":r===401?"Sesi\xF3n expirada. Vuelve a iniciar sesi\xF3n.":r===403?"No tienes permiso para esta acci\xF3n.":r===404?"Recurso no encontrado (404).":r>=500?n||`Error interno del servidor (${r}).`:n||`Error ${r}.`}export{s as a};
