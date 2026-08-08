@@ -189,22 +189,18 @@ export const routes: Routes = [
   {
     path: 'ruleta',
     data: { depth: 5, tab: 1 },
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
   },
   {
     path: 'slots',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/slots/slots.component').then(m => m.SlotsComponent),
   },
   {
     path: 'blackjack-lobby',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/blackjack/Lobby/blackjack-lobby.component').then(m => m.BlackjackLobbyComponent),
   },
   {
     path: 'blackjack/:id',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/blackjack/blackjack.component').then(m => m.BlackjackComponent),
   },
   {

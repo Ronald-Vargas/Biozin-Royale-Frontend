@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_DIAMOND, ICON_MINUS, ICON_ADD, ICON_FLASH, ICON_SYNC, ICON_REFRESH, ICON_INFO, ICON_BACK } from '../shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 import { SlotsService, SlotsSpinResult } from 'src/app/Core/Services/slots.service';
 import { ApiResponse } from 'src/app/Core/Models/auth.models';
 import { EmblemComponent } from './Components/emblem/emblem.component';
@@ -70,10 +71,15 @@ export class SlotsComponent implements OnInit, OnDestroy {
     private router: Router,
     private balanceService: BalanceService,
     private slotsService: SlotsService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
-    this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    if (this.authService.currentProfile()?.isGuest) {
+      this.balance = 0;
+    } else {
+      this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    }
     this.reelData = Array.from({ length: COLS }, () => ({
       strip: Array.from({ length: ROWS }, () => randomSym()),
       offset: 0,
@@ -125,6 +131,10 @@ export class SlotsComponent implements OnInit, OnDestroy {
 
   async spin() {
     if (this.lockRef || this.spinning) return;
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
+    }
     if (this.balance < this.bet) {
       this.showToast('Saldo insuficiente para esta apuesta');
       return;

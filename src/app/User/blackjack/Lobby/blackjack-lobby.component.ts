@@ -6,6 +6,7 @@ import { SvgIconComponent }     from '../../shared/Components/svg-icons/svg-icon
 import { BJ_TABLES, BjTable }   from './tables.data';
 import { ICON_FILTER, ICON_ADD_CIRCLE, ICON_ADD } from '../../shared/icons/icons';
 import { TableCardComponent } from './Components/table-card/table-card.component';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
   standalone: true,
@@ -22,9 +23,13 @@ export class BlackjackLobbyComponent implements OnInit {
   tables = BJ_TABLES;
   balance = 1250;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
+    if (this.authService.currentProfile()?.isGuest) {
+      this.balance = 0;
+      return;
+    }
     const stored = parseFloat(localStorage.getItem('biozin_balance') || '');
     if (!isNaN(stored)) this.balance = stored;
   }

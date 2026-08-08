@@ -6,6 +6,7 @@ import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_TRASH, ICON_REFRESH, ICON_PLAY, ICON_SYNC, ICON_BACK } from '../shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 import { RouletteWheelComponent, numColor, REDS_EXP, rotationForWinning } from './Components/roulette-wheel/roulette-wheel.component';
 
 
@@ -64,10 +65,18 @@ export class RouletteComponent implements OnInit, OnDestroy {
     { v: 100, img: 'assets/chip-100.png' },
   ];
 
-  constructor(private router: Router, private balanceService: BalanceService) {}
+  constructor(
+    private router: Router,
+    private balanceService: BalanceService,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit() {
-    this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    if (this.authService.currentProfile()?.isGuest) {
+      this.balance = 0;
+    } else {
+      this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    }
   }
 
   ngOnDestroy() {
@@ -141,6 +150,10 @@ export class RouletteComponent implements OnInit, OnDestroy {
   // ── Spin ───────────────────────────────────────────────────
   spin() {
     if (this.spinning || this.total === 0) return;
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
+    }
 
     const w = Math.floor(Math.random() * 37);
     this.lastBets = { ...this.bets };

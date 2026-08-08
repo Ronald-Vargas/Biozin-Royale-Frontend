@@ -56,7 +56,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.isGuest) this.balanceService.load();
+    if (this.isGuest) this.balanceService.set(0);
+    else this.balanceService.load();
     this.sportsService.getMatches().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
