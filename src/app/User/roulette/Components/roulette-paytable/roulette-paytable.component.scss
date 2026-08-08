@@ -1,0 +1,167 @@
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(6, 4, 10, 0.80);
+  display: flex;
+  align-items: flex-end;
+  animation: ptFade 0.2s ease both;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-height: 88%;
+  overflow-y: auto;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  background: linear-gradient(180deg, #1a1430, #0c0916);
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  border-bottom: none;
+  padding: 16px 18px 32px;
+  box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.6);
+  animation: ptUp 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.handle {
+  width: 44px; height: 4px;
+  border-radius: 3px;
+  background: rgba(212, 167, 60, 0.5);
+  margin: 0 auto 14px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.close-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  color: #cbb98f;
+  line-height: 1.55;
+  margin: 0 0 20px;
+
+  .gold { color: var(--gold-1); }
+}
+
+// ── Groups ────────────────────────────────────────────────────
+.group { margin-bottom: 18px; }
+
+.group-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: rgba(203, 185, 143, 0.55);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.rows { display: flex; flex-direction: column; gap: 7px; }
+
+.bet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+}
+
+.bet-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.bet-info { flex: 1; min-width: 0; }
+
+.bet-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.bet-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: rgba(203, 185, 143, 0.6);
+  margin-top: 2px;
+}
+
+.payout-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-1);
+  background: rgba(199, 154, 50, 0.1);
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  border-radius: 8px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Nota del cero ─────────────────────────────────────────────
+.zero-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(31, 138, 76, 0.1);
+  border: 1px solid rgba(31, 138, 76, 0.35);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  color: rgba(203, 185, 143, 0.75);
+  line-height: 1.5;
+}
+
+.zero-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #2fae63, #105930);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@keyframes ptFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ptUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}

@@ -206,7 +206,6 @@ export const routes: Routes = [
   {
     path: 'apuestas',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
   {

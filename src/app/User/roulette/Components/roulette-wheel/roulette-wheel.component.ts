@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 const EU_ORDER = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
@@ -20,9 +20,11 @@ interface Sector {
   templateUrl: './roulette-wheel.component.html',
   styleUrls: ['./roulette-wheel.component.scss'],
 })
-export class RouletteWheelComponent implements OnInit, OnChanges {
-  @Input() rotation = 0;
-  @Input() size     = 240;
+export class RouletteWheelComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() rotation     = 0;
+  @Input() size         = 240;
+  /** When true: giro libre rápido sin transición (RAF-driven desde el padre). */
+  @Input() freeSpinning = false;
 
   readonly C = 100;
   readonly rPocketOut = 88;
@@ -33,12 +35,9 @@ export class RouletteWheelComponent implements OnInit, OnChanges {
   arms = [0, 45, 90, 135, 180, 225, 270, 315];
   armKnobs: { x: number; y: number; rot: number }[] = [];
 
-  ngOnInit() {
-    this.buildSectors();
-    this.buildKnobs();
-  }
-
-  ngOnChanges() { /* rotation reactivo via style binding */ }
+  ngOnInit()    { this.buildSectors(); this.buildKnobs(); }
+  ngOnChanges() { /* rotation y freeSpinning reactivos via style/class binding */ }
+  ngOnDestroy() {}
 
   private buildSectors() {
     this.sectors = EU_ORDER.map((n, i) => {

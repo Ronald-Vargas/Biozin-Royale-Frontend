@@ -67,6 +67,7 @@
     <!-- Rotating group -->
     <g
       class="wheel-rotor"
+      [class.wheel-rotor--free]="freeSpinning"
       [style.transform]="'rotate(' + rotation + 'deg)'"
     >
       <circle cx="100" cy="100" [attr.r]="rPocketOut + 0.6" fill="url(#rwGold2)"/>

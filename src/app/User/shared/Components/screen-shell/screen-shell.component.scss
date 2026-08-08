@@ -36,7 +36,7 @@ ion-content.shell-content { --background: var(--bg-dark); }
 
 .screen-header {
   position: sticky;
-  top: 0;
+  top: var(--ion-safe-area-top);
   z-index: 5;
   background: var(--bg-dark);
   display: flex;
