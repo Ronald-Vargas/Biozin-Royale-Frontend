@@ -17,3 +17,8 @@ export interface LoginManualRequest {
   email: string;
   password: string;
 }
+
+export interface TokenPar {
+  token: string;
+  refreshToken: string;
+}

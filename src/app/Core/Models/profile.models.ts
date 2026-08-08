@@ -14,6 +14,7 @@ export interface PerfilResultado {
   pinEnabled: boolean;
   twoFactorEnabled: boolean;
   token: string | null;
+  refreshToken?: string | null;
   camposPendientes: string[];
   tempPassword?: string | null;
   mustChangePassword?: boolean;
