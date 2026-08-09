@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonCheckbox } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
@@ -84,6 +85,30 @@ export class RegisterComponent {
 
   async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
     this.loading = true;
+
+    // En la app nativa no hay un origen público al que Google/Supabase puedan
+    // redirigir de vuelta, así que se abre un navegador in-app y se vuelve por
+    // un deep link (ver AppComponent) en vez de navegar dentro del WebView.
+    if (Capacitor.isNativePlatform()) {
+      const { data, error } = await this.supabaseService.client.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: 'com.biozinroyale.app://auth/callback',
+          skipBrowserRedirect: true,
+        },
+      });
+
+      if (error || !data?.url) {
+        console.error(`Error iniciando sesión con ${provider}:`, error);
+        this.loading = false;
+        this.errorMsg = error?.message || 'No se pudo conectar con el servidor. Intenta de nuevo.';
+        return;
+      }
+
+      await Browser.open({ url: data.url });
+      return;
+    }
+
     const { error } =
       await this.supabaseService.client.auth.signInWithOAuth({
         provider,
