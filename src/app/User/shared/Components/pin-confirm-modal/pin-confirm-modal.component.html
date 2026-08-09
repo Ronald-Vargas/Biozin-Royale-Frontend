@@ -1,0 +1,25 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-sheet" (click)="stop($event)">
+    <div class="handle"></div>
+
+    <div class="modal-header">
+      <h2 class="gold-text modal-title">PIN de transacciones</h2>
+      <button class="close-btn" type="button" (click)="close()">
+        <app-icon [svg]="iconClose" [size]="18" style="color:var(--gold-1)"></app-icon>
+      </button>
+    </div>
+
+    <p class="intro">Ingresa tu PIN de transacciones para continuar.</p>
+
+    <app-pin-input [value]="pinValue" (valueChange)="pinValue = $event"></app-pin-input>
+
+    <div class="pin-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+    <div class="pin-confirm-row">
+      <button class="pin-submit pin-submit--ghost" type="button" (click)="close()">Cancelar</button>
+      <button class="pin-submit" type="button" [disabled]="loading" (click)="submit()">
+        {{ loading ? 'Verificando…' : 'Confirmar' }}
+      </button>
+    </div>
+  </div>
+</div>

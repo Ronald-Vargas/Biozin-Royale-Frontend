@@ -107,6 +107,12 @@
       } @else {
         <p class="state-sub">Tu saldo se actualizará en breve.</p>
       }
+      @if (receiptNumber) {
+        <div class="receipt-box">
+          <span class="receipt-label">Comprobante</span>
+          <span class="receipt-num">{{ receiptNumber }}</span>
+        </div>
+      }
       <div style="margin-top:28px">
         <app-gold-button (clicked)="goWallet()">Ir a mi billetera</app-gold-button>
       </div>

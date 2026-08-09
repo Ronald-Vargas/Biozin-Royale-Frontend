@@ -35,6 +35,7 @@ export interface IniciarRetiroRequest {
 }
 
 export interface RetiroResultado {
-  transactionId: string;
-  newBalance:    number;
+  transactionId:  string;
+  newBalance:     number;
+  receiptNumber?: string;
 }

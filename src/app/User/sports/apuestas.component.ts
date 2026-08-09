@@ -6,6 +6,7 @@ import { AtmosphereComponent } from '../shared/Components/atmosphere/atmosphere.
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { ICON_ARROW_BACK, ICON_CLOSE } from '../shared/icons/icons';
 import { BetOutcome, Sport, SportMatch } from '../../Core/Models/sports.models';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { BetsService, MyBet } from 'src/app/Core/Services/bets.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
@@ -53,6 +54,7 @@ export class ApuestasComponent implements OnInit, OnDestroy {
     private sportsService: SportsService,
     private betsService: BetsService,
     private betSlipService: BetSlipService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -214,6 +216,10 @@ export class ApuestasComponent implements OnInit, OnDestroy {
 
   confirmBet(): void {
     if (!this.canConfirm) return;
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
+    }
     this.placing  = true;
     this.betError = '';
 

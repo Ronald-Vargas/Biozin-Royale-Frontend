@@ -17,17 +17,18 @@ import {
 } from 'src/app/Core/Models/wallet-transaction.models';
 
 interface Tx {
-  id:     string;
-  type:   string;
-  cat:    'deposito' | 'retiro';
-  date:   string;
-  amt:    string;
-  pos:    boolean;
-  icon:   string;
-  color:  string;
-  method: string;
-  status: string;
-  statusColor: string;
+  id:            string;
+  type:          string;
+  cat:           'deposito' | 'retiro';
+  date:          string;
+  amt:           string;
+  pos:           boolean;
+  icon:          string;
+  color:         string;
+  method:        string;
+  status:        string;
+  statusColor:   string;
+  receiptNumber: string | null;
 }
 
 interface Filter { key: string; label: string; }
@@ -65,17 +66,18 @@ export class TransactionsComponent implements OnInit {
   private toTx(t: WalletTransactionResultado): Tx {
     const deposit = isDeposit(t);
     return {
-      id: t.id,
-      type: transactionTypeLabel(t),
-      cat: deposit ? 'deposito' : 'retiro',
-      date: formatTransactionDate(t.createdAt),
-      amt: formatTransactionAmount(t),
-      pos: deposit,
-      icon: deposit ? ICON_ARROW_DOWN : ICON_ARROW_UP,
-      color: transactionColor(t),
-      method: '',
-      status: transactionStatusLabel(t),
-      statusColor: transactionStatusColor(t),
+      id:            t.id,
+      type:          transactionTypeLabel(t),
+      cat:           deposit ? 'deposito' : 'retiro',
+      date:          formatTransactionDate(t.createdAt),
+      amt:           formatTransactionAmount(t),
+      pos:           deposit,
+      icon:          deposit ? ICON_ARROW_DOWN : ICON_ARROW_UP,
+      color:         transactionColor(t),
+      method:        '',
+      status:        transactionStatusLabel(t),
+      statusColor:   transactionStatusColor(t),
+      receiptNumber: t.receiptNumber ?? null,
     };
   }
 

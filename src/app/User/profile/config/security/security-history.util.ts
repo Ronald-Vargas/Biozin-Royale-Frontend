@@ -20,6 +20,7 @@ const EVENT_META: Record<string, { label: string; icon: string; color: string }>
   pin_disabled:        { label: 'PIN desactivado',       icon: ICON_KEYPAD,  color: RED },
   twofactor_enabled:   { label: 'Verificación en dos pasos activada',   icon: ICON_SHIELD, color: GREEN },
   twofactor_disabled:  { label: 'Verificación en dos pasos desactivada', icon: ICON_SHIELD, color: RED },
+  account_locked:      { label: 'Cuenta bloqueada por intentos fallidos', icon: ICON_SHIELD, color: RED },
 };
 
 export function mapSecurityEvent(e: SecurityEventResultado): HistEntry {

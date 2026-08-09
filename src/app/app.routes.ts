@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './Core/Guards/role.guard';
 import { realAccountGuard } from './Core/Guards/real-account.guard';
+import { pinTransaccionGuard } from './Core/Guards/pin-transaccion.guard';
 
 // `depth` define el nivel jerárquico de cada pantalla. La animación
 // de rutas compara el orden entrante vs saliente: mayor = avance
@@ -103,13 +104,13 @@ export const routes: Routes = [
   {
     path: 'deposito',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
+    canActivate: [realAccountGuard, pinTransaccionGuard],
     loadComponent: () => import('./User/Wallet/deposits/deposits.component').then(m => m.DepositsComponent),
   },
   {
     path: 'retirar',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
+    canActivate: [realAccountGuard, pinTransaccionGuard],
     loadComponent: () => import('./User/Wallet/withdrawals/withdrawals.component').then(m => m.WithdrawalsComponent),
   },
   {
@@ -147,21 +148,25 @@ export const routes: Routes = [
   {
     path: 'seguridad',
     data: { depth: 7 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/security.component').then(m => m.SecurityComponent),
   },
   {
     path: 'seguridad/cambiar-contrasena',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/change-password/change-password.component').then(m => m.ChangePasswordUserComponent),
   },
   {
     path: 'seguridad/pin',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/manage-pin/manage-pin.component').then(m => m.ManagePinComponent),
   },
   {
     path: 'seguridad/2fa',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/manage-two-factor/manage-two-factor.component').then(m => m.ManageTwoFactorComponent),
   },
   {
@@ -188,28 +193,23 @@ export const routes: Routes = [
   {
     path: 'ruleta',
     data: { depth: 5, tab: 1 },
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/roulette/roulette.component').then(m => m.RouletteComponent),
   },
   {
     path: 'slots',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/slots/slots.component').then(m => m.SlotsComponent),
   },
   {
     path: 'blackjack-lobby',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/blackjack/Lobby/blackjack-lobby.component').then(m => m.BlackjackLobbyComponent),
   },
   {
     path: 'blackjack/:id',
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/blackjack/blackjack.component').then(m => m.BlackjackComponent),
   },
   {
     path: 'apuestas',
     data: { depth: 6 },
-    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/sports/apuestas.component').then(m => m.ApuestasComponent),
   },
   {

@@ -9,16 +9,38 @@
   display: block;
 }
 
+// Covers the chip art's baked-in denomination number (which only exists for
+// 1/5/10/25/100 and gets reused/mismatched for other amounts) with a color
+// unique to each bet value, so every chip is both distinguishable and shows
+// the correct amount on top.
+.chip-mask {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 62%; height: 62%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid #c79a32;
+  box-sizing: border-box;
+  pointer-events: none;
+
+  &.value-10  { background: radial-gradient(circle at 40% 35%, #3785d5, #194682); } // azul
+  &.value-25  { background: radial-gradient(circle at 40% 35%, #3bb76a, #1a713d); } // verde
+  &.value-50  { background: radial-gradient(circle at 40% 35%, #d54135, #95221a); } // rojo
+  &.value-100 { background: radial-gradient(circle at 40% 35%, #27231e, #0e0c0a); } // negro
+  &.value-250 { background: radial-gradient(circle at 40% 35%, #9b5fc0, #4e2570); } // morado
+}
+
 .chip-value {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
+  pointer-events: none;
 
   span {
     font-family: 'Cinzel', serif;
     font-weight: 800;
-    color: #2a1f06;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #f0d38a;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.65);
   }
 }

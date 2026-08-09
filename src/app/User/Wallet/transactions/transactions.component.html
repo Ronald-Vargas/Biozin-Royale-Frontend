@@ -37,6 +37,11 @@
             {{ t.status }}
           </span>
         </div>
+
+        <div class="tx-receipt" *ngIf="t.receiptNumber">
+          <span class="tx-receipt-label">Comprobante</span>
+          <span class="tx-receipt-num">{{ t.receiptNumber }}</span>
+        </div>
       </div>
     </div>
   </div>

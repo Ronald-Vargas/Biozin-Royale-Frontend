@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
+import { AuthService } from 'src/app/Core/Services/auth.service';
 import { ICON_BACK, ICON_ADD, ICON_PERSON, ICON_TIME, ICON_HAND_LEFT, ICON_ELLIPSE, ICON_COPY, ICON_FLAG, ICON_HOME, ICON_ALBUMS, ICON_GIFT, ICON_WALLET, ICON_PERSON_OUTLINE } from '../shared/icons/icons';
 import { Card, makeShoe, isBlackjack, cardBaseValue, handValue } from './Cards/cards.logic';
 import { HandComponent } from './Cards/hand/hand.component';
@@ -75,7 +76,11 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   private msgTimer:   ReturnType<typeof setTimeout> | null = null;
   private nextRoundTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private router: Router, private balanceService: BalanceService) {}
+  constructor(
+    private router: Router,
+    private balanceService: BalanceService,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit() {
     // Recibe la mesa por state de navegación
@@ -85,7 +90,11 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
     this.chip = Math.max(10, this.table.min);
 
-    this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    if (this.authService.currentProfile()?.isGuest) {
+      this.balance = 0;
+    } else {
+      this.balanceService.fetch().subscribe(b => { this.balance = b; });
+    }
 
     this.bots = BOT_NAMES.map((n, i) => ({
       name: n, balance: 700 + i * 130, tint: BOT_TINTS[i], avatar: BOT_AVATARS[i],
@@ -183,6 +192,10 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   clearBet() { if (this.phase === 'bet') this.myBet = 0; }
 
   deal() {
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
+    }
     if (this.myBet >= this.table.min) this.count = 0;
     else this.flash('Mínimo: ' + this.fmt(this.table.min));
   }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
+import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
-import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP } from '../../shared/icons/icons';
+import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP, ICON_POWER } from '../../shared/icons/icons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
@@ -22,7 +22,7 @@ interface MenuItem {
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ScreenShellComponent, SvgIconComponent, GhostButtonComponent],
+  imports: [CommonModule, ScreenShellComponent, SvgIconComponent, GoldButtonComponent],
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
 
   iconPerson  = ICON_PERSON_FILLED;
   iconChevron = ICON_CHEVRON_FWD;
+  iconPower   = ICON_POWER;
 
   perfil: PerfilResultado | null = null;
   info: InfoRow[] = [];

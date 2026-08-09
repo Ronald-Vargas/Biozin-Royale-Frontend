@@ -33,7 +33,12 @@
 
   <!-- Logout -->
   <div class="logout-wrap">
-    <app-ghost-button (clicked)="logout()">Cerrar sesión</app-ghost-button>
+    <app-gold-button (clicked)="logout()">
+      <span class="logout-content">
+        <app-icon [svg]="iconPower" [size]="18"></app-icon>
+        Cerrar sesión
+      </span>
+    </app-gold-button>
   </div>
   </div>
 </app-screen-shell>

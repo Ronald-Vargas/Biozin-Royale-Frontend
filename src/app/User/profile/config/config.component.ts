@@ -8,6 +8,7 @@ import { ScreenShellComponent } from '../../shared/Components/screen-shell/scree
 import { SettingRowComponent } from '../../shared/Components/setting-row/setting-row.component';
 import { ToggleComponent } from '../../shared/Components/toggle/toggle.component';
 import { ICON_PERSON_CIRCLE, ICON_LOCK, ICON_VOLUME, ICON_GLOBE, ICON_MOON, ICON_DOC, ICON_SHIELD } from '../../shared/icons/icons';
+import { AuthService } from '../../../Core/Services/auth.service';
 
 
 @Component({
@@ -34,11 +35,18 @@ export class ConfigComponent {
   iconDoc      = ICON_DOC;
   iconShield   = ICON_SHIELD;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   goBack()      { this.router.navigate(['/perfil']); }
   goMiPerfil()  { this.router.navigate(['/miperfil']); }
-  goSeguridad() { this.router.navigate(['/seguridad']); }
+
+  goSeguridad() {
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
+    }
+    this.router.navigate(['/seguridad']);
+  }
   noop()        { /* placeholder */ }
 
   goTerminos() { Browser.open({ url: this.termsUrl }); }

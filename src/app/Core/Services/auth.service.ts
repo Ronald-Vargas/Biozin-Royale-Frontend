@@ -1,13 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ApiResponse, LoginManualRequest, RegistroManualRequest } from '../Models/auth.models';
+import { ApiResponse, LoginManualRequest, RegistroManualRequest, TokenPar } from '../Models/auth.models';
 import { PerfilResultado } from '../Models/profile.models';
 import { SupabaseService } from './supabase.service';
 
 const TOKEN_KEY = 'biozin_token';
 const PROFILE_KEY = 'biozin_profile';
+const REFRESH_KEY = 'biozin_refresh';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -94,6 +95,28 @@ export class AuthService {
       .pipe(tap((res) => this.storeSession(res, supabaseAccessToken)));
   }
 
+  /**
+   * Llama a POST /auth/refresh con el refresh token almacenado.
+   * En caso de éxito guarda el nuevo par de tokens y devuelve el nuevo access token.
+   */
+  refreshTokens(): Observable<string> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return throwError(() => new Error('no refresh token'));
+
+    return this.http
+      .post<ApiResponse<TokenPar>>(`${this.baseUrl}/refresh`, { refreshToken }, { headers: { 'X-Auth-Retry': '1' } })
+      .pipe(
+        switchMap((res) => {
+          if (res.blnError || !res.returnValue) {
+            return throwError(() => new Error('refresh failed'));
+          }
+          localStorage.setItem(TOKEN_KEY, res.returnValue.token);
+          localStorage.setItem(REFRESH_KEY, res.returnValue.refreshToken);
+          return of(res.returnValue.token);
+        }),
+      );
+  }
+
   logout(): void {
     // Sin esto la sesión de Supabase queda viva: un login social podría reentrar
     // sin pedir credenciales aunque ya se haya "cerrado sesión" en la app.
@@ -118,12 +141,17 @@ export class AuthService {
     }
 
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
     localStorage.removeItem(PROFILE_KEY);
     this.currentProfile.set(null);
   }
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(REFRESH_KEY);
   }
 
   isLoggedIn(): boolean {
@@ -142,6 +170,12 @@ export class AuthService {
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
     }
+
+    const refreshToken = res.returnValue.refreshToken;
+    if (refreshToken) {
+      localStorage.setItem(REFRESH_KEY, refreshToken);
+    }
+
     localStorage.setItem(PROFILE_KEY, JSON.stringify(res.returnValue));
     this.currentProfile.set(res.returnValue);
   }

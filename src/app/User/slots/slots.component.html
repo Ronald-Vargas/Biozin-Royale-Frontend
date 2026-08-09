@@ -1,5 +1,13 @@
 <ion-content [fullscreen]="true" class="slots-content">
   <div class="slots-root">
+
+    <!-- Toast inline -->
+    <div class="slots-toast-wrap" [class.slots-toast-wrap--visible]="toastVisible">
+      <div class="slots-toast-inner">
+        <span class="slots-toast-icon">⚠</span>
+        <span class="slots-toast-msg">{{ toastMsg }}</span>
+      </div>
+    </div>
     <app-gem-defs></app-gem-defs>
 
     <div class="bg-base"></div>
@@ -14,7 +22,7 @@
 
         <app-emblem></app-emblem>
 
-        <div class="balance-pill">
+        <div class="balance-pill" [class.balance-pill--win]="balanceWin">
           <app-icon [svg]="iconDiamond" [size]="18" style="color:var(--gold-1)"></app-icon>
           <span class="balance-amt">{{ fmtMoney(balance) }}</span>
         </div>
@@ -37,8 +45,9 @@
             >
               <div
                 class="reel-strip"
-                [style.transform]="reelTransform(rl)"
-                [style.transition]="reelTransition(rl)"
+                [class.reel-strip--spin]="rl.spinning"
+                [style.transform]="rl.spinning ? null : reelTransform(rl)"
+                [style.transition]="rl.spinning ? null : reelTransition(rl)"
               >
                 <div
                   *ngFor="let sym of rl.strip; let idx = index"
@@ -120,7 +129,7 @@
       <button
         class="spin-knob"
         [class.spin-knob--spinning]="spinning"
-        [disabled]="spinning || balance < bet"
+        [disabled]="spinning"
         (click)="spin()"
       >
         <div class="knob-ring"></div>

@@ -12,6 +12,8 @@ import { AuthHeaderComponent } from '../Components/auth-header/auth-header.compo
 import { FieldComponent } from '../Components/field/field.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_LOCK } from 'src/app/User/shared/icons/icons';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 
@@ -208,6 +210,30 @@ export class LoginComponent implements OnInit {
 
   async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
     this.loading = true;
+
+    // En la app nativa no hay un origen público al que Google/Supabase puedan
+    // redirigir de vuelta, así que se abre un navegador in-app y se vuelve por
+    // un deep link (ver AppComponent) en vez de navegar dentro del WebView.
+    if (Capacitor.isNativePlatform()) {
+      const { data, error } = await this.supabaseService.client.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: 'com.biozinroyale.app://auth/callback',
+          skipBrowserRedirect: true,
+        },
+      });
+
+      if (error || !data?.url) {
+        console.error(`Error iniciando sesión con ${provider}:`, error);
+        this.loading = false;
+        this.errorMsg = this.mapLoginError(error?.message);
+        return;
+      }
+
+      await Browser.open({ url: data.url });
+      return;
+    }
+
     const { error } =
       await this.supabaseService.client.auth.signInWithOAuth({
         provider,

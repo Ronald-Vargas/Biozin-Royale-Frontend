@@ -21,7 +21,11 @@ export class SupabaseService {
         auth: {
           persistSession: true,
           autoRefreshToken: true,
-          detectSessionInUrl: true
+          detectSessionInUrl: true,
+          // La app nativa (Capacitor) usa exchangeCodeForSession sobre el deep link
+          // de vuelta; eso requiere PKCE (?code=...). El default de la librería es
+          // 'implicit' (tokens en el fragmento #), que no sirve para ese flujo.
+          flowType: 'pkce'
         }
       }
     );

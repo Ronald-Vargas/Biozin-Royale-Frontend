@@ -41,6 +41,8 @@ export class AdminFinanceComponent implements OnInit {
 
   q: string = '';
   filter: FilterKey = 'todas';
+  page = 0;
+  readonly PAGE_SIZE = 10;
 
   loadingSummary = true;
   loadingRecent  = true;
@@ -113,7 +115,24 @@ export class AdminFinanceComponent implements OnInit {
     return list;
   }
 
-  setFilter(key: FilterKey): void { this.filter = key; }
+  get totalPages(): number {
+    return Math.ceil(this.filteredRecent.length / this.PAGE_SIZE);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i);
+  }
+
+  get pagedRecent(): FinanzasTransaccionResultado[] {
+    const start = this.page * this.PAGE_SIZE;
+    return this.filteredRecent.slice(start, start + this.PAGE_SIZE);
+  }
+
+  setFilter(key: FilterKey): void { this.filter = key; this.page = 0; }
+
+  onSearch(value: string): void { this.q = value; this.page = 0; }
+
+  goPage(p: number): void { this.page = Math.max(0, Math.min(p, this.totalPages - 1)); }
 
   typeLabel(type: string): string {
     return type === 'deposit' ? 'Depósito' : 'Retiro';

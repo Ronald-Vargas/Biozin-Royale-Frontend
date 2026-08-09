@@ -26,7 +26,7 @@
 
       <!-- Wheel -->
       <div class="wheel-area">
-        <app-roulette-wheel [rotation]="rotation" [size]="224"></app-roulette-wheel>
+        <app-roulette-wheel [rotation]="rotation" [size]="224" [freeSpinning]="wheelFreeSpinning"></app-roulette-wheel>
 
         <div *ngIf="last !== null" class="result-badge">
           <span class="result-label">ÚLTIMO</span>
@@ -139,7 +139,7 @@
       <div class="footer-row">
         <div class="footer-info">
           <div class="info-label">SALDO</div>
-          <div class="gold-text info-value">{{ fmtMoney(balance) }}</div>
+          <div class="gold-text info-value">{{ fmtMoney(currentBalance) }}</div>
         </div>
 
         <button class="action-btn action-btn--danger" (click)="clearBets()" aria-label="Limpiar">
@@ -148,6 +148,10 @@
 
         <button class="action-btn" (click)="rebet()" aria-label="Repetir">
           <app-icon [svg]="iconRefresh" [size]="18"></app-icon>
+        </button>
+
+        <button class="action-btn" (click)="openPaytable()" aria-label="Tabla de pagos">
+          <app-icon [svg]="iconInfo" [size]="18" style="color:var(--gold-1)"></app-icon>
         </button>
 
         <div class="footer-info footer-info--right">
@@ -177,5 +181,11 @@
       class="toast"
       [class.toast--win]="toast.kind === 'win'"
     >{{ toast.msg }}</div>
+
+    <!-- Paytable modal -->
+    <app-roulette-paytable
+      *ngIf="showPaytable"
+      (closed)="closePaytable()"
+    ></app-roulette-paytable>
   </div>
 </ion-content>
