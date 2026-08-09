@@ -12,6 +12,7 @@ import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/so
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { SupabaseService } from 'src/app/Core/Services/supabase.service';
 
 @Component({
   standalone: true,
@@ -33,6 +34,7 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
 
 export class RegisterComponent {
   private readonly authService = inject(AuthService);
+  private readonly supabaseService = inject(SupabaseService);
 
   private readonly termsUrl = 'https://bjimenez867.github.io/biozin-pages/terms.html';
 
@@ -65,8 +67,37 @@ export class RegisterComponent {
 
   goBack()     { this.router.navigate(['/welcome'], { replaceUrl: true }); }
   goLogin()    { this.router.navigate(['/auth/login']); }
-  goHome()     { this.router.navigate(['/home'], { replaceUrl: true }); }
   goTerminos() { Browser.open({ url: this.termsUrl }); }
+
+  onSocialPicked(provider: string): void {
+    switch (provider) {
+      case 'google':
+        this.iniciarSesionConOAuth('google');
+        break;
+      case 'facebook':
+        this.iniciarSesionConOAuth('facebook');
+        break;
+      case 'mail':
+        break;
+    }
+  }
+
+  async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
+    this.loading = true;
+    const { error } =
+      await this.supabaseService.client.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+    if (error) {
+      console.error(`Error iniciando sesión con ${provider}:`, error);
+      this.loading = false;
+      this.errorMsg = error.message || 'No se pudo conectar con el servidor. Intenta de nuevo.';
+    }
+  }
 
   submit() {
     if (this.loading) return;

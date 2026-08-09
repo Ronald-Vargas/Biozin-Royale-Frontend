@@ -20,8 +20,9 @@
 
 .session-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px 12px;
   padding: 14px;
   background: rgba(255, 255, 255, 0.018);
   border-bottom: 1px solid rgba(212, 167, 60, 0.14);
@@ -52,8 +53,8 @@
 }
 
 .session-body {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 150px;
+  min-width: 150px;
 }
 
 .session-device {
@@ -61,6 +62,9 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .session-meta {
@@ -73,8 +77,17 @@
   white-space: nowrap;
 }
 
+.session-trailing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .active-badge {
   flex-shrink: 0;
+  white-space: nowrap;
   font-family: 'Montserrat', sans-serif;
   font-size: 10.5px;
   font-weight: 700;
@@ -87,6 +100,7 @@
 
 .session-when {
   flex-shrink: 0;
+  white-space: nowrap;
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   color: #cbb98f;

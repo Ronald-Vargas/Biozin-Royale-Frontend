@@ -63,17 +63,19 @@
           <div class="session-meta">IP: {{ s.ip }}</div>
         </div>
 
-        <span *ngIf="s.isCurrent" class="active-badge">Este dispositivo</span>
-        <span *ngIf="!s.isCurrent" class="session-when">{{ s.when }}</span>
+        <div class="session-trailing">
+          <span *ngIf="s.isCurrent" class="active-badge">Este dispositivo</span>
+          <span *ngIf="!s.isCurrent" class="session-when">{{ s.when }}</span>
 
-        <button
-          *ngIf="!s.isCurrent"
-          class="session-close-btn"
-          type="button"
-          (click)="closeSession(s.id)"
-        >
-          <app-icon [svg]="iconTrash" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
-        </button>
+          <button
+            *ngIf="!s.isCurrent"
+            class="session-close-btn"
+            type="button"
+            (click)="closeSession(s.id)"
+          >
+            <app-icon [svg]="iconTrash" [size]="16" style="color:#6f6757;flex-shrink:0"></app-icon>
+          </button>
+        </div>
       </div>
 
       <div class="sessions-empty" *ngIf="!sessions.length">No hay sesiones activas.</div>

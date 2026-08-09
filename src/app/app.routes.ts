@@ -148,21 +148,25 @@ export const routes: Routes = [
   {
     path: 'seguridad',
     data: { depth: 7 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/security.component').then(m => m.SecurityComponent),
   },
   {
     path: 'seguridad/cambiar-contrasena',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/change-password/change-password.component').then(m => m.ChangePasswordUserComponent),
   },
   {
     path: 'seguridad/pin',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/manage-pin/manage-pin.component').then(m => m.ManagePinComponent),
   },
   {
     path: 'seguridad/2fa',
     data: { depth: 8 },
+    canActivate: [realAccountGuard],
     loadComponent: () => import('./User/profile/config/security/manage-two-factor/manage-two-factor.component').then(m => m.ManageTwoFactorComponent),
   },
   {
