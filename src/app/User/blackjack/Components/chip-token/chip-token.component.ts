@@ -19,6 +19,11 @@ export class ChipTokenComponent {
 
   get img(): string { return `assets/chip-${this.denom}.png`; }
 
+  // Color de la ficha según el monto apostado (independiente del arte usado)
+  get colorValue(): number {
+    return [250, 100, 50, 25, 10].find(v => this.amount >= v) || 10;
+  }
+
   get tokenStyle(): { [k: string]: string } {
     return { width: this.size + 'px', height: this.size + 'px' };
   }

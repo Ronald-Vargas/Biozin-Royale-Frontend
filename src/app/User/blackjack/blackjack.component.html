@@ -149,6 +149,7 @@
           (click)="selectChip(v)"
         >
           <img [src]="chipImg(v)" alt="" class="chip-art"/>
+          <div class="chip-mask" [ngClass]="'value-' + v"></div>
           <div class="chip-num">{{ v }}</div>
           <div *ngIf="chip === v" class="chip-ring"></div>
         </button>
