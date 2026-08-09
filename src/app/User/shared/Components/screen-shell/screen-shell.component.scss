@@ -35,22 +35,25 @@ ion-content.shell-content { --background: var(--bg-dark); }
 }
 
 .screen-header {
-  position: sticky;
-  top: var(--ion-safe-area-top);
-  z-index: 5;
-  background: var(--bg-dark);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 42px;
+  min-height: 42px;
+  // Deja libre el ancho que ocupa el botón flotante (38px + 8px de aire) a
+  // cada lado para que un título largo no se dibuje debajo de la flecha.
+  padding: 0 46px;
   margin-bottom: 18px;
 }
 
+// Flota sobre el contenido y no forma parte del scroll de .shell-body: es
+// el único elemento del header que debe permanecer fijo al desplazar.
 .header-back {
   position: absolute;
-  left: 0;
-  top: 50%;
+  left: 20px;
+  top: calc(16px + var(--ion-safe-area-top) + 21px);
   transform: translateY(-50%);
+  z-index: 6;
   width: 38px; height: 38px;
   border-radius: 10px;
   background: none;
@@ -61,8 +64,10 @@ ion-content.shell-content { --background: var(--bg-dark); }
   color: var(--gold-1);
 }
 
-// Variante con recuadro dorado (juegos: blackjack, etc.)
+// Variante con recuadro dorado (juegos: blackjack, etc.) — el header vive
+// más abajo (ver .shell-body--boxed) así que el botón se reposiciona junto.
 .header-back.boxed {
+  top: calc(45px + var(--ion-safe-area-top) + 21px);
   width: 38px; height: 38px;
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.03);
@@ -86,6 +91,8 @@ ion-content.shell-content { --background: var(--bg-dark); }
   letter-spacing: 3px;
   margin: 0;
   text-transform: uppercase;
+  text-align: center;
+  overflow-wrap: break-word;
 }
 
 .shell-slot {
