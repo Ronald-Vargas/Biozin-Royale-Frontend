@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_PERSON_OUTLINE, ICON_MAIL, ICON_PHONE_CALL, ICON_SHIELD, ICON_PERSON_ADD, ICON_SPARKLES } from 'src/app/User/shared/icons/icons';
+import { ICON_PERSON_OUTLINE, ICON_MAIL, ICON_SHIELD, ICON_PERSON_ADD, ICON_SPARKLES } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
 import { TeamMember } from 'src/app/Core/Models/staff.models';
 import { FormFieldComponent } from './Components/form-field/form-field.component';
 import { SelectFieldComponent } from './Components/select-field/select-field.component';
+import { PhoneFieldComponent } from 'src/app/Auth/Components/phone-field/phone-field.component';
+import { phoneValidator } from 'src/app/Core/Utils/phone.validator';
 import { StaffService } from 'src/app/Core/Services/staff.service';
 import { toTeamMember } from '../team.component';
 
@@ -20,9 +23,9 @@ const ROLE_TO_BACKEND: Record<string, 'admin' | 'soporte'> = {
 @Component({
   standalone: true,
   imports: [
-    CommonModule, AtmosphereComponent, SvgIconComponent,
+    CommonModule, ReactiveFormsModule, AtmosphereComponent, SvgIconComponent,
     AdminNavComponent, AdminHeaderComponent,
-    FormFieldComponent, SelectFieldComponent,
+    FormFieldComponent, SelectFieldComponent, PhoneFieldComponent,
   ],
   selector: 'app-new-member',
   templateUrl: './new-member.component.html',
@@ -31,14 +34,13 @@ const ROLE_TO_BACKEND: Record<string, 'admin' | 'soporte'> = {
 export class NewMemberComponent {
   iconPerson    = ICON_PERSON_OUTLINE;
   iconMail      = ICON_MAIL;
-  iconPhone     = ICON_PHONE_CALL;
   iconShield    = ICON_SHIELD;
   iconSparkles  = ICON_SPARKLES;
   iconPersonAdd = ICON_PERSON_ADD;
 
   name  = '';
   email = '';
-  phone = '';
+  phoneCtrl = new FormControl('', phoneValidator());
   role  = 'Soporte';
 
   roleOptions = ['Administrador', 'Soporte'];
@@ -51,7 +53,7 @@ export class NewMemberComponent {
     this.staffService.create({
       nombre: this.name,
       correoContacto: this.email,
-      phone: this.phone,
+      phone: this.phoneCtrl.value ?? undefined,
       role: ROLE_TO_BACKEND[this.role],
     }).subscribe((res) => {
       if (res.blnError || !res.returnValue) return;

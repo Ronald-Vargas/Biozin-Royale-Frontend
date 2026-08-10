@@ -7,6 +7,8 @@ import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.co
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
 import { FieldComponent } from 'src/app/Auth/Components/field/field.component';
+import { PhoneFieldComponent } from 'src/app/Auth/Components/phone-field/phone-field.component';
+import { phoneValidator } from 'src/app/Core/Utils/phone.validator';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
 import { EstadisticasResultado, PerfilResultado } from 'src/app/Core/Models/profile.models';
 import { ICON_PERSON_CIRCLE, ICON_FINGERPRINT, ICON_COPY, ICON_CHECK, ICON_CALENDAR, ICON_CAMERA, ICON_EDIT, ICON_STATS, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_GLOBE, ICON_PHONE_CALL, ICON_ALBUMS, ICON_TROPHY, ICON_CASH, ICON_TRENDING } from '../../shared/icons/icons';
@@ -30,6 +32,7 @@ const PENDING_FIELD_LABELS: Record<string, string> = {
     GoldButtonComponent,
     GhostButtonComponent,
     FieldComponent,
+    PhoneFieldComponent,
   ],
   selector: 'app-personal-information',
   templateUrl: './personal-information.component.html',
@@ -65,7 +68,7 @@ export class PersonalInformationComponent implements OnInit {
     this.form = this.fb.group({
       displayName: [''],
       username: [''],
-      phone: [''],
+      phone: ['', phoneValidator()],
       country: [''],
       birthdate: [''],
     });

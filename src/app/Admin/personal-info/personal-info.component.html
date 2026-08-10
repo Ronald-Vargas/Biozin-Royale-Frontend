@@ -71,12 +71,7 @@
           placeholder="Juan Pérez"
           [control]="displayNameCtrl"
         ></app-field>
-        <app-field
-          label="Teléfono"
-          type="tel"
-          placeholder="+506 8144 7441"
-          [control]="phoneCtrl"
-        ></app-field>
+        <app-phone-field [control]="phoneCtrl"></app-phone-field>
       </form>
 
       <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>

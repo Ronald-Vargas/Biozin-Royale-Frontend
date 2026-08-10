@@ -7,6 +7,8 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { FieldComponent } from 'src/app/Auth/Components/field/field.component';
+import { PhoneFieldComponent } from 'src/app/Auth/Components/phone-field/phone-field.component';
+import { phoneValidator } from 'src/app/Core/Utils/phone.validator';
 import { StaffService } from 'src/app/Core/Services/staff.service';
 import { PerfilResultado } from 'src/app/Core/Models/profile.models';
 import {
@@ -22,7 +24,7 @@ interface InfoRow { k: string; v: string; icon: string; editable?: boolean; }
     CommonModule, ReactiveFormsModule,
     AtmosphereComponent, SvgIconComponent,
     AdminHeaderComponent, AdminNavComponent,
-    FieldComponent,
+    FieldComponent, PhoneFieldComponent,
   ],
   selector: 'app-admin-personal-info',
   templateUrl: './personal-info.component.html',
@@ -52,7 +54,7 @@ export class AdminPersonalInfoComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       displayName: [''],
-      phone: [''],
+      phone: ['', phoneValidator()],
     });
   }
 

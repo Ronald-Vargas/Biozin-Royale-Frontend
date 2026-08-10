@@ -80,7 +80,7 @@
   <form class="edit-form" *ngIf="editMode" [formGroup]="form">
     <app-field label="Nombre completo"      placeholder="Juan Pérez"             [control]="displayNameCtrl"></app-field>
     <app-field label="Usuario"              placeholder="juanperez4"             [control]="usernameCtrl"></app-field>
-    <app-field label="Teléfono"             type="tel"  placeholder="+506 8144 7441" [control]="phoneCtrl"></app-field>
+    <app-phone-field [control]="phoneCtrl"></app-phone-field>
     <app-field label="País"                 placeholder="Honduras"               [control]="countryCtrl"></app-field>
     <app-field label="Fecha de nacimiento"  type="date" [control]="birthdateCtrl"></app-field>
   </form>
