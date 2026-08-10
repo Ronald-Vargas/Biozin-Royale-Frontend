@@ -1,0 +1,94 @@
+.picker-inner {
+  padding: 0 14px;
+}
+
+.picker-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #cbb98f;
+  text-align: center;
+  margin: -2px auto 22px;
+  max-width: 290px;
+  line-height: 1.5;
+}
+
+// ── Grid ─────────────────────────────────────────────────────
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+
+  @media (min-width: 400px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.avatar-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 8px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(212, 167, 60, 0.18);
+  transition: border-color 0.18s, background 0.18s, opacity 0.18s;
+
+  &:disabled { opacity: 0.65; cursor: not-allowed; }
+
+  &--selected {
+    border-color: var(--gold-1);
+    background: rgba(212, 167, 60, 0.1);
+  }
+
+  &--saving { opacity: 0.7; }
+}
+
+.avatar-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.avatar-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #cbb98f;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.avatar-check {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 13px;
+  color: var(--gold-1);
+  font-weight: 700;
+}
+
+// ── Estados ───────────────────────────────────────────────────
+.state-msg {
+  text-align: center;
+  padding: 40px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+
+  &--error { color: #e05c5c; padding: 20px 0; }
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(212, 167, 60, 0.25);
+  border-top-color: var(--gold-1);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

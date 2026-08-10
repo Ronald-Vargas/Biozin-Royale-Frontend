@@ -57,6 +57,19 @@
   padding: 3px;
   background: linear-gradient(150deg, var(--gold-1), var(--gold-3));
   box-shadow: 0 0 16px rgba(199, 154, 50, 0.5);
+  display: flex;
+}
+
+.staff-initial {
+  flex: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: 'Cinzel', serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #f4dd92;
+  letter-spacing: 0.5px;
 }
 
 .camera-btn {

@@ -6,8 +6,10 @@
   <div class="page-inner">
   <!-- Profile card -->
   <div class="profile-card" (click)="goProfile()">
-    <div class="profile-avatar">
-      <app-icon [svg]="iconPerson" [size]="34" style="color:var(--gold-1)"></app-icon>
+    <div class="profile-avatar" (click)="goAvatar($event)">
+      <img *ngIf="perfil?.avatarUrl" [src]="perfil!.avatarUrl!" class="avatar-img" alt="avatar" />
+      <app-icon *ngIf="!perfil?.avatarUrl" [svg]="iconPerson" [size]="34" style="color:var(--gold-1)"></app-icon>
+      <div class="avatar-edit-hint">✎</div>
     </div>
     <div class="profile-info">
       <div class="profile-name">{{ perfil?.displayName}}</div>

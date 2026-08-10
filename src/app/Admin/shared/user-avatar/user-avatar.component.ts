@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_PERSON } from 'src/app/User/shared/icons/icons';
+import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 
 @Component({
@@ -13,6 +14,8 @@ import { ICON_PERSON } from 'src/app/User/shared/icons/icons';
 })
 export class UserAvatarComponent {
   @Input() size = 50;
+  @Input() name = '';
+  @Input() avatarUrl: string | null | undefined;
 
   iconPerson = ICON_PERSON;
 
@@ -20,5 +23,8 @@ export class UserAvatarComponent {
     return { width: this.size + 'px', height: this.size + 'px' };
   }
 
-  get iconSize(): number { return Math.round(this.size * 0.52); }
+  get iconSize():    number { return Math.round(this.size * 0.52); }
+  get initialSize(): number { return Math.round(this.size * 0.44); }
+  get initial():     string { return nameInitial(this.name); }
+  get initBg():      string { return nameColor(this.name); }
 }

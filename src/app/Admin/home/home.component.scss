@@ -79,6 +79,16 @@
   overflow: hidden;
   border: 2px solid var(--gold-3);
   box-shadow: 0 0 0 3px rgba(212, 167, 60, 0.08);
+  display: grid;
+  place-items: center;
+}
+
+.staff-initial {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f4dd92;
+  letter-spacing: 0.5px;
 }
 
 .profile-info {

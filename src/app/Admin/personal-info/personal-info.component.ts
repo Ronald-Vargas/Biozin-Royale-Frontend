@@ -15,6 +15,7 @@ import {
   ICON_SHIELD, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT,
   ICON_PHONE_CALL, ICON_EDIT, ICON_CHECK, ICON_COPY,
 } from 'src/app/User/shared/icons/icons';
+import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 interface InfoRow { k: string; v: string; icon: string; editable?: boolean; }
 
@@ -38,6 +39,9 @@ export class AdminPersonalInfoComponent implements OnInit {
 
   perfil: PerfilResultado | null = null;
   loading  = true;
+
+  get perfilInitial(): string { return nameInitial(this.perfil?.displayName || this.perfil?.username || ''); }
+  get perfilInitBg():  string { return nameColor(this.perfil?.displayName || this.perfil?.username || ''); }
   saving   = false;
   editMode = false;
   errorMsg = '';

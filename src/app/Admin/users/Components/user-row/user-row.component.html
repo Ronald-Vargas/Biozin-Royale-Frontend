@@ -1,5 +1,5 @@
 <div class="user-row" (click)="open.emit(user.id)">
-  <app-user-avatar [size]="50"></app-user-avatar>
+  <app-user-avatar [size]="50" [name]="user.displayName || user.username"></app-user-avatar>
 
   <div class="user-info">
     <div class="user-top">

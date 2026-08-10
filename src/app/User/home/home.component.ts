@@ -14,6 +14,7 @@ import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { SportsService } from 'src/app/Core/Services/sports.service';
 import { BetSlipService } from 'src/app/Core/Services/bet-slip.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { ProfileService } from 'src/app/Core/Services/profile.service';
 
 
 @Component({
@@ -49,15 +50,17 @@ export class HomeComponent implements OnInit {
     private balanceService: BalanceService,
     private betSlipService: BetSlipService,
     private authService: AuthService,
+    private profileService: ProfileService,
   ) {}
 
-  get isGuest(): boolean {
-    return !!this.authService.currentProfile()?.isGuest;
-  }
+  get isGuest(): boolean { return !!this.authService.currentProfile()?.isGuest; }
+  get avatarUrl(): string | null | undefined { return this.authService.currentProfile()?.avatarUrl; }
 
   ngOnInit(): void {
     if (this.isGuest) this.balanceService.set(0);
     else this.balanceService.load();
+
+    if (!this.isGuest) this.profileService.getProfile().subscribe();
     this.sportsService.getMatches().subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {

@@ -9,9 +9,12 @@
     <img class="logo-watermark" src="assets/logo.png" alt="" />
 
     <!-- Avatar -->
-    <div class="avatar-wrap">
+    <div class="avatar-wrap" (click)="goAvatar()">
       <div class="avatar-ring">
-        <div class="avatar-slot">Foto</div>
+        <div class="avatar-slot">
+          <img *ngIf="perfil?.avatarUrl" [src]="perfil!.avatarUrl!" class="avatar-img" alt="avatar" />
+          <span *ngIf="!perfil?.avatarUrl">Foto</span>
+        </div>
       </div>
       <div class="camera-btn">
         <app-icon [svg]="iconCamera" [size]="14" style="color:#2a1f06"></app-icon>

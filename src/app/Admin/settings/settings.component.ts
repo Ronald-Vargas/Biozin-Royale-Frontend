@@ -13,6 +13,7 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 @Component({
   standalone: true,
@@ -43,6 +44,14 @@ export class AdminSettingsComponent {
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
   constructor(private router: Router, private authService: AuthService) {}
+
+  private get staffName(): string {
+    const p = this.authService.currentProfile();
+    return p?.displayName || p?.username || '';
+  }
+
+  get staffInitial(): string { return nameInitial(this.staffName); }
+  get staffInitBg():  string { return nameColor(this.staffName); }
 
   goBack(){ this.router.navigate(['/admin']); }
   goPerfil()  { this.router.navigate(['/admin/miperfil']); }

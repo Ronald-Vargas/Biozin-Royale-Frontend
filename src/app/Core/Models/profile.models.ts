@@ -1,3 +1,11 @@
+export interface AvatarResultado {
+  id: number;
+  name: string;
+  url: string;
+  description: string | null;
+  sortOrder: number;
+}
+
 export interface PerfilResultado {
   id: string;
   username: string;
@@ -22,6 +30,7 @@ export interface PerfilResultado {
   createdAt?: string | null;
   createdByName?: string | null;
   playerId?: number | null;
+  avatarUrl?: string | null;
 }
 
 export interface SessionResultado {

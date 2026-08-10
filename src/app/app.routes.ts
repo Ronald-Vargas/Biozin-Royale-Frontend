@@ -146,6 +146,12 @@ export const routes: Routes = [
     loadComponent: () => import('./User/profile/personal-information/personal-information.component').then(m => m.PersonalInformationComponent),
   },
   {
+    path: 'avatar',
+    data: { depth: 6 },
+    canActivate: [realAccountGuard],
+    loadComponent: () => import('./User/profile/avatar-picker/avatar-picker.component').then(m => m.AvatarPickerComponent),
+  },
+  {
     path: 'seguridad',
     data: { depth: 7 },
     canActivate: [realAccountGuard],

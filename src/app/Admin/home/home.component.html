@@ -13,13 +13,8 @@
 
     <!-- Profile card -->
     <div class="profile-card" (click)="goPerfil()">
-      <div class="profile-avatar">
-        <image-slot
-          id="admin-photo"
-          shape="circle"
-          placeholder="Foto"
-          style="width:54px;height:54px;display:block;background:#15110b"
-        ></image-slot>
+      <div class="profile-avatar" [style.background]="staffInitBg">
+        <span class="staff-initial">{{ staffInitial }}</span>
       </div>
       <div class="profile-info">
         <div class="profile-greeting">Hola, Administrador</div>

@@ -8,8 +8,8 @@
       <!-- Top bar -->
       <div class="top-bar">
         <div class="avatar" (click)="goMiPerfil()">
-
-          <app-icon [svg]="iconPerson" [size]="27" style="color:var(--gold-1)"></app-icon>
+          <img *ngIf="avatarUrl" [src]="avatarUrl" class="avatar-img" alt="avatar" />
+          <app-icon *ngIf="!avatarUrl" [svg]="iconPerson" [size]="27" style="color:var(--gold-1)"></app-icon>
         </div>
 
         <div class="balance-pill">

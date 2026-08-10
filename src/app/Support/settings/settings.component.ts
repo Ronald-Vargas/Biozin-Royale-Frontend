@@ -16,6 +16,7 @@ import {
 } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 
 @Component({
@@ -50,6 +51,14 @@ export class SettingsComponent {
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
   constructor(private router: Router, private authService: AuthService) {}
+
+  private get staffName(): string {
+    const p = this.perfil();
+    return p?.displayName || p?.username || '';
+  }
+
+  get staffInitial(): string { return nameInitial(this.staffName); }
+  get staffInitBg():  string { return nameColor(this.staffName); }
 
   goBack()  { this.router.navigate(['/support']); }
   logout()  { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }

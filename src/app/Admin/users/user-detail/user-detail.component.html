@@ -11,7 +11,7 @@
     @if (!loading && user) {
       <!-- Profile card -->
       <div class="detail-card">
-        <app-user-avatar [size]="64"></app-user-avatar>
+        <app-user-avatar [size]="64" [name]="user.displayName || user.username"></app-user-avatar>
         <div class="detail-info">
           <div class="detail-top">
             <span class="detail-name">{{ user.displayName || user.username }}</span>

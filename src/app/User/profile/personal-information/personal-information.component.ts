@@ -133,7 +133,8 @@ export class PersonalInformationComponent implements OnInit, OnDestroy {
 
 
 
-  goBack() { this.router.navigate(['/perfil']); }
+  goBack()   { this.router.navigate(['/perfil']); }
+  goAvatar() { this.router.navigate(['/avatar']); }
 
 
 

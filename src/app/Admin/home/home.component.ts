@@ -12,6 +12,7 @@ import { AdminKpi } from 'src/app/Core/Models/admin.models';
 import { KpiCardComponent } from './Components/kpi-card/kpi-card.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { ReportesService } from 'src/app/Core/Services/reportes.service';
+import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 @Component({
   standalone: true,
@@ -37,6 +38,14 @@ export class HomeComponent implements OnInit {
     private authService: AuthService,
     private reportesService: ReportesService,
   ) {}
+
+  private get staffName(): string {
+    const p = this.authService.currentProfile();
+    return p?.displayName || p?.username || '';
+  }
+
+  get staffInitial(): string { return nameInitial(this.staffName); }
+  get staffInitBg():  string { return nameColor(this.staffName); }
 
   ngOnInit(): void {
     this.reportesService.getKpi().subscribe({

@@ -13,8 +13,8 @@
       <div class="identity-card">
         <img class="logo-watermark" src="assets/logo.png" alt="" />
 
-        <div class="id-avatar">
-          <app-icon [svg]="iconShield" [size]="30" style="color:var(--gold-1)"></app-icon>
+        <div class="id-avatar" [style.background]="perfilInitBg">
+          <span class="id-initial">{{ perfilInitial }}</span>
         </div>
 
         <div class="id-info">

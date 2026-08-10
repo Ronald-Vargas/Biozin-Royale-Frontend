@@ -1,0 +1,26 @@
+<app-screen-shell title="Elegí tu avatar" current="perfil" (back)="goBack()">
+  <div class="picker-inner">
+    <p class="picker-subtitle">Seleccioná el personaje que te represente en Biozin Royale.</p>
+
+    <div *ngIf="loading" class="state-msg">
+      <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="errorMsg" class="state-msg state-msg--error">{{ errorMsg }}</div>
+
+    <div *ngIf="!loading && avatars.length" class="avatar-grid">
+      <button
+        *ngFor="let a of avatars"
+        class="avatar-cell"
+        [class.avatar-cell--selected]="selectedId === a.id"
+        [class.avatar-cell--saving]="saving && selectedId === a.id"
+        (click)="select(a)"
+        [disabled]="saving"
+      >
+        <img [src]="a.url" [alt]="a.name" class="avatar-img" />
+        <span class="avatar-name">{{ a.name }}</span>
+        <div *ngIf="selectedId === a.id" class="avatar-check">✓</div>
+      </button>
+    </div>
+  </div>
+</app-screen-shell>

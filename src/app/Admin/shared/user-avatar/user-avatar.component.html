@@ -1,3 +1,5 @@
 <div class="user-avatar" [ngStyle]="wrapStyle">
-  <app-icon [svg]="iconPerson" [size]="iconSize" style="color:var(--gold-1)"></app-icon>
+  <img *ngIf="avatarUrl" [src]="avatarUrl" class="ua-img" alt="" />
+  <span *ngIf="!avatarUrl && name" class="ua-initial" [style.fontSize]="initialSize + 'px'" [style.background]="initBg">{{ initial }}</span>
+  <app-icon *ngIf="!avatarUrl && !name" [svg]="iconPerson" [size]="iconSize" style="color:var(--gold-1)"></app-icon>
 </div>

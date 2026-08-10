@@ -11,15 +11,7 @@
       <!-- Avatar con photo slot + cámara -->
       <div class="avatar-wrap">
         <div class="avatar-ring">
-          <image-slot
-            id="admin-photo"
-            shape="circle"
-            placeholder="Foto"
-            style="width:78px;height:78px;display:block;background:#15110b"
-          ></image-slot>
-        </div>
-        <div class="camera-btn">
-          <app-icon [svg]="iconCamera" [size]="14" style="color:#2a1f06"></app-icon>
+          <div class="staff-initial" [style.background]="staffInitBg">{{ staffInitial }}</div>
         </div>
       </div>
 

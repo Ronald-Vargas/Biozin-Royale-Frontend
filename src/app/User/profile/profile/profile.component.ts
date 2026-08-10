@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
-import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_GIFT_OUTLINE, ICON_SETTINGS, ICON_HELP, ICON_POWER } from '../../shared/icons/icons';
+import { ICON_PERSON_FILLED, ICON_CHEVRON_FWD, ICON_CARD, ICON_TIME, ICON_SETTINGS, ICON_HELP, ICON_POWER } from '../../shared/icons/icons';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
@@ -96,6 +96,7 @@ export class ProfileComponent implements OnInit {
 
   goBack()     { this.router.navigate(['/home'], { replaceUrl: true }); }
   goProfile()  { this.router.navigate(['/miperfil']); }
+  goAvatar(event: Event): void { event.stopPropagation(); this.router.navigate(['/avatar']); }
   goTo(route: string) { this.router.navigate([route]); }
   logout()     { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 }
