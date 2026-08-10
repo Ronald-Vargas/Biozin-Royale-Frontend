@@ -198,15 +198,12 @@ export class LoginComponent implements OnInit {
       case 'google':
         this.iniciarSesionConOAuth('google');
         break;
-      case 'facebook':
-        this.iniciarSesionConOAuth('facebook');
-        break;
       case 'mail':
         break;
     }
   }
 
-  async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
+  async iniciarSesionConOAuth(provider: 'google'): Promise<void> {
     this.loading = true;
     const { error } =
       await this.supabaseService.client.auth.signInWithOAuth({
