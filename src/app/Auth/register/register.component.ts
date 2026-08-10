@@ -11,6 +11,8 @@ import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/
 import { SocialRowComponent } from 'src/app/User/shared/Components/social-row/social-row.component';
 import { AuthHeaderComponent } from '../Components/auth-header/auth-header.component';
 import { FieldComponent } from '../Components/field/field.component';
+import { PhoneFieldComponent } from '../Components/phone-field/phone-field.component';
+import { phoneValidator } from 'src/app/Core/Utils/phone.validator';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 
 @Component({
@@ -24,6 +26,7 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
     DividerComponent,
     SocialRowComponent,
     FieldComponent,
+    PhoneFieldComponent,
     AuthHeaderComponent,
   ],
   selector: 'app-register',
@@ -45,7 +48,7 @@ export class RegisterComponent {
     this.form = this.fb.group({
       name:    ['', Validators.required],
       email:   ['', [Validators.required, Validators.email]],
-      phone:   ['', Validators.required],
+      phone:   ['', [Validators.required, phoneValidator()]],
       pass:    ['', [Validators.required, Validators.minLength(8)]],
       confirm: ['', Validators.required],
     });
@@ -134,6 +137,7 @@ export class RegisterComponent {
     if (e?.['required']) return 'El correo electrónico es requerido.';
     if (e?.['email'])    return 'El correo electrónico no tiene un formato válido.';
     if (p?.['required']) return 'El número de teléfono es requerido.';
+    if (p?.['phone'])    return 'El número de teléfono no es válido.';
     if (s?.['required']) return 'La contraseña es requerida.';
     if (s?.['minlength']) return 'La contraseña debe tener al menos 8 caracteres.';
     if (c?.['required']) return 'Debes confirmar tu contraseña.';
