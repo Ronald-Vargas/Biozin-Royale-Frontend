@@ -40,6 +40,12 @@ export class PaymentMethodsComponent implements OnInit {
   ppEmail     = '';
   ppAlias     = '';
   ppDefault   = false;
+  ppEmailTouched = false;
+
+  get ppEmailInvalid(): boolean {
+    const v = this.ppEmail.trim();
+    return !!v && !/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(v);
+  }
 
   // Card form
   cardNumber  = '';
@@ -70,10 +76,11 @@ export class PaymentMethodsComponent implements OnInit {
   get cardMetodos():   MetodoPago[] { return this.metodos.filter(m => m.type === 'card'); }
 
   mostrarFormPayPal(): void {
-    this.formMode  = 'paypal';
-    this.ppEmail   = ''; this.ppAlias = '';
-    this.ppDefault = this.metodos.length === 0;
-    this.errorMsg  = '';
+    this.formMode      = 'paypal';
+    this.ppEmail       = ''; this.ppAlias = '';
+    this.ppDefault     = this.metodos.length === 0;
+    this.ppEmailTouched = false;
+    this.errorMsg      = '';
   }
 
   mostrarFormCard(): void {
@@ -96,7 +103,8 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   async guardarPayPal(): Promise<void> {
-    if (!this.ppEmail.trim() || this.saving) return;
+    this.ppEmailTouched = true;
+    if (!this.ppEmail.trim() || this.ppEmailInvalid || this.saving) return;
     this.saving = true; this.errorMsg = '';
     try {
       const res = await firstValueFrom(this.metodosPagoService.agregarPayPal({

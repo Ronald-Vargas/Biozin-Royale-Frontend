@@ -137,7 +137,11 @@
 
         <label class="form-label">Correo de PayPal *</label>
         <input class="form-input" type="email" [(ngModel)]="ppEmail"
-          placeholder="ejemplo@gmail.com" autocomplete="email" inputmode="email" />
+          placeholder="ejemplo@gmail.com" autocomplete="email" inputmode="email"
+          (blur)="ppEmailTouched = true" />
+        <div *ngIf="ppEmailInvalid && ppEmailTouched" class="field-error">
+          Ingresá un correo electrónico válido.
+        </div>
 
         <label class="form-label">Alias (opcional)</label>
         <input class="form-input" type="text" [(ngModel)]="ppAlias" placeholder="Mi PayPal" />
@@ -151,7 +155,7 @@
 
         <div class="form-actions">
           <button class="cancel-btn" (click)="cancelar()">Cancelar</button>
-          <app-gold-button (clicked)="guardarPayPal()" [disabled]="saving || !ppEmail.trim()">
+          <app-gold-button (clicked)="guardarPayPal()" [disabled]="saving || !ppEmail.trim() || ppEmailInvalid">
             {{ saving ? 'Guardando...' : 'Guardar' }}
           </app-gold-button>
         </div>

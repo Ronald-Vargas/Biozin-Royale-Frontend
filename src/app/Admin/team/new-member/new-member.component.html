@@ -16,8 +16,12 @@
       placeholder="Ej. maria@gmail.com"
       [icon]="iconMail"
       type="email"
-      [(value)]="email"
+      [value]="emailCtrl.value ?? ''"
+      (valueChange)="onEmailChange($event)"
     ></app-form-field>
+    <div *ngIf="emailCtrl.invalid && emailCtrl.touched" class="field-error">
+      Ingresá un correo electrónico válido.
+    </div>
 
     <app-phone-field
       [control]="phoneCtrl"

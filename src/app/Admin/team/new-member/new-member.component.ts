@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
@@ -38,10 +38,10 @@ export class NewMemberComponent {
   iconSparkles  = ICON_SPARKLES;
   iconPersonAdd = ICON_PERSON_ADD;
 
-  name  = '';
-  email = '';
+  name      = '';
+  emailCtrl = new FormControl('', [Validators.required, Validators.email]);
   phoneCtrl = new FormControl('', phoneValidator());
-  role  = 'Soporte';
+  role      = 'Soporte';
 
   roleOptions = ['Administrador', 'Soporte'];
 
@@ -49,10 +49,18 @@ export class NewMemberComponent {
 
   goBack() { this.router.navigate(['/admin/equipo']); }
 
+  onEmailChange(v: string): void {
+    this.emailCtrl.setValue(v);
+    this.emailCtrl.markAsTouched();
+  }
+
   submit() {
+    this.emailCtrl.markAsTouched();
+    if (!this.name || this.emailCtrl.invalid) return;
+
     this.staffService.create({
       nombre: this.name,
-      correoContacto: this.email,
+      correoContacto: this.emailCtrl.value ?? '',
       phone: this.phoneCtrl.value ?? undefined,
       role: ROLE_TO_BACKEND[this.role],
     }).subscribe((res) => {
