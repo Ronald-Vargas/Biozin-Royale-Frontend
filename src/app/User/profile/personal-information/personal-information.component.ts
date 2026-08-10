@@ -1,12 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
 import { GoldButtonComponent } from '../../shared/Components/gold-button/gold-button.component';
 import { GhostButtonComponent } from '../../shared/Components/ghost-button/ghost-button.component';
 import { FieldComponent } from 'src/app/Auth/Components/field/field.component';
+import { PhoneFieldComponent } from 'src/app/Auth/Components/phone-field/phone-field.component';
+import { phoneValidator } from 'src/app/Core/Utils/phone.validator';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
 import { EstadisticasResultado, PerfilResultado } from 'src/app/Core/Models/profile.models';
 import { ICON_PERSON_CIRCLE, ICON_FINGERPRINT, ICON_COPY, ICON_CHECK, ICON_CALENDAR, ICON_CAMERA, ICON_EDIT, ICON_STATS, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_GLOBE, ICON_PHONE_CALL, ICON_ALBUMS, ICON_TROPHY, ICON_CASH, ICON_TRENDING } from '../../shared/icons/icons';
@@ -30,17 +35,22 @@ const PENDING_FIELD_LABELS: Record<string, string> = {
     GoldButtonComponent,
     GhostButtonComponent,
     FieldComponent,
+    PhoneFieldComponent,
   ],
   selector: 'app-personal-information',
   templateUrl: './personal-information.component.html',
   styleUrls: ['./personal-information.component.scss'],
 })
-export class PersonalInformationComponent implements OnInit {
-  copied = false;
-  editMode = false;
-  loading = false;
-  saving = false;
-  errorMsg = '';
+export class PersonalInformationComponent implements OnInit, OnDestroy {
+  copied    = false;
+  editMode  = false;
+  loading   = false;
+  saving    = false;
+  errorMsg  = '';
+
+  usernameStatus: 'idle' | 'checking' | 'available' | 'taken' | 'invalid' = 'idle';
+  private usernameCheck$ = new Subject<string>();
+  private usernameSub?: Subscription;
 
   iconPersonCircle = ICON_PERSON_CIRCLE;
   iconFinger       = ICON_FINGERPRINT;
@@ -65,7 +75,7 @@ export class PersonalInformationComponent implements OnInit {
     this.form = this.fb.group({
       displayName: [''],
       username: [''],
-      phone: [''],
+      phone: ['', phoneValidator()],
       country: [''],
       birthdate: [''],
     });
@@ -78,6 +88,25 @@ export class PersonalInformationComponent implements OnInit {
   get birthdateCtrl()   { return this.form.get('birthdate')   as FormControl; }
 
   ngOnInit(): void {
+    this.usernameSub = this.usernameCheck$.pipe(
+      debounceTime(450),
+      distinctUntilChanged(),
+      switchMap((value) => {
+        if (!value || value === this.perfil?.username) {
+          this.usernameStatus = 'idle';
+          return EMPTY;
+        }
+        if (!/^[a-zA-Z0-9_]{3,20}$/.test(value)) {
+          this.usernameStatus = 'invalid';
+          return EMPTY;
+        }
+        this.usernameStatus = 'checking';
+        return this.profileService.checkUsername(value).pipe(catchError(() => EMPTY));
+      }),
+    ).subscribe((res) => {
+      this.usernameStatus = res.returnValue ? 'available' : 'taken';
+    });
+
     this.loading = true;
     this.profileService.getProfile().subscribe({
       next: (res) => {
@@ -121,6 +150,12 @@ export class PersonalInformationComponent implements OnInit {
 
 
 
+  ngOnDestroy(): void { this.usernameSub?.unsubscribe(); }
+
+  onUsernameInput(value: string): void {
+    this.usernameCheck$.next(value);
+  }
+
   editInfo() {
     if (!this.perfil) return;
     this.form.setValue({
@@ -130,12 +165,14 @@ export class PersonalInformationComponent implements OnInit {
       country: this.perfil.country ?? '',
       birthdate: this.perfil.birthdate ?? '',
     });
+    this.usernameStatus = 'idle';
     this.errorMsg = '';
     this.editMode = true;
   }
 
   cancelEdit() {
     this.editMode = false;
+    this.usernameStatus = 'idle';
     this.errorMsg = '';
   }
 
@@ -144,6 +181,18 @@ export class PersonalInformationComponent implements OnInit {
 
   saveInfo() {
     if (this.saving) return;
+    if (this.usernameStatus === 'taken') {
+      this.errorMsg = 'Ese nombre de usuario ya está en uso.';
+      return;
+    }
+    if (this.usernameStatus === 'checking') {
+      this.errorMsg = 'Espera mientras verificamos el nombre de usuario.';
+      return;
+    }
+    if (this.usernameStatus === 'invalid') {
+      this.errorMsg = 'El usuario solo puede tener letras, números y guion bajo (3–20 caracteres).';
+      return;
+    }
     this.saving = true;
     this.errorMsg = '';
 

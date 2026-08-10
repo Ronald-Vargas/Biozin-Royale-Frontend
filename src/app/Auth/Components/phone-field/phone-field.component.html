@@ -1,0 +1,20 @@
+<div class="field-wrap">
+  <div class="field-label">{{ label }}</div>
+  <ion-input
+    class="fld"
+    [class.has-focus]="focused"
+    [class.has-error]="hasError"
+    type="tel"
+    inputmode="tel"
+    autocomplete="tel"
+    [placeholder]="placeholder"
+    [value]="displayValue"
+    (ionInput)="onInput($event)"
+    (ionFocus)="onFocus()"
+    (ionBlur)="onBlur()"
+  ></ion-input>
+  <div class="phone-meta">
+    <span class="phone-country" *ngIf="countryHint">{{ countryHint }}</span>
+    <span class="phone-error" *ngIf="hasError">Número inválido para {{ countryHint || 'este país' }}</span>
+  </div>
+</div>

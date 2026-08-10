@@ -52,6 +52,12 @@ export class ProfileService {
     return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/2fa/estado`, { password, enabled });
   }
 
+  checkUsername(username: string): Observable<ApiResponse<boolean>> {
+    return this.http.get<ApiResponse<boolean>>(`${this.profileUrl}/check-username`, {
+      params: { username },
+    });
+  }
+
   getSessions(): Observable<ApiResponse<SessionResultado[]>> {
     return this.http.get<ApiResponse<SessionResultado[]>>(`${this.profileUrl}/sessions`);
   }

@@ -287,3 +287,26 @@
   text-transform: uppercase;
   white-space: pre-line;
 }
+// ── Username availability hint ────────────────────────────────
+.username-field-wrap {
+  display: flex;
+  flex-direction: column;
+
+  app-field { flex: 1; }
+}
+
+.username-hint {
+  min-height: 18px;
+  margin-top: 4px;
+  padding-left: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 0.2s;
+
+  &.idle     { color: transparent; }
+  &.checking { color: rgba(203, 185, 143, 0.6); }
+  &.available { color: #4fd190; }
+  &.taken    { color: #e06060; }
+  &.invalid  { color: #e09060; }
+}

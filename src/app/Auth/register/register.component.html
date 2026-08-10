@@ -12,7 +12,7 @@
     <div class="fields-wrap">
       <app-field label="Nombre completo"      placeholder="Juan Pérez"             [control]="nameCtrl"></app-field>
       <app-field label="Correo electrónico"   type="email" placeholder="ejemplo@correo.com" [control]="emailCtrl"></app-field>
-      <app-field label="Teléfono"             type="tel"   placeholder="+506 8144 7441"     [control]="phoneCtrl"></app-field>
+      <app-phone-field [control]="phoneCtrl"></app-phone-field>
       <app-field label="Contraseña"           placeholder="Mínimo 8 caracteres"   [password]="true" [control]="passCtrl"></app-field>
       <app-field label="Confirmar contraseña" placeholder="Repite tu contraseña"  [password]="true" [control]="confirmCtrl"></app-field>
     </div>

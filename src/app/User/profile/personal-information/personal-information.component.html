@@ -26,7 +26,7 @@
       <div class="meta-row">
         <app-icon [svg]="iconFinger" [size]="14" style="color:var(--gold-1)"></app-icon>
         <span class="meta-text">
-          ID de jugador: <span class="meta-value">84527193</span>
+          ID de jugador: <span class="meta-value">{{ perfil?.playerId ?? '—' }}</span>
         </span>
         <app-icon
           [svg]="copied ? iconCheck : iconCopy"
@@ -78,11 +78,29 @@
 
   <!-- Formulario de edición -->
   <form class="edit-form" *ngIf="editMode" [formGroup]="form">
-    <app-field label="Nombre completo"      placeholder="Juan Pérez"             [control]="displayNameCtrl"></app-field>
-    <app-field label="Usuario"              placeholder="juanperez4"             [control]="usernameCtrl"></app-field>
-    <app-field label="Teléfono"             type="tel"  placeholder="+506 8144 7441" [control]="phoneCtrl"></app-field>
-    <app-field label="País"                 placeholder="Honduras"               [control]="countryCtrl"></app-field>
-    <app-field label="Fecha de nacimiento"  type="date" [control]="birthdateCtrl"></app-field>
+    <app-field label="Nombre completo" placeholder="Juan Pérez" [control]="displayNameCtrl"></app-field>
+
+    <!-- Campo usuario con verificación en tiempo real -->
+    <div class="username-field-wrap">
+      <app-field
+        label="Usuario"
+        placeholder="juanperez4"
+        [control]="usernameCtrl"
+        (inputEvent)="onUsernameInput($event)"
+      ></app-field>
+      <div class="username-hint" [ngClass]="usernameStatus">
+        <ng-container [ngSwitch]="usernameStatus">
+          <span *ngSwitchCase="'checking'">Verificando disponibilidad…</span>
+          <span *ngSwitchCase="'available'">✓ Disponible</span>
+          <span *ngSwitchCase="'taken'">✗ Ya está en uso</span>
+          <span *ngSwitchCase="'invalid'">Solo letras, números y _ (3–20 caracteres)</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <app-phone-field [control]="phoneCtrl"></app-phone-field>
+    <app-field label="País"                placeholder="Honduras"  [control]="countryCtrl"></app-field>
+    <app-field label="Fecha de nacimiento" type="date"             [control]="birthdateCtrl"></app-field>
   </form>
 
   <div class="form-error" *ngIf="errorMsg">{{ errorMsg }}</div>
