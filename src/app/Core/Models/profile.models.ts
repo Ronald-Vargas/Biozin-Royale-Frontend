@@ -21,6 +21,7 @@ export interface PerfilResultado {
   mustVerifyEmail?: boolean;
   createdAt?: string | null;
   createdByName?: string | null;
+  playerId?: number | null;
 }
 
 export interface SessionResultado {
