@@ -120,7 +120,18 @@ export class AdminFinanceComponent implements OnInit {
   }
 
   get pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i);
+    const maxVisible = 5;
+    const total = this.totalPages;
+    if (total <= maxVisible) {
+      return Array.from({ length: total }, (_, i) => i);
+    }
+    let start = Math.max(0, this.page - Math.floor(maxVisible / 2));
+    let end = start + maxVisible - 1;
+    if (end > total - 1) {
+      end = total - 1;
+      start = end - maxVisible + 1;
+    }
+    return Array.from({ length: maxVisible }, (_, i) => start + i);
   }
 
   get pagedRecent(): FinanzasTransaccionResultado[] {
