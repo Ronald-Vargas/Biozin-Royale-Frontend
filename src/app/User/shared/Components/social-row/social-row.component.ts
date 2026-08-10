@@ -12,6 +12,4 @@ import { SvgIconComponent } from '../svg-icons/svg-icons.component';
 })
 export class SocialRowComponent {
   @Output() picked = new EventEmitter<string>();
-
-  iconFacebook = ICON_FACEBOOK;
 }
