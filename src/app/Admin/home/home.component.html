@@ -50,6 +50,17 @@
       <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
     </div>
 
+    <!-- Acceso rápido: Solicitudes internas de soporte -->
+    <div class="support-card" (click)="goSolicitudes()">
+      <div class="support-icon">
+        <app-icon [svg]="iconSwap" [size]="22" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="support-text">
+        <div class="support-title">Solicitudes internas</div>
+        <div class="support-sub">Pedidos de soporte que requieren tu acción</div>
+      </div>
+      <app-icon [svg]="iconChevron" [size]="20" style="color:var(--gold-2)"></app-icon>
+    </div>
 
   </div>
 

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_CHECK_DONE_CIRCLE, ICON_OPTIONS, ICON_SEARCH } from 'src/app/User/shared/icons/icons';
+import { ICON_CHECK_DONE_CIRCLE, ICON_CHEVRON_FWD, ICON_OPTIONS, ICON_SEARCH, ICON_SWAP } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
 import { SupportKpi, SupportTicket } from 'src/app/Core/Models/ticket.models';
 import { statusLabel, relativeTime } from '../shared/support.data';
@@ -31,6 +31,8 @@ export class SupportPanelComponent implements OnInit {
   iconSearch  = ICON_SEARCH;
   iconOptions = ICON_OPTIONS;
   iconEmpty   = ICON_CHECK_DONE_CIRCLE;
+  iconSwap    = ICON_SWAP;
+  iconChevron = ICON_CHEVRON_FWD;
 
   tab = 'Nuevos';
   q = '';
@@ -83,6 +85,7 @@ export class SupportPanelComponent implements OnInit {
   isActive(key: string): boolean { return this.tab === key; }
 
   openTicket(id: string) { this.router.navigate(['/soporte/ticket', id]); }
+  goSolicitudes() { this.router.navigate(['/soporte/solicitudes']); }
 
   private mapTicket(t: TicketResultado, idx: number): SupportTicket {
     return {

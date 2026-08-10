@@ -9,6 +9,18 @@
       <app-support-kpi *ngFor="let k of kpis" [kpi]="k"></app-support-kpi>
     </div>
 
+    <!-- Acceso rápido: Solicitudes internas a un admin -->
+    <div class="quick-card" (click)="goSolicitudes()">
+      <div class="quick-icon">
+        <app-icon [svg]="iconSwap" [size]="21" style="color:var(--gold-1)"></app-icon>
+      </div>
+      <div class="quick-text">
+        <div class="quick-title">Solicitudes internas</div>
+        <div class="quick-sub">Pídele algo a un admin (ej. otorgar un bono)</div>
+      </div>
+      <app-icon [svg]="iconChevron" [size]="19" style="color:var(--gold-2)"></app-icon>
+    </div>
+
     <!-- Tabs -->
     <div class="tabs-row">
       <button
