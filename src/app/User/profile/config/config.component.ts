@@ -47,7 +47,6 @@ export class ConfigComponent {
     }
     this.router.navigate(['/seguridad']);
   }
-  noop()        { /* placeholder */ }
 
   goTerminos() { Browser.open({ url: this.termsUrl }); }
   goPoliticas() { Browser.open({ url: this.privacyUrl }); }
