@@ -75,15 +75,12 @@ export class RegisterComponent {
       case 'google':
         this.iniciarSesionConOAuth('google');
         break;
-      case 'facebook':
-        this.iniciarSesionConOAuth('facebook');
-        break;
       case 'mail':
         break;
     }
   }
 
-  async iniciarSesionConOAuth(provider: 'google' | 'facebook'): Promise<void> {
+  async iniciarSesionConOAuth(provider: 'google'): Promise<void> {
     this.loading = true;
 
     // En la app nativa no hay un origen público al que Google/Supabase puedan
