@@ -1,0 +1,93 @@
+<div class="ticket-screen">
+  <app-atmosphere [glow]="0.2" [count]="6"></app-atmosphere>
+
+  <!-- Header -->
+  <div class="ticket-header">
+    <button class="icon-btn" (click)="goBack()">
+      <app-icon [svg]="iconBack" [size]="21"></app-icon>
+    </button>
+    <h2 class="gold-text header-title">Solicitud interna</h2>
+  </div>
+
+  <!-- Scroll body -->
+  <div class="thread-area" #threadEl>
+    <!-- Card -->
+    <div class="user-card">
+      <app-initials [text]="requestedByName" [size]="48" [tint]="tint"></app-initials>
+      <div class="user-info">
+        <div class="user-top">
+          <span class="user-name">{{ requestedByName }}</span>
+          <app-ticket-status-badge [status]="status" size="lg"></app-ticket-status-badge>
+        </div>
+        <div class="user-meta">
+          <span class="meta-id">#SOL-{{ requestNumber }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta chips -->
+    <div class="meta-chips">
+      <app-meta-chip label="Dirigida a" [icon]="iconAdmin" [value]="targetAdminName"></app-meta-chip>
+    </div>
+
+    <!-- Descripción original de la solicitud -->
+    <div class="desc-card">
+      <div class="desc-label">{{ subject }}</div>
+      <div class="desc-text">{{ description }}</div>
+    </div>
+
+    <!-- Conversación -->
+    <app-bubble *ngFor="let m of msgs" [msg]="m" leftLabel="Admin" rightLabel="Soporte"></app-bubble>
+  </div>
+
+  <!-- Footer -->
+  <div *ngIf="!isClosed || isAdmin" class="ticket-footer">
+    <div *ngIf="isAdmin" class="action-row">
+      <button class="act-btn" (click)="sheet = 'estado'">
+        <app-icon [svg]="iconSwap" [size]="16"></app-icon>
+        Estado
+      </button>
+      <button
+        class="act-btn act-btn--primary"
+        [class.act-btn--done]="status === 'Resuelto'"
+        [disabled]="status === 'Resuelto'"
+        (click)="resolve()"
+      >
+        <app-icon [svg]="iconResolve" [size]="16"></app-icon>
+        {{ status === 'Resuelto' ? 'Resuelto' : 'Resolver' }}
+      </button>
+    </div>
+
+    <div class="reply-row">
+      <input
+        class="reply-input"
+        [(ngModel)]="reply"
+        (keydown)="onEnter($event)"
+        placeholder="Escribe tu mensaje..."
+      />
+      <button class="send-btn" (click)="send()">Enviar</button>
+    </div>
+  </div>
+
+  <!-- Banner de solo lectura cuando soporte no puede responder -->
+  <div *ngIf="isClosed && !isAdmin" class="readonly-bar">
+    <span>Esta solicitud está {{ status.toLowerCase() }}</span>
+  </div>
+
+  <!-- Sheet de estado (solo admin) -->
+  <app-support-sheet
+    *ngIf="sheet === 'estado' && isAdmin"
+    title="Cambiar estado"
+    [options]="statusOptions"
+    [current]="status"
+    mode="status"
+    (pick)="pickStatus($event)"
+    (close)="sheet = null"
+  ></app-support-sheet>
+
+  <!-- Toast -->
+  <div *ngIf="toast" class="toast">
+    <app-icon [svg]="iconCheck" [size]="17" style="color:var(--gold-1)"></app-icon>
+    {{ toast }}
+  </div>
+</div>

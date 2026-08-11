@@ -1,0 +1,54 @@
+<div class="solicitud-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Nueva solicitud" (back)="goBack()"></app-admin-header>
+
+    <!-- Admin destino -->
+    <div class="field-label">Dirigida a</div>
+    <button class="admin-picker" (click)="sheetOpen = true">
+      <app-icon [svg]="iconPerson" [size]="18" style="color:var(--gold-1)"></app-icon>
+      <span>{{ targetAdminName }}</span>
+    </button>
+
+    <!-- Asunto -->
+    <div class="field-label">Asunto</div>
+    <input
+      class="subject-input"
+      [(ngModel)]="subject"
+      placeholder="Ej. Solicitud de bono para un usuario"
+    />
+
+    <!-- Mensaje -->
+    <div class="field-label">Detalle</div>
+    <textarea
+      class="msg-area"
+      [(ngModel)]="description"
+      placeholder="Describe qué necesitas y para qué usuario (usuario/correo)..."
+    ></textarea>
+
+    <!-- Error -->
+    <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
+
+    <!-- Enviar -->
+    <button
+      class="submit-btn"
+      [class.submit-btn--ready]="valid && !loading"
+      [disabled]="!valid || loading"
+      (click)="submit()"
+    >
+      <app-icon [svg]="iconSend" [size]="19"></app-icon>
+      {{ loading ? 'Enviando...' : 'Enviar solicitud' }}
+    </button>
+  </div>
+
+  <app-support-sheet
+    *ngIf="sheetOpen"
+    title="Elegir admin"
+    [staffOptions]="admins"
+    [current]="targetAdminId"
+    mode="agent"
+    (pick)="pickAdmin($event)"
+    (close)="sheetOpen = false"
+  ></app-support-sheet>
+</div>

@@ -13,6 +13,8 @@ import { ICON_DOC_ATTACH, ICON_DOWNLOAD, ICON_HEADSET, ICON_PERSON } from 'src/a
 })
 export class BubbleComponent {
   @Input() msg!: TicketMsg;
+  @Input() leftLabel = 'Soporte';
+  @Input() rightLabel = 'Usuario';
 
   iconHeadset  = ICON_HEADSET;
   iconPerson   = ICON_PERSON;
@@ -23,7 +25,7 @@ export class BubbleComponent {
   get isSystem():  boolean { return this.msg.who === 'system'; }
 
   get senderName(): string {
-    if (this.isSupport) return this.msg.name ? `Soporte (${this.msg.name})` : 'Soporte';
-    return 'Usuario';
+    if (this.isSupport) return this.msg.name ? `${this.leftLabel} (${this.msg.name})` : this.leftLabel;
+    return this.rightLabel;
   }
 }

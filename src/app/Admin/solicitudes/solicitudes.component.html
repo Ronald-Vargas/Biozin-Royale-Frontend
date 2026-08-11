@@ -1,0 +1,40 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.22" [count]="7"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Solicitudes internas" (back)="goBack()"></app-admin-header>
+
+    <!-- Buscador -->
+    <div class="search-wrap">
+      <app-icon [svg]="iconSearch" [size]="17" class="search-icon"></app-icon>
+      <input class="search-input" [(ngModel)]="q" placeholder="Buscar por agente o asunto…"/>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-row">
+      <button
+        *ngFor="let f of filters"
+        class="filter-chip"
+        [class.filter-chip--active]="activeFilter === f"
+        (click)="activeFilter = f"
+      >{{ f }}</button>
+    </div>
+
+    <!-- Estado carga -->
+    <div *ngIf="loading" class="empty">Cargando…</div>
+
+    <!-- Lista -->
+    <div *ngIf="!loading" class="tickets-list">
+      <app-ticket-row
+        *ngFor="let t of list; let i = index"
+        [ticket]="t"
+        [idx]="i"
+        (open)="openSolicitud($event)"
+      ></app-ticket-row>
+    </div>
+
+    <div *ngIf="!loading && list.length === 0" class="empty">Sin solicitudes</div>
+  </div>
+
+  <app-admin-nav current="home"></app-admin-nav>
+</div>

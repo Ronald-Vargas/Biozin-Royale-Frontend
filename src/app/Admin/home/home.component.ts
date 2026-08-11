@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import {
-  ICON_CHATBUBBLES, ICON_CHEVRON_FWD,
+  ICON_CHATBUBBLES, ICON_CHEVRON_FWD, ICON_SWAP,
   ICON_PEOPLE, ICON_WALLET_FILLED, ICON_CASH, ICON_STATS,
 } from 'src/app/User/shared/icons/icons';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
@@ -28,6 +28,7 @@ import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 export class HomeComponent implements OnInit {
   iconChevron     = ICON_CHEVRON_FWD;
   iconChatbubbles = ICON_CHATBUBBLES;
+  iconSwap        = ICON_SWAP;
 
   logo        = 'assets/logo.png';
   loadingKpis = true;
@@ -68,4 +69,5 @@ export class HomeComponent implements OnInit {
   goPerfil()  { this.router.navigate(['/admin/miperfil']); }
   logout()    { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
   goSoporte() { this.router.navigate(['/admin/soporte']); }
+  goSolicitudes() { this.router.navigate(['/admin/solicitudes']); }
 }
