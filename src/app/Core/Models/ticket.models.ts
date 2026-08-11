@@ -72,6 +72,29 @@ export interface SupportTicket {
   msgs:     TicketMsg[];
 }
 
+export interface NuevoTicketNotif {
+  id: string;
+  ticketNumber: number;
+  subject: string;
+  userDisplayName?: string | null;
+  createdAt: string;
+}
+
+export interface NuevoMensajeNotif {
+  ticketId: string;
+  ticketNumber: number;
+  subject: string;
+  senderName: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface TicketNotificaciones {
+  nuevosTickets: NuevoTicketNotif[];
+  nuevosMensajes: NuevoMensajeNotif[];
+  serverTime: string;
+}
+
 export interface SupportKpi {
   label: string;
   value: number;

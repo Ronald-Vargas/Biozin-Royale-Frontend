@@ -6,6 +6,7 @@ import { ApiResponse } from '../Models/auth.models';
 import {
   CrearTicketRequest, TicketResultado, TicketMessage,
   EnviarMensajeRequest, AsignarTicketRequest, CambiarEstadoRequest, StaffSimple,
+  TicketNotificaciones,
 } from '../Models/ticket.models';
 
 @Injectable({ providedIn: 'root' })
@@ -67,5 +68,11 @@ export class TicketService {
 
   cerrar(ticketId: string): Observable<ApiResponse<TicketResultado>> {
     return this.http.post<ApiResponse<TicketResultado>>(`${this.url}/${ticketId}/cerrar`, {});
+  }
+
+  // ── Notificaciones (solo admin/soporte) ─────────────────────
+
+  obtenerNotificaciones(since: string): Observable<ApiResponse<TicketNotificaciones>> {
+    return this.http.get<ApiResponse<TicketNotificaciones>>(`${this.url}/notifications`, { params: { since } });
   }
 }
