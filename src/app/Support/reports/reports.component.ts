@@ -95,5 +95,5 @@ export class ReportsComponent implements OnInit {
 
   barPct(n: number): string { return (n / this.maxCat * 100) + '%'; }
 
-  goBack() { this.router.navigate(['/soporte']); }
+  goBack() { this.router.navigate(['/support']); }
 }

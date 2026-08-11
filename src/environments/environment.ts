@@ -16,7 +16,7 @@ export const environment = {
   support: {
     waNumber:  '50685348693',
     waDisplay: '+506 8534-8693',
-    email:     'soporte@tudominio.com',
+    email:     'soporte@mail.biozin.online',
   },
 };
 
