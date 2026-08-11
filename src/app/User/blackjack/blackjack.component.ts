@@ -1,21 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
-import { ICON_BACK, ICON_ADD, ICON_PERSON, ICON_TIME, ICON_HAND_LEFT, ICON_ELLIPSE, ICON_COPY, ICON_FLAG, ICON_HOME, ICON_ALBUMS, ICON_GIFT, ICON_WALLET, ICON_PERSON_OUTLINE } from '../shared/icons/icons';
-import { Card, makeShoe, isBlackjack, cardBaseValue, handValue } from './Cards/cards.logic';
+import {
+  BlackjackRealtimeService, BjChairSnap, BjHandSnap, BjSnapshot, BjState,
+} from 'src/app/Core/Services/blackjack-realtime.service';
+import { ICON_BACK, ICON_ADD, ICON_PERSON, ICON_TIME, ICON_HAND_LEFT, ICON_ELLIPSE, ICON_COPY, ICON_FLAG, ICON_TRASH } from '../shared/icons/icons';
+import { Card, handValue, cardBaseValue } from './Cards/cards.logic';
 import { HandComponent } from './Cards/hand/hand.component';
 import { ActionBtnComponent } from './Components/action-btn/action-btn.component';
 import { BotSeatComponent, Bot } from './Components/bot-seat/bot-seat.component';
 import { ChipTokenComponent } from './Components/chip-token/chip-token.component';
 import { SeatSpotComponent } from './Components/seat-spot/seat-spot.component';
-import { BjTable } from './Lobby/tables.data';
-import { BOT_NAMES, BOT_TINTS, BOT_AVATARS, botBet } from './blackjack.data';
+import { BOT_TINTS, BOT_AVATARS } from './blackjack.data';
 
+// Vista de la mano propia que espera el template (heredada del diseño original)
 interface YouHand {
   cards:  Card[];
   bet:    number;
@@ -23,12 +26,15 @@ interface YouHand {
   result: string | null;
 }
 
-interface Dealer { cards: Card[]; hole: boolean; }
-
-interface NavItem { label: string; icon: string; to: string; }
-
-type Phase = 'bet' | 'deal' | 'you' | 'resolve' | 'done';
-
+// El componente es SOLO una vista: todo el juego (cartas, turnos, dinero,
+// timers) vive en el servidor y llega como snapshots por SignalR.
+//
+// Los snapshots traen objetos nuevos en cada broadcast; si el template los
+// recibiera directo, Angular recrearía TODO el DOM de cartas y las animaciones
+// de reparto se re-dispararían en cada mensaje (parpadeo). Por eso el estado
+// visual (hands/dealer/bots) son campos persistentes que se RECONCILIAN con
+// cada snapshot: las cartas ya pintadas conservan identidad y solo se montan
+// (y animan) las nuevas.
 @Component({
   standalone: true,
   imports: [
@@ -39,8 +45,6 @@ type Phase = 'bet' | 'deal' | 'you' | 'resolve' | 'done';
   templateUrl: './blackjack.component.html',
   styleUrls: ['./blackjack.component.scss'],
 })
-
-
 export class BlackjackComponent implements OnInit, OnDestroy {
   // Iconos
   iconBack  = ICON_BACK;
@@ -52,66 +56,294 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   iconDouble = ICON_ELLIPSE;
   iconSplit = ICON_COPY;
   iconSurrender = ICON_FLAG;
+  iconClear = ICON_TRASH;
 
+  table = { id: 0, min: 10, max: 1000 };
 
-  // Estado de mesa
-  table: BjTable = { id: 4, min: 10, max: 1000, players: 2, max_players: 4, secs: 150, tag: null };
-
-  balance  = 1250;
-  phase: Phase = 'bet';
-  chip     = 10;
-  myBet    = 0;
-  count    = 15;
-
-  dealer: Dealer = { cards: [], hole: true };
-  hands: YouHand[] = [{ cards: [], bet: 0, done: false, result: null }];
-  active   = 0;
-  bots: Bot[] = [];
-  history: (number | string)[] = [21, 18, 16, 'BJ', 20];
+  chip = 10;
+  count = 0;
+  history: (number | string)[] = [];
   msg: string | null = null;
 
-  private shoe: Card[] = [];
-  private lockRef = false;
-  private countTimer: ReturnType<typeof setTimeout> | null = null;
-  private msgTimer:   ReturnType<typeof setTimeout> | null = null;
-  private nextRoundTimer: ReturnType<typeof setTimeout> | null = null;
+  // ── Estado visual persistente (reconciliado con cada snapshot) ─────────────
+  dealer: { cards: Card[]; hole: boolean } = { cards: [], hole: true };
+  hands: YouHand[] = [{ cards: [], bet: 0, done: false, result: null }];
+  bots: Bot[] = [0, 1, 2].map(i => ({
+    name: '', balance: 0, tint: BOT_TINTS[i], avatar: BOT_AVATARS[i],
+    bet: 0, cards: [], status: '', tone: 'dark' as const,
+  }));
+
+  private localBet = 0;      // fichas acumuladas antes de confirmar la apuesta
+  private placing = false;   // apuesta enviada, esperando confirmación del server
+  private activeHandIdx = 0;
+  private prevState: BjState | null = null;
+  private countTimer: ReturnType<typeof setInterval> | null = null;
+  private msgTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private balanceService: BalanceService,
     private authService: AuthService,
-  ) {}
+    private rt: BlackjackRealtimeService,
+  ) {
+    // Resultado personal de la ronda: el balance nuevo viene del servidor
+    effect(() => {
+      const r = this.rt.lastResult();
+      if (r?.newBalance != null) this.balanceService.set(r.newBalance);
+      if (r) {
+        if (r.profit > 0)       this.flash('¡Ganaste ' + this.fmt(r.payout) + '!');
+        else if (r.payout > 0)  this.flash('Recuperas ' + this.fmt(r.payout));
+        this.rt.lastResult.set(null);
+      }
+    });
+
+    // Expulsión por inactividad
+    effect(() => {
+      const k = this.rt.kicked();
+      if (k) {
+        this.rt.kicked.set(null);
+        this.flash(k);
+        setTimeout(() => this.router.navigate(['/blackjack-lobby']), 1600);
+      }
+    });
+
+    // Cada snapshot: reconciliar vista + transiciones de fase
+    effect(() => {
+      const s = this.rt.room();
+      if (!s) return;
+
+      this.table = { id: s.roomId, min: s.min, max: s.max };
+      this.syncFromSnapshot(s);
+
+      if (s.state === 'betting' && this.prevState !== 'betting') {
+        this.localBet = 0;
+        this.placing = false;
+      }
+      if (s.state === 'settled' && this.prevState !== 'settled') {
+        const main = this.hands[0];
+        if (main && main.cards.length > 0) {
+          const tag = main.result === 'bj' ? 'BJ' : handValue(main.cards).total;
+          this.history = [tag, ...this.history].slice(0, 6);
+        }
+      }
+      this.prevState = s.state;
+    });
+  }
 
   ngOnInit() {
-    // Recibe la mesa por state de navegación
-    const nav = this.router.getCurrentNavigation();
-    const state = nav?.extras?.state || history.state;
-    if (state && state.table) this.table = state.table;
-
-    this.chip = Math.max(10, this.table.min);
-
     if (this.authService.currentProfile()?.isGuest) {
-      this.balance = 0;
-    } else {
-      this.balanceService.fetch().subscribe(b => { this.balance = b; });
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return;
     }
 
-    this.bots = BOT_NAMES.map((n, i) => ({
-      name: n, balance: 700 + i * 130, tint: BOT_TINTS[i], avatar: BOT_AVATARS[i],
-      bet: 0, cards: [], status: '', tone: 'dark',
-    }));
+    this.balanceService.load();
 
-    this.startCountdown();
+    const roomId = Number(this.route.snapshot.paramMap.get('id')) || 1;
+    this.rt.joinRoom(roomId).catch(err => {
+      this.flash(this.errMsg(err));
+      setTimeout(() => this.router.navigate(['/blackjack-lobby']), 1600);
+    });
+
+    // Tick local solo para pintar el countdown que fija el servidor
+    this.countTimer = setInterval(() => {
+      const ends = this.snap?.phaseEndsUtc;
+      this.count = ends
+        ? Math.max(0, Math.ceil((new Date(ends).getTime() - Date.now()) / 1000))
+        : 0;
+      if (this.chip < this.table.min) this.chip = this.table.min;
+    }, 300);
   }
 
   ngOnDestroy() {
-    this.clearTimers();
+    if (this.countTimer) clearInterval(this.countTimer);
+    if (this.msgTimer) clearTimeout(this.msgTimer);
+    this.rt.leaveRoom();
   }
 
-  private clearTimers() {
-    if (this.countTimer)     clearTimeout(this.countTimer);
-    if (this.msgTimer)       clearTimeout(this.msgTimer);
-    if (this.nextRoundTimer) clearTimeout(this.nextRoundTimer);
+  // ── Reconciliación: aplicar el snapshot mutando en sitio ───────────────────
+
+  /** Conserva los objetos Card ya montados; solo agrega/reemplaza lo que cambió. */
+  private static syncCards(target: Card[], next: Card[]) {
+    let common = 0;
+    while (
+      common < target.length && common < next.length
+      && target[common].r === next[common].r && target[common].s === next[common].s
+    ) common++;
+    target.length = common;
+    for (let i = common; i < next.length; i++) target.push(next[i]);
+  }
+
+  private syncFromSnapshot(s: BjSnapshot) {
+    const myId = this.rt.myUserId;
+
+    // Crupier: si hay carta oculta, el server solo manda la visible y aquí se
+    // agrega un dorso local (la carta real jamás llega al navegador)
+    const dealerCards = s.dealer.hole && s.dealer.cards.length > 0
+      ? [...s.dealer.cards, { r: '?', s: 'S' } as Card]
+      : s.dealer.cards;
+    BlackjackComponent.syncCards(this.dealer.cards, dealerCards);
+    this.dealer.hole = s.dealer.hole;
+
+    // Mi silla → mis manos
+    const mine = s.chairs.find(
+      (c): c is BjChairSnap => !!c && c.type === 'player' && c.userId === myId,
+    ) ?? null;
+    this.activeHandIdx = mine?.activeHand ?? 0;
+    this.syncMyHands(mine?.hands ?? null);
+
+    // Las otras 3 sillas (humanos o bots) en los asientos visuales de siempre
+    const others = s.chairs.filter(
+      (c): c is BjChairSnap => !!c && !(c.type === 'player' && c.userId === myId),
+    ).slice(0, 3);
+
+    for (let i = 0; i < 3; i++) {
+      const bot = this.bots[i];
+      const c = others[i] ?? null;
+      if (!c) {
+        bot.name = ''; bot.bet = 0; bot.status = ''; bot.tone = 'dark';
+        bot.cards.length = 0;
+        continue;
+      }
+      const hand = c.hands?.[c.activeHand] ?? c.hands?.[0] ?? null;
+      bot.name = c.name;
+      bot.avatar = c.avatar || BOT_AVATARS[i % BOT_AVATARS.length];
+      bot.bet = c.bet || (hand?.bet ?? 0);
+      bot.status = this.seatStatus(s, c, hand);
+      bot.tone = this.seatTone(hand);
+      bot.done = hand?.done;
+      BlackjackComponent.syncCards(bot.cards, hand?.cards ?? []);
+    }
+  }
+
+  private syncMyHands(server: BjHandSnap[] | null) {
+    const src: (BjHandSnap | null)[] = server && server.length > 0 ? server : [null];
+    while (this.hands.length > src.length) this.hands.pop();
+    while (this.hands.length < src.length)
+      this.hands.push({ cards: [], bet: 0, done: false, result: null });
+
+    src.forEach((h, i) => {
+      const t = this.hands[i];
+      if (!h) {
+        t.cards.length = 0; t.bet = 0; t.done = false; t.result = null;
+        return;
+      }
+      BlackjackComponent.syncCards(t.cards, h.cards);
+      t.bet = h.bet;
+      t.done = h.done;
+      t.result = h.result === 'blackjack' ? 'bj' : h.result;
+    });
+  }
+
+  private seatStatus(s: BjSnapshot, c: BjChairSnap, hand: BjHandSnap | null): string {
+    if (s.state === 'acting' && s.turnChair === c.index) return 'JUGANDO';
+    switch (hand?.result) {
+      case 'blackjack': return '¡BLACKJACK!';
+      case 'win':       return 'GANA';
+      case 'push':      return 'EMPATE';
+      case 'surrender': return 'SE RINDE';
+      case 'lose':      return hand.total > 21 ? 'SE PASA' : 'PIERDE';
+    }
+    if (hand?.done) return 'PLANTARSE';
+    return '';
+  }
+
+  private seatTone(hand: BjHandSnap | null): 'dark' | 'win' | 'bust' {
+    if (hand?.result === 'win' || hand?.result === 'blackjack') return 'win';
+    if (hand?.result === 'lose' && hand.total > 21) return 'bust';
+    return 'dark';
+  }
+
+  // ── Estado derivado ────────────────────────────────────────
+
+  private get snap(): BjSnapshot | null { return this.rt.room(); }
+
+  private get myChair(): BjChairSnap | null {
+    const myId = this.rt.myUserId;
+    return this.snap?.chairs.find(
+      (c): c is BjChairSnap => !!c && c.type === 'player' && c.userId === myId,
+    ) ?? null;
+  }
+
+  get balance(): number { return this.balanceService.balance() ?? 0; }
+
+  private get betPlaced(): boolean { return this.placing || (this.myChair?.bet ?? 0) > 0; }
+
+  get myBet(): number {
+    if (this.snap?.state === 'betting' && !this.betPlaced) return this.localBet;
+    return this.myChair?.bet ?? this.localBet;
+  }
+
+  get phase(): 'bet' | 'deal' | 'you' | 'resolve' | 'done' {
+    switch (this.snap?.state) {
+      case 'betting': return this.betPlaced ? 'deal' : 'bet';
+      case 'acting':  return 'you';
+      case 'dealer':  return 'resolve';
+      case 'settled': return 'done';
+      default:        return 'deal';
+    }
+  }
+
+  get showWaitingOverlay(): boolean {
+    const s = this.snap?.state;
+    return s === 'waiting' || s === 'starting';
+  }
+
+  // ── Mesa privada ───────────────────────────────────────────
+  get isPrivateLobby(): boolean { return this.snap?.state === 'lobby'; }
+  get inviteCode(): string { return this.snap?.inviteCode ?? ''; }
+  get isOwner(): boolean {
+    return !!this.snap?.ownerUserId && this.snap.ownerUserId === this.rt.myUserId;
+  }
+
+  copyCode() {
+    if (!this.inviteCode) return;
+    navigator.clipboard?.writeText(this.inviteCode)
+      .then(() => this.flash('Código copiado'))
+      .catch(() => this.flash(this.inviteCode));
+  }
+
+  async shareCode() {
+    if (!this.inviteCode) return;
+    const text = `Únete a mi mesa privada de Blackjack en Biozin Royale con el código ${this.inviteCode}`;
+    if (navigator.share) {
+      try { await navigator.share({ text }); } catch { /* usuario canceló */ }
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  }
+
+  startGame() {
+    this.rt.startGame().catch(err => this.flash(this.errMsg(err)));
+  }
+
+  get waitingPlayers(): number {
+    const s = this.snap;
+    if (!s) return 1;
+    const seated = s.chairs.filter(c => c?.type === 'player').length;
+    return Math.max(1, seated + s.spectators.length);
+  }
+
+  get isSpectator(): boolean {
+    const s = this.snap?.state;
+    return !!this.snap && !this.showWaitingOverlay
+      && s !== 'betting' && this.myChair === null;
+  }
+
+  get waitingBets(): boolean {
+    return this.snap?.state === 'betting' && this.betPlaced;
+  }
+
+  /** Tengo silla pero no aposté: la ronda corre (con bots) y yo miro */
+  get sittingOut(): boolean {
+    const s = this.snap?.state;
+    const enRonda = s === 'dealing' || s === 'acting' || s === 'dealer' || s === 'settled';
+    return enRonda && this.myChair !== null && !(this.myChair.hands && this.myChair.hands.length > 0);
+  }
+
+  get dealerTone(): 'dark' | 'win' | 'bust' {
+    const d = this.snap?.dealer;
+    return d && !d.hole && (d.total ?? 0) > 21 ? 'bust' : 'dark';
   }
 
   // ── Helpers ────────────────────────────────────────────────
@@ -124,23 +356,16 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   fmtShort(n: number): string { return this.fmt(n).replace('.00', ''); }
 
-  private draw(): Card {
-    if (this.shoe.length < 15) this.shoe = makeShoe(6);
-    return this.shoe.pop()!;
-  }
-
   private flash(m: string) {
     if (this.msgTimer) clearTimeout(this.msgTimer);
     this.msg = m;
-    this.msgTimer = setTimeout(() => this.msg = null, 1900);
+    this.msgTimer = setTimeout(() => this.msg = null, 2200);
   }
 
-  private sleep(ms: number): Promise<void> {
-    return new Promise(r => setTimeout(r, ms));
-  }
-
-  private saveBalance() {
-    this.balanceService.save(this.balance).subscribe();
+  // Extrae el mensaje de HubException del error de SignalR
+  private errMsg(err: unknown): string {
+    const raw = err instanceof Error ? err.message : String(err);
+    return /HubException: (.*)$/.exec(raw)?.[1] ?? 'No se pudo completar la acción.';
   }
 
   get chipVals(): number[] {
@@ -153,114 +378,54 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   chipImg(v: number): string { return `assets/chip-${this.chipDenom(v)}.png`; }
 
-  // ── Countdown de apuestas ──────────────────────────────────
-  private startCountdown() {
-    if (this.phase !== 'bet') return;
-    this.countTimer = setTimeout(() => this.tickCountdown(), 1000);
-  }
-
-  private tickCountdown() {
-    if (this.phase !== 'bet') return;
-    if (this.count <= 0) {
-      if (this.myBet >= this.table.min) {
-        this.startRound();
-      } else {
-        this.count = 15;
-        this.startCountdown();
-      }
-      return;
-    }
-    this.count--;
-    this.startCountdown();
-  }
-
-  // ── Apuestas ───────────────────────────────────────────────
+  // ── Apuestas (solo UI local hasta confirmar; el server valida todo) ────────
   addChip() {
     if (this.phase !== 'bet') return;
-    if (this.myBet + this.chip > this.table.max) {
+    if (this.localBet + this.chip > this.table.max) {
       this.flash('Máximo de mesa: ' + this.fmt(this.table.max));
       return;
     }
-    if (this.myBet + this.chip > this.balance) {
+    if (this.localBet + this.chip > this.balance) {
       this.flash('Saldo insuficiente');
       return;
     }
-    this.myBet += this.chip;
+    this.localBet += this.chip;
   }
 
   selectChip(v: number) { this.chip = v; }
-  clearBet() { if (this.phase === 'bet') this.myBet = 0; }
+
+  clearBet() {
+    if (this.phase !== 'bet' || this.localBet === 0) return;
+    this.localBet = 0;
+    this.flash('Apuesta borrada');
+  }
 
   deal() {
-    if (this.authService.currentProfile()?.isGuest) {
-      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+    if (this.phase !== 'bet' || this.placing) return;
+    if (this.localBet < this.table.min) {
+      this.flash('Mínimo: ' + this.fmt(this.table.min));
       return;
     }
-    if (this.myBet >= this.table.min) this.count = 0;
-    else this.flash('Mínimo: ' + this.fmt(this.table.min));
+    this.placing = true;
+    this.rt.placeBet(this.localBet)
+      .then(() => {
+        // El server ya debitó la wallet: reflejarlo sin esperar la siguiente carga
+        this.balanceService.set(Math.round((this.balance - this.localBet) * 100) / 100);
+      })
+      .catch(err => {
+        this.placing = false;
+        this.flash(this.errMsg(err));
+      });
   }
 
-  // ── Iniciar ronda ──────────────────────────────────────────
-  private async startRound() {
-    if (this.lockRef || this.myBet < this.table.min) return;
-    this.lockRef = true;
-    if (this.countTimer) clearTimeout(this.countTimer);
-    this.phase = 'deal';
-
-    // Bots eligen apuesta
-    this.bots = this.bots.map(b => {
-      const bet = Math.min(b.balance, botBet(this.table.min, this.table.max));
-      return { ...b, bet, cards: [], status: '', tone: 'dark', balance: +(b.balance - bet).toFixed(2) };
-    });
-    this.balance = +(this.balance - this.myBet).toFixed(2);
-    this.saveBalance();
-
-    this.hands = [{ cards: [], bet: this.myBet, done: false, result: null }];
-    this.dealer = { cards: [], hole: true };
-    await this.sleep(250);
-
-    // Repartir dos rondas: bots, tú, crupier
-    for (let round = 0; round < 2; round++) {
-      for (let i = 0; i < this.bots.length; i++) {
-        this.bots[i] = { ...this.bots[i], cards: [...this.bots[i].cards, this.draw()] };
-        this.bots = [...this.bots];
-        await this.sleep(140);
-      }
-      this.hands[0] = { ...this.hands[0], cards: [...this.hands[0].cards, this.draw()] };
-      this.hands = [{ ...this.hands[0] }];
-      await this.sleep(140);
-      this.dealer.cards = [...this.dealer.cards, this.draw()];
-      this.dealer = { ...this.dealer };
-      await this.sleep(140);
-    }
-
-    // Naturales de bots
-    this.bots.forEach((b, i) => {
-      if (isBlackjack(b.cards)) {
-        this.bots[i] = { ...b, status: '¡BLACKJACK!', tone: 'win', done: true };
-      }
-    });
-    this.bots = [...this.bots];
-
-    // ¿Tu natural?
-    if (isBlackjack(this.hands[0].cards)) {
-      this.hands = [{ ...this.hands[0], done: true, result: 'bj' }];
-      this.lockRef = false;
-      await this.sleep(500);
-      this.finishYou();
-      return;
-    }
-
-    this.active = 0;
-    this.phase = 'you';
-    this.lockRef = false;
-  }
-
-  // ── Getters de acciones ────────────────────────────────────
-  get curHand(): YouHand { return this.hands[this.active] || this.hands[0]; }
+  // ── Acciones (viajan al hub; habilitación cosmética, el server revalida) ───
+  get curHand(): YouHand { return this.hands[this.activeHandIdx] || this.hands[0]; }
 
   get canAct(): boolean {
-    return this.phase === 'you' && this.curHand && !this.curHand.done;
+    return this.snap?.state === 'acting'
+      && this.snap.turnChair != null
+      && this.snap.turnChair === this.myChair?.index
+      && !this.curHand.done;
   }
 
   get canDouble(): boolean {
@@ -277,187 +442,29 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     return this.canAct && this.hands.length === 1 && this.curHand.cards.length === 2;
   }
 
-  // ── Acciones ───────────────────────────────────────────────
-  private advance(hs: YouHand[]) {
-    let next = -1;
-    for (let i = this.active + 1; i < hs.length; i++) {
-      if (!hs[i].done) { next = i; break; }
-    }
-    if (next >= 0) {
-      this.active = next;
-    } else {
-      this.phase = 'resolve';
-      setTimeout(() => this.finishYou(hs), 350);
-    }
-  }
-
-  hit() {
+  private send(action: 'hit' | 'stand' | 'double' | 'split' | 'surrender') {
     if (!this.canAct) return;
-    const hs = this.hands.map(h => ({ ...h, cards: [...h.cards] }));
-    hs[this.active].cards.push(this.draw());
-    const { total } = handValue(hs[this.active].cards);
-    if (total > 21) { hs[this.active].done = true; hs[this.active].result = 'bust'; }
-    this.hands = hs;
-    if (hs[this.active].done) setTimeout(() => this.advance(hs), 300);
+    this.rt.action(action).catch(err => this.flash(this.errMsg(err)));
   }
 
-  stand() {
-    if (!this.canAct) return;
-    const hs = this.hands.map(h => ({ ...h }));
-    hs[this.active].done = true;
-    this.hands = hs;
-    this.advance(hs);
-  }
-
-  double() {
-    if (!this.canDouble) return;
-    this.balance = +(this.balance - this.curHand.bet).toFixed(2);
-    this.saveBalance();
-    const hs = this.hands.map(h => ({ ...h, cards: [...h.cards] }));
-    hs[this.active].bet *= 2;
-    hs[this.active].cards.push(this.draw());
-    const { total } = handValue(hs[this.active].cards);
-    hs[this.active].done = true;
-    if (total > 21) hs[this.active].result = 'bust';
-    this.hands = hs;
-    setTimeout(() => this.advance(hs), 350);
-  }
-
-  split() {
-    if (!this.canSplit) return;
-    this.balance = +(this.balance - this.curHand.bet).toFixed(2);
-    this.saveBalance();
-    const [c1, c2] = this.curHand.cards;
-    const h1: YouHand = { cards: [c1, this.draw()], bet: this.curHand.bet, done: false, result: null };
-    const h2: YouHand = { cards: [c2, this.draw()], bet: this.curHand.bet, done: false, result: null };
-    this.hands = [h1, h2];
-    this.active = 0;
-  }
-
-  surrender() {
-    if (!this.canSurrender) return;
-    this.balance = +(this.balance + this.curHand.bet / 2).toFixed(2);
-    this.saveBalance();
-    const hs = this.hands.map(h => ({ ...h }));
-    hs[this.active].done = true;
-    hs[this.active].result = 'surrender';
-    this.hands = hs;
-    this.phase = 'resolve';
-    setTimeout(() => this.finishYou(hs), 350);
-  }
-
-  // ── Resolver: bots + crupier + liquidación ─────────────────
-  private async finishYou(finalYouHands?: YouHand[]) {
-    let botState = this.bots.map(b => ({ ...b, cards: [...b.cards] }));
-
-    // Bots juegan (saltan naturales / sin apuesta)
-    for (let i = 0; i < botState.length; i++) {
-      const b = botState[i];
-      if (!b.bet || b.done) continue;
-      while (handValue(b.cards).total < 17) {
-        b.cards.push(this.draw());
-        botState[i] = { ...b, cards: [...b.cards] };
-        this.bots = [...botState];
-        await this.sleep(260);
-      }
-      const tot = handValue(b.cards).total;
-      botState[i] = { ...b, status: tot > 21 ? 'SE PASA' : 'PLANTARSE', tone: tot > 21 ? 'bust' : 'dark', done: true };
-      this.bots = [...botState];
-      await this.sleep(200);
-    }
-
-    // Crupier revela + juega
-    let dl: Dealer = { cards: [...this.dealer.cards], hole: false };
-    this.dealer = { ...dl };
-    await this.sleep(500);
-    while (handValue(dl.cards).total < 17) {
-      dl.cards.push(this.draw());
-      this.dealer = { cards: [...dl.cards], hole: false };
-      await this.sleep(450);
-    }
-    const dealerTotal = handValue(dl.cards).total;
-    const dealerBust  = dealerTotal > 21;
-    const dealerBJ    = isBlackjack(dl.cards);
-
-    // Liquidar tus manos
-    let payout = 0;
-    const finalHands = (finalYouHands || this.hands).map(h => ({ ...h }));
-    finalHands.forEach(h => {
-      if (h.result === 'surrender') return;
-      const t = handValue(h.cards).total;
-      if (t > 21) { h.result = 'lose'; return; }
-      const natural = finalHands.length === 1 && isBlackjack(h.cards);
-      if (natural && !dealerBJ) { h.result = 'bj'; payout += h.bet * 2.5; return; }
-      if (dealerBust || t > dealerTotal) { h.result = 'win'; payout += h.bet * 2; }
-      else if (t === dealerTotal && natural === dealerBJ) { h.result = 'push'; payout += h.bet; }
-      else { h.result = 'lose'; }
-    });
-    if (payout > 0) {
-      this.balance = +(this.balance + payout).toFixed(2);
-      this.saveBalance();
-    }
-    this.hands = finalHands;
-
-    // Liquidar bots (visual)
-    this.bots = this.bots.map(b => {
-      if (!b.bet) return b;
-      const t = handValue(b.cards).total;
-      let win = false, push = false;
-      if (isBlackjack(b.cards)) win = !dealerBJ;
-      else if (t <= 21 && (dealerBust || t > dealerTotal)) win = true;
-      else if (t <= 21 && t === dealerTotal) push = true;
-      const add = win ? (isBlackjack(b.cards) ? b.bet * 2.5 : b.bet * 2) : (push ? b.bet : 0);
-      return {
-        ...b,
-        balance: +(b.balance + add).toFixed(2),
-        status: t > 21 ? 'SE PASA' : win ? 'GANA' : push ? 'EMPATE' : 'PIERDE',
-        tone: win ? 'win' : 'dark',
-      };
-    });
-
-    // Historial + mensaje
-    const main = finalHands[0];
-    const tag = main.result === 'bj' ? 'BJ' : handValue(main.cards).total;
-    this.history = [tag, ...this.history].slice(0, 6);
-
-    const won  = finalHands.some(h => h.result === 'win' || h.result === 'bj');
-    const lost = finalHands.every(h => h.result === 'lose');
-    if (payout > 0) this.flash(won ? '¡Ganaste ' + this.fmt(payout) + '!' : 'Recuperas ' + this.fmt(payout));
-    else if (lost)  this.flash(dealerBust ? 'El crupier se pasó… aún así perdiste' : 'Gana el crupier');
-
-    this.phase = 'done';
-
-    // Siguiente ronda
-    this.nextRoundTimer = setTimeout(() => {
-      this.hands = [{ cards: [], bet: 0, done: false, result: null }];
-      this.dealer = { cards: [], hole: true };
-      this.bots = this.bots.map(b => ({ ...b, bet: 0, cards: [], status: '', tone: 'dark', done: false }));
-      this.myBet = 0;
-      this.active = 0;
-      this.count = 15;
-      this.phase = 'bet';
-      this.startCountdown();
-    }, 2600);
-  }
+  hit()       { this.send('hit'); }
+  stand()     { this.send('stand'); }
+  double()    { if (this.canDouble)    this.send('double'); }
+  split()     { if (this.canSplit)     this.send('split'); }
+  surrender() { if (this.canSurrender) this.send('surrender'); }
 
   // ── Status bajo tu mano ────────────────────────────────────
   get youStatus(): { t: string; c: string } | null {
     const h = this.hands[0];
     if (!h || h.cards.length === 0) return null;
     if (this.hands.length === 1) {
-      if (h.result === 'bj' || isBlackjack(h.cards)) return { t: '¡BLACKJACK!', c: 'var(--gold-1)' };
+      if (h.result === 'bj')    return { t: '¡BLACKJACK!', c: 'var(--gold-1)' };
       if (h.result === 'win')   return { t: 'GANAS', c: '#4fd190' };
       if (h.result === 'push')  return { t: 'EMPATE', c: 'var(--cream)' };
       if (h.result === 'lose')  return { t: handValue(h.cards).total > 21 ? 'TE PASASTE' : 'PIERDES', c: '#e06a6a' };
       if (h.result === 'surrender') return { t: 'TE RENDISTE', c: '#9a8a68' };
     }
     return null;
-  }
-
-  // ── Dealer helpers ─────────────────────────────────────────
-  get dealerTone(): 'dark' | 'win' | 'bust' {
-    if (!this.dealer.hole && handValue(this.dealer.cards).total > 21) return 'bust';
-    return 'dark';
   }
 
   handTone(h: YouHand): 'dark' | 'win' | 'bust' {
@@ -467,7 +474,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   isHandActive(i: number): boolean {
-    return this.hands.length > 1 && i === this.active && this.phase === 'you';
+    return this.hands.length > 1 && i === this.activeHandIdx && this.canAct;
   }
 
   isHandWin(h: YouHand): boolean {
@@ -480,7 +487,43 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     return '#176b39';
   }
 
-  // ── Nav ────────────────────────────────────────────────────
+  // ── Nav / abandono ─────────────────────────────────────────
   go(to: string)       { this.router.navigate([to]); }
   goDeposito()         { this.router.navigate(['/deposito']); }
+
+  showLeaveConfirm = false;
+
+  /** Ronda en curso (apuesta ya comprometida) vs. ya liquidada o sin empezar */
+  private get roundLive(): boolean {
+    const s = this.snap?.state;
+    return s === 'betting' || s === 'dealing' || s === 'acting' || s === 'dealer';
+  }
+
+  get leaveConfirmMessage(): string {
+    if (this.isOwner && this.isPrivateLobby) {
+      return 'Eres el anfitrión: si sales ahora, la mesa se cerrará para todos los invitados.';
+    }
+    if (this.myBet > 0 && this.roundLive) {
+      return `Tienes una apuesta activa de ${this.fmt(this.myBet)}. Tu mano se jugará ` +
+        'automáticamente (plantándose) y el resultado se aplicará a tu saldo igual.';
+    }
+    return 'Perderás tu lugar en la mesa.';
+  }
+
+  /** Sin nada en juego (ni apuesta, ni mesa privada como anfitrión): sale directo */
+  private get leaveIsRisky(): boolean {
+    return (this.myBet > 0 && this.roundLive) || (this.isOwner && this.isPrivateLobby);
+  }
+
+  requestLeave() {
+    if (this.leaveIsRisky) { this.showLeaveConfirm = true; return; }
+    this.router.navigate(['/blackjack-lobby']);
+  }
+
+  cancelLeave() { this.showLeaveConfirm = false; }
+
+  confirmLeave() {
+    this.showLeaveConfirm = false;
+    this.router.navigate(['/blackjack-lobby']);
+  }
 }

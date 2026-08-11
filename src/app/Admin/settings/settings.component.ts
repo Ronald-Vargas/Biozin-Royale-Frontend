@@ -61,6 +61,5 @@ export class AdminSettingsComponent {
   goTerminos()  { Browser.open({ url: this.termsUrl }); }
   goPoliticas() { Browser.open({ url: this.privacyUrl }); }
 
-  noop() {}
   logout() { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 }

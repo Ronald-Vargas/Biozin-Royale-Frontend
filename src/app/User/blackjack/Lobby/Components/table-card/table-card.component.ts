@@ -31,4 +31,11 @@ export class TableCardComponent {
   get betRange(): string {
     return `$${this.table.min.toLocaleString()} - $${this.table.max.toLocaleString()}`;
   }
+
+  // Mesa con ronda en curso: el anillo dice "EN JUEGO" en vez de contar
+  get isPlaying(): boolean {
+    return ['dealing', 'acting', 'dealer', 'settled'].includes(this.table.state ?? '');
+  }
+
+  get ringCaption(): string { return this.isPlaying ? 'EN JUEGO' : 'INICIA EN'; }
 }

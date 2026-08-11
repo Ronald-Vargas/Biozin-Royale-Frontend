@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from '../../shared/Components/svg-icons/svg-icons.component';
-import { ICON_ARROW_DOWN, ICON_ARROW_UP } from '../../shared/icons/icons';
+import { ICON_ARROW_DOWN, ICON_ARROW_UP, ICON_SEARCH } from '../../shared/icons/icons';
 import { WalletTransactionService } from 'src/app/Core/Services/wallet-transaction.service';
 import {
   WalletTransactionResultado,
@@ -35,13 +36,16 @@ interface Filter { key: string; label: string; }
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ScreenShellComponent, SvgIconComponent],
+  imports: [CommonModule, FormsModule, ScreenShellComponent, SvgIconComponent],
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.scss'],
 })
 export class TransactionsComponent implements OnInit {
+  iconSearch = ICON_SEARCH;
+
   filter = 'todas';
+  q = '';
 
   filters: Filter[] = [
     { key: 'todas',    label: 'Todas' },
@@ -82,9 +86,16 @@ export class TransactionsComponent implements OnInit {
   }
 
   get list(): Tx[] {
-    return this.filter === 'todas'
+    let filtered = this.filter === 'todas'
       ? this.allTx
       : this.allTx.filter(t => t.cat === this.filter);
+
+    const q = this.q.trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(t => (t.receiptNumber ?? '').toLowerCase().includes(q));
+    }
+
+    return filtered;
   }
 
   goBack() { this.router.navigate(['/wallet']); }

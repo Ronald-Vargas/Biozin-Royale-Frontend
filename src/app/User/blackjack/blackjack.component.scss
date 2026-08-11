@@ -504,3 +504,152 @@ ion-content.bj-content { --background: #060503; }
   0%   { opacity: 0; transform: translate(-50%, -10px); }
   100% { opacity: 1; transform: translate(-50%, 0); }
 }
+// ── Sala de espera (multijugador) ────────────────────────────
+.wait-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 9, 8, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.wait-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 36px;
+  border-radius: 20px;
+  background: rgba(10, 16, 13, 0.95);
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.wait-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold-1);
+  letter-spacing: 1px;
+}
+
+.wait-ring {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 3px solid rgba(212, 167, 60, 0.55);
+  font-family: 'Cinzel', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--cream);
+
+  &--urgent {
+    border-color: #e06a6a;
+    color: #e06a6a;
+  }
+}
+
+.wait-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.wait-sub {
+  max-width: 220px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: #9a8a68;
+}
+
+// ── Aviso de espectador ──────────────────────────────────────
+.spectator-strip {
+  position: absolute;
+  bottom: calc(96px + var(--ion-safe-area-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  padding: 9px 18px;
+  border-radius: 12px;
+  white-space: nowrap;
+  background: rgba(8, 7, 9, 0.9);
+  color: var(--cream);
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+// ── Lobby de mesa privada ────────────────────────────────────
+.invite-code {
+  padding: 12px 26px;
+  border-radius: 14px;
+  background: rgba(199, 154, 50, 0.12);
+  border: 1px dashed rgba(212, 167, 60, 0.6);
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: var(--gold-1);
+  user-select: all;
+}
+
+.code-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.code-btn {
+  padding: 10px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 167, 60, 0.35);
+  color: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+
+  &--gold {
+    background: rgba(199, 154, 50, 0.2);
+    color: var(--gold-1);
+  }
+
+  &--danger {
+    background: rgba(224, 106, 106, 0.18);
+    border-color: rgba(224, 106, 106, 0.5);
+    color: #e06a6a;
+  }
+}
+
+// ── Confirmación de abandono ──────────────────────────────────
+.leave-card {
+  max-width: 300px;
+}
+
+.leave-sub {
+  max-width: 260px;
+}
+
+.start-btn {
+  margin-top: 4px;
+  padding: 13px 40px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #c79a32, #8a6a1e);
+  color: #2a1f06;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 22px rgba(199, 154, 50, 0.35);
+}

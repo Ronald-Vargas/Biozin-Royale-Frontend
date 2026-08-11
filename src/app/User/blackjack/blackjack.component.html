@@ -9,7 +9,7 @@
      
       <!-- Top bar -->
       <div class="top-bar">
-        <button class="back-btn" (click)="go('/blackjack-lobby')">
+        <button class="back-btn" (click)="requestLeave()">
           <app-icon [svg]="iconBack" [size]="19"></app-icon>
         </button>
   
@@ -157,8 +157,8 @@
 
       <!-- Botones -->
       <div class="bet-actions">
-        <button class="clear-bet" [disabled]="myBet === 0" (click)="clearBet()">
-          <app-icon [svg]="iconSurrender" [size]="18" style="color:#e06a6a"></app-icon>
+        <button class="clear-bet" [disabled]="myBet === 0" (click)="clearBet()" title="Borrar apuesta">
+          <app-icon [svg]="iconClear" [size]="18" style="color:#e06a6a"></app-icon>
         </button>
         <button class="add-bet" (click)="addChip()">
           <app-icon [svg]="iconAdd" [size]="18"></app-icon>
@@ -182,5 +182,57 @@
 
     <!-- Toast -->
     <div *ngIf="msg" class="toast">{{ msg }}</div>
+
+    <!-- Sala de espera: countdown hasta completar la mesa con bots -->
+    <div *ngIf="showWaitingOverlay" class="wait-overlay">
+      <div class="wait-card">
+        <div class="wait-title">Esperando jugadores</div>
+        <div class="wait-ring" [class.wait-ring--urgent]="count <= 5">{{ count }}</div>
+        <div class="wait-count">{{ waitingPlayers }} / 4 en la mesa</div>
+        <div class="wait-sub">Si nadie más entra, la mesa se completará automáticamente</div>
+      </div>
+    </div>
+
+    <!-- Lobby de mesa privada: código + iniciar -->
+    <div *ngIf="isPrivateLobby" class="wait-overlay">
+      <div class="wait-card">
+        <div class="wait-title">Mesa privada</div>
+        <div class="invite-code">{{ inviteCode }}</div>
+        <div class="code-actions">
+          <button class="code-btn" (click)="copyCode()">Copiar</button>
+          <button class="code-btn code-btn--gold" (click)="shareCode()">Compartir</button>
+        </div>
+        <div class="wait-count">{{ waitingPlayers }} / 4 en la mesa</div>
+        <button *ngIf="isOwner" class="start-btn" (click)="startGame()">Iniciar partida</button>
+        <div *ngIf="!isOwner" class="wait-sub">Esperando a que el anfitrión inicie la partida…</div>
+      </div>
+    </div>
+
+    <!-- Confirmación de abandono -->
+    <div *ngIf="showLeaveConfirm" class="wait-overlay" (click)="cancelLeave()">
+      <div class="wait-card leave-card" (click)="$event.stopPropagation()">
+        <div class="wait-title">¿Salir de la mesa?</div>
+        <div class="wait-sub leave-sub">{{ leaveConfirmMessage }}</div>
+        <div class="code-actions">
+          <button class="code-btn" (click)="cancelLeave()">Cancelar</button>
+          <button class="code-btn code-btn--danger" (click)="confirmLeave()">Salir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entraste a mitad de ronda: juegas la siguiente -->
+    <div *ngIf="isSpectator" class="spectator-strip">
+      Ronda en curso — entrarás en la siguiente
+    </div>
+
+    <!-- Apuesta confirmada, esperando el cierre de la ventana de apuestas -->
+    <div *ngIf="waitingBets" class="spectator-strip">
+      Apuesta colocada · esperando a los demás jugadores{{ count > 0 ? ' (' + count + 's)' : '' }}
+    </div>
+
+    <!-- La ronda corre sin tu apuesta -->
+    <div *ngIf="sittingOut" class="spectator-strip">
+      No apostaste · podrás apostar en la siguiente ronda
+    </div>
   </div>
 </ion-content>
