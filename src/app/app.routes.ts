@@ -366,12 +366,12 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/tickets/tickets.component').then(m => m.AdminTicketsComponent),
   },
   {
-<<<<<<< HEAD
     path: 'soporte/tickets',
     data: { depth: 11 },
     canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
-=======
+  },
+  {
     path: 'soporte/solicitudes',
     canActivate: [roleGuard(['soporte'])],
     loadComponent: () => import('./Support/solicitudes/solicitudes.component').then(m => m.SolicitudesComponent),
@@ -390,12 +390,6 @@ export const routes: Routes = [
     path: 'admin/solicitudes',
     canActivate: [roleGuard(['admin'])],
     loadComponent: () => import('./Admin/solicitudes/solicitudes.component').then(m => m.AdminSolicitudesComponent),
-  },
-  {
-  path: 'soporte/tickets',
-  canActivate: [roleGuard(['soporte'])],
-  loadComponent: () => import('./Support/tickets/tickets.component').then(m => m.TicketsComponent),
->>>>>>> feature/settings
   },
   {
     path: 'soporte/usuarios',
