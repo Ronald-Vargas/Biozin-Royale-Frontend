@@ -157,8 +157,8 @@
 
       <!-- Botones -->
       <div class="bet-actions">
-        <button class="clear-bet" [disabled]="myBet === 0" (click)="clearBet()">
-          <app-icon [svg]="iconSurrender" [size]="18" style="color:#e06a6a"></app-icon>
+        <button class="clear-bet" [disabled]="myBet === 0" (click)="clearBet()" title="Borrar apuesta">
+          <app-icon [svg]="iconClear" [size]="18" style="color:#e06a6a"></app-icon>
         </button>
         <button class="add-bet" (click)="addChip()">
           <app-icon [svg]="iconAdd" [size]="18"></app-icon>
@@ -182,5 +182,30 @@
 
     <!-- Toast -->
     <div *ngIf="msg" class="toast">{{ msg }}</div>
+
+    <!-- Sala de espera: countdown hasta completar la mesa con bots -->
+    <div *ngIf="showWaitingOverlay" class="wait-overlay">
+      <div class="wait-card">
+        <div class="wait-title">Esperando jugadores</div>
+        <div class="wait-ring" [class.wait-ring--urgent]="count <= 5">{{ count }}</div>
+        <div class="wait-count">{{ waitingPlayers }} / 4 en la mesa</div>
+        <div class="wait-sub">Si nadie más entra, la mesa se completará automáticamente</div>
+      </div>
+    </div>
+
+    <!-- Entraste a mitad de ronda: juegas la siguiente -->
+    <div *ngIf="isSpectator" class="spectator-strip">
+      Ronda en curso — entrarás en la siguiente
+    </div>
+
+    <!-- Apuesta confirmada, esperando el cierre de la ventana de apuestas -->
+    <div *ngIf="waitingBets" class="spectator-strip">
+      Apuesta colocada · esperando a los demás jugadores{{ count > 0 ? ' (' + count + 's)' : '' }}
+    </div>
+
+    <!-- La ronda corre sin tu apuesta -->
+    <div *ngIf="sittingOut" class="spectator-strip">
+      No apostaste · podrás apostar en la siguiente ronda
+    </div>
   </div>
 </ion-content>

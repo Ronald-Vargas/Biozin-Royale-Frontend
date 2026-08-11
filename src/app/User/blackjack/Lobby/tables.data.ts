@@ -6,6 +6,8 @@ export interface BjTable {
   max_players: number;
   secs:        number;
   tag:         string | null;
+  /** Estado en vivo de la sala (waiting/starting/betting/dealing/acting/...) */
+  state?:      string;
 }
 
 export const BJ_TABLES: BjTable[] = [
