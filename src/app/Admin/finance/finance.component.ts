@@ -108,7 +108,8 @@ export class AdminFinanceComponent implements OnInit {
       list = list.filter(t =>
         t.username.toLowerCase().includes(q) ||
         t.displayName.toLowerCase().includes(q) ||
-        this.typeLabel(t.transactionType).toLowerCase().includes(q)
+        this.typeLabel(t.transactionType).toLowerCase().includes(q) ||
+        (t.receiptNumber ?? '').toLowerCase().includes(q)
       );
     }
 

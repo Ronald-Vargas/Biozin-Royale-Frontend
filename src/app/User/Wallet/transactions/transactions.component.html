@@ -3,6 +3,18 @@
   current="wallet"
   (back)="goBack()"
 >
+  <!-- Buscador -->
+  <div class="search-row">
+    <div class="search-wrap">
+      <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+      <input
+        class="search-input"
+        [(ngModel)]="q"
+        placeholder="Buscar por comprobante…"
+      />
+    </div>
+  </div>
+
   <!-- Filters -->
   <div class="filters-row">
     <button
@@ -47,6 +59,6 @@
   </div>
 
   <div *ngIf="list.length === 0" class="empty-state">
-    Sin transacciones en esta categoría.
+    {{ q.trim() ? 'Ningún comprobante coincide con la búsqueda.' : 'Sin transacciones en esta categoría.' }}
   </div>
 </app-screen-shell>
