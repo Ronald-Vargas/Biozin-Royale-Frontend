@@ -487,7 +487,43 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     return '#176b39';
   }
 
-  // ── Nav ────────────────────────────────────────────────────
+  // ── Nav / abandono ─────────────────────────────────────────
   go(to: string)       { this.router.navigate([to]); }
   goDeposito()         { this.router.navigate(['/deposito']); }
+
+  showLeaveConfirm = false;
+
+  /** Ronda en curso (apuesta ya comprometida) vs. ya liquidada o sin empezar */
+  private get roundLive(): boolean {
+    const s = this.snap?.state;
+    return s === 'betting' || s === 'dealing' || s === 'acting' || s === 'dealer';
+  }
+
+  get leaveConfirmMessage(): string {
+    if (this.isOwner && this.isPrivateLobby) {
+      return 'Eres el anfitrión: si sales ahora, la mesa se cerrará para todos los invitados.';
+    }
+    if (this.myBet > 0 && this.roundLive) {
+      return `Tienes una apuesta activa de ${this.fmt(this.myBet)}. Tu mano se jugará ` +
+        'automáticamente (plantándose) y el resultado se aplicará a tu saldo igual.';
+    }
+    return 'Perderás tu lugar en la mesa.';
+  }
+
+  /** Sin nada en juego (ni apuesta, ni mesa privada como anfitrión): sale directo */
+  private get leaveIsRisky(): boolean {
+    return (this.myBet > 0 && this.roundLive) || (this.isOwner && this.isPrivateLobby);
+  }
+
+  requestLeave() {
+    if (this.leaveIsRisky) { this.showLeaveConfirm = true; return; }
+    this.router.navigate(['/blackjack-lobby']);
+  }
+
+  cancelLeave() { this.showLeaveConfirm = false; }
+
+  confirmLeave() {
+    this.showLeaveConfirm = false;
+    this.router.navigate(['/blackjack-lobby']);
+  }
 }

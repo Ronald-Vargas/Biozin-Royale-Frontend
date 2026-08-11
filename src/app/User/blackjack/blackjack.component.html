@@ -9,7 +9,7 @@
      
       <!-- Top bar -->
       <div class="top-bar">
-        <button class="back-btn" (click)="go('/blackjack-lobby')">
+        <button class="back-btn" (click)="requestLeave()">
           <app-icon [svg]="iconBack" [size]="19"></app-icon>
         </button>
   
@@ -205,6 +205,18 @@
         <div class="wait-count">{{ waitingPlayers }} / 4 en la mesa</div>
         <button *ngIf="isOwner" class="start-btn" (click)="startGame()">Iniciar partida</button>
         <div *ngIf="!isOwner" class="wait-sub">Esperando a que el anfitrión inicie la partida…</div>
+      </div>
+    </div>
+
+    <!-- Confirmación de abandono -->
+    <div *ngIf="showLeaveConfirm" class="wait-overlay" (click)="cancelLeave()">
+      <div class="wait-card leave-card" (click)="$event.stopPropagation()">
+        <div class="wait-title">¿Salir de la mesa?</div>
+        <div class="wait-sub leave-sub">{{ leaveConfirmMessage }}</div>
+        <div class="code-actions">
+          <button class="code-btn" (click)="cancelLeave()">Cancelar</button>
+          <button class="code-btn code-btn--danger" (click)="confirmLeave()">Salir</button>
+        </div>
       </div>
     </div>
 

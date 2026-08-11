@@ -622,6 +622,21 @@ ion-content.bj-content { --background: #060503; }
     background: rgba(199, 154, 50, 0.2);
     color: var(--gold-1);
   }
+
+  &--danger {
+    background: rgba(224, 106, 106, 0.18);
+    border-color: rgba(224, 106, 106, 0.5);
+    color: #e06a6a;
+  }
+}
+
+// ── Confirmación de abandono ──────────────────────────────────
+.leave-card {
+  max-width: 300px;
+}
+
+.leave-sub {
+  max-width: 260px;
 }
 
 .start-btn {
