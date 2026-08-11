@@ -289,6 +289,34 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     return s === 'waiting' || s === 'starting';
   }
 
+  // ── Mesa privada ───────────────────────────────────────────
+  get isPrivateLobby(): boolean { return this.snap?.state === 'lobby'; }
+  get inviteCode(): string { return this.snap?.inviteCode ?? ''; }
+  get isOwner(): boolean {
+    return !!this.snap?.ownerUserId && this.snap.ownerUserId === this.rt.myUserId;
+  }
+
+  copyCode() {
+    if (!this.inviteCode) return;
+    navigator.clipboard?.writeText(this.inviteCode)
+      .then(() => this.flash('Código copiado'))
+      .catch(() => this.flash(this.inviteCode));
+  }
+
+  async shareCode() {
+    if (!this.inviteCode) return;
+    const text = `Únete a mi mesa privada de Blackjack en Biozin Royale con el código ${this.inviteCode}`;
+    if (navigator.share) {
+      try { await navigator.share({ text }); } catch { /* usuario canceló */ }
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  }
+
+  startGame() {
+    this.rt.startGame().catch(err => this.flash(this.errMsg(err)));
+  }
+
   get waitingPlayers(): number {
     const s = this.snap;
     if (!s) return 1;

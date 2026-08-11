@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ScreenShellComponent } from '../../shared/Components/screen-shell/screen-shell.component';
 import { BJ_TABLES, BjTable }   from './tables.data';
@@ -12,7 +13,7 @@ import { BlackjackRealtimeService } from 'src/app/Core/Services/blackjack-realti
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ScreenShellComponent, SvgIconComponent, TableCardComponent],
+  imports: [CommonModule, FormsModule, ScreenShellComponent, SvgIconComponent, TableCardComponent],
   selector: 'app-blackjack-lobby',
   templateUrl: './blackjack-lobby.component.html',
   styleUrls: ['./blackjack-lobby.component.scss'],
@@ -82,5 +83,72 @@ export class BlackjackLobbyComponent implements OnInit, OnDestroy {
 
   joinTable(t: BjTable) {
     this.router.navigate(['/blackjack', t.id]);
+  }
+
+  // ── Mesas privadas ─────────────────────────────────────────
+
+  showCreate = false;
+  createMin = 10;
+  createBots = true;
+  joinCode = '';
+  busy = false;
+  msg: string | null = null;
+  private msgTimer: ReturnType<typeof setTimeout> | null = null;
+
+  readonly stakeOptions = [10, 25, 50, 100, 250];
+
+  private flash(m: string) {
+    if (this.msgTimer) clearTimeout(this.msgTimer);
+    this.msg = m;
+    this.msgTimer = setTimeout(() => this.msg = null, 2500);
+  }
+
+  private errMsg(err: unknown): string {
+    const raw = err instanceof Error ? err.message : String(err);
+    return /HubException: (.*)$/.exec(raw)?.[1] ?? 'No se pudo completar la acción.';
+  }
+
+  private esInvitado(): boolean {
+    if (this.authService.currentProfile()?.isGuest) {
+      this.router.navigate(['/auth/register'], { queryParams: { motivo: 'invitado' } });
+      return true;
+    }
+    return false;
+  }
+
+  openCreate() {
+    if (this.esInvitado()) return;
+    this.showCreate = true;
+  }
+
+  closeCreate() { this.showCreate = false; }
+
+  async createPrivate() {
+    if (this.busy) return;
+    this.busy = true;
+    try {
+      const roomId = await this.realtime.createPrivateRoom(
+        this.createMin, this.createMin * 100, this.createBots);
+      this.showCreate = false;
+      this.router.navigate(['/blackjack', roomId]);
+    } catch (err) {
+      this.flash(this.errMsg(err));
+    } finally {
+      this.busy = false;
+    }
+  }
+
+  async joinWithCode() {
+    if (this.busy || this.joinCode.trim().length < 6) return;
+    if (this.esInvitado()) return;
+    this.busy = true;
+    try {
+      const roomId = await this.realtime.joinByCode(this.joinCode);
+      this.router.navigate(['/blackjack', roomId]);
+    } catch (err) {
+      this.flash(this.errMsg(err));
+    } finally {
+      this.busy = false;
+    }
   }
 }

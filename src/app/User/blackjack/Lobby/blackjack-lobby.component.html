@@ -31,9 +31,57 @@
     ></app-table-card>
   </div>
 
+  <!-- Unirse con código -->
+  <div class="join-code-row">
+    <input
+      class="join-code-input"
+      type="text"
+      maxlength="6"
+      placeholder="CÓDIGO"
+      [(ngModel)]="joinCode"
+      (keyup.enter)="joinWithCode()"
+      autocapitalize="characters"
+      autocomplete="off"
+    />
+    <button class="join-code-btn" [disabled]="joinCode.trim().length < 6 || busy" (click)="joinWithCode()">
+      UNIRSE
+    </button>
+  </div>
+
   <!-- Crear privada -->
-  <button class="create-btn">
+  <button class="create-btn" (click)="openCreate()">
     <app-icon [svg]="iconAddCircle" [size]="22"></app-icon>
     Crear mesa privada
   </button>
+
+  <!-- Modal de creación -->
+  <div *ngIf="showCreate" class="pv-overlay" (click)="closeCreate()">
+    <div class="pv-card" (click)="$event.stopPropagation()">
+      <div class="pv-title">MESA PRIVADA</div>
+
+      <div class="pv-label">Apuesta mínima</div>
+      <div class="pv-stakes">
+        <button
+          *ngFor="let s of stakeOptions"
+          class="pv-stake"
+          [class.pv-stake--active]="createMin === s"
+          (click)="createMin = s"
+        >${{ s }}</button>
+      </div>
+      <div class="pv-range">Rango: ${{ createMin }} – ${{ (createMin * 100).toLocaleString() }}</div>
+
+      <label class="pv-bots">
+        <input type="checkbox" [(ngModel)]="createBots" />
+        Completar asientos vacíos con bots
+      </label>
+
+      <div class="pv-actions">
+        <button class="pv-cancel" (click)="closeCreate()">Cancelar</button>
+        <button class="pv-create" [disabled]="busy" (click)="createPrivate()">Crear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div *ngIf="msg" class="lobby-toast">{{ msg }}</div>
 </app-screen-shell>

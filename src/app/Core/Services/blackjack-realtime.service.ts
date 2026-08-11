@@ -34,7 +34,7 @@ export interface BjChairSnap {
 }
 
 export type BjState =
-  | 'waiting' | 'starting' | 'betting' | 'dealing' | 'acting' | 'dealer' | 'settled';
+  | 'waiting' | 'lobby' | 'starting' | 'betting' | 'dealing' | 'acting' | 'dealer' | 'settled';
 
 export interface BjSnapshot {
   roomId: number;
@@ -43,6 +43,9 @@ export interface BjSnapshot {
   min: number;
   max: number;
   turnChair: number | null;
+  isPrivate?: boolean;
+  inviteCode?: string | null;
+  ownerUserId?: string | null;
   dealer: { cards: Card[]; hole: boolean; total: number | null };
   chairs: (BjChairSnap | null)[];
   spectators: { userId: string; name: string }[];
@@ -176,6 +179,30 @@ export class BlackjackRealtimeService {
 
   placeBet(amount: number): Promise<void> {
     return this.hub!.invoke('PlaceBet', amount);
+  }
+
+  // ── Mesas privadas ─────────────────────────────────────────────────────────
+
+  async createPrivateRoom(min: number, max: number, fillWithBots: boolean): Promise<number> {
+    await this.connect();
+    const res = await this.hub!.invoke<{ roomId: number; snapshot: BjSnapshot }>(
+      'CreatePrivateRoom', min, max, fillWithBots);
+    this.currentRoomId = res.roomId;
+    this.room.set(res.snapshot);
+    return res.roomId;
+  }
+
+  async joinByCode(code: string): Promise<number> {
+    await this.connect();
+    const res = await this.hub!.invoke<{ roomId: number; snapshot: BjSnapshot }>(
+      'JoinByCode', code.trim().toUpperCase());
+    this.currentRoomId = res.roomId;
+    this.room.set(res.snapshot);
+    return res.roomId;
+  }
+
+  startGame(): Promise<void> {
+    return this.hub!.invoke('StartGame');
   }
 
   action(action: 'hit' | 'stand' | 'double' | 'split' | 'surrender'): Promise<void> {

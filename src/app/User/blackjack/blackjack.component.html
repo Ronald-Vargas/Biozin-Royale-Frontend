@@ -193,6 +193,21 @@
       </div>
     </div>
 
+    <!-- Lobby de mesa privada: código + iniciar -->
+    <div *ngIf="isPrivateLobby" class="wait-overlay">
+      <div class="wait-card">
+        <div class="wait-title">Mesa privada</div>
+        <div class="invite-code">{{ inviteCode }}</div>
+        <div class="code-actions">
+          <button class="code-btn" (click)="copyCode()">Copiar</button>
+          <button class="code-btn code-btn--gold" (click)="shareCode()">Compartir</button>
+        </div>
+        <div class="wait-count">{{ waitingPlayers }} / 4 en la mesa</div>
+        <button *ngIf="isOwner" class="start-btn" (click)="startGame()">Iniciar partida</button>
+        <div *ngIf="!isOwner" class="wait-sub">Esperando a que el anfitrión inicie la partida…</div>
+      </div>
+    </div>
+
     <!-- Entraste a mitad de ronda: juegas la siguiente -->
     <div *ngIf="isSpectator" class="spectator-strip">
       Ronda en curso — entrarás en la siguiente
