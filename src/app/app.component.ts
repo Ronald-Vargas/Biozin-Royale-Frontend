@@ -8,6 +8,8 @@ import { Browser } from '@capacitor/browser';
 import { routeAnimations } from './route-animations';
 import { PinGateService } from './Core/Services/pin-gate.service';
 import { PinConfirmModalComponent } from './User/shared/Components/pin-confirm-modal/pin-confirm-modal.component';
+import { NotificationToastComponent } from './Core/Components/notification-toast/notification-toast.component';
+import { NotificationService } from './Core/Services/notification.service';
 import { AuthService } from './Core/Services/auth.service';
 import { SupabaseService } from './Core/Services/supabase.service';
 
@@ -17,7 +19,7 @@ const OAUTH_NATIVE_REDIRECT = 'com.biozinroyale.app://auth/callback';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [CommonModule, IonApp, RouterOutlet, PinConfirmModalComponent],
+  imports: [CommonModule, IonApp, RouterOutlet, PinConfirmModalComponent, NotificationToastComponent],
   animations: [routeAnimations],
 })
 export class AppComponent implements OnInit {
@@ -25,7 +27,7 @@ export class AppComponent implements OnInit {
   private readonly supabaseService = inject(SupabaseService);
   private readonly router = inject(Router);
 
-  constructor(readonly pinGateService: PinGateService) {}
+  constructor(readonly pinGateService: PinGateService, readonly notificationService: NotificationService) {}
 
   ngOnInit(): void {
     if (!Capacitor.isNativePlatform()) return;

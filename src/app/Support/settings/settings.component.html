@@ -28,6 +28,11 @@
     <app-group-label>Cuenta</app-group-label>
     <app-group-card>
       <app-setting-row
+        [icon]="iconPersonCircle"
+        label="Información personal"
+        (rowClick)="goPerfil()"
+      ></app-setting-row>
+      <app-setting-row
         [icon]="iconLock"
         label="Seguridad"
         [last]="true"
@@ -41,7 +46,7 @@
       <div class="row-with-toggle">
         <app-setting-row
           [icon]="iconNotifs"
-          label="Notificaciones push"
+          label="Notificaciones"
           [showChevron]="false"
         ></app-setting-row>
         <div class="toggle-overlay">

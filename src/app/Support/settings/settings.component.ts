@@ -12,7 +12,7 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.component';
 import {
   ICON_NOTIFICATIONS, ICON_VOLUME, ICON_POWER,
-  ICON_LOCK, ICON_DOC_OUTLINE, ICON_SHIELD_CHECK, ICON_CAMERA,
+  ICON_LOCK, ICON_DOC_OUTLINE, ICON_SHIELD_CHECK, ICON_CAMERA, ICON_PERSON_CIRCLE,
 } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
@@ -39,6 +39,7 @@ export class SettingsComponent {
   iconDoc    = ICON_DOC_OUTLINE;
   iconShield = ICON_SHIELD_CHECK;
   iconCamera = ICON_CAMERA;
+  iconPersonCircle = ICON_PERSON_CIRCLE;
 
   avail      = true;
   notif      = true;
@@ -63,6 +64,7 @@ export class SettingsComponent {
   goBack()  { this.router.navigate(['/support']); }
   logout()  { this.authService.logout(); this.router.navigate(['/welcome'], { replaceUrl: true }); }
 
+  goPerfil()    { this.router.navigate(['/admin/miperfil']); }
   goSeguridad() { this.router.navigate(['/soporte/seguridad']); }
 
   goTerminos()  { Browser.open({ url: this.termsUrl }); }
