@@ -16,6 +16,8 @@ export interface Bot {
   status:  string;
   tone:    'dark' | 'win' | 'bust';
   done?:   boolean;
+  /** Silla real (0-3) que ocupa este asiento visual; null si está vacío */
+  chair?:  number | null;
 }
 
 @Component({
@@ -32,6 +34,8 @@ export class BotSeatComponent {
   @Input() bot!: Bot;
   @Input() num = 1;
   @Input() align: 'left' | 'right' = 'left';
+  /** Burbuja de chat rápido; null = sin mensaje activo */
+  @Input() chatBubble: string | null = null;
 
   get isRight(): boolean { return this.align === 'right'; }
   get win(): boolean { return this.bot.tone === 'win'; }

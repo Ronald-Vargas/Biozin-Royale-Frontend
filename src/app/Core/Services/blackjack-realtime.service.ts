@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -68,6 +69,14 @@ export interface BjRoundResult {
   newBalance: number | null;
 }
 
+/** Mensaje de chat rápido: el texto lo resuelve el servidor desde su lista fija */
+export interface BjChatMessage {
+  chair: number;
+  name: string;
+  userId: string;
+  text: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class BlackjackRealtimeService {
   private hub: HubConnection | null = null;
@@ -79,6 +88,8 @@ export class BlackjackRealtimeService {
   readonly room = signal<BjSnapshot | null>(null);
   readonly lastResult = signal<BjRoundResult | null>(null);
   readonly kicked = signal<string | null>(null);
+  /** Stream (no signal): dos mensajes iguales seguidos deben emitirse ambos */
+  readonly chat$ = new Subject<BjChatMessage>();
 
   constructor(private readonly auth: AuthService) {}
 
@@ -115,6 +126,7 @@ export class BlackjackRealtimeService {
     });
     this.hub.on('roundResult', (r: BjRoundResult) => this.lastResult.set(r));
     this.hub.on('kicked', (msg: string) => this.kicked.set(msg));
+    this.hub.on('chat', (m: BjChatMessage) => this.chat$.next(m));
 
     // Tras una reconexión automática la conexión es nueva para el servidor:
     // hay que volver a entrar a la mesa para recuperar silla y grupo
@@ -207,5 +219,10 @@ export class BlackjackRealtimeService {
 
   action(action: 'hit' | 'stand' | 'double' | 'split' | 'surrender'): Promise<void> {
     return this.hub!.invoke('Action', action);
+  }
+
+  /** Solo el índice: el servidor valida y resuelve el texto */
+  quickChat(index: number): Promise<void> {
+    return this.hub!.invoke('QuickChat', index);
   }
 }

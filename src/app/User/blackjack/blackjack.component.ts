@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 import { SvgIconComponent } from '../shared/Components/svg-icons/svg-icons.component';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
@@ -9,7 +10,7 @@ import { AuthService } from 'src/app/Core/Services/auth.service';
 import {
   BlackjackRealtimeService, BjChairSnap, BjHandSnap, BjSnapshot, BjState,
 } from 'src/app/Core/Services/blackjack-realtime.service';
-import { ICON_BACK, ICON_ADD, ICON_PERSON, ICON_TIME, ICON_HAND_LEFT, ICON_ELLIPSE, ICON_COPY, ICON_FLAG, ICON_TRASH } from '../shared/icons/icons';
+import { ICON_BACK, ICON_ADD, ICON_PERSON, ICON_TIME, ICON_HAND_LEFT, ICON_ELLIPSE, ICON_COPY, ICON_FLAG, ICON_TRASH, ICON_CHAT_DOTS } from '../shared/icons/icons';
 import { Card, handValue, cardBaseValue } from './Cards/cards.logic';
 import { HandComponent } from './Cards/hand/hand.component';
 import { ActionBtnComponent } from './Components/action-btn/action-btn.component';
@@ -57,6 +58,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   iconSplit = ICON_COPY;
   iconSurrender = ICON_FLAG;
   iconClear = ICON_TRASH;
+  iconChat = ICON_CHAT_DOTS;
 
   table = { id: 0, min: 10, max: 1000 };
 
@@ -70,8 +72,26 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   hands: YouHand[] = [{ cards: [], bet: 0, done: false, result: null }];
   bots: Bot[] = [0, 1, 2].map(i => ({
     name: '', balance: 0, tint: BOT_TINTS[i], avatar: BOT_AVATARS[i],
-    bet: 0, cards: [], status: '', tone: 'dark' as const,
+    bet: 0, cards: [], status: '', tone: 'dark' as const, chair: null,
   }));
+
+  // ── Chat rápido (frases fijas, estilo Clash Royale) ───────────────────────
+  // Debe coincidir en orden con QuickChats del backend: al servidor solo viaja
+  // el índice y él resuelve el texto que difunde a la mesa.
+  readonly quickChats = [
+    '¡Hola! 👋',
+    '¡Buena suerte! 🍀',
+    '¡Bien jugado! 👏',
+    '¡Vamos!',
+    'Uy, casi…',
+    'Qué mala suerte 😅',
+    'Juegue Rapido',
+    '#$%&@! 😡',
+  ];
+
+  chatOpen = false;
+  /** silla → texto que se está mostrando ahora en su burbuja */
+  chatBubbles: Record<number, string> = {};
 
   private localBet = 0;      // fichas acumuladas antes de confirmar la apuesta
   private placing = false;   // apuesta enviada, esperando confirmación del server
@@ -79,6 +99,8 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   private prevState: BjState | null = null;
   private countTimer: ReturnType<typeof setInterval> | null = null;
   private msgTimer: ReturnType<typeof setTimeout> | null = null;
+  private subs = new Subscription();
+  private bubbleTimers = new Map<number, ReturnType<typeof setTimeout>>();
 
   constructor(
     private router: Router,
@@ -145,6 +167,18 @@ export class BlackjackComponent implements OnInit, OnDestroy {
       setTimeout(() => this.router.navigate(['/blackjack-lobby']), 1600);
     });
 
+    // Chat rápido: burbuja sobre el asiento de quien lo envió (4s y desaparece)
+    this.subs.add(this.rt.chat$.subscribe(m => {
+      this.chatBubbles = { ...this.chatBubbles, [m.chair]: m.text };
+      const anterior = this.bubbleTimers.get(m.chair);
+      if (anterior) clearTimeout(anterior);
+      this.bubbleTimers.set(m.chair, setTimeout(() => {
+        const { [m.chair]: _, ...resto } = this.chatBubbles;
+        this.chatBubbles = resto;
+        this.bubbleTimers.delete(m.chair);
+      }, 4000));
+    }));
+
     // Tick local solo para pintar el countdown que fija el servidor
     this.countTimer = setInterval(() => {
       const ends = this.snap?.phaseEndsUtc;
@@ -158,6 +192,8 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.countTimer) clearInterval(this.countTimer);
     if (this.msgTimer) clearTimeout(this.msgTimer);
+    this.bubbleTimers.forEach(t => clearTimeout(t));
+    this.subs.unsubscribe();
     this.rt.leaveRoom();
   }
 
@@ -203,9 +239,11 @@ export class BlackjackComponent implements OnInit, OnDestroy {
       if (!c) {
         bot.name = ''; bot.bet = 0; bot.status = ''; bot.tone = 'dark';
         bot.cards.length = 0;
+        bot.chair = null;
         continue;
       }
       const hand = c.hands?.[c.activeHand] ?? c.hands?.[0] ?? null;
+      bot.chair = c.index; // para enrutar su burbuja de chat
       bot.name = c.name;
       bot.avatar = c.avatar || BOT_AVATARS[i % BOT_AVATARS.length];
       bot.bet = c.bet || (hand?.bet ?? 0);
@@ -485,6 +523,32 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     if (h === 'BJ') return 'linear-gradient(180deg,#c79a32,#8a6a1e)';
     if (typeof h === 'number' && (h === 16 || h > 21)) return '#7a2620';
     return '#176b39';
+  }
+
+  // ── Chat rápido ────────────────────────────────────────────
+
+  /** Burbuja del asiento visual i (bots[i]); null si no tiene mensaje activo */
+  bubbleFor(bot: Bot): string | null {
+    return bot.chair == null ? null : (this.chatBubbles[bot.chair] ?? null);
+  }
+
+  /** Mi propia burbuja (se pinta sobre mi área, no en un app-bot-seat) */
+  get myBubble(): string | null {
+    const chair = this.myChair?.index;
+    return chair == null ? null : (this.chatBubbles[chair] ?? null);
+  }
+
+  /** Sin asiento (espectador) no se puede escribir */
+  get canChat(): boolean { return this.myChair !== null; }
+
+  toggleChat() {
+    if (!this.canChat) { this.flash('Debes estar sentado en la mesa para chatear'); return; }
+    this.chatOpen = !this.chatOpen;
+  }
+
+  sendChat(index: number) {
+    this.chatOpen = false;
+    this.rt.quickChat(index).catch(err => this.flash(this.errMsg(err)));
   }
 
   // ── Nav / abandono ─────────────────────────────────────────

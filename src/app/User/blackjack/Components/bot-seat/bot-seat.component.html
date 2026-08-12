@@ -1,4 +1,6 @@
 <div class="bot-seat" [class.bot-seat--right]="isRight">
+  <div *ngIf="chatBubble" class="chat-bubble">{{ chatBubble }}</div>
+
   <app-seat-badge
     [num]="num"
     [name]="bot.name"

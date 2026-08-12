@@ -166,6 +166,7 @@ ion-content.bj-content { --background: #060503; }
 }
 
 .you-area {
+  position: relative; // ancla de .chat-bubble--you
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -678,4 +679,103 @@ ion-content.bj-content { --background: #060503; }
   font-weight: 700;
   letter-spacing: 1px;
   box-shadow: 0 8px 22px rgba(199, 154, 50, 0.35);
+}
+
+// ── Chat rápido ──────────────────────────────────────────────
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: rgba(8, 7, 9, 0.5);
+  border: 1px solid rgba(212, 167, 60, 0.3);
+  color: var(--gold-2);
+
+  &--on {
+    background: rgba(199, 154, 50, 0.22);
+    border-color: var(--gold-1);
+    color: var(--gold-1);
+  }
+}
+
+.chat-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 59;
+}
+
+.chat-panel {
+  position: absolute;
+  top: calc(56px + var(--ion-safe-area-top));
+  right: 14px;
+  z-index: 60;
+  width: 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 15px;
+  background: rgba(10, 16, 13, 0.97);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  animation: chatPanelIn 0.18s ease both;
+}
+
+@keyframes chatPanelIn {
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chat-option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 167, 60, 0.2);
+  color: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:active {
+    background: rgba(199, 154, 50, 0.25);
+    border-color: var(--gold-1);
+  }
+}
+
+// Burbuja sobre tu propia área (los demás la pintan en app-bot-seat)
+.chat-bubble--you {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: 150px;
+  padding: 6px 11px;
+  border-radius: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(12, 20, 16, 0.96);
+  border: 1px solid rgba(212, 167, 60, 0.55);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cream);
+  animation: chatPop 0.22s ease both;
+}
+
+@keyframes chatPop {
+  0%   { opacity: 0; transform: translate(-50%, 6px) scale(0.9); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }

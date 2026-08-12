@@ -224,6 +224,8 @@ export const ICON_ARROW_UP_CIRCLE = `<svg xmlns="http://www.w3.org/2000/svg" vie
 export const ICON_CHATBUBBLE      = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 9h-4v-1h4v1zm0-3H6V7h12v1z"/></svg>`;
 export const ICON_CHATBUBBLES     = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H8c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v14l4-4h2v2c0 1.1.9 2 2 2h8l4 4V4c0-1.1-.9-2-2-2z"/></svg>`;
 export const ICON_CHATBUBBLES_OUT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>`;
+// Globo de diálogo con tres puntos: se lee como "chat" incluso a tamaño chico
+export const ICON_CHAT_DOTS       = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.9 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6-.1 1.2-.6 2.4-1.5 3.3-.2.2-.1.6.2.6 1.8 0 3.5-.7 4.8-1.8 1 .3 2 .4 2.8.4 5.1 0 9-3.6 9-8s-3.9-8-9-8zm-4 9a1.2 1.2 0 110-2.4A1.2 1.2 0 018 12zm4 0a1.2 1.2 0 110-2.4 1.2 1.2 0 010 2.4zm4 0a1.2 1.2 0 110-2.4 1.2 1.2 0 010 2.4z"/></svg>`;
 export const ICON_CHECK_DONE      = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 12 7 17 12 12"/><polyline points="12 17 17 12"/><polyline points="7 12 12 7 17 12"/></svg>`;
 
 

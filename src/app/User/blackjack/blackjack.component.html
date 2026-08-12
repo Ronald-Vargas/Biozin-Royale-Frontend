@@ -13,11 +13,17 @@
           <app-icon [svg]="iconBack" [size]="19"></app-icon>
         </button>
   
-        <div class="balance-pill">
-          <span class="balance-amt">{{ fmt(balance) }}</span>
-          <div class="add-btn" (click)="goDeposito()">
-            <app-icon [svg]="iconAdd" [size]="15" style="color:#2a1f06"></app-icon>
+        <div class="top-right">
+          <div class="balance-pill">
+            <span class="balance-amt">{{ fmt(balance) }}</span>
+            <div class="add-btn" (click)="goDeposito()">
+              <app-icon [svg]="iconAdd" [size]="15" style="color:#2a1f06"></app-icon>
+            </div>
           </div>
+
+          <button class="chat-btn" [class.chat-btn--on]="chatOpen" (click)="toggleChat()">
+            <app-icon [svg]="iconChat" [size]="18"></app-icon>
+          </button>
         </div>
       </div>
 
@@ -68,15 +74,17 @@
 
       <!-- Oponentes arriba -->
       <div class="bots-top">
-        <app-bot-seat [bot]="bots[0]" [num]="1" align="left"></app-bot-seat>
-        <app-bot-seat [bot]="bots[1]" [num]="2" align="right"></app-bot-seat>
+        <app-bot-seat [bot]="bots[0]" [num]="1" align="left"  [chatBubble]="bubbleFor(bots[0])"></app-bot-seat>
+        <app-bot-seat [bot]="bots[1]" [num]="2" align="right" [chatBubble]="bubbleFor(bots[1])"></app-bot-seat>
       </div>
 
       <!-- Fila inferior: J3 + TÚ -->
       <div class="bottom-row">
-        <app-bot-seat [bot]="bots[2]" [num]="3" align="left"></app-bot-seat>
+        <app-bot-seat [bot]="bots[2]" [num]="3" align="left" [chatBubble]="bubbleFor(bots[2])"></app-bot-seat>
 
         <div class="you-area">
+          <div *ngIf="myBubble" class="chat-bubble chat-bubble--you">{{ myBubble }}</div>
+
           <div class="you-badge">
             <div class="you-avatar">
               <app-icon [svg]="iconPerson" [size]="14" style="color:var(--gold-1)"></app-icon>
@@ -184,6 +192,16 @@
       <app-action-btn [icon]="iconDouble" label="DOBLAR"    txt="2x" [on]="canDouble" (act)="double()"></app-action-btn>
       <app-action-btn [icon]="iconSplit"  label="DIVIDIR"   [on]="canSplit"    (act)="split()"></app-action-btn>
       <app-action-btn [icon]="iconSurrender" label="RENDIRSE" [on]="canSurrender" (act)="surrender()"></app-action-btn>
+    </div>
+
+    <!-- Panel de chat rápido -->
+    <div *ngIf="chatOpen" class="chat-scrim" (click)="chatOpen = false"></div>
+    <div *ngIf="chatOpen" class="chat-panel">
+      <button
+        *ngFor="let frase of quickChats; let i = index"
+        class="chat-option"
+        (click)="sendChat(i)"
+      >{{ frase }}</button>
     </div>
 
     <!-- Toast -->
