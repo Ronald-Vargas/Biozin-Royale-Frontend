@@ -75,7 +75,9 @@ export class UserTicketComponent implements OnInit, OnDestroy {
       // El propio mensaje ya se agregó desde la respuesta HTTP: deduplicar por id
       if (this.messages.some(m => m.id === mensaje.id)) return;
       this.messages = [...this.messages, mensaje];
-      this.soundService.play('notification');
+      // El broadcast en tiempo real del propio mensaje puede llegar antes que
+      // la respuesta HTTP de enviarMensaje(): no sonar por algo que uno mismo envió
+      if (!this.isUserMsg(mensaje)) this.soundService.play('notification');
       this.scrollDown();
     }));
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
-import { ICON_CHECK, ICON_SPARKLES, ICON_PEOPLE, ICON_ADD, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_SHIELD } from 'src/app/User/shared/icons/icons';
+import { ICON_CHECK, ICON_SPARKLES, ICON_PERSON_OUTLINE, ICON_MAIL, ICON_AT, ICON_SHIELD } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../../shared/admin-nav/admin-nav.component';
 import { TeamMember } from 'src/app/Core/Models/staff.models';
@@ -28,8 +28,6 @@ interface CreatedRow {
 export class MemberCreatedComponent implements OnInit {
   iconCheck    = ICON_CHECK;
   iconSparkles = ICON_SPARKLES;
-  iconPeople   = ICON_PEOPLE;
-  iconAdd      = ICON_ADD;
 
   member: TeamMember = {
     id: '',
@@ -71,6 +69,5 @@ export class MemberCreatedComponent implements OnInit {
     return this.sendsCreds ? 'Credenciales enviadas' : 'Cuenta activa';
   }
 
-  goTeam()      { this.router.navigate(['/admin/equipo']); }
-  goNewMember() { this.router.navigate(['/admin/equipo/nuevo']); }
+  goTeam() { this.router.navigate(['/admin/equipo']); }
 }
