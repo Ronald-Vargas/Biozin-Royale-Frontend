@@ -45,6 +45,9 @@ export class NewMemberComponent {
 
   roleOptions = ['Administrador', 'Soporte'];
 
+  saving   = false;
+  errorMsg = '';
+
   constructor(private router: Router, private staffService: StaffService) {}
 
   goBack() { this.router.navigate(['/admin/equipo']); }
@@ -55,24 +58,39 @@ export class NewMemberComponent {
   }
 
   submit() {
+    if (this.saving) return;
+
     this.emailCtrl.markAsTouched();
     if (!this.name || this.emailCtrl.invalid) return;
+
+    this.saving   = true;
+    this.errorMsg = '';
 
     this.staffService.create({
       nombre: this.name,
       correoContacto: this.emailCtrl.value ?? '',
       phone: this.phoneCtrl.value ?? undefined,
       role: ROLE_TO_BACKEND[this.role],
-    }).subscribe((res) => {
-      if (res.blnError || !res.returnValue) return;
+    }).subscribe({
+      next: (res) => {
+        this.saving = false;
+        if (res.blnError || !res.returnValue) {
+          this.errorMsg = res.strResponseMessage || 'No se pudo crear el miembro.';
+          return;
+        }
 
-      const member: TeamMember = {
-        ...toTeamMember(res.returnValue),
-        user: res.returnValue.username,
-        pass: res.returnValue.tempPassword ?? undefined,
-        sendCreds: true,
-      };
-      this.router.navigate(['/admin/equipo/creado'], { state: { member } });
+        const member: TeamMember = {
+          ...toTeamMember(res.returnValue),
+          user: res.returnValue.username,
+          pass: res.returnValue.tempPassword ?? undefined,
+          sendCreds: true,
+        };
+        this.router.navigate(['/admin/equipo/creado'], { state: { member } });
+      },
+      error: () => {
+        this.saving   = false;
+        this.errorMsg = 'Error de conexión.';
+      },
     });
   }
 }

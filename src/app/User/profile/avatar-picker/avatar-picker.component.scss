@@ -70,6 +70,18 @@
   font-weight: 700;
 }
 
+.avatar-spinner {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(212, 167, 60, 0.3);
+  border-top-color: var(--gold-1);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 // ── Estados ───────────────────────────────────────────────────
 .state-msg {
   text-align: center;
