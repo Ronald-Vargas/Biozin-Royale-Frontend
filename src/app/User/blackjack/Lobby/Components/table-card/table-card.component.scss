@@ -9,6 +9,11 @@
   border: 1px solid rgba(212, 167, 60, 0.28);
 
   &--popular { border-color: rgba(79, 209, 144, 0.45); }
+
+  &--playing {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 }
 
 // ── Left ─────────────────────────────────────────────────────

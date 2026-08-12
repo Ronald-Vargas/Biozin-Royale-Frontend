@@ -1,7 +1,8 @@
 <div
   class="table-card"
   [class.table-card--popular]="isPopular"
-  (click)="join.emit(table)"
+  [class.table-card--playing]="isPlaying"
+  (click)="onClick()"
 >
   <!-- Mesa + apuesta -->
   <div class="card-left">
