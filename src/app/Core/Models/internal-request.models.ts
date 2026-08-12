@@ -38,6 +38,7 @@ export interface NuevaSolicitudNotif {
   id: string;
   requestNumber: number;
   subject: string;
+  requestedById: string;
   requestedByName?: string | null;
   createdAt: string;
 }
@@ -46,6 +47,7 @@ export interface NuevoMensajeSolicitudNotif {
   solicitudId: string;
   requestNumber: number;
   subject: string;
+  senderId: string;
   senderName: string;
   body: string;
   createdAt: string;
