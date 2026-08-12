@@ -35,8 +35,8 @@ export class PromotionService {
     return this.http.post<ApiResponse<Promotion>>(`${this.url}/admin`, data);
   }
 
-  adminToggle(id: string): Observable<ApiResponse<Promotion>> {
-    return this.http.put<ApiResponse<Promotion>>(`${this.url}/admin/${id}/toggle`, {});
+  adminToggle(id: string, extendDays?: number): Observable<ApiResponse<Promotion>> {
+    return this.http.put<ApiResponse<Promotion>>(`${this.url}/admin/${id}/toggle`, { extendDays: extendDays ?? null });
   }
 
   adminGetUserClaims(userId: string): Observable<ApiResponse<PromotionClaim[]>> {

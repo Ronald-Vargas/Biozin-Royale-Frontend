@@ -93,4 +93,35 @@
   </div>
 
   <app-admin-nav current="bonos"></app-admin-nav>
+
+  @if (extendTarget) {
+    <div class="modal-overlay" (click)="cancelExtend()">
+      <div class="modal-sheet" (click)="$event.stopPropagation()">
+        <div class="handle"></div>
+
+        <div class="modal-header">
+          <h2 class="gold-text modal-title">Bono expirado</h2>
+          <button class="close-btn" type="button" (click)="cancelExtend()">
+            <app-icon [svg]="iconClose" [size]="18" style="color:var(--gold-1)"></app-icon>
+          </button>
+        </div>
+
+        <p class="intro">
+          "{{ extendTarget.title }}" ya expiró. Elige por cuántos días deseas extenderlo para volver a activarlo.
+        </p>
+
+        <div class="extend-options">
+          @for (d of extendDaysOptions; track d) {
+            <button class="extend-option" type="button" (click)="confirmExtend(d)">{{ d }} días</button>
+          }
+        </div>
+
+        @if (extendError) {
+          <div class="pin-error">{{ extendError }}</div>
+        }
+
+        <button class="pin-submit pin-submit--ghost" type="button" (click)="cancelExtend()">Cancelar</button>
+      </div>
+    </div>
+  }
 </div>

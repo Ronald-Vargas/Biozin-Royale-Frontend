@@ -246,3 +246,120 @@
     background: rgba(98, 216, 155, 0.08);
   }
 }
+
+// ── Modal: extender bono expirado ───────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(6, 5, 12, 0.78);
+  display: flex;
+  align-items: flex-end;
+  animation: bmFade 0.2s ease both;
+}
+
+.modal-sheet {
+  width: 100%;
+  overflow-y: auto;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  background: linear-gradient(180deg, #1a1430, #0c0916);
+  border: 1px solid rgba(212, 167, 60, 0.5);
+  border-bottom: none;
+  padding: 16px 18px 26px;
+  box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.6);
+  animation: bmUp 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.handle {
+  width: 44px; height: 4px;
+  border-radius: 3px;
+  background: rgba(212, 167, 60, 0.5);
+  margin: 0 auto 14px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.close-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 167, 60, 0.4);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #cbb98f;
+  margin: 4px 0 18px;
+}
+
+.extend-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.extend-option {
+  flex: 1;
+  height: 54px;
+  border-radius: 13px;
+  cursor: pointer;
+  border: none;
+  background: var(--gold-1);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1508;
+}
+
+.pin-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: #d65f5f;
+  margin-top: -8px;
+  margin-bottom: 14px;
+}
+
+.pin-submit {
+  width: 100%;
+  height: 50px;
+  border-radius: 13px;
+  cursor: pointer;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+
+  &--ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(212, 167, 60, 0.28);
+    color: #cbb98f;
+  }
+}
+
+@keyframes bmFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bmUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
