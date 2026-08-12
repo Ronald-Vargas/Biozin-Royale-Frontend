@@ -6,7 +6,9 @@
 
   <div class="info" [class.info--right]="isRight">
     <div class="name">{{ name }}</div>
-    <div class="balance">{{ fmtBalance() }}</div>
+    <!-- El saldo de otros jugadores no se expone (privacidad); solo se
+         muestra si algún día viene un valor real -->
+    <div *ngIf="balance > 0" class="balance">{{ fmtBalance() }}</div>
     <div *ngIf="bet > 0" class="bet-row" [class.bet-row--right]="isRight">
       <img src="assets/chip-100.png" alt="" class="bet-chip"/>
       <span class="bet-amt">{{ bet }}</span>
