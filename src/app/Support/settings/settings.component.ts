@@ -16,6 +16,7 @@ import {
 } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { NotificationService } from 'src/app/Core/Services/notification.service';
 import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 
@@ -42,7 +43,6 @@ export class SettingsComponent {
   iconPersonCircle = ICON_PERSON_CIRCLE;
 
   avail      = true;
-  notif      = true;
   sound      = false;
   logo       = 'assets/logo.png';
 
@@ -51,7 +51,14 @@ export class SettingsComponent {
   private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+  ) {}
+
+  get notif(): boolean { return this.notificationService.notifsEnabled(); }
+  setNotif(v: boolean) { this.notificationService.setNotifsEnabled(v); }
 
   private get staffName(): string {
     const p = this.perfil();

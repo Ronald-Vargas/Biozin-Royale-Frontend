@@ -13,6 +13,7 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { NotificationService } from 'src/app/Core/Services/notification.service';
 import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 @Component({
@@ -37,13 +38,18 @@ export class AdminSettingsComponent {
   iconCamera       = ICON_CAMERA;
   iconPower        = ICON_POWER;
 
-  notifs = true;
   logo = 'assets/logo.png';
 
   private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+  ) {}
+
+  get notifs(): boolean { return this.notificationService.notifsEnabled(); }
 
   private get staffName(): string {
     const p = this.authService.currentProfile();
@@ -56,7 +62,7 @@ export class AdminSettingsComponent {
   goBack(){ this.router.navigate(['/admin']); }
   goPerfil()  { this.router.navigate(['/admin/miperfil']); }
   goSeguridad() { this.router.navigate(['/admin/seguridad']); }
-  setNotifs(v: boolean) { this.notifs = v; }
+  setNotifs(v: boolean) { this.notificationService.setNotifsEnabled(v); }
 
   goTerminos()  { Browser.open({ url: this.termsUrl }); }
   goPoliticas() { Browser.open({ url: this.privacyUrl }); }
