@@ -4,7 +4,11 @@
   (back)="goBack()"
 >
   <div class="page-inner">
-  <p *ngIf="loading">Cargando historial...</p>
+  <div *ngIf="loading" class="loading-wrap">
+    <div class="spinner"></div>
+    <div class="loading-label">Cargando historial...</div>
+  </div>
+
   <p *ngIf="errorMsg">{{ errorMsg }}</p>
 
   <div *ngIf="!loading && !errorMsg && gameHist.length === 0" class="empty-wrap">
