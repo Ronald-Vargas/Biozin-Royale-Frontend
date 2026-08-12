@@ -44,8 +44,7 @@ export class SettingsComponent {
   iconPersonCircle = ICON_PERSON_CIRCLE;
 
   avail      = true;
-  sound      = false;
-  notif      = true;
+
   logo       = 'assets/logo.png';
 
   readonly perfil = this.authService.currentProfile;
@@ -59,12 +58,13 @@ export class SettingsComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private soundService: SoundService,
     private notificationService: NotificationService,
+    private soundService: SoundService,
   ) {}
 
-  setSound(v: boolean) { this.soundService.setEnabled(v); }
   get notif(): boolean { return this.notificationService.notifsEnabled(); }
+
+  setSound(v: boolean) { this.soundService.setEnabled(v); }
   setNotif(v: boolean) { this.notificationService.setNotifsEnabled(v); }
 
   private get staffName(): string {
