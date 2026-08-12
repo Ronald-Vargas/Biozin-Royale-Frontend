@@ -116,11 +116,6 @@ export class FaqComponent {
           answer: 'El período de validez varía según el tipo de bono. Encontrarás la fecha de vencimiento en el detalle de cada bono activo dentro de la sección "Bonos".',
           open: false,
         },
-        {
-          question: '¿Puedo combinar varios bonos?',
-          answer: 'Por lo general, solo puede estar activo un bono a la vez. Consultá los términos de cada promoción o contactá al soporte para más información.',
-          open: false,
-        },
       ],
     },
     {
