@@ -50,7 +50,7 @@
           [showChevron]="false"
         ></app-setting-row>
         <div class="toggle-overlay">
-          <app-toggle [on]="notif" (changed)="notif = $event"></app-toggle>
+          <app-toggle [on]="notif" (changed)="setNotif($event)"></app-toggle>
         </div>
       </div>
       <div class="row-with-toggle">

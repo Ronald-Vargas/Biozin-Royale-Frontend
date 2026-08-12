@@ -74,9 +74,9 @@ export class ApuestasComponent implements OnInit, OnDestroy {
         }
         this.matches = res.returnValue;
       },
-      error: () => {
+      error: (err) => {
         this.loading   = false;
-        this.loadError = 'Error de conexión. Intenta de nuevo.';
+        this.loadError = err?.error?.strResponseMessage || 'Error de conexión. Intenta de nuevo.';
       },
     });
   }
@@ -249,9 +249,9 @@ export class ApuestasComponent implements OnInit, OnDestroy {
         this.showToast    = true;
         setTimeout(() => (this.showToast = false), 2500);
       },
-      error: () => {
+      error: (err) => {
         this.placing  = false;
-        this.betError = 'Error de conexión. Intenta de nuevo.';
+        this.betError = err?.error?.strResponseMessage || 'Error de conexión. Intenta de nuevo.';
       },
     });
   }

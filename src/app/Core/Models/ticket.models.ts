@@ -89,12 +89,6 @@ export interface NuevoMensajeNotif {
   createdAt: string;
 }
 
-export interface TicketNotificaciones {
-  nuevosTickets: NuevoTicketNotif[];
-  nuevosMensajes: NuevoMensajeNotif[];
-  serverTime: string;
-}
-
 export interface SupportKpi {
   label: string;
   value: number;
