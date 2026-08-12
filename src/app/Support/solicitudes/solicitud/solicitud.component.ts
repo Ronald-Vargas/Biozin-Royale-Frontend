@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_BACK, ICON_CHECK, ICON_CHECK_CIRCLE, ICON_PERSON_CIRCLE, ICON_SWAP } from 'src/app/User/shared/icons/icons';
@@ -15,6 +16,7 @@ import { SupportSheetComponent } from 'src/app/Support/ticket/Components/support
 import { InternalRequestService } from 'src/app/Core/Services/internal-request.service';
 import { InternalRequestResultado, InternalRequestMessage } from 'src/app/Core/Models/internal-request.models';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { ChatRealtimeService } from 'src/app/Core/Services/chat-realtime.service';
 
 @Component({
   standalone: true,
@@ -53,14 +55,16 @@ export class SolicitudComponent implements OnInit, OnDestroy {
   readonly statusOptions = ['Nuevo', 'En proceso', 'Resuelto', 'Cerrado'];
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
-  private pollInterval: ReturnType<typeof setInterval> | null = null;
-  private lastMsgCount = 0;
+  private subs = new Subscription();
+  /// ids ya renderizados (los mensajes se mapean a un shape sin id)
+  private seenIds = new Set<string>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private internalRequestService: InternalRequestService,
     private authService: AuthService,
+    private chatRt: ChatRealtimeService,
   ) {}
 
   get isAdmin(): boolean { return this.authService.currentProfile()?.role === 'admin'; }
@@ -74,12 +78,28 @@ export class SolicitudComponent implements OnInit, OnDestroy {
     this.loadSolicitud();
     this.loadMessages();
 
-    this.pollInterval = setInterval(() => this.pollMessages(), 4000);
+    // Tiempo real (sin polling): mensajes y cambios de estado al instante
+    this.chatRt.joinSolicitud(this.requestId).catch(() => { /* sin tiempo real igual funciona por HTTP */ });
+
+    this.subs.add(this.chatRt.solicitudMensaje$.subscribe(({ solicitudId, mensaje }) => {
+      if (solicitudId.toLowerCase() !== this.requestId.toLowerCase()) return;
+      if (this.seenIds.has(mensaje.id)) return; // el propio ya vino por HTTP
+      this.seenIds.add(mensaje.id);
+      this.msgs = [...this.msgs, this.mapMsg(mensaje)];
+      this.scrollDown();
+    }));
+
+    this.subs.add(this.chatRt.solicitudActualizada$.subscribe((r) => {
+      if (r.id.toLowerCase() === this.requestId.toLowerCase()) this.status = statusLabel(r.status);
+    }));
+
+    this.subs.add(this.chatRt.reconectado$.subscribe(() => this.loadMessages()));
   }
 
   ngOnDestroy(): void {
-    if (this.toastTimer)   clearTimeout(this.toastTimer);
-    if (this.pollInterval) clearInterval(this.pollInterval);
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.subs.unsubscribe();
+    this.chatRt.leave();
   }
 
   // ── Carga inicial ──────────────────────────────────────────
@@ -98,20 +118,8 @@ export class SolicitudComponent implements OnInit, OnDestroy {
     this.internalRequestService.listarMensajes(this.requestId).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
+          this.seenIds = new Set(res.returnValue.map(m => m.id));
           this.msgs = res.returnValue.map(m => this.mapMsg(m));
-          this.lastMsgCount = this.msgs.length;
-          this.scrollDown();
-        }
-      },
-    });
-  }
-
-  private pollMessages(): void {
-    this.internalRequestService.listarMensajes(this.requestId).subscribe({
-      next: (res) => {
-        if (!res.blnError && res.returnValue && res.returnValue.length !== this.lastMsgCount) {
-          this.msgs = res.returnValue.map(m => this.mapMsg(m));
-          this.lastMsgCount = this.msgs.length;
           this.scrollDown();
         }
       },
@@ -137,15 +145,17 @@ export class SolicitudComponent implements OnInit, OnDestroy {
   // ── Acciones ───────────────────────────────────────────────
 
   send(): void {
-    if (!this.reply.trim()) return;
+    if (!this.reply.trim() || this.isClosed) return;
     const body = this.reply.trim();
     this.reply = '';
 
     this.internalRequestService.enviarMensaje(this.requestId, body).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
-          this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
-          this.lastMsgCount = this.msgs.length;
+          if (!this.seenIds.has(res.returnValue.id)) {
+            this.seenIds.add(res.returnValue.id);
+            this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
+          }
           if (this.isAdmin && this.status === 'Nuevo') this.status = 'En proceso';
           this.scrollDown();
         }

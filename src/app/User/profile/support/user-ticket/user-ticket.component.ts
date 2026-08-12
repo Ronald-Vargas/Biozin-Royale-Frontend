@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ScreenShellComponent } from 'src/app/User/shared/Components/screen-shell/screen-shell.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_SEND, ICON_TIME, ICON_HEADSET, ICON_PERSON, ICON_ATTACH, ICON_DOWNLOAD } from 'src/app/User/shared/icons/icons';
@@ -10,6 +11,7 @@ import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado, TicketMessage } from 'src/app/Core/Models/ticket.models';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
+import { ChatRealtimeService } from 'src/app/Core/Services/chat-realtime.service';
 
 @Component({
   standalone: true,
@@ -43,8 +45,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
   hoverRating = 0;
 
   private ticketId = '';
-  private pollInterval: ReturnType<typeof setInterval> | null = null;
-  private lastMessageCount = 0;
+  private subs = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +53,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     private ticketService: TicketService,
     private authService: AuthService,
     private storage: SupabaseStorageService,
+    private chatRt: ChatRealtimeService,
   ) {}
 
   ngOnInit(): void {
@@ -59,11 +61,28 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     if (!this.ticketId) { this.router.navigate(['/mis-tickets']); return; }
 
     this.loadAll();
-    this.pollInterval = setInterval(() => this.pollMessages(), 4000);
+
+    // Tiempo real (sin polling): los mensajes y cambios de estado llegan al instante
+    this.chatRt.joinTicket(this.ticketId).catch(() => { /* sin tiempo real igual funciona por HTTP */ });
+
+    this.subs.add(this.chatRt.ticketMensaje$.subscribe(({ ticketId, mensaje }) => {
+      if (ticketId.toLowerCase() !== this.ticketId.toLowerCase()) return;
+      // El propio mensaje ya se agregó desde la respuesta HTTP: deduplicar por id
+      if (this.messages.some(m => m.id === mensaje.id)) return;
+      this.messages = [...this.messages, mensaje];
+      this.scrollDown();
+    }));
+
+    this.subs.add(this.chatRt.ticketActualizado$.subscribe((t) => {
+      if (t.id.toLowerCase() === this.ticketId.toLowerCase()) this.ticket = t;
+    }));
+
+    this.subs.add(this.chatRt.reconectado$.subscribe(() => this.recargarMensajes()));
   }
 
   ngOnDestroy(): void {
-    if (this.pollInterval) clearInterval(this.pollInterval);
+    this.subs.unsubscribe();
+    this.chatRt.leave();
   }
 
   // ── Data ──────────────────────────────────────────────────
@@ -85,7 +104,6 @@ export class UserTicketComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (!res.blnError && res.returnValue) {
           this.messages = res.returnValue;
-          this.lastMessageCount = this.messages.length;
           this.scrollDown();
         }
       },
@@ -93,12 +111,12 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     });
   }
 
-  private pollMessages(): void {
+  /** Una sola recarga tras reconectar el tiempo real (pudo perderse algo) */
+  private recargarMensajes(): void {
     this.ticketService.listarMensajes(this.ticketId).subscribe({
       next: (res) => {
-        if (!res.blnError && res.returnValue && res.returnValue.length !== this.lastMessageCount) {
+        if (!res.blnError && res.returnValue) {
           this.messages = res.returnValue;
-          this.lastMessageCount = this.messages.length;
           this.scrollDown();
         }
       },
@@ -151,7 +169,6 @@ export class UserTicketComponent implements OnInit, OnDestroy {
         this.sending = false;
         if (!res.blnError && res.returnValue) {
           this.messages = [...this.messages, res.returnValue];
-          this.lastMessageCount = this.messages.length;
           this.scrollDown();
         }
       },

@@ -465,6 +465,26 @@ ion-content.bj-content { --background: #060503; }
   }
 }
 
+// ── Timer de turno ───────────────────────────────────────────
+.turn-banner {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0 2px;
+  background: rgba(7, 13, 11, 0.95);
+}
+
+.turn-banner-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #cbb98f;
+}
+
 // ── Action bar ───────────────────────────────────────────────
 .action-bar {
   position: relative;
@@ -505,9 +525,15 @@ ion-content.bj-content { --background: #060503; }
   100% { opacity: 1; transform: translate(-50%, 0); }
 }
 // ── Sala de espera (multijugador) ────────────────────────────
+// Arranca debajo del top-bar (no "inset: 0") para que el botón de volver
+// siga visible y clickeable — antes el overlay lo tapaba por completo y no
+// había forma de abandonar la sala de espera.
 .wait-overlay {
   position: absolute;
-  inset: 0;
+  top: calc(58px + var(--ion-safe-area-top));
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 50;
   display: flex;
   align-items: center;

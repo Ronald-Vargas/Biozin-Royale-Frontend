@@ -19,7 +19,8 @@
       >
         <img [src]="a.url" [alt]="a.name" class="avatar-img" />
         <span class="avatar-name">{{ a.name }}</span>
-        <div *ngIf="selectedId === a.id" class="avatar-check">✓</div>
+        <div *ngIf="saving && selectedId === a.id" class="avatar-spinner"></div>
+        <div *ngIf="!saving && selectedId === a.id" class="avatar-check">✓</div>
       </button>
     </div>
   </div>

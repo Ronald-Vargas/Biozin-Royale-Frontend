@@ -23,6 +23,11 @@
   margin-top: -8px;
   margin-bottom: 8px;
   padding: 0 4px;
+
+  &--general {
+    margin-top: -12px;
+    text-align: center;
+  }
 }
 
 // ── Nota automática ──────────────────────────────────────────
@@ -72,4 +77,22 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #2a1f06;
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+.btn-spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(42, 31, 6, 0.25);
+  border-top-color: #2a1f06;
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
 }

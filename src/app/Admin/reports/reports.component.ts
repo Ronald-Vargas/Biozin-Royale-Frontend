@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import {
@@ -99,13 +102,45 @@ export class AdminReportsComponent implements OnInit {
 
   goBack(): void { this.router.navigate(['/admin']); }
 
-  private triggerDownload(blob: Blob, filename: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const a   = document.createElement('a');
-    a.href     = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  // El truco de <a download> con blob: URL solo funciona en un navegador real
+  // (tiene gestor de descargas que intercepta el click). Dentro del WebView
+  // nativo de Capacitor no hay tal cosa — el click no hace nada y falla en
+  // silencio. Ahí se escribe el archivo al filesystem de la app y se abre la
+  // hoja de compartir nativa para que el usuario lo guarde donde quiera.
+  private async triggerDownload(blob: Blob, filename: string): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      const url = window.URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      return;
+    }
+
+    try {
+      const base64 = await this.blobToBase64(blob);
+      const { uri } = await Filesystem.writeFile({
+        path: filename,
+        data: base64,
+        directory: Directory.Cache,
+      });
+      await Share.share({ url: uri });
+    } catch (err) {
+      console.error('No se pudo guardar/compartir el reporte:', err);
+    }
+  }
+
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // "data:application/pdf;base64,AAAA..." → solo la parte base64
+        resolve((reader.result as string).split(',')[1]);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
   private periodSuffix(period: ReportPeriod): string {

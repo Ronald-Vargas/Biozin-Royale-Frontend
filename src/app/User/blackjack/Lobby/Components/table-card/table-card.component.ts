@@ -38,4 +38,11 @@ export class TableCardComponent {
   }
 
   get ringCaption(): string { return this.isPlaying ? 'EN JUEGO' : 'INICIA EN'; }
+
+  onClick(): void {
+    // No se puede entrar a una mesa con una ronda en curso — el servidor la
+    // rechazaría igual; esto solo evita el viaje redondo y el toast de error.
+    if (this.isPlaying) return;
+    this.join.emit(this.table);
+  }
 }

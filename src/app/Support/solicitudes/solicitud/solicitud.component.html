@@ -41,7 +41,7 @@
   </div>
 
   <!-- Footer -->
-  <div *ngIf="!isClosed || isAdmin" class="ticket-footer">
+  <div *ngIf="!isClosed" class="ticket-footer">
     <div *ngIf="isAdmin" class="action-row">
       <button class="act-btn" (click)="sheet = 'estado'">
         <app-icon [svg]="iconSwap" [size]="16"></app-icon>
@@ -69,8 +69,8 @@
     </div>
   </div>
 
-  <!-- Banner de solo lectura cuando soporte no puede responder -->
-  <div *ngIf="isClosed && !isAdmin" class="readonly-bar">
+  <!-- Banner de solo lectura cuando la solicitud ya está cerrada -->
+  <div *ngIf="isClosed" class="readonly-bar">
     <span>Esta solicitud está {{ status.toLowerCase() }}</span>
   </div>
 
