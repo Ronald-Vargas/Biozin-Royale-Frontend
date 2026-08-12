@@ -21,6 +21,12 @@
 .profile-card {
   position: relative;
   overflow: hidden;
+  // Sin esto, al no entrar todo el contenido de .scroll-body en pantallas
+  // bajas, flexbox usa min-height:auto -> 0 (porque overflow no es visible)
+  // y esta es la única tarjeta con suficiente contenido para "ceder" espacio:
+  // se encoge y overflow:hidden recorta el nombre y el rol en vez de dejar
+  // que la pantalla haga scroll.
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 16px;
