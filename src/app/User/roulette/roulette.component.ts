@@ -9,6 +9,7 @@ import { ICON_TRASH, ICON_REFRESH, ICON_PLAY, ICON_SYNC, ICON_BACK, ICON_INFO } 
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { RuletaService } from 'src/app/Core/Services/ruleta.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 import { RouletteWheelComponent, numColor, REDS_EXP, rotationForWinning } from './Components/roulette-wheel/roulette-wheel.component';
 import { RoulettePaytableComponent } from './Components/roulette-paytable/roulette-paytable.component';
 
@@ -71,6 +72,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private authService: AuthService,
     private ruletaService: RuletaService,
+    private soundService: SoundService,
   ) {}
 
   ngOnInit() {
@@ -164,6 +166,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.lastBets         = { ...this.bets };
 
     // Rueda empieza a girar inmediatamente
+    this.soundService.play('roulette-spin');
     this.startFreeSpin();
 
     try {

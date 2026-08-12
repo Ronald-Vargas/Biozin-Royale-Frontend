@@ -55,6 +55,17 @@
           <app-toggle [on]="notifs" (changed)="setNotifs($event)"></app-toggle>
         </div>
       </div>
+      <div class="row-with-toggle">
+        <app-setting-row
+          [icon]="iconVolume"
+          label="Sonido de alerta"
+          [showChevron]="false"
+          [last]="true"
+        ></app-setting-row>
+        <div class="toggle-overlay">
+          <app-toggle [on]="sound()" (changed)="setSound($event)"></app-toggle>
+        </div>
+      </div>
     </app-group-card>
 
     <!-- General -->

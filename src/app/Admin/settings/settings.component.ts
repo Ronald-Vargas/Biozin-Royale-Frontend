@@ -8,11 +8,12 @@ import { GroupLabelComponent } from 'src/app/User/shared/Components/group-label/
 import { SettingRowComponent } from 'src/app/User/shared/Components/setting-row/setting-row.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ToggleComponent } from 'src/app/User/shared/Components/toggle/toggle.component';
-import { ICON_PERSON_CIRCLE, ICON_LOCK, ICON_NOTIFICATIONS, ICON_LANGUAGE, ICON_DOC_OUTLINE, ICON_SHIELD_CHECK, ICON_CAMERA, ICON_POWER } from 'src/app/User/shared/icons/icons';
+import { ICON_PERSON_CIRCLE, ICON_LOCK, ICON_NOTIFICATIONS, ICON_VOLUME, ICON_LANGUAGE, ICON_DOC_OUTLINE, ICON_SHIELD_CHECK, ICON_CAMERA, ICON_POWER } from 'src/app/User/shared/icons/icons';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { AdminNavComponent } from '../shared/admin-nav/admin-nav.component';
 import { GoldButtonComponent } from 'src/app/User/shared/Components/gold-button/gold-button.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 @Component({
@@ -31,6 +32,7 @@ export class AdminSettingsComponent {
   iconPersonCircle = ICON_PERSON_CIRCLE;
   iconLock         = ICON_LOCK;
   iconNotifs       = ICON_NOTIFICATIONS;
+  iconVolume       = ICON_VOLUME;
   iconLanguage     = ICON_LANGUAGE;
   iconDoc          = ICON_DOC_OUTLINE;
   iconShield       = ICON_SHIELD_CHECK;
@@ -40,10 +42,18 @@ export class AdminSettingsComponent {
   notifs = true;
   logo = 'assets/logo.png';
 
+  readonly sound = this.soundService.enabled;
+
   private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private soundService: SoundService,
+  ) {}
+
+  setSound(v: boolean) { this.soundService.setEnabled(v); }
 
   private get staffName(): string {
     const p = this.authService.currentProfile();

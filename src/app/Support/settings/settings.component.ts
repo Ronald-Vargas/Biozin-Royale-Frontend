@@ -16,6 +16,7 @@ import {
 } from 'src/app/User/shared/icons/icons';
 import { SupportNavComponent } from '../shared/support-nav/support-nav.component';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 import { nameInitial, nameColor } from 'src/app/Core/Utils/avatar.utils';
 
 
@@ -43,15 +44,21 @@ export class SettingsComponent {
 
   avail      = true;
   notif      = true;
-  sound      = false;
   logo       = 'assets/logo.png';
 
   readonly perfil = this.authService.currentProfile;
+  readonly sound  = this.soundService.enabled;
 
   private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private soundService: SoundService,
+  ) {}
+
+  setSound(v: boolean) { this.soundService.setEnabled(v); }
 
   private get staffName(): string {
     const p = this.perfil();

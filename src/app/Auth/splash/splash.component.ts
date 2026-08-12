@@ -4,6 +4,7 @@ import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { LogoComponent } from 'src/app/User/shared/Components/logo/logo.component';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 
 @Component({
   standalone: true,
@@ -18,9 +19,19 @@ export class SplashComponent implements OnInit, OnDestroy {
   pct = 0;
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private soundService: SoundService,
+  ) {}
 
   ngOnInit(): void {
+    // Fanfarria de entrada, estilo casino. Los navegadores bloquean audio sin
+    // interacción previa del usuario; el splash suele llegar después de un tap
+    // (ver el ícono de la app / botón "abrir"), así que normalmente sí suena,
+    // pero si el sistema lo bloquea el catch() interno del servicio lo absorbe.
+    this.soundService.play('splash');
+
     let p = 0;
     this.intervalId = setInterval(() => {
       p += Math.random() * 9 + 3;

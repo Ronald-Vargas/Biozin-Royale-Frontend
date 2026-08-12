@@ -30,8 +30,8 @@
     >
       <app-toggle
         slot="right"
-        [on]="sounds"
-        (changed)="sounds = $event"
+        [on]="sounds()"
+        (changed)="setSounds($event)"
       ></app-toggle>
     </app-setting-row>
 

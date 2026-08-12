@@ -9,6 +9,7 @@ import { SettingRowComponent } from '../../shared/Components/setting-row/setting
 import { ToggleComponent } from '../../shared/Components/toggle/toggle.component';
 import { ICON_PERSON_CIRCLE, ICON_LOCK, ICON_VOLUME, ICON_GLOBE, ICON_MOON, ICON_DOC, ICON_SHIELD } from '../../shared/icons/icons';
 import { AuthService } from '../../../Core/Services/auth.service';
+import { SoundService } from '../../../Core/Services/sound.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ import { AuthService } from '../../../Core/Services/auth.service';
   styleUrls: ['./config.component.scss'],
 })
 export class ConfigComponent {
-  sounds = true;
+  readonly sounds = this.soundService.enabled;
 
   private readonly termsUrl   = 'https://bjimenez867.github.io/biozin-pages/terms.html';
   private readonly privacyUrl = 'https://bjimenez867.github.io/biozin-pages/privacy.html';
@@ -35,7 +36,13 @@ export class ConfigComponent {
   iconDoc      = ICON_DOC;
   iconShield   = ICON_SHIELD;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private soundService: SoundService,
+  ) {}
+
+  setSounds(v: boolean) { this.soundService.setEnabled(v); }
 
   goBack()      { this.router.navigate(['/perfil']); }
   goMiPerfil()  { this.router.navigate(['/miperfil']); }

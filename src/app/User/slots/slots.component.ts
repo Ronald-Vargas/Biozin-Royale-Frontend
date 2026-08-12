@@ -8,6 +8,7 @@ import { ICON_DIAMOND, ICON_MINUS, ICON_ADD, ICON_FLASH, ICON_SYNC, ICON_REFRESH
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { SlotsService, SlotsSpinResult } from 'src/app/Core/Services/slots.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 import { ApiResponse } from 'src/app/Core/Models/auth.models';
 import { EmblemComponent } from './Components/emblem/emblem.component';
 import { GemDefsComponent } from './Components/gem-defs/gem-defs.component';
@@ -72,6 +73,7 @@ export class SlotsComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private slotsService: SlotsService,
     private authService: AuthService,
+    private soundService: SoundService,
   ) {}
 
   ngOnInit() {
@@ -142,6 +144,7 @@ export class SlotsComponent implements OnInit, OnDestroy {
     this.lockRef  = true;
     const isTurbo = this.turbo;
 
+    this.soundService.play('slot-spin');
     this.spinning   = true;
     this.win        = 0;
     this.bigWin     = false;

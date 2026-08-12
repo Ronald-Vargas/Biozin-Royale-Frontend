@@ -61,7 +61,7 @@
           [last]="true"
         ></app-setting-row>
         <div class="toggle-overlay">
-          <app-toggle [on]="sound" (changed)="sound = $event"></app-toggle>
+          <app-toggle [on]="sound()" (changed)="setSound($event)"></app-toggle>
         </div>
       </div>
     </app-group-card>

@@ -17,6 +17,7 @@ import { InternalRequestService } from 'src/app/Core/Services/internal-request.s
 import { InternalRequestResultado, InternalRequestMessage } from 'src/app/Core/Models/internal-request.models';
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { ChatRealtimeService } from 'src/app/Core/Services/chat-realtime.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 
 @Component({
   standalone: true,
@@ -65,6 +66,7 @@ export class SolicitudComponent implements OnInit, OnDestroy {
     private internalRequestService: InternalRequestService,
     private authService: AuthService,
     private chatRt: ChatRealtimeService,
+    private soundService: SoundService,
   ) {}
 
   get isAdmin(): boolean { return this.authService.currentProfile()?.role === 'admin'; }
@@ -86,6 +88,7 @@ export class SolicitudComponent implements OnInit, OnDestroy {
       if (this.seenIds.has(mensaje.id)) return; // el propio ya vino por HTTP
       this.seenIds.add(mensaje.id);
       this.msgs = [...this.msgs, this.mapMsg(mensaje)];
+      this.soundService.play('notification');
       this.scrollDown();
     }));
 

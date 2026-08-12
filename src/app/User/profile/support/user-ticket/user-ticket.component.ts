@@ -12,6 +12,7 @@ import { TicketResultado, TicketMessage } from 'src/app/Core/Models/ticket.model
 import { AuthService } from 'src/app/Core/Services/auth.service';
 import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
 import { ChatRealtimeService } from 'src/app/Core/Services/chat-realtime.service';
+import { SoundService } from 'src/app/Core/Services/sound.service';
 
 @Component({
   standalone: true,
@@ -54,6 +55,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private storage: SupabaseStorageService,
     private chatRt: ChatRealtimeService,
+    private soundService: SoundService,
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +72,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
       // El propio mensaje ya se agregó desde la respuesta HTTP: deduplicar por id
       if (this.messages.some(m => m.id === mensaje.id)) return;
       this.messages = [...this.messages, mensaje];
+      this.soundService.play('notification');
       this.scrollDown();
     }));
 
