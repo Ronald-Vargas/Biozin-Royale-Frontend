@@ -137,7 +137,7 @@ export class SolicitudComponent implements OnInit, OnDestroy {
   // ── Acciones ───────────────────────────────────────────────
 
   send(): void {
-    if (!this.reply.trim()) return;
+    if (!this.reply.trim() || this.isClosed) return;
     const body = this.reply.trim();
     this.reply = '';
 

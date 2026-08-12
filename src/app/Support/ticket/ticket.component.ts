@@ -148,6 +148,7 @@ export class TicketComponent implements OnInit, OnDestroy {
   get catIcon(): string { return CAT_ICON[this.ticket.cat] || ''; }
   get assignedLabel(): string { return this.assigned === 'Sin asignar' ? '—' : this.assigned; }
   get isResolved(): boolean { return this.status === 'Resuelto'; }
+  get isClosed(): boolean   { return this.status === 'Cerrado'; }
 
   flash(msg: string): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -185,7 +186,7 @@ export class TicketComponent implements OnInit, OnDestroy {
   clearFile(): void { this.selectedFile = null; this.uploadError = ''; }
 
   async send(): Promise<void> {
-    if (!this.reply.trim() && !this.selectedFile) return;
+    if ((!this.reply.trim() && !this.selectedFile) || this.isResolved || this.isClosed) return;
     const body = this.reply.trim();
     this.reply = '';
 
