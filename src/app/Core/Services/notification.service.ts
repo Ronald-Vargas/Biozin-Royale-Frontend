@@ -65,10 +65,16 @@ export class NotificationService {
           const nuevoMensaje$ = this.realtime.nuevoMensaje$.pipe(
             tap((m) => this.enqueue(`Nuevo mensaje en "${m.subject}" (#BR-${m.ticketNumber})`)),
           );
+          // admin y soporte comparten un único grupo de notificaciones (notif:staff,
+          // ver ChatHub.OnConnectedAsync), así que quien crea la solicitud o envía el
+          // mensaje también recibiría su propio evento si no se filtra aquí.
+          const miId = this.authService.currentProfile()?.id;
           const nuevaSolicitud$ = this.realtime.nuevaSolicitud$.pipe(
+            filter((s) => s.requestedById !== miId),
             tap((s) => this.enqueue(`Nueva solicitud de ${s.requestedByName || 'soporte'}: ${s.subject}`)),
           );
           const nuevoMensajeSolicitud$ = this.realtime.nuevoMensajeSolicitud$.pipe(
+            filter((m) => m.senderId !== miId),
             tap((m) => this.enqueue(`Nuevo mensaje en "${m.subject}" (#SOL-${m.requestNumber})`)),
           );
 
