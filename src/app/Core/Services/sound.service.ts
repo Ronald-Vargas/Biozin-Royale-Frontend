@@ -24,6 +24,23 @@ export class SoundService {
 
   constructor() {
     this.loadPreference();
+    this.primeOnFirstInteraction();
+  }
+
+  /**
+   * Los navegadores suspenden el AudioContext hasta que hay una interacción
+   * del usuario en la página. Sin esto, un sonido disparado por un evento
+   * pasivo (mensaje entrante por WebSocket, sin click de por medio) no se
+   * escucha la primera vez. Se "desbloquea" con el primer toque/click/tecla.
+   */
+  private primeOnFirstInteraction(): void {
+    const unlock = () => {
+      try { this.getCtx(); } catch { /* no disponible (SSR) */ }
+      document.removeEventListener('pointerdown', unlock, true);
+      document.removeEventListener('keydown', unlock, true);
+    };
+    document.addEventListener('pointerdown', unlock, { once: true, capture: true });
+    document.addEventListener('keydown', unlock, { once: true, capture: true });
   }
 
   private async loadPreference(): Promise<void> {

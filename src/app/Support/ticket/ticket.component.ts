@@ -100,7 +100,11 @@ export class TicketComponent implements OnInit, OnDestroy {
       if (this.seenIds.has(mensaje.id)) return; // el propio ya vino por HTTP
       this.seenIds.add(mensaje.id);
       this.msgs = [...this.msgs, this.mapMsg(mensaje)];
-      this.soundService.play('notification');
+      // El broadcast en tiempo real del propio mensaje puede llegar antes que
+      // la respuesta HTTP de enviarMensaje(): no sonar por algo que uno mismo envió
+      if (mensaje.senderRole !== this.authService.currentProfile()?.role) {
+        this.soundService.play('notification');
+      }
       this.scrollDown();
     }));
 
