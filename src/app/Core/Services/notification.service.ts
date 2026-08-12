@@ -9,12 +9,13 @@ const RECONNECT_MS = 5000;
 const PREF_KEY = 'biozin_notifs_enabled';
 
 /**
- * Notificaciones dentro de la app: escucha tickets/mensajes nuevos por SignalR
- * (ver `NotificationRealtimeService`) y los muestra como toasts momentáneos.
- * Corre mientras haya un perfil activo (cualquier rol) — admin/soporte reciben
- * tickets y mensajes nuevos de todos los usuarios; un usuario normal solo
- * recibe respuestas nuevas de soporte en sus propios tickets (el backend
- * decide el alcance según el rol, ver `ChatHub.OnConnectedAsync`).
+ * Notificaciones dentro de la app: escucha tickets/mensajes/solicitudes nuevas
+ * por SignalR (ver `NotificationRealtimeService`) y los muestra como toasts
+ * momentáneos. Corre mientras haya un perfil activo (cualquier rol) —
+ * admin/soporte reciben tickets y mensajes nuevos de todos los usuarios, y
+ * solicitudes internas nuevas entre ellos; un usuario normal solo recibe
+ * respuestas nuevas de soporte en sus propios tickets (el backend decide el
+ * alcance según el rol, ver `ChatHub.OnConnectedAsync`).
  *
  * Todo vive dentro de un único switchMap gateado por `enabled`: al cerrar
  * sesión, RxJS cierra la conexión y cancela la suscripción de una vez (nada de
@@ -64,8 +65,14 @@ export class NotificationService {
           const nuevoMensaje$ = this.realtime.nuevoMensaje$.pipe(
             tap((m) => this.enqueue(`Nuevo mensaje en "${m.subject}" (#BR-${m.ticketNumber})`)),
           );
+          const nuevaSolicitud$ = this.realtime.nuevaSolicitud$.pipe(
+            tap((s) => this.enqueue(`Nueva solicitud de ${s.requestedByName || 'soporte'}: ${s.subject}`)),
+          );
+          const nuevoMensajeSolicitud$ = this.realtime.nuevoMensajeSolicitud$.pipe(
+            tap((m) => this.enqueue(`Nuevo mensaje en "${m.subject}" (#SOL-${m.requestNumber})`)),
+          );
 
-          return merge(resumed$, nuevoTicket$, nuevoMensaje$).pipe(
+          return merge(resumed$, nuevoTicket$, nuevoMensaje$, nuevaSolicitud$, nuevoMensajeSolicitud$).pipe(
             finalize(() => this.realtime.disconnect()),
           );
         }),

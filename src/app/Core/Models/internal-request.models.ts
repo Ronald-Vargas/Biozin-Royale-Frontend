@@ -33,3 +33,20 @@ export interface EnviarInternalRequestMensajeRequest {
 export interface CambiarEstadoInternalRequestRequest {
   status: string;
 }
+
+export interface NuevaSolicitudNotif {
+  id: string;
+  requestNumber: number;
+  subject: string;
+  requestedByName?: string | null;
+  createdAt: string;
+}
+
+export interface NuevoMensajeSolicitudNotif {
+  solicitudId: string;
+  requestNumber: number;
+  subject: string;
+  senderName: string;
+  body: string;
+  createdAt: string;
+}

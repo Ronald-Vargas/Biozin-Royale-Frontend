@@ -9,6 +9,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 import { NuevoMensajeNotif, NuevoTicketNotif } from '../Models/ticket.models';
+import { NuevaSolicitudNotif, NuevoMensajeSolicitudNotif } from '../Models/internal-request.models';
 
 // Notificaciones app-wide (reemplaza el polling de cada 8s): el mismo ChatHub
 // que los chats de soporte, pero unido automáticamente al grupo de notificaciones
@@ -21,6 +22,8 @@ export class NotificationRealtimeService {
 
   readonly nuevoTicket$ = new Subject<NuevoTicketNotif>();
   readonly nuevoMensaje$ = new Subject<NuevoMensajeNotif>();
+  readonly nuevaSolicitud$ = new Subject<NuevaSolicitudNotif>();
+  readonly nuevoMensajeSolicitud$ = new Subject<NuevoMensajeSolicitudNotif>();
 
   constructor(private readonly auth: AuthService) {}
 
@@ -39,6 +42,8 @@ export class NotificationRealtimeService {
 
     this.hub.on('nuevoTicket', (p: NuevoTicketNotif) => this.nuevoTicket$.next(p));
     this.hub.on('nuevoMensaje', (p: NuevoMensajeNotif) => this.nuevoMensaje$.next(p));
+    this.hub.on('nuevaSolicitud', (p: NuevaSolicitudNotif) => this.nuevaSolicitud$.next(p));
+    this.hub.on('nuevoMensajeSolicitud', (p: NuevoMensajeSolicitudNotif) => this.nuevoMensajeSolicitud$.next(p));
 
     await this.hub.start();
   }
