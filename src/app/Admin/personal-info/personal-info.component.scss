@@ -82,7 +82,10 @@
   font-size: 20px;
   font-weight: 700;
   color: var(--cream);
-  line-height: 1.1;
+  // 1.1 recorta las ascendentes de Cinzel en el WebView de Android (el
+  // renderizador nativo calcula el alto del glifo más grande que en navegador
+  // y el contenedor tiene overflow:hidden) — con más aire no se corta en ningún lado.
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
