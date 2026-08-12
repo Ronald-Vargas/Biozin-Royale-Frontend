@@ -44,9 +44,33 @@ export class AppComponent implements OnInit {
       const { data, error } = await this.supabaseService.client.auth.exchangeCodeForSession(code);
       if (error || !data.session) return;
 
-      this.authService.syncOAuth(data.session.access_token).subscribe((res) => {
-        if (res.blnError || !res.returnValue) return;
-        this.router.navigateByUrl(this.authService.getPostLoginRoute(res.returnValue), { replaceUrl: true });
+      // Se captura antes del subscribe para evitar problemas de narrowing de
+      // TypeScript sobre `data.session` dentro del closure anidado del error callback.
+      const supabaseEmail = data.session.user.email ?? '';
+
+      this.authService.syncOAuth(data.session.access_token).subscribe({
+        next: (res) => {
+          if (res.blnError || !res.returnValue) return;
+          this.router.navigateByUrl(this.authService.getPostLoginRoute(res.returnValue), { replaceUrl: true });
+        },
+        error: (err) => {
+          const body = err?.error;
+
+          if (body?.strResponseTittle === '2FA requerido') {
+            this.supabaseService.client.auth.signOut();
+            this.router.navigateByUrl(`/auth/verificar-2fa?email=${encodeURIComponent(supabaseEmail)}`, { replaceUrl: true });
+            return;
+          }
+
+          if (body?.strResponseTittle === 'Cuenta bloqueada') {
+            this.supabaseService.client.auth.signOut();
+            const msg = encodeURIComponent(body.strResponseMessage ?? 'Tu cuenta ha sido bloqueada.');
+            this.router.navigateByUrl(`/auth/login?blocked=${msg}`, { replaceUrl: true });
+            return;
+          }
+          // Otros errores (red, backend caído, etc.): no navegamos; el usuario
+          // se queda donde estaba y puede reintentar.
+        },
       });
     });
   }

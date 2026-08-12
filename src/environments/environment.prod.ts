@@ -10,8 +10,8 @@ export const environment = {
   paypalClientId:       'BAAK0KMW7nvXjZLoH480rOmAz6f_v-KY_U4H3ZelTE1Ar9LSN88znDRUpnTRgUC29YryDqcDxFi6sdKpQI',
 
   support: {
-    waNumber:  '50685348693',
-    waDisplay: '+506 8534-8693',
+    waNumber:  '50661880161',
+    waDisplay: '+506 6188 0161',
     email:     'soporte@mail.biozin.online',
   },
 };

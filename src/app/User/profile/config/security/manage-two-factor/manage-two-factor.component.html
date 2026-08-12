@@ -23,7 +23,7 @@
       <p class="tf-intro" *ngIf="hasPassword">
         Ingresa tu contraseña actual para {{ toggleTargetValue ? 'activar' : 'desactivar' }} la autenticación en dos pasos.
       </p>
-      <p class="tf-intro" *ngIf="!hasPassword">
+      <p class="tf-intro" *ngIf="!hasPassword && !needsCode">
         ¿Confirmas que deseas {{ toggleTargetValue ? 'activar' : 'desactivar' }} la autenticación en dos pasos?
       </p>
 
@@ -34,6 +34,22 @@
         [password]="true"
         [control]="passwordCtrl"
       ></app-field>
+
+      <ng-container *ngIf="needsCode">
+        <p class="tf-intro">
+          {{ codeSent ? 'Ingresa el código de 6 dígitos que enviamos a tu correo.' : 'Enviando código de verificación a tu correo…' }}
+        </p>
+
+        <app-field
+          label="Código de verificación"
+          placeholder="Ingresa el código de 6 dígitos"
+          [control]="codeCtrl"
+        ></app-field>
+
+        <button class="tf-submit tf-submit--ghost" type="button" [disabled]="sendingCode" (click)="sendCode()">
+          {{ sendingCode ? 'Enviando…' : 'Reenviar código' }}
+        </button>
+      </ng-container>
 
       <div class="tf-confirm-row">
         <button class="tf-submit tf-submit--ghost" type="button" (click)="cancelToggle()">Cancelar</button>

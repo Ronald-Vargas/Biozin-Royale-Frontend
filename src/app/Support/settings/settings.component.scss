@@ -36,13 +36,16 @@
 
 .profile-watermark {
   position: absolute;
+  z-index: 0;
   right: -14px;
   top: 50%;
   transform: translateY(-50%);
   width: 96px; height: 96px;
   object-fit: contain;
-  opacity: 0.1;
+  opacity: 0.14;
   pointer-events: none;
+  mask-image: linear-gradient(to left, black 35%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to left, black 35%, transparent 80%);
 }
 
 .avatar-wrap {
@@ -110,15 +113,21 @@
 }
 
 .identity-role {
+  position: relative;
+  z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 6px;
   margin-top: 10px;
+
+  app-icon { flex-shrink: 0; margin-top: 1px; }
 
   span {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     color: #cbb98f;
+    min-width: 0;
   }
 
   .role-value {

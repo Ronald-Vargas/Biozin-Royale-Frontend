@@ -488,10 +488,11 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   // ── Nav / abandono ─────────────────────────────────────────
-  go(to: string)       { this.router.navigate([to]); }
-  goDeposito()         { this.router.navigate(['/deposito']); }
+  go(to: string) { this.router.navigate([to]); }
 
   showLeaveConfirm = false;
+  /** Adónde navegar al confirmar: salir a la lista de mesas o ir a depositar */
+  private leaveTarget: string[] = ['/blackjack-lobby'];
 
   /** Ronda en curso (apuesta ya comprometida) vs. ya liquidada o sin empezar */
   private get roundLive(): boolean {
@@ -516,14 +517,23 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   requestLeave() {
+    this.leaveTarget = ['/blackjack-lobby'];
     if (this.leaveIsRisky) { this.showLeaveConfirm = true; return; }
-    this.router.navigate(['/blackjack-lobby']);
+    this.router.navigate(this.leaveTarget);
+  }
+
+  /** El botón "+" de depositar también saca de la mesa (mismo ngOnDestroy que
+   * el botón de volver) — pasa por la misma confirmación antes de navegar. */
+  goDeposito() {
+    this.leaveTarget = ['/deposito'];
+    if (this.leaveIsRisky) { this.showLeaveConfirm = true; return; }
+    this.router.navigate(this.leaveTarget);
   }
 
   cancelLeave() { this.showLeaveConfirm = false; }
 
   confirmLeave() {
     this.showLeaveConfirm = false;
-    this.router.navigate(['/blackjack-lobby']);
+    this.router.navigate(this.leaveTarget);
   }
 }

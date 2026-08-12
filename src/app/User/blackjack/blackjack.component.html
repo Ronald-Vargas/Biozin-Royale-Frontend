@@ -172,6 +172,12 @@
       </div>
     </div>
 
+    <!-- Timer de tu turno -->
+    <div *ngIf="canAct" class="turn-banner">
+      <div class="timer-ring" [class.timer-ring--urgent]="count <= 5">{{ count }}</div>
+      <span class="turn-banner-label">Tu turno</span>
+    </div>
+
     <div *ngIf="phase !== 'bet'" class="action-bar">
       <app-action-btn [icon]="iconHit"    label="PEDIR"     [on]="canAct"      (act)="hit()"></app-action-btn>
       <app-action-btn [icon]="iconStand"  label="PLANTARSE" [on]="canAct"      accent="#4fd190" (act)="stand()"></app-action-btn>

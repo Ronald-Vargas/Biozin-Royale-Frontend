@@ -90,6 +90,14 @@ export class CallbackComponent implements OnInit, OnDestroy {
           return;
         }
 
+        if (body?.strResponseTittle === '2FA requerido') {
+          // Mismo destino que login.component.ts para login manual con 2FA.
+          const email = encodeURIComponent(session.user.email ?? '');
+          this.supabaseService.client.auth.signOut();
+          window.location.replace(`/auth/verificar-2fa?email=${email}`);
+          return;
+        }
+
         this.showError('No se pudo sincronizar tu cuenta. Intenta iniciar sesión de nuevo.');
       },
     });

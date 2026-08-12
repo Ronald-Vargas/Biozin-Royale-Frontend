@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AtmosphereComponent } from 'src/app/User/shared/Components/atmosphere/atmosphere.component';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 import { ICON_BACK, ICON_PERSON_ADD, ICON_CHECK, ICON_ATTACH, ICON_CHECK_CIRCLE, ICON_DOTS_HORIZ, ICON_SWAP } from 'src/app/User/shared/icons/icons';
@@ -16,6 +17,7 @@ import { TicketService } from 'src/app/Core/Services/ticket.service';
 import { TicketResultado, TicketMessage, StaffSimple } from 'src/app/Core/Models/ticket.models';
 import { SupabaseStorageService } from 'src/app/Core/Services/supabase-storage.service';
 import { AuthService } from 'src/app/Core/Services/auth.service';
+import { ChatRealtimeService } from 'src/app/Core/Services/chat-realtime.service';
 
 @Component({
   standalone: true,
@@ -64,8 +66,9 @@ export class TicketComponent implements OnInit, OnDestroy {
   readonly statusOptions = ['Nuevo', 'En proceso', 'Resuelto'];
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
-  private pollInterval: ReturnType<typeof setInterval> | null = null;
-  private lastMsgCount = 0;
+  private subs = new Subscription();
+  /// ids ya renderizados (los mensajes se mapean a un shape sin id)
+  private seenIds = new Set<string>();
 
   constructor(
     private route: ActivatedRoute,
@@ -74,6 +77,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     private storage: SupabaseStorageService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
+    private chatRt: ChatRealtimeService,
   ) {}
 
   get isAdmin(): boolean { return this.authService.currentProfile()?.role === 'admin'; }
@@ -86,12 +90,35 @@ export class TicketComponent implements OnInit, OnDestroy {
     this.loadMessages();
     this.loadAgentes();
 
-    this.pollInterval = setInterval(() => this.pollMessages(), 4000);
+    // Tiempo real (sin polling): mensajes y cambios de estado al instante
+    this.chatRt.joinTicket(this.ticketId).catch(() => { /* sin tiempo real igual funciona por HTTP */ });
+
+    this.subs.add(this.chatRt.ticketMensaje$.subscribe(({ ticketId, mensaje }) => {
+      if (ticketId.toLowerCase() !== this.ticketId.toLowerCase()) return;
+      if (this.seenIds.has(mensaje.id)) return; // el propio ya vino por HTTP
+      this.seenIds.add(mensaje.id);
+      this.msgs = [...this.msgs, this.mapMsg(mensaje)];
+      this.scrollDown();
+    }));
+
+    this.subs.add(this.chatRt.ticketActualizado$.subscribe((t) => {
+      if (t.id.toLowerCase() !== this.ticketId.toLowerCase()) return;
+      // Solo estado y asignación: el payload de un cambio de estado no trae
+      // los datos del usuario y pisarlos dejaría la cabecera en blanco
+      this.status          = statusLabel(t.status);
+      this.ticket.status   = this.status;
+      this.assigned        = t.assignedToName || 'Sin asignar';
+      this.assignedId      = t.assignedTo || '';
+      this.ticket.assigned = this.assigned;
+    }));
+
+    this.subs.add(this.chatRt.reconectado$.subscribe(() => this.loadMessages()));
   }
 
   ngOnDestroy(): void {
-    if (this.toastTimer)  clearTimeout(this.toastTimer);
-    if (this.pollInterval) clearInterval(this.pollInterval);
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.subs.unsubscribe();
+    this.chatRt.leave();
   }
 
   // ── Carga inicial ──────────────────────────────────────────
@@ -112,8 +139,8 @@ export class TicketComponent implements OnInit, OnDestroy {
     this.ticketService.listarMensajes(this.ticketId).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
+          this.seenIds = new Set(res.returnValue.map(m => m.id));
           this.msgs = res.returnValue.map(m => this.mapMsg(m));
-          this.lastMsgCount = this.msgs.length;
           this.scrollDown();
         }
       },
@@ -130,24 +157,13 @@ export class TicketComponent implements OnInit, OnDestroy {
     });
   }
 
-  private pollMessages(): void {
-    this.ticketService.listarMensajes(this.ticketId).subscribe({
-      next: (res) => {
-        if (!res.blnError && res.returnValue && res.returnValue.length !== this.lastMsgCount) {
-          this.msgs = res.returnValue.map(m => this.mapMsg(m));
-          this.lastMsgCount = this.msgs.length;
-          this.scrollDown();
-        }
-      },
-    });
-  }
-
   // ── Helpers ────────────────────────────────────────────────
 
   get tint(): string { return TINTS[0]; }
   get catIcon(): string { return CAT_ICON[this.ticket.cat] || ''; }
   get assignedLabel(): string { return this.assigned === 'Sin asignar' ? '—' : this.assigned; }
   get isResolved(): boolean { return this.status === 'Resuelto'; }
+  get isClosed(): boolean   { return this.status === 'Cerrado'; }
 
   flash(msg: string): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -185,7 +201,7 @@ export class TicketComponent implements OnInit, OnDestroy {
   clearFile(): void { this.selectedFile = null; this.uploadError = ''; }
 
   async send(): Promise<void> {
-    if (!this.reply.trim() && !this.selectedFile) return;
+    if ((!this.reply.trim() && !this.selectedFile) || this.isResolved || this.isClosed) return;
     const body = this.reply.trim();
     this.reply = '';
 
@@ -208,8 +224,10 @@ export class TicketComponent implements OnInit, OnDestroy {
     this.ticketService.enviarMensaje(this.ticketId, body, fileUrl, fileName).subscribe({
       next: (res) => {
         if (!res.blnError && res.returnValue) {
-          this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
-          this.lastMsgCount = this.msgs.length;
+          if (!this.seenIds.has(res.returnValue.id)) {
+            this.seenIds.add(res.returnValue.id);
+            this.msgs = [...this.msgs, this.mapMsg(res.returnValue)];
+          }
           if (this.status === 'Nuevo') { this.status = 'En proceso'; this.ticket.status = 'En proceso'; }
           this.scrollDown();
         }

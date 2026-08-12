@@ -50,7 +50,7 @@
   </div>
 
   <!-- Footer: acciones + responder (oculto para admin) -->
-  <div *ngIf="!isAdmin" class="ticket-footer">
+  <div *ngIf="!isAdmin && !isClosed" class="ticket-footer">
     <div class="action-row">
       <button class="act-btn" (click)="sheet = 'asignar'">
         <app-icon [svg]="iconAssign" [size]="16"></app-icon>
@@ -71,31 +71,37 @@
       </button>
     </div>
 
-    <!-- Chip archivo seleccionado -->
-    <div *ngIf="selectedFile" class="file-chip">
-      <span class="file-chip-name">{{ selectedFile.name }}</span>
-      <button class="file-chip-rm" (click)="clearFile()">✕</button>
-    </div>
-    <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
+    <ng-container *ngIf="!isResolved">
+      <!-- Chip archivo seleccionado -->
+      <div *ngIf="selectedFile" class="file-chip">
+        <span class="file-chip-name">{{ selectedFile.name }}</span>
+        <button class="file-chip-rm" (click)="clearFile()">✕</button>
+      </div>
+      <div *ngIf="uploadError" class="upload-err">{{ uploadError }}</div>
 
-    <div class="reply-row">
-      <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
-      <button class="icon-btn icon-btn--muted" (click)="pickFile()">
-        <app-icon [svg]="iconAttach" [size]="20"></app-icon>
-      </button>
-      <input
-        class="reply-input"
-        [(ngModel)]="reply"
-        (keydown)="onEnter($event)"
-        placeholder="Escribe tu respuesta..."
-      />
-      <button class="send-btn" (click)="send()">Responder</button>
+      <div class="reply-row">
+        <input #fileInput type="file" accept="image/*,.pdf,.doc,.docx" hidden (change)="onFileChange($event)">
+        <button class="icon-btn icon-btn--muted" (click)="pickFile()">
+          <app-icon [svg]="iconAttach" [size]="20"></app-icon>
+        </button>
+        <input
+          class="reply-input"
+          [(ngModel)]="reply"
+          (keydown)="onEnter($event)"
+          placeholder="Escribe tu respuesta..."
+        />
+        <button class="send-btn" (click)="send()">Responder</button>
+      </div>
+    </ng-container>
+
+    <div *ngIf="isResolved" class="readonly-bar">
+      <span>Ticket resuelto — no se pueden enviar más mensajes.</span>
     </div>
   </div>
 
-  <!-- Banner modo lectura (solo admin) -->
-  <div *ngIf="isAdmin" class="readonly-bar">
-    <span>Solo supervisión — el admin no puede responder tickets</span>
+  <!-- Banner modo lectura (admin siempre, o soporte cuando el ticket ya está cerrado) -->
+  <div *ngIf="isAdmin || isClosed" class="readonly-bar">
+    <span>{{ isAdmin ? 'Solo supervisión — el admin no puede responder tickets' : 'Ticket cerrado — no se pueden enviar más mensajes.' }}</span>
   </div>
 
   <!-- Sheets (solo soporte) -->

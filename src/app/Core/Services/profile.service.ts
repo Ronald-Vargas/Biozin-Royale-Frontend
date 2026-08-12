@@ -48,8 +48,12 @@ export class ProfileService {
     return this.http.post<ApiResponse<boolean>>(`${this.profileUrl}/pin/verificar`, { pin });
   }
 
-  setTwoFactorEnabled(password: string, enabled: boolean): Observable<ApiResponse<boolean>> {
-    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/2fa/estado`, { password, enabled });
+  setTwoFactorEnabled(password: string, enabled: boolean, code?: string): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.profileUrl}/2fa/estado`, { password, enabled, code });
+  }
+
+  sendTwoFactorDisableCode(): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${this.profileUrl}/2fa/desactivar/codigo`, {});
   }
 
   checkUsername(username: string): Observable<ApiResponse<boolean>> {

@@ -47,10 +47,15 @@
       </div>
     </div>
 
+    <div *ngIf="errorMsg" class="field-error field-error--general">{{ errorMsg }}</div>
+
     <!-- Crear -->
-    <button class="create-btn" (click)="submit()">
-      <app-icon [svg]="iconPersonAdd" [size]="21"></app-icon>
-      Crear miembro
+    <button class="create-btn" [disabled]="saving" (click)="submit()">
+      <div *ngIf="saving; else idleBtn" class="btn-spinner"></div>
+      <ng-template #idleBtn>
+        <app-icon [svg]="iconPersonAdd" [size]="21"></app-icon>
+        Crear miembro
+      </ng-template>
     </button>
   </div>
 

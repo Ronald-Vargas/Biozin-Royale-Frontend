@@ -29,6 +29,23 @@
       <div class="state-msg state-msg--error">{{ error }}</div>
     }
 
+    @if (!loading && !error && bonos.length > 0) {
+      <div class="search-row">
+        <div class="search-wrap">
+          <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+          <input
+            class="search-input"
+            [(ngModel)]="q"
+            placeholder="Buscar por nombre o monto…"
+          />
+        </div>
+      </div>
+
+      <button class="filter-btn" [class.filter-btn--on]="showHidden" (click)="showHidden = !showHidden">
+        {{ showHidden ? 'Ocultar inactivos' : 'Mostrar ocultos' }}
+      </button>
+    }
+
     @if (!loading && !error && bonos.length === 0) {
       <div class="empty-wrap">
         <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
@@ -37,9 +54,23 @@
       </div>
     }
 
-    @if (!loading && !error && bonos.length > 0) {
+    @if (!loading && !error && bonos.length > 0 && visibleBonos.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
+        <div class="empty-title">Sin resultados</div>
+        <div class="empty-sub">
+          @if (q.trim()) {
+            Ningún bono coincide con la búsqueda.
+          } @else {
+            No hay bonos visibles. Activa "Mostrar ocultos" para verlos todos.
+          }
+        </div>
+      </div>
+    }
+
+    @if (!loading && !error && visibleBonos.length > 0) {
       <div class="bonos-list">
-        @for (b of bonos; track b.id) {
+        @for (b of visibleBonos; track b.id) {
           <div class="bono-row" [class.bono-row--disabled]="!b.isActive">
             <div class="bono-info">
               <div class="bono-title-row">
@@ -62,4 +93,35 @@
   </div>
 
   <app-admin-nav current="bonos"></app-admin-nav>
+
+  @if (extendTarget) {
+    <div class="modal-overlay" (click)="cancelExtend()">
+      <div class="modal-sheet" (click)="$event.stopPropagation()">
+        <div class="handle"></div>
+
+        <div class="modal-header">
+          <h2 class="gold-text modal-title">Bono expirado</h2>
+          <button class="close-btn" type="button" (click)="cancelExtend()">
+            <app-icon [svg]="iconClose" [size]="18" style="color:var(--gold-1)"></app-icon>
+          </button>
+        </div>
+
+        <p class="intro">
+          "{{ extendTarget.title }}" ya expiró. Elige por cuántos días deseas extenderlo para volver a activarlo.
+        </p>
+
+        <div class="extend-options">
+          @for (d of extendDaysOptions; track d) {
+            <button class="extend-option" type="button" (click)="confirmExtend(d)">{{ d }} días</button>
+          }
+        </div>
+
+        @if (extendError) {
+          <div class="pin-error">{{ extendError }}</div>
+        }
+
+        <button class="pin-submit pin-submit--ghost" type="button" (click)="cancelExtend()">Cancelar</button>
+      </div>
+    </div>
+  }
 </div>
