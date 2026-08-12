@@ -29,6 +29,23 @@
       <div class="state-msg state-msg--error">{{ error }}</div>
     }
 
+    @if (!loading && !error && bonos.length > 0) {
+      <div class="search-row">
+        <div class="search-wrap">
+          <app-icon [svg]="iconSearch" [size]="18" class="search-icon"></app-icon>
+          <input
+            class="search-input"
+            [(ngModel)]="q"
+            placeholder="Buscar por nombre o monto…"
+          />
+        </div>
+      </div>
+
+      <button class="filter-btn" [class.filter-btn--on]="showHidden" (click)="showHidden = !showHidden">
+        {{ showHidden ? 'Ocultar inactivos' : 'Mostrar ocultos' }}
+      </button>
+    }
+
     @if (!loading && !error && bonos.length === 0) {
       <div class="empty-wrap">
         <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
@@ -37,9 +54,23 @@
       </div>
     }
 
-    @if (!loading && !error && bonos.length > 0) {
+    @if (!loading && !error && bonos.length > 0 && visibleBonos.length === 0) {
+      <div class="empty-wrap">
+        <app-icon [svg]="iconGift" [size]="44" class="empty-icon"></app-icon>
+        <div class="empty-title">Sin resultados</div>
+        <div class="empty-sub">
+          @if (q.trim()) {
+            Ningún bono coincide con la búsqueda.
+          } @else {
+            No hay bonos visibles. Activa "Mostrar ocultos" para verlos todos.
+          }
+        </div>
+      </div>
+    }
+
+    @if (!loading && !error && visibleBonos.length > 0) {
       <div class="bonos-list">
-        @for (b of bonos; track b.id) {
+        @for (b of visibleBonos; track b.id) {
           <div class="bono-row" [class.bono-row--disabled]="!b.isActive">
             <div class="bono-info">
               <div class="bono-title-row">
