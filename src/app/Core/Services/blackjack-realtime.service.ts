@@ -110,9 +110,42 @@ export class BlackjackRealtimeService {
     }
   }
 
-  async connect(): Promise<void> {
-    if (this.hub && this.hub.state !== HubConnectionState.Disconnected) return;
+  /** Promesa del arranque en curso, para que dos llamadas no abran dos conexiones. */
+  private arranque: Promise<void> | null = null;
 
+  async connect(): Promise<void> {
+    if (this.hub?.state === HubConnectionState.Connected) return;
+
+    // Estados intermedios: si se retornara aquí sin esperar, el invoke posterior
+    // fallaría con "connection is not in the 'Connected' State" — el jugador no
+    // entraría a la mesa o su apuesta/acción se perdería sin aviso.
+    if (this.hub && (this.hub.state === HubConnectionState.Connecting
+                  || this.hub.state === HubConnectionState.Reconnecting)) {
+      return this.esperarConectado();
+    }
+
+    if (this.arranque) return this.arranque;
+    this.arranque = this.crearYArrancar();
+    try { await this.arranque; }
+    finally { this.arranque = null; }
+  }
+
+  /** Espera a que una conexión en curso (o reconexión automática) quede lista. */
+  private esperarConectado(timeoutMs = 15000): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const inicio = Date.now();
+      const t = setInterval(() => {
+        if (this.hub?.state === HubConnectionState.Connected) { clearInterval(t); resolve(); }
+        else if (this.hub?.state === HubConnectionState.Disconnected) {
+          clearInterval(t); reject(new Error('La conexión con la mesa se cerró.'));
+        } else if (Date.now() - inicio > timeoutMs) {
+          clearInterval(t); reject(new Error('Tiempo de espera agotado al conectar con la mesa.'));
+        }
+      }, 120);
+    });
+  }
+
+  private async crearYArrancar(): Promise<void> {
     this.hub = new HubConnectionBuilder()
       .withUrl(this.hubUrl, { accessTokenFactory: () => this.auth.getToken() ?? '' })
       .withAutomaticReconnect()

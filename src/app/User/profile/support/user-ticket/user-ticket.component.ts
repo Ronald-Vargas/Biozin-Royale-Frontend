@@ -65,7 +65,10 @@ export class UserTicketComponent implements OnInit, OnDestroy {
     this.loadAll();
 
     // Tiempo real (sin polling): los mensajes y cambios de estado llegan al instante
-    this.chatRt.joinTicket(this.ticketId).catch(() => { /* sin tiempo real igual funciona por HTTP */ });
+    // Si falla, el chat sigue usable por HTTP pero sin actualizaciones en vivo:
+    // se registra para que el problema sea diagnosticable y no pase inadvertido.
+    this.chatRt.joinTicket(this.ticketId)
+      .catch(err => console.warn('[chat] sin tiempo real en el ticket:', err));
 
     this.subs.add(this.chatRt.ticketMensaje$.subscribe(({ ticketId, mensaje }) => {
       if (ticketId.toLowerCase() !== this.ticketId.toLowerCase()) return;
@@ -85,7 +88,7 @@ export class UserTicketComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
-    this.chatRt.leave();
+    this.chatRt.leaveTicket(this.ticketId);
   }
 
   // ── Data ──────────────────────────────────────────────────

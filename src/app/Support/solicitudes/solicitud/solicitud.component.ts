@@ -81,7 +81,10 @@ export class SolicitudComponent implements OnInit, OnDestroy {
     this.loadMessages();
 
     // Tiempo real (sin polling): mensajes y cambios de estado al instante
-    this.chatRt.joinSolicitud(this.requestId).catch(() => { /* sin tiempo real igual funciona por HTTP */ });
+    // Si falla, el chat sigue usable por HTTP pero sin actualizaciones en vivo:
+    // se registra para que el problema sea diagnosticable y no pase inadvertido.
+    this.chatRt.joinSolicitud(this.requestId)
+      .catch(err => console.warn('[chat] sin tiempo real en la solicitud:', err));
 
     this.subs.add(this.chatRt.solicitudMensaje$.subscribe(({ solicitudId, mensaje }) => {
       if (solicitudId.toLowerCase() !== this.requestId.toLowerCase()) return;
@@ -102,7 +105,7 @@ export class SolicitudComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.subs.unsubscribe();
-    this.chatRt.leave();
+    this.chatRt.leaveSolicitud(this.requestId);
   }
 
   // ── Carga inicial ──────────────────────────────────────────
