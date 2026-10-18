@@ -86,6 +86,11 @@ export const routes: Routes = [
     loadComponent: () => import('./User/games/games.component').then(m => m.GamesComponent),
   },
   {
+    path: 'tienda',
+    data: { depth: 5, tab: 2 },
+    loadComponent: () => import('./User/store/store.component').then(m => m.StoreComponent),
+  },
+  {
     path: 'wallet',
     data: { depth: 5, tab: 2 },
     canActivate: [realAccountGuard],

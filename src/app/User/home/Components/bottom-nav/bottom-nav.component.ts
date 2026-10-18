@@ -7,6 +7,8 @@ import {
   ICON_WALLET_FILLED, ICON_WALLET_OUTLINE,
   ICON_GIFT_FILLED, ICON_GIFT_OUTLINE,
   ICON_PERSON_FILLED, ICON_PERSON_OUTLINE,
+  ICON_STORE_OUTLINE,
+  ICON_STORE_FILLED,
 } from '../../../shared/icons/icons';
 import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-icons.component';
 
@@ -25,6 +27,7 @@ export class BottomNavComponent {
   items: NavItem[] = [
     { key: 'home',   label: 'Inicio', route: '/home',   filled: ICON_HOME_FILLED,   outline: ICON_HOME_OUTLINE },
     { key: 'juegos', label: 'Juegos', route: '/juegos', filled: ICON_GRID_FILLED,   outline: ICON_GRID_OUTLINE },
+    { key: 'tienda', label: 'Tienda', route: '/tienda', filled: ICON_STORE_FILLED, outline: ICON_STORE_OUTLINE },
     { key: 'wallet', label: 'Wallet', route: '/wallet', filled: ICON_WALLET_FILLED, outline: ICON_WALLET_OUTLINE },
     { key: 'bonos',  label: 'Bonos',  route: '/bonos',  filled: ICON_GIFT_FILLED,   outline: ICON_GIFT_OUTLINE },
     { key: 'perfil', label: 'Perfil', route: '/perfil', filled: ICON_PERSON_FILLED, outline: ICON_PERSON_OUTLINE },

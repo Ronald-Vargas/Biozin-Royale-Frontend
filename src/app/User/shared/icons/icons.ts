@@ -16,6 +16,18 @@ export const ICON_GIFT_FILLED    = `<svg xmlns="http://www.w3.org/2000/svg" view
 export const ICON_GIFT_OUTLINE   = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>`;
 export const ICON_PERSON_FILLED  = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`;
 export const ICON_PERSON_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+export const ICON_STORE_FILLED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M21.9 7.2 20.2 3.8A1.5 1.5 0 0018.9 3H5.1a1.5 1.5 0 00-1.3.8L2.1 7.2A3 3 0 004.5 12c.9 0 1.7-.4 2.3-1 .6.6 1.4 1 2.3 1s1.7-.4 2.3-1c.6.6 1.4 1 2.3 1s1.7-.4 2.3-1c.6.6 1.4 1 2.3 1A3 3 0 0021.9 7.2zM4 13.5V21h16v-7.5a4.9 4.9 0 01-2.3-.9 4.9 4.9 0 01-4.6 0 4.9 4.9 0 01-4.6 0 4.9 4.9 0 01-4.5.9zM9 16h6v5H9z"/>
+</svg>`;
+
+export const ICON_STORE_OUTLINE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3 10h18"/>
+  <path d="M5 10v11h14V10"/>
+  <path d="M3 10l1.8-6h14.4L21 10"/>
+  <path d="M3 10a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0"/>
+  <path d="M9 21v-5h6v5"/>
+</svg>`;
+
 
 // Home
 export const ICON_ADD          = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
