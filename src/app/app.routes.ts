@@ -281,6 +281,12 @@ export const routes: Routes = [
     loadComponent: () => import('./Admin/users/user-transactions/user-transactions.component').then(m => m.UserTransactionsComponent),
   },
   {
+    path: 'admin/tienda',
+    data: { depth: 11 },
+    canActivate: [roleGuard(['admin'])],
+    loadComponent: () => import('./Admin/store/store.component').then(m => m.StoreComponent),
+  },
+  {
     path: 'admin/finanzas',
     data: { depth: 11 },
     canActivate: [roleGuard(['admin'])],

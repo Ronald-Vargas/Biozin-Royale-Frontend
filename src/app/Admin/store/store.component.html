@@ -1,0 +1,316 @@
+<div class="admin-screen">
+  <app-atmosphere [glow]="0.24" [count]="8"></app-atmosphere>
+
+  <div class="scroll-body">
+    <app-admin-header title="Tienda" (back)="onBack()"></app-admin-header>
+
+    <!-- Secciones del módulo -->
+    <div class="chips" role="group" aria-label="Secciones de la tienda">
+      <button type="button" *ngFor="let s of secciones" [class.activo]="seccion() === s.k" (click)="irSeccion(s.k)">{{ s.t }}</button>
+    </div>
+
+    <div [ngSwitch]="seccion()">
+
+      <!-- ═════════ RESUMEN ═════════ -->
+      <ng-container *ngSwitchCase="'res'">
+        <div class="kpis">
+          <div class="kpi"><span class="muted">Ventas</span><b>{{ ventas() | currency:'USD':'symbol':'1.2-2' }}</b></div>
+          <div class="kpi"><span class="muted">Pedidos</span><b>{{ pedidos().length }}</b></div>
+          <div class="kpi"><span class="muted">Por atender</span><b>{{ porAtender() }}</b></div>
+          <div class="kpi"><span class="muted">Con stock bajo</span><b>{{ stockBajo().length }}</b></div>
+        </div>
+
+        <div class="caja">
+          <h3 class="caja-titulo">Pedidos recientes</h3>
+          <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: recientes() }"></ng-container>
+        </div>
+
+        <div class="caja">
+          <h3 class="caja-titulo">Stock bajo</h3>
+          <p class="muted" *ngIf="!stockBajo().length">Todos los productos tienen más de 5 unidades.</p>
+          <div class="fila-sum" *ngFor="let p of stockBajo(); trackBy: trackId">
+            <span>{{ p.nombre }}</span>
+            <span class="insignia" [ngClass]="estadoStock(p).clase">{{ p.stock ? p.stock + ' en stock' : 'Agotado' }}</span>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ PEDIDOS ═════════ -->
+      <ng-container *ngSwitchCase="'ord'">
+        <div class="chips" role="group" aria-label="Filtrar por estado">
+          <button type="button" *ngFor="let f of filtrosPedido" [class.activo]="filtroPedidos() === f" (click)="filtroPedidos.set(f)">{{ f }}</button>
+        </div>
+        <div class="caja">
+          <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: pedidosFiltrados() }"></ng-container>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ PRODUCTOS ═════════ -->
+      <ng-container *ngSwitchCase="'prods'">
+        <div class="barra">
+          <label class="buscador">
+            <app-icon [svg]="iconBuscar" [size]="18"></app-icon>
+            <input type="search" autocomplete="off" placeholder="Buscar producto" aria-label="Buscar producto"
+                   [value]="busquedaProd()" (input)="busquedaProd.set($any($event.target).value)" />
+          </label>
+          <button type="button" class="btn-oro btn-sm" (click)="nuevoProducto()">Nuevo producto</button>
+        </div>
+
+        <div class="caja" *ngIf="productosFiltrados().length; else sinProductos">
+          <div class="item" *ngFor="let p of productosFiltrados(); trackBy: trackId">
+            <div class="item-cab">
+              <span class="mini" [style.background]="p.color"><img src="assets/logo.png" alt="" /></span>
+              <div class="item-datos">
+                <b>{{ p.nombre }}</b>
+                <span class="muted">{{ p.categoria }}</span>
+              </div>
+              <div class="item-num">
+                <b>{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</b>
+                <span class="muted">{{ p.stock }} en stock</span>
+              </div>
+            </div>
+            <div class="item-acciones">
+              <button type="button" class="insignia boton" [ngClass]="p.visible ? 'ok' : 'apagado'" (click)="alternarVisible(p.id)"
+                      [attr.aria-label]="'Cambiar visibilidad de ' + p.nombre">{{ p.visible ? 'Visible' : 'Oculto' }}</button>
+              <button type="button" class="btn-fantasma btn-sm" (click)="editarProducto(p.id)">Editar</button>
+              <button type="button" class="btn-peligro btn-sm" (click)="pedirEliminar(p)">Eliminar</button>
+            </div>
+          </div>
+        </div>
+        <ng-template #sinProductos>
+          <div class="vacio"><h3>No encontramos productos</h3><p class="muted">Prueba con otra palabra.</p></div>
+        </ng-template>
+      </ng-container>
+
+      <!-- ═════════ INVENTARIO ═════════ -->
+      <ng-container *ngSwitchCase="'inv'">
+        <div class="kpis kpis-3">
+          <div class="kpi"><span class="muted">Unidades</span><b>{{ unidades() }}</b></div>
+          <div class="kpi"><span class="muted">Valor</span><b>{{ valorInventario() | currency:'USD':'symbol':'1.0-0' }}</b></div>
+          <div class="kpi"><span class="muted">Stock bajo</span><b>{{ stockBajo().length }}</b></div>
+        </div>
+        <div class="chips" role="group" aria-label="Filtrar inventario">
+          <button type="button" [class.activo]="!soloBajo()" (click)="soloBajo.set(false)">Todos</button>
+          <button type="button" [class.activo]="soloBajo()" (click)="soloBajo.set(true)">Solo stock bajo</button>
+        </div>
+        <div class="caja">
+          <p class="muted" *ngIf="!inventario().length">No hay productos con stock bajo.</p>
+          <div class="item" *ngFor="let p of inventario(); trackBy: trackId">
+            <div class="item-cab">
+              <span class="mini" [style.background]="p.color"><img src="assets/logo.png" alt="" /></span>
+              <div class="item-datos">
+                <b>{{ p.nombre }}</b>
+                <span class="insignia" [ngClass]="estadoStock(p).clase">{{ estadoStock(p).texto }}</span>
+              </div>
+              <div class="item-num"><b>{{ p.stock }}</b><span class="muted">unidades</span></div>
+            </div>
+            <div class="item-acciones">
+              <div class="cantidad">
+                <button type="button" [attr.aria-label]="'Restar una unidad a ' + p.nombre" (click)="ajustar(p.id, -1)">−</button>
+                <button type="button" [attr.aria-label]="'Sumar una unidad a ' + p.nombre" (click)="ajustar(p.id, 1)">+</button>
+              </div>
+              <button type="button" class="btn-fantasma btn-sm" (click)="ajustar(p.id, 10)">Reponer 10</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ CLIENTES ═════════ -->
+      <ng-container *ngSwitchCase="'cli'">
+        <div class="caja">
+          <button type="button" class="item item-btn" *ngFor="let c of clientes(); trackBy: trackCorreo" (click)="abrirCliente(c.correo)">
+            <div class="item-cab">
+              <span class="avatar">{{ c.nombre.charAt(0) }}</span>
+              <div class="item-datos">
+                <b>{{ c.nombre }}</b>
+                <span class="muted">{{ c.correo }}</span>
+              </div>
+              <div class="item-num">
+                <b>{{ c.gastado | currency:'USD':'symbol':'1.2-2' }}</b>
+                <span class="muted">{{ c.cantidad }} pedido{{ c.cantidad === 1 ? '' : 's' }}</span>
+              </div>
+            </div>
+            <span class="insignia" [ngClass]="c.activo ? 'ok' : 'agotado'">{{ c.activo ? 'Cuenta activa' : 'Cuenta bloqueada' }}</span>
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ USUARIOS Y ROLES ═════════ -->
+      <ng-container *ngSwitchCase="'usr'">
+        <div class="barra">
+          <span class="muted">Cuentas del sistema y sus permisos</span>
+          <button type="button" class="btn-oro btn-sm" (click)="nuevoUsuario()">Nuevo usuario</button>
+        </div>
+
+        <div class="roles">
+          <div class="rol" *ngFor="let r of rolesLista">
+            <b>{{ roles[r].nombre }}</b>
+            <span class="muted">{{ roles[r].descripcion }}</span>
+          </div>
+        </div>
+
+        <div class="caja">
+          <div class="item" *ngFor="let u of usuarios(); trackBy: trackCorreo">
+            <div class="item-cab">
+              <span class="avatar">{{ u.nombre.charAt(0) }}</span>
+              <div class="item-datos">
+                <b>{{ u.nombre }}{{ u.correo === yo ? ' (tú)' : '' }}</b>
+                <span class="muted">{{ u.correo }}</span>
+              </div>
+              <span class="insignia" [ngClass]="u.activo ? 'ok' : 'agotado'">{{ u.activo ? 'Activa' : 'Bloqueada' }}</span>
+            </div>
+            <div class="item-acciones">
+              <select class="select" [ngModel]="u.rol" (ngModelChange)="cambiarRol(u.correo, $event)"
+                      [disabled]="u.correo === yo" [attr.aria-label]="'Rol de ' + u.nombre">
+                <option *ngFor="let r of rolesLista" [value]="r">{{ roles[r].nombre }}</option>
+              </select>
+              <button type="button" class="btn-sm" [ngClass]="u.activo ? 'btn-peligro' : 'btn-fantasma'"
+                      [disabled]="u.correo === yo" (click)="alternarBloqueo(u)">{{ u.activo ? 'Bloquear' : 'Reactivar' }}</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <app-admin-nav current="home"></app-admin-nav>
+
+  <!-- ═════════ Aviso ═════════ -->
+  <div class="aviso" role="status" *ngIf="aviso() as a">{{ a }}</div>
+
+  <!-- ═════════ Hojas inferiores ═════════ -->
+  <div class="hoja-fondo" *ngIf="hoja()" (click)="cerrarHoja()">
+    <div class="hoja" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+      <!-- Detalle y control de estado del pedido -->
+      <ng-container *ngIf="hoja() === 'pedido' && pedidoAbierto() as o">
+        <h2>Pedido {{ o.no }}</h2>
+        <div class="fila-estado">
+          <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
+          <span class="muted">{{ o.cliente }}, {{ o.correo }}</span>
+        </div>
+        <p class="muted">Envío a {{ o.direccion }}. Pago con {{ o.pago.toLowerCase() }}.</p>
+
+        <div class="linea-tiempo" *ngIf="o.estado !== 'Cancelado'">
+          <div class="paso" *ngFor="let e of estados" [class.hecho]="indiceEstado(e) <= indiceEstado(o.estado)">
+            {{ e }}<span class="muted">{{ fechaDe(o, e) }}</span>
+          </div>
+        </div>
+
+        <div class="fila-sum" *ngFor="let i of o.items">
+          <span>{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+          <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+
+        <div class="acciones">
+          <ng-container *ngFor="let s of siguientes(o)">
+            <button type="button" class="btn-peligro btn-sm" *ngIf="s === 'Cancelado'; else avanzar" (click)="pedirCancelar(o.no)">Cancelar pedido</button>
+            <ng-template #avanzar>
+              <button type="button" class="btn-oro btn-sm" (click)="cambiarEstado(o.no, s)">{{ accionDe(s) }}</button>
+            </ng-template>
+          </ng-container>
+          <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cerrar</button>
+        </div>
+      </ng-container>
+
+      <!-- Historial de un cliente -->
+      <ng-container *ngIf="hoja() === 'cliente' && clienteAbierto() as c">
+        <h2>{{ c.nombre }}</h2>
+        <p class="muted">{{ c.correo }}</p>
+        <p class="muted" *ngIf="!pedidosDe(c.correo).length">Este cliente aún no ha hecho pedidos.</p>
+        <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: pedidosDe(c.correo) }"></ng-container>
+        <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cerrar</button></div>
+      </ng-container>
+
+      <!-- Formulario de producto -->
+      <ng-container *ngIf="hoja() === 'producto'">
+        <h2>{{ formProd.id ? 'Editar producto' : 'Nuevo producto' }}</h2>
+        <div class="formulario">
+          <label>Nombre
+            <input type="text" [(ngModel)]="formProd.nombre" />
+          </label>
+          <div class="dos">
+            <label>Categoría
+              <select [(ngModel)]="formProd.categoria">
+                <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+              </select>
+            </label>
+            <label>Precio (USD)
+              <input type="text" inputmode="decimal" [(ngModel)]="formProd.precio" />
+            </label>
+          </div>
+          <label>Unidades en stock
+            <input type="text" inputmode="numeric" [(ngModel)]="formProd.stock" />
+          </label>
+          <label>Descripción
+            <textarea rows="3" [(ngModel)]="formProd.descripcion"></textarea>
+          </label>
+          <p class="error" role="alert" *ngIf="errorForm()">{{ errorForm() }}</p>
+          <div class="acciones">
+            <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cancelar</button>
+            <button type="button" class="btn-oro btn-sm" (click)="guardarProducto()">Guardar producto</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Formulario de usuario -->
+      <ng-container *ngIf="hoja() === 'usuario'">
+        <h2>Nuevo usuario</h2>
+        <div class="formulario">
+          <label>Nombre completo
+            <input type="text" [(ngModel)]="formUsr.nombre" />
+          </label>
+          <label>Correo electrónico
+            <input type="email" autocomplete="off" [(ngModel)]="formUsr.correo" />
+          </label>
+          <div class="dos">
+            <label>Rol
+              <select [(ngModel)]="formUsr.rol">
+                <option *ngFor="let r of rolesLista" [value]="r">{{ roles[r].nombre }}</option>
+              </select>
+            </label>
+            <label>Contraseña temporal
+              <input type="password" autocomplete="new-password" [(ngModel)]="formUsr.clave" />
+            </label>
+          </div>
+          <p class="muted">{{ roles[formUsr.rol].descripcion }}</p>
+          <p class="error" role="alert" *ngIf="errorForm()">{{ errorForm() }}</p>
+          <div class="acciones">
+            <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cancelar</button>
+            <button type="button" class="btn-oro btn-sm" (click)="guardarUsuario()">Crear usuario</button>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <!-- ═════════ Confirmación ═════════ -->
+  <div class="hoja-fondo centrado" *ngIf="dialogo() as d" (click)="cancelarDialogo()">
+    <div class="dialogo" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h2>{{ d.titulo }}</h2>
+      <p>{{ d.texto }}</p>
+      <div class="acciones">
+        <button type="button" class="btn-fantasma btn-sm" (click)="cancelarDialogo()">{{ d.conservar }}</button>
+        <button type="button" class="btn-peligro btn-sm" (click)="aceptarDialogo()">{{ d.ok }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Plantilla reutilizable: lista de pedidos -->
+<ng-template #listaPedidos let-lista>
+  <p class="muted" *ngIf="!lista.length && hoja() !== 'cliente'">No hay pedidos en este estado.</p>
+  <button type="button" class="item item-btn" *ngFor="let o of lista; trackBy: trackNo" (click)="abrirPedido(o.no)">
+    <div class="item-cab">
+      <div class="item-datos">
+        <b>{{ o.no }}</b>
+        <span class="muted">{{ o.cliente }}, {{ o.fecha }}</span>
+      </div>
+      <div class="item-num"><b>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</b></div>
+    </div>
+    <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
+  </button>
+</ng-template>

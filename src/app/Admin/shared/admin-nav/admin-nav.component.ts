@@ -8,6 +8,8 @@ import {
   ICON_WALLET_OUTLINE, ICON_WALLET_FILLED,
   ICON_GIFT_OUTLINE, ICON_GIFT_FILLED,
   ICON_DOC, ICON_SETTINGS,
+  ICON_STORE_OUTLINE,
+  ICON_STORE_FILLED,
 } from 'src/app/User/shared/icons/icons';
 
 interface NavItem { key: string; label: string; route: string; icon: string; iconActive: string; }
@@ -15,6 +17,7 @@ interface NavItem { key: string; label: string; route: string; icon: string; ico
 const NAV_ITEMS: NavItem[] = [
   { key: 'home',     label: 'Inicio',   route: '/admin',          icon: ICON_HOME_OUTLINE,   iconActive: ICON_HOME_FILLED },
   { key: 'usuarios', label: 'Usuarios', route: '/admin/usuarios', icon: ICON_PERSON_OUTLINE, iconActive: ICON_PERSON_FILLED },
+  { key: 'tienda',   label: 'Tienda',   route: '/admin/tienda',   icon: ICON_STORE_OUTLINE,  iconActive: ICON_STORE_FILLED },
   { key: 'bonos',    label: 'Bonos',    route: '/admin/bonuses',  icon: ICON_GIFT_OUTLINE,   iconActive: ICON_GIFT_FILLED },
   { key: 'finanzas', label: 'Finanzas', route: '/admin/finanzas', icon: ICON_WALLET_OUTLINE, iconActive: ICON_WALLET_FILLED },
   { key: 'reportes', label: 'Reportes', route: '/admin/reportes', icon: ICON_DOC,            iconActive: ICON_DOC },
