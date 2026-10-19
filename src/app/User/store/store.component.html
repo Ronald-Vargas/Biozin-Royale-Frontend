@@ -1,3 +1,421 @@
-<p>
-  Tienda Hello world
-</p>
+<app-screen-shell [title]="titulo()" current="tienda" [glow]="0.3" (back)="onBack()">
+
+  <!-- Íconos del encabezado: mis pedidos y carrito -->
+  <div shell-header-end>
+    <ng-container *ngIf="mostrarIconos()">
+      <button class="hi" type="button" aria-label="Mis pedidos" (click)="ir('mine')">
+        <app-icon [svg]="iconRecibo" [size]="19"></app-icon>
+      </button>
+      <button class="hi" type="button" aria-label="Carrito" (click)="ir('cart')">
+        <app-icon [svg]="iconCarrito" [size]="19"></app-icon>
+        <span class="badge" *ngIf="cantidadCarrito()">{{ cantidadCarrito() }}</span>
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="page-inner">
+    <div class="vista" [ngSwitch]="vista()">
+
+      <!-- ═════════ TIENDA ═════════ -->
+      <ng-container *ngSwitchCase="'home'">
+        <label class="buscador">
+          <app-icon [svg]="iconBuscar" [size]="18"></app-icon>
+          <input type="search" autocomplete="off" placeholder="Buscar en la tienda" aria-label="Buscar en la tienda"
+                 [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
+        </label>
+
+        <div class="chips" role="group" aria-label="Categorías">
+          <button type="button" *ngFor="let c of filtros" [class.activo]="categoria() === c" (click)="categoria.set(c)">
+            {{ c }}<small>{{ conteos()[c] }}</small>
+          </button>
+        </div>
+
+        <ng-container *ngIf="!busqueda().trim() && categoria() === 'Todas'">
+          <section class="banner">
+            <div>
+              <b>Colección Royale</b>
+              <span>Ropa, accesorios y juegos oficiales de la casa.</span>
+              <button type="button" class="btn-oro btn-sm" (click)="irALista()">Ver productos</button>
+            </div>
+            <img src="assets/cards-hero.png" alt="Cartas y fichas doradas de Biozin Royale" />
+          </section>
+
+          <div class="sec"><h3 class="sec-titulo">Novedades y favoritos</h3></div>
+          <div class="rail">
+            <ng-container *ngFor="let p of novedades(); trackBy: trackId">
+              <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: p }"></ng-container>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <div class="sec" id="lista">
+          <h3 class="sec-titulo">{{ busqueda().trim() ? 'Resultados' : categoria() === 'Todas' ? 'Todos los productos' : categoria() }}</h3>
+          <select class="orden" aria-label="Ordenar" [value]="orden()" (change)="orden.set($any($event.target).value)">
+            <option value="rel">Destacados</option>
+            <option value="lo">Menor precio</option>
+            <option value="hi">Mayor precio</option>
+          </select>
+        </div>
+
+        <div class="grid" *ngIf="filtrados().length; else sinResultados">
+          <ng-container *ngFor="let p of filtrados(); trackBy: trackId">
+            <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: p }"></ng-container>
+          </ng-container>
+        </div>
+        <ng-template #sinResultados>
+          <div class="vacio">
+            <h3>No encontramos productos</h3>
+            <p class="muted">Revisa la ortografía o elige otra categoría.</p>
+            <button type="button" class="btn-oro" (click)="verCategoria('Todas')">Ver toda la tienda</button>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- ═════════ DETALLE ═════════ -->
+      <ng-container *ngSwitchCase="'prod'">
+        <ng-container *ngIf="detalle() as p">
+          <nav class="migas">
+            <button type="button" (click)="verCategoria('Todas')">Tienda</button> /
+            <button type="button" (click)="verCategoria(p.categoria)">{{ p.categoria }}</button>
+          </nav>
+
+          <div class="detalle-img">
+            <ng-container *ngTemplateOutlet="arte; context: { $implicit: p }"></ng-container>
+          </div>
+
+          <h1 class="detalle-nombre">{{ p.nombre }}</h1>
+          <span class="precio precio-grande">{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</span>
+          <p class="detalle-desc">{{ p.descripcion }}</p>
+
+          <ng-container *ngIf="p.requiereTalla">
+            <span class="muted">Talla</span>
+            <div class="seg" role="group" aria-label="Talla">
+              <button type="button" *ngFor="let t of tallas" [class.activo]="talla() === t" (click)="talla.set(t)">{{ t }}</button>
+            </div>
+          </ng-container>
+
+          <p class="muted stock">
+            {{ p.stock <= 0 ? 'Agotado por ahora.' : p.stock <= 5 ? 'Quedan ' + p.stock + ' unidades.' : 'Disponible. Envío gratis desde $60.' }}
+          </p>
+
+          <div class="sec"><h3 class="sec-titulo">Más de la colección</h3></div>
+          <div class="grid">
+            <ng-container *ngFor="let r of relacionados(); trackBy: trackId">
+              <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: r }"></ng-container>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- ═════════ CARRITO ═════════ -->
+      <ng-container *ngSwitchCase="'cart'">
+        <div class="vacio" *ngIf="!carrito().length; else conItems">
+          <h3>Tu carrito está vacío</h3>
+          <p class="muted">Añade algo de la tienda y aparecerá aquí.</p>
+          <button type="button" class="btn-oro" (click)="ir('home')">Ver la tienda</button>
+        </div>
+        <ng-template #conItems>
+          <div class="linea" *ngFor="let l of carrito(); let i = index; trackBy: trackIdx">
+            <button type="button" class="linea-img" (click)="ir('prod', l.id)" [attr.aria-label]="'Ver ' + nombreDe(l.id)">
+              <ng-container *ngTemplateOutlet="arte; context: { $implicit: producto(l.id) }"></ng-container>
+            </button>
+            <div class="linea-info">
+              <b>{{ nombreDe(l.id) }}</b>
+              <span class="muted">{{ l.talla ? 'Talla ' + l.talla + ', ' : '' }}{{ producto(l.id).precio | currency:'USD':'symbol':'1.2-2' }} c/u</span>
+              <button type="button" class="enlace" (click)="quitar(i)">Quitar</button>
+            </div>
+            <div class="cantidad">
+              <button type="button" aria-label="Quitar una unidad" (click)="cambiar(i, -1)">−</button>
+              <span>{{ l.cantidad }}</span>
+              <button type="button" aria-label="Añadir una unidad" (click)="cambiar(i, 1)">+</button>
+            </div>
+            <span class="precio linea-total">{{ producto(l.id).precio * l.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="caja">
+            <h3 class="caja-titulo">Resumen</h3>
+            <div class="fila-sum"><span>Subtotal</span><span>{{ totales().subtotal | currency:'USD':'symbol':'1.2-2' }}</span></div>
+            <div class="fila-sum"><span>Envío</span><span>{{ totales().envio ? (totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+            <div class="fila-sum total"><span>Total</span><span>{{ totales().total | currency:'USD':'symbol':'1.2-2' }}</span></div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- ═════════ PAGO ═════════ -->
+      <ng-container *ngSwitchCase="'chk'">
+        <div class="caja formulario">
+          <h3 class="caja-titulo">Datos de envío</h3>
+          <label>Nombre de quien recibe
+            <input type="text" autocomplete="name" [(ngModel)]="datos.nombre" />
+          </label>
+          <div class="dos">
+            <label>Teléfono
+              <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
+            </label>
+            <label>Provincia
+              <select [(ngModel)]="datos.provincia">
+                <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+              </select>
+            </label>
+          </div>
+          <label>Dirección exacta
+            <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
+          </label>
+        </div>
+
+        <div class="caja formulario">
+          <h3 class="caja-titulo">Método de pago</h3>
+          <label class="metodo" [class.activo]="metodo() === 'wallet'">
+            <input type="radio" name="metodo" [checked]="metodo() === 'wallet'" (change)="setMetodo('wallet')" />
+            <span>Billetera<small class="muted">Saldo disponible {{ saldo() | currency:'USD':'symbol':'1.2-2' }}</small></span>
+          </label>
+          <label class="metodo" [class.activo]="metodo() === 'card'">
+            <input type="radio" name="metodo" [checked]="metodo() === 'card'" (change)="setMetodo('card')" />
+            <span>Tarjeta</span>
+          </label>
+          <div class="formulario interno" *ngIf="metodo() === 'card'">
+            <label>Número de tarjeta
+              <input type="text" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" [(ngModel)]="datos.tarjeta" />
+            </label>
+            <div class="dos">
+              <label>Vence (MM/AA)
+                <input type="text" autocomplete="cc-exp" placeholder="08/28" [(ngModel)]="datos.vence" />
+              </label>
+              <label>CVV
+                <input type="text" inputmode="numeric" autocomplete="cc-csc" [(ngModel)]="datos.cvv" />
+              </label>
+            </div>
+          </div>
+          <label class="metodo" [class.activo]="metodo() === 'sinpe'">
+            <input type="radio" name="metodo" [checked]="metodo() === 'sinpe'" (change)="setMetodo('sinpe')" />
+            <span>SINPE Móvil</span>
+          </label>
+          <p class="muted" *ngIf="metodo() === 'sinpe'">Al confirmar verás el número y el monto para enviar tu SINPE.</p>
+        </div>
+
+        <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+
+        <div class="caja">
+          <h3 class="caja-titulo">Tu pedido</h3>
+          <div class="fila-sum" *ngFor="let l of carrito(); trackBy: trackIdx">
+            <span>{{ l.cantidad }} × {{ nombreDe(l.id) }}{{ l.talla ? ' (' + l.talla + ')' : '' }}</span>
+            <span>{{ producto(l.id).precio * l.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="fila-sum"><span>Envío</span><span>{{ totales().envio ? (totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+          <div class="fila-sum total"><span>Total</span><span>{{ totales().total | currency:'USD':'symbol':'1.2-2' }}</span></div>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ CONFIRMACIÓN ═════════ -->
+      <ng-container *ngSwitchCase="'ok'">
+        <div class="confirmacion" *ngIf="ultimoPedido() as o">
+          <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
+            <circle cx="36" cy="36" r="33" fill="none" stroke="#d4a73c" stroke-width="3" />
+            <path d="M22 37l10 10 19-22" fill="none" stroke="#f0d080" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <h2 class="gold-text">Pedido confirmado</h2>
+          <p>Tu pedido <b>{{ o.no }}</b> llegará a tu dirección en {{ provinciaDe(o) }} en 3 a 5 días hábiles.</p>
+          <div class="caja">
+            <div class="fila-sum" *ngFor="let i of o.items">
+              <span>{{ i.cantidad }} × {{ nombreDe(i.id) }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+              <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+          </div>
+          <div class="acciones">
+            <button type="button" class="btn-oro" (click)="ir('mine')">Ver estado del pedido</button>
+            <button type="button" class="btn-fantasma" (click)="ir('home')">Seguir comprando</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ═════════ MIS PEDIDOS ═════════ -->
+      <ng-container *ngSwitchCase="'mine'">
+        <div class="vacio" *ngIf="!pedidos().length">
+          <h3>Aún no tienes pedidos</h3>
+          <p class="muted">Cuando compres, aquí verás el estado de cada pedido.</p>
+          <button type="button" class="btn-oro" (click)="ir('home')">Ver la tienda</button>
+        </div>
+        <div class="caja pedido" *ngFor="let o of pedidos()">
+          <div class="pedido-cab">
+            <h3 class="caja-titulo">{{ o.no }}</h3>
+            <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
+          </div>
+          <p class="muted">{{ o.fecha }}, pago con {{ o.pago.toLowerCase() }}</p>
+
+          <p *ngIf="o.estado === 'Cancelado'" class="cancelado">Este pedido fue cancelado.</p>
+          <div class="linea-tiempo" *ngIf="o.estado !== 'Cancelado'">
+            <div class="paso" *ngFor="let e of estados; let i = index" [class.hecho]="i <= indiceEstado(o.estado)">
+              {{ e }}<span class="muted">{{ fechaDe(o, e) }}</span>
+            </div>
+          </div>
+
+          <div class="fila-sum" *ngFor="let i of o.items">
+            <span>{{ i.cantidad }} × {{ nombreDe(i.id) }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+            <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- ═════════ Barras de acción fijas sobre el menú ═════════ -->
+    <div class="cta" *ngIf="vista() === 'prod' && detalle() as p">
+      <div><span class="muted">Precio</span><b class="precio">{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</b></div>
+      <button type="button" class="btn-oro" [disabled]="p.stock <= 0"
+              (click)="anadir(p.id, p.requiereTalla ? talla() : null, true)">Añadir al carrito</button>
+    </div>
+    <div class="cta" *ngIf="vista() === 'cart' && carrito().length">
+      <div><span class="muted">Total</span><b class="precio">{{ totales().total | currency:'USD':'symbol':'1.2-2' }}</b></div>
+      <button type="button" class="btn-oro" (click)="ir('chk')">Continuar con el pago</button>
+    </div>
+    <div class="cta" *ngIf="vista() === 'chk' && carrito().length">
+      <div><span class="muted">Total</span><b class="precio">{{ totales().total | currency:'USD':'symbol':'1.2-2' }}</b></div>
+      <button type="button" class="btn-oro" (click)="confirmar()">Confirmar pedido</button>
+    </div>
+  </div>
+
+  <!-- Aviso al añadir -->
+  <div class="aviso" role="status" *ngIf="aviso() as a">
+    <span>{{ a.texto }}</span>
+    <button type="button" *ngIf="a.verCarrito" (click)="ir('cart')">Ver carrito</button>
+  </div>
+
+  <!-- Hoja para elegir talla -->
+  <div class="hoja-fondo" *ngIf="hojaTallas() as id" (click)="hojaTallas.set(null)">
+    <div class="hoja" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h3>{{ nombreDe(id) }}</h3>
+      <p class="muted">Elige tu talla para añadirla al carrito.</p>
+      <div class="tallas">
+        <button type="button" class="btn-fantasma" *ngFor="let t of tallas" (click)="anadir(id, t, true)">{{ t }}</button>
+      </div>
+      <button type="button" class="enlace" (click)="hojaTallas.set(null)">Cancelar</button>
+    </div>
+  </div>
+
+</app-screen-shell>
+
+<!-- ═════════ Plantilla reutilizable: tarjeta de producto ═════════ -->
+<ng-template #tarjeta let-p>
+  <article class="tarjeta">
+    <span class="etiqueta agotado" *ngIf="p.stock <= 0">Agotado</span>
+    <span class="etiqueta pocas" *ngIf="p.stock > 0 && p.stock <= 5">Quedan {{ p.stock }}</span>
+    <span class="etiqueta" *ngIf="p.stock > 5 && p.etiqueta">{{ p.etiqueta }}</span>
+
+    <button type="button" class="tarjeta-img" (click)="ir('prod', p.id)" [attr.aria-label]="'Ver ' + p.nombre">
+      <ng-container *ngTemplateOutlet="arte; context: { $implicit: p }"></ng-container>
+    </button>
+
+    <div class="tarjeta-info">
+      <h3>{{ p.nombre }}</h3>
+      <span class="muted">{{ p.categoria }}</span>
+      <div class="fila">
+        <span class="precio">{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</span>
+        <ng-container [ngSwitch]="accion(p)">
+          <button *ngSwitchCase="'agotado'" type="button" class="btn-oro btn-sm" disabled>Agotado</button>
+          <button *ngSwitchCase="'talla'" type="button" class="btn-oro btn-sm" (click)="abrirTallas(p.id)">Elegir talla</button>
+          <div *ngSwitchCase="'cantidad'" class="cantidad cantidad-tarjeta">
+            <button type="button" [attr.aria-label]="'Quitar una unidad de ' + p.nombre" (click)="cambiar(indiceDe(p.id), -1)">−</button>
+            <span>{{ cantidadDe(p.id) }}</span>
+            <button type="button" [attr.aria-label]="'Añadir una unidad de ' + p.nombre" (click)="anadir(p.id)">+</button>
+          </div>
+          <button *ngSwitchDefault type="button" class="btn-oro btn-sm" (click)="anadir(p.id)">Añadir</button>
+        </ng-container>
+      </div>
+    </div>
+  </article>
+</ng-template>
+
+<!-- ═════════ Plantilla reutilizable: arte del producto (SVG con tus logos y fichas) ═════════ -->
+<ng-template #arte let-p>
+  <svg class="arte" viewBox="0 0 200 200" role="img" [attr.aria-label]="p.nombre">
+    <ellipse cx="100" cy="184" rx="58" ry="6" fill="#000" opacity=".4" />
+    <ng-container [ngSwitch]="p.arte">
+
+      <g *ngSwitchCase="'tee'">
+        <path class="trazo" [attr.fill]="p.variante" d="M62 28l24-8q14 16 28 0l24 8 34 34-22 20-14-12v100H64V70L50 82 28 62z" />
+        <path class="trazo-fino" d="M86 20q14 14 28 0" />
+        <image href="assets/logo.png" x="76" y="52" width="48" height="48" />
+      </g>
+
+      <g *ngSwitchCase="'hood'">
+        <path class="trazo" [attr.fill]="p.variante" d="M62 28l24-8q14 16 28 0l24 8 34 34-22 20-14-12v100H64V70L50 82 28 62z" />
+        <path class="trazo" fill="#0d0a05" d="M78 22q22 40 44 0" />
+        <path class="trazo-fino" d="M72 132h56l8 34H64z" />
+        <image href="assets/logo.png" x="78" y="56" width="44" height="44" />
+      </g>
+
+      <g *ngSwitchCase="'cap'">
+        <path class="trazo" [attr.fill]="p.variante" d="M44 124q0-64 56-64t56 64z" />
+        <path class="trazo" fill="#0d0a05" d="M40 124h130q12 0 10 9t-16 7H46q-12 0-6-16z" />
+        <image href="assets/logo.png" x="78" y="72" width="44" height="44" />
+      </g>
+
+      <g *ngSwitchCase="'mug'">
+        <path class="trazo" [attr.fill]="p.variante" d="M52 56h82v92q0 14-14 14H66q-14 0-14-14z" />
+        <path d="M134 76h14q16 0 16 22t-16 22h-14" fill="none" stroke="#d4a73c" stroke-width="6" />
+        <rect x="52" y="56" width="82" height="8" fill="#d4a73c" />
+        <image href="assets/logo.png" x="68" y="78" width="50" height="50" />
+      </g>
+
+      <g *ngSwitchCase="'key'">
+        <circle cx="100" cy="46" r="16" fill="none" stroke="#a89c80" stroke-width="5" />
+        <path d="M100 62v30" stroke="#a89c80" stroke-width="4" />
+        <image [attr.href]="'assets/chip-' + p.variante + '.png'" x="48" y="88" width="104" height="104" />
+      </g>
+
+      <g *ngSwitchCase="'pin'">
+        <image href="assets/logo.png" x="40" y="40" width="120" height="120" />
+      </g>
+
+      <g *ngSwitchCase="'tote'">
+        <path d="M76 78q0-34 24-34t24 34" fill="none" stroke="#d4a73c" stroke-width="5" />
+        <path class="trazo" [attr.fill]="p.variante" d="M56 76h88l8 96H48z" />
+        <image href="assets/logo.png" x="74" y="98" width="52" height="52" />
+      </g>
+
+      <g *ngSwitchCase="'post'">
+        <rect class="trazo" [attr.fill]="p.variante" x="52" y="24" width="96" height="150" rx="4" />
+        <image href="assets/logo.png" x="64" y="44" width="72" height="72" />
+        <rect x="76" y="142" width="48" height="3" fill="#d4a73c" />
+      </g>
+
+      <g *ngSwitchCase="'cards'">
+        <image href="assets/cards.png" x="8" y="6" width="184" height="186" />
+      </g>
+
+      <g *ngSwitchCase="'dice'">
+        <rect class="trazo" [attr.fill]="p.variante" x="34" y="78" width="68" height="68" rx="13" />
+        <circle cx="52" cy="96" r="5.5" fill="#d4a73c" /><circle cx="84" cy="96" r="5.5" fill="#d4a73c" />
+        <circle cx="68" cy="112" r="5.5" fill="#d4a73c" />
+        <circle cx="52" cy="128" r="5.5" fill="#d4a73c" /><circle cx="84" cy="128" r="5.5" fill="#d4a73c" />
+        <g transform="rotate(12 141 79)">
+          <rect class="trazo" [attr.fill]="p.variante" x="112" y="50" width="58" height="58" rx="11" />
+          <circle cx="126" cy="64" r="5" fill="#d4a73c" /><circle cx="141" cy="79" r="5" fill="#d4a73c" />
+          <circle cx="156" cy="94" r="5" fill="#d4a73c" />
+        </g>
+      </g>
+
+      <g *ngSwitchCase="'mat'">
+        <ellipse class="trazo" [attr.fill]="p.variante" cx="100" cy="112" rx="86" ry="54" />
+        <ellipse cx="100" cy="112" rx="72" ry="42" fill="none" stroke="#d4a73c" stroke-opacity=".6" stroke-dasharray="6 6" />
+        <image href="assets/logo.png" x="74" y="84" width="52" height="52" />
+      </g>
+
+      <g *ngSwitchDefault>
+        <ng-container *ngIf="p.variante === 'mix'; else fichasBasicas">
+          <image href="assets/chip-1.png" x="12" y="70" width="92" height="92" transform="rotate(-10 58 116)" />
+          <image href="assets/chip-10.png" x="94" y="50" width="92" height="92" transform="rotate(12 140 96)" />
+          <image href="assets/chip-100.png" x="42" y="84" width="106" height="106" />
+        </ng-container>
+        <ng-template #fichasBasicas>
+          <image href="assets/chip-25.png" x="16" y="64" width="96" height="96" transform="rotate(-8 64 112)" />
+          <image href="assets/chip-5.png" x="88" y="48" width="96" height="96" transform="rotate(10 136 96)" />
+          <image href="assets/chip-100.png" x="42" y="82" width="106" height="106" />
+        </ng-template>
+      </g>
+
+    </ng-container>
+  </svg>
+</ng-template>
