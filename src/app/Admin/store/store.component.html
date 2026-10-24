@@ -188,42 +188,6 @@
         </div>
       </ng-container>
 
-      <!-- ═════════ USUARIOS Y ROLES ═════════ -->
-      <ng-container *ngSwitchCase="'usr'">
-        <div class="barra">
-          <span class="muted">Cuentas del sistema y sus permisos</span>
-          <button type="button" class="btn-oro btn-sm" (click)="nuevoUsuario()">Nuevo usuario</button>
-        </div>
-
-        <div class="roles">
-          <div class="rol" *ngFor="let r of rolesLista">
-            <b>{{ roles[r].nombre }}</b>
-            <span class="muted">{{ roles[r].descripcion }}</span>
-          </div>
-        </div>
-
-        <div class="caja">
-          <div class="item" *ngFor="let u of store.usuarios(); trackBy: trackCorreo">
-            <div class="item-cab">
-              <span class="avatar">{{ u.nombre.charAt(0) }}</span>
-              <div class="item-datos">
-                <b>{{ u.nombre }}{{ u.correo === yo ? ' (tú)' : '' }}</b>
-                <span class="muted">{{ u.correo }}</span>
-              </div>
-              <span class="insignia" [ngClass]="u.activo ? 'ok' : 'agotado'">{{ u.activo ? 'Activa' : 'Bloqueada' }}</span>
-            </div>
-            <div class="item-acciones">
-              <select class="select" [ngModel]="u.rol" (ngModelChange)="cambiarRol(u.correo, $event)"
-                      [disabled]="u.correo === yo" [attr.aria-label]="'Rol de ' + u.nombre">
-                <option *ngFor="let r of rolesLista" [value]="r">{{ roles[r].nombre }}</option>
-              </select>
-              <button type="button" class="btn-sm" [ngClass]="u.activo ? 'btn-peligro' : 'btn-fantasma'"
-                      [disabled]="u.correo === yo" (click)="alternarBloqueo(u)">{{ u.activo ? 'Bloquear' : 'Reactivar' }}</button>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-
     </div>
   </div>
 
@@ -421,37 +385,9 @@
         </div>
       </ng-container>
 
-      <!-- Formulario de usuario -->
-      <ng-container *ngIf="hoja() === 'usuario'">
-        <h2>Nuevo usuario</h2>
-        <div class="formulario">
-          <label>Nombre completo
-            <input type="text" [(ngModel)]="formUsr.nombre" />
-          </label>
-          <label>Correo electrónico
-            <input type="email" autocomplete="off" [(ngModel)]="formUsr.correo" />
-          </label>
-          <div class="dos">
-            <label>Rol
-              <select [(ngModel)]="formUsr.rol">
-                <option *ngFor="let r of rolesLista" [value]="r">{{ roles[r].nombre }}</option>
-              </select>
-            </label>
-            <label>Contraseña temporal
-              <input type="password" autocomplete="new-password" [(ngModel)]="formUsr.clave" />
-            </label>
-          </div>
-          <p class="muted">{{ roles[formUsr.rol].descripcion }}</p>
-          <p class="error" role="alert" *ngIf="errorForm()">{{ errorForm() }}</p>
-          <div class="acciones">
-            <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cancelar</button>
-            <button type="button" class="btn-oro btn-sm" (click)="guardarUsuario()">Crear usuario</button>
-          </div>
-        </div>
-      </ng-container>
-
     </div>
   </div>
+
 
   <!-- ═════════ Confirmación ═════════ -->
   <div class="hoja-fondo centrado" *ngIf="dialogo() as d" (click)="cancelarDialogo()">

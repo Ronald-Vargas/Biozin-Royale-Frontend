@@ -14,8 +14,8 @@ import {
 } from 'src/app/Core/Models/store.models';
 
 // ───────────────────────── Tipos de la pantalla ─────────────────────────
-type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv' | 'cli' | 'usr';
-type Hoja = 'pedido' | 'cliente' | 'producto' | 'usuario';
+type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv' | 'cli';
+type Hoja = 'pedido' | 'cliente' | 'producto';
 
 interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
 
@@ -24,7 +24,7 @@ const AGENTE = 'Admin Royale'; // quien aparece en la bitácora cuando el admin 
 const STOCK_BAJO = 5;
 const SECCIONES: { k: Seccion; t: string; nuevo?: boolean }[] = [
   { k: 'res', t: 'Resumen' }, { k: 'log', t: 'Logística', nuevo: true }, { k: 'ord', t: 'Pedidos' },
-  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' }, { k: 'cli', t: 'Clientes' }, { k: 'usr', t: 'Usuarios' },
+  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' }, { k: 'cli', t: 'Clientes' },
 ];
 const CATEGORIAS: Categoria[] = ['Camisetas', 'Sudaderas y gorras', 'Accesorios', 'Hogar', 'Juegos'];
 const CAJAS = ['Caja S', 'Caja M', 'Caja L'];
@@ -32,11 +32,7 @@ const MOTIVOS = ['Cliente no contesta', 'Dirección incorrecta', 'Zona de difíc
 const ESTANTES: Record<Categoria, string> = {
   Camisetas: 'Estante A', 'Sudaderas y gorras': 'Estante B', Accesorios: 'Estante C', Hogar: 'Estante D', Juegos: 'Estante E',
 };
-const ROLES: Record<Rol, { nombre: string; descripcion: string }> = {
-  admin: { nombre: 'Administrador', descripcion: 'Gestiona productos, inventario, pedidos, clientes y usuarios.' },
-  soporte: { nombre: 'Soporte', descripcion: 'Atiende pedidos y consulta clientes. No edita productos ni usuarios.' },
-  cliente: { nombre: 'Cliente', descripcion: 'Compra en la tienda y sigue sus pedidos.' },
-};
+
 
 // ───────────────────────── Componente ─────────────────────────
 @Component({
@@ -58,8 +54,6 @@ export class StoreComponent implements OnDestroy {
   readonly cajas = CAJAS;
   readonly motivos = MOTIVOS;
   readonly filtrosPedido: ('Todos' | Grupo)[] = ['Todos', ...GRUPOS];
-  readonly rolesLista = Object.keys(ROLES) as Rol[];
-  readonly roles = ROLES;
   readonly estrellas = [1, 2, 3, 4, 5];
   readonly iconBuscar = ICON_SEARCH;
 
@@ -443,47 +437,6 @@ export class StoreComponent implements OnDestroy {
     this.hoja.set('cliente');
   }
 
-  // ── Usuarios y roles ──
-  cambiarRol(correo: string, rol: Rol): void {
-    if (correo === this.yo) return;
-    const u = this.store.usuarios().find(x => x.correo === correo);
-    this.store.usuarios.update(us => us.map(x => (x.correo === correo ? { ...x, rol } : x)));
-    if (u) this.mostrarAviso(`Rol actualizado: ${u.nombre} ahora es ${ROLES[rol].nombre.toLowerCase()}.`);
-  }
-  alternarBloqueo(u: Usuario): void {
-    if (u.correo === this.yo) return;
-    if (!u.activo) {
-      this.store.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: true } : x)));
-      return;
-    }
-    this.dialogo.set({
-      titulo: `¿Bloquear a ${u.nombre}?`,
-      texto: 'No podrá iniciar sesión ni comprar hasta que reactives su cuenta.',
-      ok: 'Bloquear cuenta',
-      conservar: 'Mantener activa',
-      accion: () => this.store.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: false } : x))),
-    });
-  }
-  nuevoUsuario(): void {
-    this.formUsr = { nombre: '', correo: '', rol: 'cliente', clave: '' };
-    this.errorForm.set('');
-    this.hoja.set('usuario');
-  }
-  guardarUsuario(): void {
-    const f = this.formUsr;
-    const correo = f.correo.trim().toLowerCase();
-    const error =
-      !f.nombre.trim() ? 'Escribe el nombre del usuario.'
-      : !/^\S+@\S+\.\S+$/.test(correo) ? 'Escribe un correo válido, por ejemplo nombre@correo.com.'
-      : f.clave.length < 6 ? 'La contraseña temporal necesita al menos 6 caracteres.'
-      : this.store.usuarios().some(u => u.correo === correo) ? 'Ese correo ya tiene cuenta.'
-      : '';
-    this.errorForm.set(error);
-    if (error) return;
-    this.store.usuarios.update(us => [...us, { nombre: f.nombre.trim(), correo, rol: f.rol, activo: true }]);
-    this.cerrarHoja();
-    this.mostrarAviso('Usuario creado.');
-  }
 
   // ── Diálogo de confirmación ──
   aceptarDialogo(): void {
