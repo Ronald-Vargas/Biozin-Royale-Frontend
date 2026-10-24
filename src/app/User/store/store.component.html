@@ -25,11 +25,125 @@
                  [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
         </label>
 
-        <div class="chips" role="group" aria-label="Categorías">
-          <button type="button" *ngFor="let c of filtros" [class.activo]="categoria() === c" (click)="categoria.set(c)">
-            {{ c }}<small>{{ conteos()[c] }}</small>
+
+        
+        <section class="categorias" aria-label="Categorías de la tienda">
+          <button
+            type="button"
+            class="categoria-card"
+            *ngFor="let c of filtros"
+            [class.activo]="categoria() === c"
+            [attr.aria-pressed]="categoria() === c"
+            (click)="verCategoria(c)"
+          >
+            <span class="categoria-icono" aria-hidden="true">
+              <svg
+                *ngIf="c === 'Todas'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+
+              <svg
+                *ngIf="c === 'Camisetas'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z" />
+                <path d="M9 4c0 2 1.5 3 3 3s3-1 3-3" />
+              </svg>
+
+              <svg
+                *ngIf="c === 'Sudaderas y gorras'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M7 10a5 5 0 0 1 10 0v2H7v-2Z" />
+                <path d="M4 12h16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2Z" />
+                <path d="M9 16v4h6v-4" />
+              </svg>
+
+              <svg
+                *ngIf="c === 'Accesorios'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="8" cy="8" r="4" />
+                <path d="m11 11 9 9" />
+                <path d="M16 4h4v4" />
+                <path d="M14 6h-2" />
+              </svg>
+
+              <svg
+                *ngIf="c === 'Hogar'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m3 11 9-8 9 8" />
+                <path d="M5 10v11h14V10" />
+                <path d="M9 21v-7h6v7" />
+              </svg>
+
+              <svg
+                *ngIf="c === 'Juegos'"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 9h12a4 4 0 0 1 3.8 5.3l-1 3a2.5 2.5 0 0 1-4.2 1l-2.1-2.1h-5l-2.1 2.1a2.5 2.5 0 0 1-4.2-1l-1-3A4 4 0 0 1 6 9Z" />
+                <path d="M7 12v4M5 14h4" />
+                <circle cx="16" cy="13" r=".8" fill="currentColor" />
+                <circle cx="18" cy="15" r=".8" fill="currentColor" />
+              </svg>
+            </span>
+
+            <span class="categoria-texto">
+              <span class="categoria-nombre">{{ c }}</span>
+              <span class="categoria-cantidad">{{ conteos()[c] }} productos</span>
+            </span>
+
+            <svg
+              class="categoria-flecha"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
           </button>
-        </div>
+        </section>
+
 
         <ng-container *ngIf="!busqueda().trim() && categoria() === 'Todas'">
           <section class="banner">
