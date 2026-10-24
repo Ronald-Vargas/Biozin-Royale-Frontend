@@ -330,3 +330,128 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
   .hoja { animation: subir 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); }
 }
 @keyframes subir { from { transform: translateY(40px); opacity: 0; } }
+
+// ═════════ Logística: seguimiento, avisos y entrega ═════════
+.btn-peligro {
+  min-height: 44px; padding: 0 22px;
+  border-radius: 99px; background: none;
+  border: 1px solid rgba(240, 122, 122, 0.45);
+  color: #f07a7a; font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.centrado { text-align: center; }
+.estado-card {
+  display: grid; gap: 4px; justify-items: start;
+  padding: 16px; margin-top: 4px;
+  border-radius: 20px; border: 1px solid rgba(212, 167, 60, 0.3);
+  background: linear-gradient(135deg, #2b2010, #13151b 70%);
+  h2 { font-size: 22px; letter-spacing: 1px; }
+}
+.chip {
+  display: inline-flex; padding: 3px 11px; border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+  color: var(--c, #7fb0ff);
+  background: color-mix(in srgb, var(--c, #7fb0ff) 14%, transparent);
+  &.azul { --c: #7fb0ff; }
+  &.verde { --c: #4fd190; }
+  &.rojo { --c: #f07a7a; }
+}
+.alerta { border-color: rgba(231, 182, 74, 0.5); }
+
+// Línea de tiempo vertical
+.vt { margin: 4px 0; }
+.vi {
+  position: relative; display: flex; gap: 12px; padding-bottom: 16px;
+  &::before {
+    content: ''; position: absolute; left: 8px; top: 18px; bottom: 0; width: 2px;
+    background: var(--linea);
+  }
+  &:last-child::before { display: none; }
+  i {
+    flex: none; width: 18px; height: 18px; border-radius: 50%; z-index: 1;
+    border: 2px solid var(--linea); background: var(--bg-dark);
+  }
+  b { display: block; font-size: 14px; color: var(--cream); }
+  &.on i { background: var(--gold-2); border-color: var(--gold-2); }
+  &.on::before { background: var(--gold-2); }
+  &.now i { box-shadow: 0 0 0 5px rgba(212, 167, 60, 0.25); }
+  &.warn i { background: #e7b64a; border-color: #e7b64a; }
+  &.off { opacity: 0.45; }
+}
+.fila-enlaces { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 4px; }
+
+// Código de entrega y ruta
+.codigo {
+  display: flex; gap: 8px; justify-content: center; margin: 8px 0;
+  span {
+    width: 46px; height: 54px; display: grid; place-items: center;
+    border-radius: 12px; border: 1px solid rgba(212, 167, 60, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+    font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--gold-1);
+  }
+}
+.ruta { display: block; width: 100%; margin-top: 6px; }
+
+// Calificación
+.estrellas {
+  display: flex; gap: 6px; justify-content: center; margin: 8px 0;
+  button {
+    background: none; border: 0; font-size: 32px; line-height: 1;
+    color: #4a4437; cursor: pointer;
+    &.on { color: var(--gold-1); }
+    &:disabled { cursor: default; }
+  }
+}
+
+// Avisos y lista de pedidos
+.aviso-item {
+  display: grid; gap: 2px; width: 100%; text-align: left;
+  padding: 10px 12px; margin-bottom: 8px;
+  border-radius: 14px; border: 1px solid var(--linea); background: none;
+  color: var(--cream); cursor: pointer;
+  span { font-size: 13px; }
+  &.nuevo { border-color: rgba(212, 167, 60, 0.5); background: rgba(212, 167, 60, 0.08); }
+}
+.pedido-item {
+  display: block; width: 100%; text-align: left; color: var(--cream); cursor: pointer;
+  .pedido-cab { margin-bottom: 2px; }
+}
+
+// Aviso emergente (como una notificación push)
+.push {
+  position: fixed; left: 14px; right: 14px;
+  top: calc(12px + var(--ion-safe-area-top, 0px)); z-index: 40;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; text-align: left;
+  border-radius: 20px; border: 1px solid rgba(212, 167, 60, 0.35);
+  background: rgba(32, 28, 20, 0.97); color: var(--cream);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); cursor: pointer;
+  img { flex: none; width: 34px; height: auto; }
+  span { flex: 1; display: grid; }
+  b { font-size: 13.5px; }
+  small { font-size: 12.5px; color: #cdbf9c; }
+  em { font-style: normal; font-size: 11px; color: var(--apagado); }
+}
+
+// Hojas y diálogo
+.campo { display: grid; gap: 4px; width: 100%; text-align: left; font-size: 13px; color: var(--apagado);
+  input {
+    min-height: 46px; padding: 0 14px; border-radius: 12px;
+    border: 1px solid var(--linea); background: rgba(255, 255, 255, 0.04);
+    color: var(--cream); font-size: 16px;
+  }
+}
+.ventanas { display: grid; gap: 10px; width: 100%; margin: 6px 0; }
+.acciones { width: 100%; }
+.dialogo {
+  width: 100%; max-width: 420px; padding: 22px;
+  border-radius: 24px; background: var(--sup); border: 1px solid var(--linea);
+  h3 { font-size: 20px; margin-bottom: 8px; }
+  p { margin: 0; color: #cdbf9c; line-height: 1.5; }
+}
+.hoja-fondo.centrado { align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+.pedido-cab { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .push { animation: bajar 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+}
+@keyframes bajar { from { transform: translateY(-30px); opacity: 0; } }

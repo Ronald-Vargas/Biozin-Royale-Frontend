@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,150 +7,36 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { AdminHeaderComponent } from 'src/app/Admin/shared/admin-header/admin-header.component';
 import { AdminNavComponent } from 'src/app/Admin/shared/admin-nav/admin-nav.component';
 import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
+import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
+import {
+  Categoria, CORTE_DESPACHO, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, Producto, Rol, StoreNotificacion, TRANSPORTISTAS,
+  Transportista, Usuario, cubre, etapaActual, etapasDe, grupoDe, puedeCancelar, subtotalPedido, totalPedido,
+} from 'src/app/Core/Models/store.models';
 
-// ───────────────────────── Tipos ─────────────────────────
-type Seccion = 'res' | 'ord' | 'prods' | 'inv' | 'cli' | 'usr';
-type Estado = 'Pendiente' | 'Preparando' | 'Enviado' | 'Entregado' | 'Cancelado';
-type Rol = 'admin' | 'soporte' | 'cliente';
+// ───────────────────────── Tipos de la pantalla ─────────────────────────
+type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv' | 'cli' | 'usr';
 type Hoja = 'pedido' | 'cliente' | 'producto' | 'usuario';
-type Categoria = 'Camisetas' | 'Sudaderas y gorras' | 'Accesorios' | 'Hogar' | 'Juegos';
 
-interface Producto {
-  id: string;
-  nombre: string;
-  categoria: Categoria;
-  precio: number;
-  stock: number;
-  visible: boolean;
-  descripcion: string;
-  /** Color de la miniatura en las listas. */
-  color: string;
-}
-interface ItemPedido { id: string; nombre: string; talla: string | null; cantidad: number; precio: number; }
-interface Pedido {
-  no: string;
-  correo: string;
-  cliente: string;
-  fecha: string;
-  estado: Estado;
-  pago: string;
-  direccion: string;
-  items: ItemPedido[];
-  historial: { estado: Estado; fecha: string }[];
-}
-interface Usuario { nombre: string; correo: string; rol: Rol; activo: boolean; }
-interface Dialogo {
-  titulo: string;
-  texto: string;
-  ok: string;
-  conservar: string;
-  accion: () => void;
-  volver?: () => void;
-}
+interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
 
-// ─────────────────── Constantes y datos simulados ───────────────────
-const YO = 'admin@biozin.com'; // cuenta que está usando el panel (no puede bloquearse ni cambiarse el rol)
+// ─────────────────── Constantes ───────────────────
+const AGENTE = 'Admin Royale'; // quien aparece en la bitácora cuando el admin hace un cambio
 const STOCK_BAJO = 5;
-const ENVIO_GRATIS_DESDE = 60;
-const COSTO_ENVIO = 5;
-
-const SECCIONES: { k: Seccion; t: string }[] = [
-  { k: 'res', t: 'Resumen' }, { k: 'ord', t: 'Pedidos' }, { k: 'prods', t: 'Productos' },
-  { k: 'inv', t: 'Inventario' }, { k: 'cli', t: 'Clientes' }, { k: 'usr', t: 'Usuarios' },
+const SECCIONES: { k: Seccion; t: string; nuevo?: boolean }[] = [
+  { k: 'res', t: 'Resumen' }, { k: 'log', t: 'Logística', nuevo: true }, { k: 'ord', t: 'Pedidos' },
+  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' }, { k: 'cli', t: 'Clientes' }, { k: 'usr', t: 'Usuarios' },
 ];
-const ESTADOS: Estado[] = ['Pendiente', 'Preparando', 'Enviado', 'Entregado'];
-const FILTROS_PEDIDO: ('Todos' | Estado)[] = ['Todos', 'Pendiente', 'Preparando', 'Enviado', 'Entregado', 'Cancelado'];
 const CATEGORIAS: Categoria[] = ['Camisetas', 'Sudaderas y gorras', 'Accesorios', 'Hogar', 'Juegos'];
-/** Control de estados: a qué estados puede pasar un pedido desde el actual. */
-const SIGUIENTES: Record<Estado, Estado[]> = {
-  Pendiente: ['Preparando', 'Cancelado'],
-  Preparando: ['Enviado', 'Cancelado'],
-  Enviado: ['Entregado'],
-  Entregado: [],
-  Cancelado: [],
-};
-const ACCION: Record<string, string> = {
-  Preparando: 'Empezar a preparar',
-  Enviado: 'Marcar como enviado',
-  Entregado: 'Marcar como entregado',
+const CAJAS = ['Caja S', 'Caja M', 'Caja L'];
+const MOTIVOS = ['Cliente no contesta', 'Dirección incorrecta', 'Zona de difícil acceso'];
+const ESTANTES: Record<Categoria, string> = {
+  Camisetas: 'Estante A', 'Sudaderas y gorras': 'Estante B', Accesorios: 'Estante C', Hogar: 'Estante D', Juegos: 'Estante E',
 };
 const ROLES: Record<Rol, { nombre: string; descripcion: string }> = {
   admin: { nombre: 'Administrador', descripcion: 'Gestiona productos, inventario, pedidos, clientes y usuarios.' },
   soporte: { nombre: 'Soporte', descripcion: 'Atiende pedidos y consulta clientes. No edita productos ni usuarios.' },
   cliente: { nombre: 'Cliente', descripcion: 'Compra en la tienda y sigue sus pedidos.' },
 };
-
-const crear = (
-  id: string, nombre: string, categoria: Categoria, precio: number, stock: number, color: string, descripcion: string,
-): Producto => ({ id, nombre, categoria, precio, stock, visible: true, descripcion, color });
-
-const PRODUCTOS_DEMO: Producto[] = [
-  crear('t1', 'Camiseta Royale', 'Camisetas', 28, 24, '#15110a', 'Algodón negro con el emblema bordado al pecho.'),
-  crear('t2', 'Camiseta Marfil', 'Camisetas', 30, 6, '#ece3cb', 'Color marfil con el emblema en dorado y negro.'),
-  crear('t3', 'Camiseta Ruleta', 'Camisetas', 29, 15, '#3a1319', 'Vino profundo, inspirada en la mesa de ruleta.'),
-  crear('t4', 'Camiseta Mesa Verde', 'Camisetas', 29, 11, '#12261f', 'Verde fieltro de mesa con el emblema dorado.'),
-  crear('t5', 'Camiseta Gold Member', 'Camisetas', 34, 9, '#3a2a0d', 'Bronce oscuro, corte relajado y emblema grande.'),
-  crear('h1', 'Sudadera High Roller', 'Sudaderas y gorras', 62, 3, '#15110a', 'Felpa gruesa con capucha y emblema bordado.'),
-  crear('h2', 'Sudadera Marfil', 'Sudaderas y gorras', 64, 10, '#ece3cb', 'Felpa color marfil con interior suave.'),
-  crear('g1', 'Gorra Royale Negra', 'Sudaderas y gorras', 24, 18, '#15110a', 'Ajustable, con el emblema bordado al frente.'),
-  crear('g2', 'Gorra Royale Marfil', 'Sudaderas y gorras', 24, 12, '#ece3cb', 'Ajustable, color marfil con emblema dorado.'),
-  crear('g3', 'Gorra Vino', 'Sudaderas y gorras', 26, 14, '#3a1319', 'Edición vino con bordado dorado.'),
-  crear('k1', 'Llavero Ficha 5', 'Accesorios', 8, 2, '#1b150a', 'Llavero de metal con la ficha de 5 de la casa.'),
-  crear('k2', 'Llavero Ficha 25', 'Accesorios', 9, 22, '#1b150a', 'Llavero de metal con la ficha de 25.'),
-  crear('k3', 'Llavero Ficha 100', 'Accesorios', 11, 16, '#1b150a', 'La ficha de 100 en versión llavero.'),
-  crear('r3', 'Pin Royale', 'Accesorios', 6, 30, '#1b150a', 'Pin esmaltado con el emblema para solapa o gorra.'),
-  crear('a1', 'Bolsa de tela', 'Accesorios', 15, 26, '#ece3cb', 'Algodón grueso con el emblema estampado.'),
-  crear('r1', 'Taza Jackpot', 'Hogar', 14, 40, '#2b2210', 'Cerámica de 330 ml con borde dorado.'),
-  crear('r4', 'Taza Marfil', 'Hogar', 14, 33, '#ece3cb', 'Cerámica de 330 ml color marfil.'),
-  crear('p1', 'Póster Royale', 'Hogar', 18, 20, '#15110a', 'Impresión de 40 × 60 cm en papel mate.'),
-  crear('p2', 'Póster Marfil', 'Hogar', 18, 17, '#ece3cb', 'Versión marfil, 40 × 60 cm en papel mate.'),
-  crear('j1', 'Baraja Royale', 'Juegos', 16, 12, '#12261f', '54 cartas con dorso negro y dorado.'),
-  crear('j2', 'Set de 50 fichas', 'Juegos', 39, 8, '#3a1319', 'Cincuenta fichas con estuche de aluminio.'),
-  crear('j3', 'Set de 100 fichas', 'Juegos', 69, 5, '#3a1319', 'Cien fichas de cinco valores en estuche.'),
-  crear('j4', 'Dados dorados', 'Juegos', 12, 25, '#15110a', 'Dos dados de 16 mm con acabado dorado.'),
-  crear('j5', 'Tapete de póker', 'Juegos', 45, 7, '#12261f', 'Fieltro verde de 90 cm con el emblema.'),
-];
-
-const USUARIOS_DEMO: Usuario[] = [
-  { nombre: 'Admin Royale', correo: 'admin@biozin.com', rol: 'admin', activo: true },
-  { nombre: 'Soporte Royale', correo: 'soporte@biozin.com', rol: 'soporte', activo: true },
-  { nombre: 'Ana Mora', correo: 'cliente@biozin.com', rol: 'cliente', activo: true },
-  { nombre: 'Luis Vargas', correo: 'luis@correo.com', rol: 'cliente', activo: true },
-  { nombre: 'Marta Solís', correo: 'marta@correo.com', rol: 'cliente', activo: false },
-];
-
-const PEDIDOS_DEMO: Pedido[] = [
-  {
-    no: 'BR-10241', correo: 'cliente@biozin.com', cliente: 'Ana Mora', fecha: '13 oct', estado: 'Pendiente',
-    pago: 'Billetera', direccion: 'Limón, Guácimo',
-    items: [{ id: 't1', nombre: 'Camiseta Royale', talla: 'M', cantidad: 2, precio: 28 }, { id: 'g1', nombre: 'Gorra Royale Negra', talla: null, cantidad: 1, precio: 24 }],
-    historial: [{ estado: 'Pendiente', fecha: '13 oct' }],
-  },
-  {
-    no: 'BR-10238', correo: 'luis@correo.com', cliente: 'Luis Vargas', fecha: '12 oct', estado: 'Preparando',
-    pago: 'SINPE Móvil', direccion: 'Heredia, Centro',
-    items: [{ id: 'h1', nombre: 'Sudadera High Roller', talla: 'L', cantidad: 1, precio: 62 }],
-    historial: [{ estado: 'Pendiente', fecha: '12 oct' }, { estado: 'Preparando', fecha: '13 oct' }],
-  },
-  {
-    no: 'BR-10230', correo: 'cliente@biozin.com', cliente: 'Ana Mora', fecha: '9 oct', estado: 'Enviado',
-    pago: 'Tarjeta', direccion: 'Limón, Guácimo',
-    items: [{ id: 'j2', nombre: 'Set de 50 fichas', talla: null, cantidad: 1, precio: 39 }],
-    historial: [{ estado: 'Pendiente', fecha: '9 oct' }, { estado: 'Preparando', fecha: '10 oct' }, { estado: 'Enviado', fecha: '11 oct' }],
-  },
-  {
-    no: 'BR-10215', correo: 'luis@correo.com', cliente: 'Luis Vargas', fecha: '2 oct', estado: 'Entregado',
-    pago: 'Tarjeta', direccion: 'Heredia, Centro',
-    items: [{ id: 'r1', nombre: 'Taza Jackpot', talla: null, cantidad: 2, precio: 14 }, { id: 'r3', nombre: 'Pin Royale', talla: null, cantidad: 1, precio: 6 }],
-    historial: [{ estado: 'Pendiente', fecha: '2 oct' }, { estado: 'Preparando', fecha: '3 oct' }, { estado: 'Enviado', fecha: '4 oct' }, { estado: 'Entregado', fecha: '7 oct' }],
-  },
-  {
-    no: 'BR-10202', correo: 'marta@correo.com', cliente: 'Marta Solís', fecha: '1 oct', estado: 'Cancelado',
-    pago: 'SINPE Móvil', direccion: 'San José, Escazú',
-    items: [{ id: 'r1', nombre: 'Taza Jackpot', talla: null, cantidad: 2, precio: 14 }],
-    historial: [{ estado: 'Pendiente', fecha: '1 oct' }, { estado: 'Cancelado', fecha: '2 oct' }],
-  },
-];
 
 // ───────────────────────── Componente ─────────────────────────
 @Component({
@@ -162,63 +48,113 @@ const PEDIDOS_DEMO: Pedido[] = [
 })
 export class StoreComponent implements OnDestroy {
   private readonly router = inject(Router);
+  readonly store = inject(StoreDemoService);
 
   // Datos fijos para la plantilla
-  readonly yo = YO;
+  readonly yo = this.store.adminCorreo;
+  readonly corte = CORTE_DESPACHO;
   readonly secciones = SECCIONES;
-  readonly filtrosPedido = FILTROS_PEDIDO;
   readonly categorias = CATEGORIAS;
-  readonly estados = ESTADOS;
+  readonly cajas = CAJAS;
+  readonly motivos = MOTIVOS;
+  readonly filtrosPedido: ('Todos' | Grupo)[] = ['Todos', ...GRUPOS];
   readonly rolesLista = Object.keys(ROLES) as Rol[];
   readonly roles = ROLES;
+  readonly estrellas = [1, 2, 3, 4, 5];
   readonly iconBuscar = ICON_SEARCH;
 
   // Estado de la pantalla
   readonly seccion = signal<Seccion>('res');
-  readonly filtroPedidos = signal<'Todos' | Estado>('Todos');
+  readonly filtroPedidos = signal<'Todos' | Grupo>('Todos');
+  readonly busquedaPed = signal('');
   readonly busquedaProd = signal('');
   readonly soloBajo = signal(false);
   readonly hoja = signal<Hoja | null>(null);
   readonly pedidoNo = signal<string | null>(null);
   readonly clienteCorreo = signal<string | null>(null);
   readonly errorForm = signal('');
+  readonly errorLog = signal('');
   readonly dialogo = signal<Dialogo | null>(null);
   readonly aviso = signal<string | null>(null);
+  readonly banner = signal<StoreNotificacion | null>(null);
+  /** Artículos ya sacados de bodega, por pedido (hoja de preparación). */
+  readonly picks = signal<Record<string, boolean[]>>({});
 
-  // Datos simulados (cuando exista la API, se reemplazan por servicios)
-  readonly productos = signal<Producto[]>(PRODUCTOS_DEMO);
-  readonly pedidos = signal<Pedido[]>(PEDIDOS_DEMO);
-  readonly usuarios = signal<Usuario[]>(USUARIOS_DEMO);
+  // Formularios de la hoja del pedido
+  caja = 'Caja M';
+  peso = '0.9';
+  transportistaId = '';
+  motivo = MOTIVOS[0];
+  codigoEntrada = '';
 
-  // Formularios
+  // Formularios de producto y usuario
   formProd = { id: '', nombre: '', categoria: 'Camisetas' as Categoria, precio: '', stock: '', descripcion: '' };
   formUsr = { nombre: '', correo: '', rol: 'cliente' as Rol, clave: '' };
 
   private temporizador?: ReturnType<typeof setTimeout>;
+  private temporizadorBanner?: ReturnType<typeof setTimeout>;
+  private ultimoAviso = Math.max(0, ...this.store.notificaciones().map(n => n.id));
 
-  // ── Derivados ──
-  readonly ventas = computed(() => this.pedidos().filter(o => o.estado !== 'Cancelado').reduce((a, o) => a + this.totalPedido(o), 0));
-  readonly porAtender = computed(() => this.pedidos().filter(o => o.estado === 'Pendiente').length);
-  readonly stockBajo = computed(() => this.productos().filter(p => p.stock <= STOCK_BAJO));
-  readonly recientes = computed(() => this.pedidos().slice(0, 5));
-  readonly pedidosFiltrados = computed(() => this.pedidos().filter(o => this.filtroPedidos() === 'Todos' || o.estado === this.filtroPedidos()));
+  // ── Derivados: pedidos y logística ──
+  readonly pedidos = this.store.pedidos;
+  readonly grupos = computed(() => GRUPOS_ACTIVOS.map(g => ({ nombre: g, pedidos: this.pedidos().filter(p => grupoDe(p) === g) })));
+  readonly cuenta = computed(() => {
+    const c: Record<string, number> = {};
+    for (const g of GRUPOS) c[g] = this.pedidos().filter(p => grupoDe(p) === g).length;
+    return c;
+  });
+  readonly porAtender = computed(() => this.cuenta()['Por verificar pago'] + this.cuenta()['Por preparar']);
+  readonly enPreparacion = computed(() => this.cuenta()['Por preparar'] + this.cuenta()['En preparación']);
+  readonly pedidosFiltrados = computed(() => {
+    const q = this.norm(this.busquedaPed().trim());
+    return this.pedidos().filter(p =>
+      (this.filtroPedidos() === 'Todos' || grupoDe(p) === this.filtroPedidos())
+      && (!q || this.norm(`${p.no} ${p.cliente} ${p.correo}`).includes(q)));
+  });
+  readonly requierenAccion = computed(() => this.pedidos().filter(p => ['Por verificar pago', 'Por preparar', 'Incidencias'].includes(grupoDe(p))).slice(0, 5));
+  readonly ventas = computed(() => this.pedidos().filter(p => !p.cancelado && p.estadoPago === 'confirmado').reduce((a, p) => a + totalPedido(p), 0));
+  readonly costoEnvios = computed(() => this.pedidos().filter(p => !p.cancelado).reduce((a, p) => a + p.envio, 0));
+  readonly valoracion = computed(() => {
+    const votos = this.pedidos().filter(p => p.calificacion > 0);
+    return votos.length ? votos.reduce((a, p) => a + p.calificacion, 0) / votos.length : 0;
+  });
+  /** Último movimiento de cada pedido, para la bitácora del resumen. */
+  readonly movimientos = computed(() => this.pedidos().map(p => ({ no: p.no, ...p.eventos[p.eventos.length - 1] })).slice(0, 6));
+  readonly pedidoAbierto = computed(() => this.pedidos().find(p => p.no === this.pedidoNo()) ?? null);
+  readonly misAvisos = computed(() => this.store.notificaciones().filter(n => n.correo === this.yo));
+  readonly noLeidas = computed(() => this.misAvisos().filter(n => !n.leida).length);
+
+  // ── Derivados: catálogo, inventario, clientes y usuarios ──
   readonly productosFiltrados = computed(() => {
     const q = this.norm(this.busquedaProd().trim());
-    return q ? this.productos().filter(p => this.norm(`${p.nombre} ${p.categoria}`).includes(q)) : this.productos();
+    return q ? this.store.productos().filter(p => this.norm(`${p.nombre} ${p.categoria}`).includes(q)) : this.store.productos();
   });
-  readonly inventario = computed(() => (this.soloBajo() ? this.stockBajo() : this.productos()));
-  readonly unidades = computed(() => this.productos().reduce((a, p) => a + p.stock, 0));
-  readonly valorInventario = computed(() => this.productos().reduce((a, p) => a + p.stock * p.precio, 0));
-  readonly clientes = computed(() => this.usuarios().filter(u => u.rol === 'cliente').map(u => {
-    const propios = this.pedidos().filter(o => o.correo === u.correo);
-    const gastado = propios.filter(o => o.estado !== 'Cancelado').reduce((a, o) => a + this.totalPedido(o), 0);
+  readonly stockBajo = computed(() => this.store.productos().filter(p => p.stock <= STOCK_BAJO));
+  readonly inventario = computed(() => (this.soloBajo() ? this.stockBajo() : this.store.productos()));
+  readonly unidades = computed(() => this.store.productos().reduce((a, p) => a + p.stock, 0));
+  readonly valorInventario = computed(() => this.store.productos().reduce((a, p) => a + p.stock * p.precio, 0));
+  readonly clientes = computed(() => this.store.usuarios().filter(u => u.rol === 'cliente').map(u => {
+    const propios = this.pedidos().filter(p => p.correo === u.correo);
+    const gastado = propios.filter(p => !p.cancelado && p.estadoPago === 'confirmado').reduce((a, p) => a + totalPedido(p), 0);
     return { ...u, cantidad: propios.length, gastado };
   }));
-  readonly pedidoAbierto = computed(() => this.pedidos().find(o => o.no === this.pedidoNo()) ?? null);
-  readonly clienteAbierto = computed(() => this.usuarios().find(u => u.correo === this.clienteCorreo()) ?? null);
+  readonly clienteAbierto = computed(() => this.store.usuarios().find(u => u.correo === this.clienteCorreo()) ?? null);
+
+  constructor() {
+    // Aviso emergente cuando llega un pedido nuevo o el cliente hace un cambio.
+    effect(() => {
+      const nuevo = this.misAvisos().find(n => n.id > this.ultimoAviso && !n.leida);
+      if (!nuevo) return;
+      this.ultimoAviso = Math.max(...this.misAvisos().map(n => n.id));
+      this.banner.set(nuevo);
+      clearTimeout(this.temporizadorBanner);
+      this.temporizadorBanner = setTimeout(() => this.banner.set(null), 4500);
+    });
+  }
 
   ngOnDestroy(): void {
     clearTimeout(this.temporizador);
+    clearTimeout(this.temporizadorBanner);
   }
 
   // ── Navegación ──
@@ -232,14 +168,12 @@ export class StoreComponent implements OnDestroy {
   cerrarHoja(): void {
     this.hoja.set(null);
     this.errorForm.set('');
+    this.errorLog.set('');
   }
 
   // ── Utilidades ──
   private norm(s: string): string {
     return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
-  private hoy(): string {
-    return new Date().toLocaleDateString('es-CR', { day: 'numeric', month: 'short' }).replace('.', '');
   }
   dinero(n: number): string {
     return `$${n.toFixed(2)}`;
@@ -249,59 +183,193 @@ export class StoreComponent implements OnDestroy {
     this.aviso.set(texto);
     this.temporizador = setTimeout(() => this.aviso.set(null), 3200);
   }
+  colorDe(p: Producto): string {
+    return p.variante.startsWith('#') ? p.variante : '#1b150a';
+  }
   trackId = (_: number, x: { id: string }) => x.id;
-  trackNo = (_: number, o: Pedido) => o.no;
-  trackCorreo = (_: number, u: { correo: string }) => u.correo;
+  trackNo = (_: number, p: Pedido) => p.no;
+  trackCorreo = (_: number, c: { correo: string }) => c.correo;
+  trackIdx = (i: number) => i;
 
-  // ── Pedidos y control de estados ──
-  totalPedido(o: Pedido): number {
-    const s = o.items.reduce((a, i) => a + i.precio * i.cantidad, 0);
-    return s + (s > 0 && s < ENVIO_GRATIS_DESDE ? COSTO_ENVIO : 0);
+  // ── Pedidos: datos para mostrar ──
+  total(p: Pedido): number {
+    return totalPedido(p);
   }
-  indiceEstado(e: Estado): number {
-    return ESTADOS.indexOf(e);
+  subtotal(p: Pedido): number {
+    return subtotalPedido(p);
   }
-  fechaDe(o: Pedido, e: Estado): string {
-    return o.historial.find(h => h.estado === e)?.fecha ?? '';
+  grupo(p: Pedido): Grupo {
+    return grupoDe(p);
+  }
+  etapa(p: Pedido) {
+    return etapaActual(p);
+  }
+  etapas(p: Pedido) {
+    return etapasDe(p);
+  }
+  claseGrupo(p: Pedido): string {
+    const g = grupoDe(p);
+    return g === 'Cancelados' || g === 'Incidencias' ? 'rojo' : g === 'Por verificar pago' || g === 'Por preparar' ? 'ambar'
+      : g === 'En ruta' ? 'violeta' : g === 'Entregados' ? 'verde' : 'azul';
+  }
+  textoPago(p: Pedido): string {
+    return { pendiente: 'Por verificar', confirmado: 'Confirmado', rechazado: 'Rechazado', reembolsado: 'Reembolsado' }[p.estadoPago];
+  }
+  metodoTexto(p: Pedido): string {
+    return { wallet: 'Billetera', card: 'Tarjeta', sinpe: 'SINPE Móvil' }[p.metodoPago];
+  }
+  fechaDe(p: Pedido, fase: number): string {
+    return p.eventos.find(x => x.fase === fase)?.fecha ?? '';
+  }
+  ultimoMovimiento(p: Pedido): string {
+    return p.eventos[p.eventos.length - 1].fecha;
   }
   pedidosDe(correo: string): Pedido[] {
-    return this.pedidos().filter(o => o.correo === correo);
+    return this.pedidos().filter(p => p.correo === correo);
   }
-  siguientes(o: Pedido): Estado[] {
-    return SIGUIENTES[o.estado];
+  puedeCancelar(p: Pedido): boolean {
+    return puedeCancelar(p, 'admin');
   }
-  accionDe(e: Estado): string {
-    return ACCION[e] ?? e;
+  pagoPendiente(p: Pedido): boolean {
+    return !p.cancelado && p.estadoPago === 'pendiente';
   }
+  bitacora(p: Pedido) {
+    return [...p.eventos].reverse();
+  }
+
   abrirPedido(no: string): void {
     this.pedidoNo.set(no);
+    this.caja = 'Caja M';
+    this.peso = '0.9';
+    this.transportistaId = '';
+    this.motivo = MOTIVOS[0];
+    this.codigoEntrada = '';
+    this.errorLog.set('');
     this.hoja.set('pedido');
   }
-  cambiarEstado(no: string, estado: Estado): void {
-    const pedido = this.pedidos().find(o => o.no === no);
-    if (!pedido || !SIGUIENTES[pedido.estado].includes(estado)) return;
 
-    this.pedidos.update(ps => ps.map(o => (o.no === no
-      ? { ...o, estado, historial: [...o.historial, { estado, fecha: this.hoy() }] }
-      : o)));
-
-    if (estado === 'Cancelado') {
-      // Al cancelar, las unidades vuelven al inventario.
-      this.productos.update(ps => ps.map(p => {
-        const devueltas = pedido.items.filter(i => i.id === p.id).reduce((a, i) => a + i.cantidad, 0);
-        return devueltas ? { ...p, stock: p.stock + devueltas } : p;
-      }));
-    }
-    this.mostrarAviso(`Pedido ${no} actualizado a ${estado.toLowerCase()}.`);
+  // ── Logística: pago ──
+  confirmarPago(p: Pedido): void {
+    if (this.store.confirmarPago(p.no, AGENTE)) this.mostrarAviso(`Pago de ${p.no} confirmado.`);
   }
-  pedirCancelar(no: string): void {
+  pedirRechazo(p: Pedido): void {
     this.dialogo.set({
-      titulo: `¿Cancelar el pedido ${no}?`,
-      texto: 'Las unidades volverán al inventario y el cliente verá el pedido como cancelado. Esta acción no se puede deshacer.',
+      titulo: `¿Rechazar el pago de ${p.no}?`,
+      texto: 'El pedido se cancela, las unidades vuelven al inventario y el cliente recibe un aviso. Esta acción no se puede deshacer.',
+      ok: 'Rechazar pago',
+      conservar: 'Volver',
+      accion: () => {
+        this.store.rechazarPago(p.no, AGENTE);
+        this.mostrarAviso(`Pago de ${p.no} rechazado.`);
+      },
+    });
+  }
+
+  // ── Logística: preparación y empaque ──
+  iniciarPreparacion(p: Pedido): void {
+    if (this.store.iniciarPreparacion(p.no, AGENTE)) this.mostrarAviso(`${p.no} pasó a preparación.`);
+  }
+  ubicacion(itemId: string): string {
+    const prod = this.store.producto(itemId);
+    const base = prod ? ESTANTES[prod.categoria] : 'Estante A';
+    return `${base}${(itemId.charCodeAt(0) + itemId.charCodeAt(itemId.length - 1)) % 4 + 1}`;
+  }
+  marcado(p: Pedido, i: number): boolean {
+    return !!this.picks()[p.no]?.[i];
+  }
+  alternarPick(p: Pedido, i: number): void {
+    this.picks.update(m => {
+      const actual = [...(m[p.no] ?? p.items.map(() => false))];
+      actual[i] = !actual[i];
+      return { ...m, [p.no]: actual };
+    });
+  }
+  pickingCompleto(p: Pedido): boolean {
+    const m = this.picks()[p.no];
+    return !!m && p.items.every((_, i) => m[i]);
+  }
+  marcarEmpacado(p: Pedido): void {
+    const kg = parseFloat(this.peso.replace(',', '.'));
+    if (!(kg > 0)) {
+      this.errorLog.set('El peso debe ser un número mayor que 0.');
+      return;
+    }
+    this.errorLog.set('');
+    if (this.store.marcarEmpacado(p.no, `${this.caja} · ${String(kg).replace('.', ',')} kg`, AGENTE)) this.mostrarAviso(`${p.no} quedó empacado.`);
+  }
+
+  // ── Logística: despacho y reparto ──
+  opciones(p: Pedido): { t: Transportista; cubre: boolean }[] {
+    return TRANSPORTISTAS.map(t => ({ t, cubre: cubre(t, p.direccion) }));
+  }
+  elegirTransportista(id: string): void {
+    this.transportistaId = id;
+    this.errorLog.set('');
+  }
+  despachar(p: Pedido): void {
+    if (!this.transportistaId) {
+      this.errorLog.set('Elige un transportista para generar la guía.');
+      return;
+    }
+    this.errorLog.set('');
+    if (this.store.despachar(p.no, this.transportistaId, AGENTE)) this.mostrarAviso(`Guía generada para ${p.no}.`);
+  }
+  marcarListoRetiro(p: Pedido): void {
+    if (this.store.marcarListoRetiro(p.no, AGENTE)) this.mostrarAviso(`${p.no} está listo para retirar.`);
+  }
+  iniciarReparto(p: Pedido): void {
+    if (this.store.iniciarReparto(p.no, AGENTE)) this.mostrarAviso(`${p.no} salió a reparto.`);
+  }
+  registrarIncidencia(p: Pedido): void {
+    if (this.store.registrarIncidencia(p.no, this.motivo, AGENTE)) this.mostrarAviso(`Incidencia registrada en ${p.no}.`);
+  }
+  reprogramarPorCliente(p: Pedido): void {
+    const ventana = this.store.ventanasDisponibles()[0];
+    if (this.store.reprogramar(p.no, ventana, AGENTE, false)) this.mostrarAviso(`${p.no} reprogramado: ${ventana}.`);
+  }
+  confirmarEntrega(p: Pedido): void {
+    if (this.store.confirmarEntrega(p.no, this.codigoEntrada, AGENTE)) {
+      this.errorLog.set('');
+      this.codigoEntrada = '';
+      this.mostrarAviso(`${p.no} entregado.`);
+    } else {
+      this.errorLog.set('El código no coincide. Pídele al cliente que lo revise en su app.');
+    }
+  }
+  pedirCancelar(p: Pedido): void {
+    this.dialogo.set({
+      titulo: `¿Cancelar el pedido ${p.no}?`,
+      texto: 'Las unidades volverán al inventario y, si ya estaba pagado, se reembolsa al cliente. Esta acción no se puede deshacer.',
       ok: 'Cancelar pedido',
       conservar: 'Conservar pedido',
-      accion: () => this.cambiarEstado(no, 'Cancelado'),
+      accion: () => {
+        this.store.cancelar(p.no, AGENTE, 'admin');
+        this.mostrarAviso(`Pedido ${p.no} cancelado.`);
+      },
     });
+  }
+
+  /** Cuadrícula tipo QR para la etiqueta de envío (simulada, a partir de la guía). */
+  qr(semilla: string): { x: number; y: number }[] {
+    let s = 0;
+    for (const c of semilla) s = (s * 31 + c.charCodeAt(0)) >>> 0;
+    const celdas: { x: number; y: number }[] = [];
+    for (let y = 0; y < 9; y++) {
+      for (let x = 0; x < 9; x++) {
+        s = (s * 1103515245 + 12345) >>> 0;
+        const esquina = (x < 3 && y < 3) || (x > 5 && y < 3) || (x < 3 && y > 5);
+        if (esquina || (s >>> 16) % 2) celdas.push({ x: x * 10, y: y * 10 });
+      }
+    }
+    return celdas;
+  }
+
+  // ── Avisos del admin ──
+  abrirAviso(n: StoreNotificacion): void {
+    this.store.marcarLeida(n.id);
+    this.banner.set(null);
+    this.seccion.set('log');
+    this.abrirPedido(n.pedidoNo);
   }
 
   // ── Productos ──
@@ -311,7 +379,7 @@ export class StoreComponent implements OnDestroy {
     this.hoja.set('producto');
   }
   editarProducto(id: string): void {
-    const p = this.productos().find(x => x.id === id);
+    const p = this.store.producto(id);
     if (!p) return;
     this.formProd = { id: p.id, nombre: p.nombre, categoria: p.categoria, precio: String(p.precio), stock: String(p.stock), descripcion: p.descripcion };
     this.errorForm.set('');
@@ -332,15 +400,19 @@ export class StoreComponent implements OnDestroy {
 
     const descripcion = f.descripcion.trim();
     if (f.id) {
-      this.productos.update(ps => ps.map(p => (p.id === f.id ? { ...p, nombre, categoria: f.categoria, precio, stock, descripcion } : p)));
+      this.store.productos.update(ps => ps.map(p => (p.id === f.id ? { ...p, nombre, categoria: f.categoria, precio, stock, descripcion } : p)));
     } else {
-      this.productos.update(ps => [...ps, crear(`n${Date.now()}`, nombre, f.categoria, precio, stock, '#1b150a', descripcion || 'Producto oficial de Biozin Royale.')]);
+      const nuevo: Producto = {
+        id: `n${Date.now()}`, nombre, categoria: f.categoria, precio, arte: 'pin', variante: '', stock,
+        etiqueta: '', descripcion: descripcion || 'Producto oficial de Biozin Royale.', visible: true, requiereTalla: false,
+      };
+      this.store.productos.update(ps => [...ps, nuevo]);
     }
     this.cerrarHoja();
     this.mostrarAviso(f.id ? 'Cambios guardados.' : 'Producto creado.');
   }
   alternarVisible(id: string): void {
-    this.productos.update(ps => ps.map(p => (p.id === id ? { ...p, visible: !p.visible } : p)));
+    this.store.productos.update(ps => ps.map(p => (p.id === id ? { ...p, visible: !p.visible } : p)));
   }
   pedirEliminar(p: Producto): void {
     this.dialogo.set({
@@ -349,7 +421,7 @@ export class StoreComponent implements OnDestroy {
       ok: 'Eliminar producto',
       conservar: 'Conservar producto',
       accion: () => {
-        this.productos.update(ps => ps.filter(x => x.id !== p.id));
+        this.store.productos.update(ps => ps.filter(x => x.id !== p.id));
         this.mostrarAviso('Producto eliminado.');
       },
     });
@@ -357,7 +429,7 @@ export class StoreComponent implements OnDestroy {
 
   // ── Inventario ──
   ajustar(id: string, delta: number): void {
-    this.productos.update(ps => ps.map(p => (p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p)));
+    this.store.productos.update(ps => ps.map(p => (p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p)));
   }
   estadoStock(p: Producto): { texto: string; clase: string } {
     if (p.stock <= 0) return { texto: 'Agotado', clase: 'agotado' };
@@ -373,15 +445,15 @@ export class StoreComponent implements OnDestroy {
 
   // ── Usuarios y roles ──
   cambiarRol(correo: string, rol: Rol): void {
-    if (correo === YO) return;
-    const u = this.usuarios().find(x => x.correo === correo);
-    this.usuarios.update(us => us.map(x => (x.correo === correo ? { ...x, rol } : x)));
+    if (correo === this.yo) return;
+    const u = this.store.usuarios().find(x => x.correo === correo);
+    this.store.usuarios.update(us => us.map(x => (x.correo === correo ? { ...x, rol } : x)));
     if (u) this.mostrarAviso(`Rol actualizado: ${u.nombre} ahora es ${ROLES[rol].nombre.toLowerCase()}.`);
   }
   alternarBloqueo(u: Usuario): void {
-    if (u.correo === YO) return;
+    if (u.correo === this.yo) return;
     if (!u.activo) {
-      this.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: true } : x)));
+      this.store.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: true } : x)));
       return;
     }
     this.dialogo.set({
@@ -389,7 +461,7 @@ export class StoreComponent implements OnDestroy {
       texto: 'No podrá iniciar sesión ni comprar hasta que reactives su cuenta.',
       ok: 'Bloquear cuenta',
       conservar: 'Mantener activa',
-      accion: () => this.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: false } : x))),
+      accion: () => this.store.usuarios.update(us => us.map(x => (x.correo === u.correo ? { ...x, activo: false } : x))),
     });
   }
   nuevoUsuario(): void {
@@ -404,11 +476,11 @@ export class StoreComponent implements OnDestroy {
       !f.nombre.trim() ? 'Escribe el nombre del usuario.'
       : !/^\S+@\S+\.\S+$/.test(correo) ? 'Escribe un correo válido, por ejemplo nombre@correo.com.'
       : f.clave.length < 6 ? 'La contraseña temporal necesita al menos 6 caracteres.'
-      : this.usuarios().some(u => u.correo === correo) ? 'Ese correo ya tiene cuenta.'
+      : this.store.usuarios().some(u => u.correo === correo) ? 'Ese correo ya tiene cuenta.'
       : '';
     this.errorForm.set(error);
     if (error) return;
-    this.usuarios.update(us => [...us, { nombre: f.nombre.trim(), correo, rol: f.rol, activo: true }]);
+    this.store.usuarios.update(us => [...us, { nombre: f.nombre.trim(), correo, rol: f.rol, activo: true }]);
     this.cerrarHoja();
     this.mostrarAviso('Usuario creado.');
   }
@@ -420,8 +492,6 @@ export class StoreComponent implements OnDestroy {
     d?.accion();
   }
   cancelarDialogo(): void {
-    const d = this.dialogo();
     this.dialogo.set(null);
-    d?.volver?.();
   }
 }

@@ -1,10 +1,11 @@
 <app-screen-shell [title]="titulo()" current="tienda" [glow]="0.3" (back)="onBack()">
 
-  <!-- Íconos del encabezado: mis pedidos y carrito -->
+  <!-- Íconos del encabezado: mis pedidos (con avisos sin leer) y carrito -->
   <div shell-header-end>
     <ng-container *ngIf="mostrarIconos()">
       <button class="hi" type="button" aria-label="Mis pedidos" (click)="ir('mine')">
         <app-icon [svg]="iconRecibo" [size]="19"></app-icon>
+        <span class="badge" *ngIf="noLeidas()">{{ noLeidas() }}</span>
       </button>
       <button class="hi" type="button" aria-label="Carrito" (click)="ir('cart')">
         <app-icon [svg]="iconCarrito" [size]="19"></app-icon>
@@ -135,7 +136,10 @@
           <div class="caja">
             <h3 class="caja-titulo">Resumen</h3>
             <div class="fila-sum"><span>Subtotal</span><span>{{ totales().subtotal | currency:'USD':'symbol':'1.2-2' }}</span></div>
-            <div class="fila-sum"><span>Envío</span><span>{{ totales().envio ? (totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+            <div class="fila-sum"><span>Envío a domicilio</span><span>{{ totales().envio ? (totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+            <p class="muted" *ngIf="totales().subtotal < envioGratisDesde">
+              Te faltan {{ envioGratisDesde - totales().subtotal | currency:'USD':'symbol':'1.2-2' }} para el envío gratis.
+            </p>
             <div class="fila-sum total"><span>Total</span><span>{{ totales().total | currency:'USD':'symbol':'1.2-2' }}</span></div>
           </div>
         </ng-template>
@@ -144,23 +148,45 @@
       <!-- ═════════ PAGO ═════════ -->
       <ng-container *ngSwitchCase="'chk'">
         <div class="caja formulario">
-          <h3 class="caja-titulo">Datos de envío</h3>
+          <h3 class="caja-titulo">Entrega</h3>
+          <label class="metodo" [class.activo]="entrega() === 'domicilio'">
+            <input type="radio" name="entrega" [checked]="entrega() === 'domicilio'" (change)="setEntrega('domicilio')" />
+            <span>Envío a domicilio<small class="muted">Correos de Costa Rica · 2 a 3 días</small></span>
+            <b>{{ totales().subtotal >= envioGratisDesde ? 'Gratis' : '$5.00' }}</b>
+          </label>
+          <label class="metodo" [class.activo]="entrega() === 'retiro'">
+            <input type="radio" name="entrega" [checked]="entrega() === 'retiro'" (change)="setEntrega('retiro')" />
+            <span>Retiro en punto<small class="muted">Biozin Royale, Guácimo · listo en 24 horas</small></span>
+            <b>Gratis</b>
+          </label>
+        </div>
+
+        <div class="caja formulario">
+          <h3 class="caja-titulo">{{ entrega() === 'domicilio' ? 'Datos de envío' : 'Datos de contacto' }}</h3>
           <label>Nombre de quien recibe
             <input type="text" autocomplete="name" [(ngModel)]="datos.nombre" />
           </label>
-          <div class="dos">
+          <ng-container *ngIf="entrega() === 'domicilio'; else puntoRetiro">
+            <div class="dos">
+              <label>Teléfono
+                <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
+              </label>
+              <label>Provincia
+                <select [(ngModel)]="datos.provincia">
+                  <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+                </select>
+              </label>
+            </div>
+            <label>Dirección exacta
+              <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
+            </label>
+          </ng-container>
+          <ng-template #puntoRetiro>
             <label>Teléfono
               <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
             </label>
-            <label>Provincia
-              <select [(ngModel)]="datos.provincia">
-                <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
-              </select>
-            </label>
-          </div>
-          <label>Dirección exacta
-            <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
-          </label>
+            <p class="muted">Cuando esté listo te avisamos y te damos un código para retirarlo.</p>
+          </ng-template>
         </div>
 
         <div class="caja formulario">
@@ -188,7 +214,7 @@
           </div>
           <label class="metodo" [class.activo]="metodo() === 'sinpe'">
             <input type="radio" name="metodo" [checked]="metodo() === 'sinpe'" (change)="setMetodo('sinpe')" />
-            <span>SINPE Móvil</span>
+            <span>SINPE Móvil<small class="muted">Verificamos tu pago antes de preparar el pedido</small></span>
           </label>
           <p class="muted" *ngIf="metodo() === 'sinpe'">Al confirmar verás el número y el monto para enviar tu SINPE.</p>
         </div>
@@ -208,22 +234,24 @@
 
       <!-- ═════════ CONFIRMACIÓN ═════════ -->
       <ng-container *ngSwitchCase="'ok'">
-        <div class="confirmacion" *ngIf="ultimoPedido() as o">
+        <div class="confirmacion" *ngIf="pedidoActual() as o">
           <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
             <circle cx="36" cy="36" r="33" fill="none" stroke="#d4a73c" stroke-width="3" />
             <path d="M22 37l10 10 19-22" fill="none" stroke="#f0d080" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <h2 class="gold-text">Pedido confirmado</h2>
-          <p>Tu pedido <b>{{ o.no }}</b> llegará a tu dirección en {{ provinciaDe(o) }} en 3 a 5 días hábiles.</p>
+          <p>Tu pedido <b>{{ o.no }}</b> quedó registrado.</p>
           <div class="caja">
-            <div class="fila-sum" *ngFor="let i of o.items">
-              <span>{{ i.cantidad }} × {{ nombreDe(i.id) }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
-              <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+            <div class="fila-sum">
+              <span>Pago</span>
+              <span class="estado" [ngClass]="o.estadoPago === 'confirmado' ? 'estado-entregado' : 'estado-pendiente'">{{ textoPago(o) }}</span>
             </div>
-            <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+            <div class="fila-sum"><span>Entrega estimada</span><b>{{ o.eta }}</b></div>
+            <div class="fila-sum"><span>{{ o.entrega === 'retiro' ? 'Retiro' : 'Transportista' }}</span><span>{{ o.entrega === 'retiro' ? 'Biozin Royale, Guácimo' : 'Correos de Costa Rica' }}</span></div>
+            <div class="fila-sum total"><span>Total</span><span>{{ totalDe(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
           </div>
           <div class="acciones">
-            <button type="button" class="btn-oro" (click)="ir('mine')">Ver estado del pedido</button>
+            <button type="button" class="btn-oro" (click)="verPedido(o.no)">Ver seguimiento</button>
             <button type="button" class="btn-fantasma" (click)="ir('home')">Seguir comprando</button>
           </div>
         </div>
@@ -231,31 +259,119 @@
 
       <!-- ═════════ MIS PEDIDOS ═════════ -->
       <ng-container *ngSwitchCase="'mine'">
-        <div class="vacio" *ngIf="!pedidos().length">
+        <div class="caja" *ngIf="avisos().length">
+          <div class="pedido-cab">
+            <h3 class="caja-titulo">Avisos</h3>
+            <button type="button" class="enlace" *ngIf="noLeidas()" (click)="marcarTodas()">Marcar como leídos</button>
+          </div>
+          <button type="button" class="aviso-item" *ngFor="let n of avisos().slice(0, 4)" [class.nuevo]="!n.leida" (click)="abrirAviso(n)">
+            <b>{{ n.titulo }}</b>
+            <span>{{ n.texto }}</span>
+            <span class="muted">{{ n.fecha }}</span>
+          </button>
+        </div>
+
+        <div class="vacio" *ngIf="!misPedidos().length">
           <h3>Aún no tienes pedidos</h3>
           <p class="muted">Cuando compres, aquí verás el estado de cada pedido.</p>
           <button type="button" class="btn-oro" (click)="ir('home')">Ver la tienda</button>
         </div>
-        <div class="caja pedido" *ngFor="let o of pedidos()">
+
+        <button type="button" class="caja pedido-item" *ngFor="let o of misPedidos(); trackBy: trackNo" (click)="verPedido(o.no)">
           <div class="pedido-cab">
             <h3 class="caja-titulo">{{ o.no }}</h3>
-            <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
+            <span class="estado" [ngClass]="o.cancelado ? 'estado-cancelado' : o.incidenciaAbierta ? 'estado-pendiente' : o.fase === 6 ? 'estado-entregado' : 'estado-preparando'">
+              {{ o.cancelado ? 'Cancelado' : o.incidenciaAbierta ? 'Requiere tu atención' : etapa(o).nombre }}
+            </span>
           </div>
-          <p class="muted">{{ o.fecha }}, pago con {{ o.pago.toLowerCase() }}</p>
+          <p class="muted">{{ o.eventos[0].fecha }}</p>
+          <div class="fila-sum">
+            <span class="muted">{{ o.cancelado ? 'Sin entrega' : o.fase === 6 ? 'Entregado' : o.ventana || o.eta }}</span>
+            <b>{{ totalDe(o) | currency:'USD':'symbol':'1.2-2' }}</b>
+          </div>
+        </button>
+      </ng-container>
 
-          <p *ngIf="o.estado === 'Cancelado'" class="cancelado">Este pedido fue cancelado.</p>
-          <div class="linea-tiempo" *ngIf="o.estado !== 'Cancelado'">
-            <div class="paso" *ngFor="let e of estados; let i = index" [class.hecho]="i <= indiceEstado(o.estado)">
-              {{ e }}<span class="muted">{{ fechaDe(o, e) }}</span>
+      <!-- ═════════ SEGUIMIENTO ═════════ -->
+      <ng-container *ngSwitchCase="'track'">
+        <ng-container *ngIf="pedidoActual() as p">
+
+          <div class="estado-card">
+            <span class="chip" [ngClass]="p.cancelado ? 'rojo' : p.fase === 6 ? 'verde' : 'azul'">{{ p.no }}</span>
+            <h2>{{ p.cancelado ? 'Pedido cancelado' : etapa(p).nombre }}</h2>
+            <span class="muted" *ngIf="!p.cancelado">
+              {{ p.fase === 6 ? 'Entregado el ' + fechaDe(p, 6) : p.ventana ? 'Reprogramada: ' + p.ventana : 'Entrega estimada: ' + p.eta }}
+            </span>
+            <span class="muted" *ngIf="p.cancelado">Pago: {{ textoPago(p).toLowerCase() }}.</span>
+          </div>
+
+          <!-- Calificación al recibir -->
+          <div class="caja centrado" *ngIf="p.fase === 6 && !p.cancelado">
+            <h3 class="caja-titulo">¿Cómo fue tu entrega?</h3>
+            <div class="estrellas" role="group" aria-label="Calificación">
+              <button type="button" *ngFor="let n of estrellas" [class.on]="p.calificacion >= n" [disabled]="p.calificacion > 0"
+                      [attr.aria-label]="n + ' estrellas'" (click)="calificar(p, n)">★</button>
+            </div>
+            <button type="button" class="enlace" (click)="pedirCambio(p)">Pedir un cambio o devolución (15 días)</button>
+          </div>
+
+          <!-- Transportista y guía -->
+          <div class="caja" *ngIf="!p.cancelado && p.fase >= 4 && p.entrega === 'domicilio'">
+            <div class="fila-sum"><span>{{ p.transportista }}</span><b>{{ p.guia }}</b></div>
+          </div>
+          <div class="caja" *ngIf="!p.cancelado && p.entrega === 'retiro'">
+            <div class="fila-sum"><span>Punto de retiro</span><span>Biozin Royale, Guácimo</span></div>
+          </div>
+
+          <!-- Código de entrega o de retiro -->
+          <div class="caja centrado" *ngIf="muestraCodigo(p)">
+            <h3 class="caja-titulo">{{ p.entrega === 'retiro' ? 'Código de retiro' : 'Código de entrega' }}</h3>
+            <div class="codigo"><span *ngFor="let d of p.codigo.split('')">{{ d }}</span></div>
+            <p class="muted">{{ p.entrega === 'retiro' ? 'Díselo a quien te atienda al retirar.' : 'Díselo al repartidor cuando recibas el pedido.' }}</p>
+            <svg class="ruta" *ngIf="p.entrega === 'domicilio'" viewBox="0 0 340 70" aria-hidden="true">
+              <path d="M10 55C90 5 160 65 240 25S320 40 330 20" fill="none" stroke="#d4a73c" stroke-dasharray="5 6" opacity=".6" />
+              <circle cx="10" cy="55" r="5" fill="#a89c80" />
+              <circle cx="330" cy="20" r="7" fill="none" stroke="#f0d080" stroke-width="2" />
+              <circle r="6" fill="#f0d080">
+                <animateMotion dur="4s" repeatCount="indefinite" path="M10 55C90 5 160 65 240 25S320 40 330 20" />
+              </circle>
+            </svg>
+          </div>
+
+          <!-- Incidencia: el cliente elige nueva fecha -->
+          <div class="caja alerta" *ngIf="p.incidenciaAbierta && !p.cancelado">
+            <h3 class="caja-titulo">No pudimos entregar</h3>
+            <p class="muted">No hubo respuesta en tu dirección. Elige cuándo volvemos a intentarlo.</p>
+            <div class="acciones"><button type="button" class="btn-oro" (click)="abrirFechas(p)">Elegir nueva fecha</button></div>
+          </div>
+
+          <!-- Línea de tiempo -->
+          <div class="caja">
+            <h3 class="caja-titulo">Seguimiento</h3>
+            <div class="vt">
+              <div class="vi" *ngFor="let i of lineaTiempo(p)" [ngClass]="i.clase">
+                <i></i>
+                <div><b>{{ i.titulo }}</b><span class="muted">{{ i.detalle }}</span></div>
+              </div>
+            </div>
+            <div class="fila-enlaces" *ngIf="puedeCambiarDireccion(p) || puedeCancelar(p)">
+              <button type="button" class="enlace" *ngIf="puedeCambiarDireccion(p)" (click)="abrirDireccion(p)">Cambiar dirección</button>
+              <button type="button" class="enlace" *ngIf="puedeCancelar(p)" (click)="pedirCancelar(p)">Cancelar pedido</button>
             </div>
           </div>
 
-          <div class="fila-sum" *ngFor="let i of o.items">
-            <span>{{ i.cantidad }} × {{ nombreDe(i.id) }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
-            <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+          <!-- Resumen -->
+          <div class="caja">
+            <h3 class="caja-titulo">Resumen</h3>
+            <div class="fila-sum" *ngFor="let i of p.items">
+              <span>{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+              <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="fila-sum"><span>Envío</span><span>{{ p.envio ? (p.envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+            <div class="fila-sum total"><span>Total</span><span>{{ totalDe(p) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+            <p class="muted">Pago con {{ metodoTexto(p).toLowerCase() }}: {{ textoPago(p).toLowerCase() }}. {{ p.entrega === 'retiro' ? 'Retiro en punto.' : 'Envío a ' + p.direccion + '.' }}</p>
           </div>
-          <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
-        </div>
+        </ng-container>
       </ng-container>
 
     </div>
@@ -276,21 +392,66 @@
     </div>
   </div>
 
+  <!-- Aviso emergente cuando cambia el estado de un pedido -->
+  <button type="button" class="push" *ngIf="banner() as b" (click)="abrirAviso(b)">
+    <img src="assets/logo.png" alt="" />
+    <span><b>{{ b.titulo }}</b><small>{{ b.texto }}</small></span>
+    <em>ahora</em>
+  </button>
+
   <!-- Aviso al añadir -->
   <div class="aviso" role="status" *ngIf="aviso() as a">
     <span>{{ a.texto }}</span>
     <button type="button" *ngIf="a.verCarrito" (click)="ir('cart')">Ver carrito</button>
   </div>
 
-  <!-- Hoja para elegir talla -->
-  <div class="hoja-fondo" *ngIf="hojaTallas() as id" (click)="hojaTallas.set(null)">
-    <div class="hoja" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-      <h3>{{ nombreDe(id) }}</h3>
-      <p class="muted">Elige tu talla para añadirla al carrito.</p>
-      <div class="tallas">
-        <button type="button" class="btn-fantasma" *ngFor="let t of tallas" (click)="anadir(id, t, true)">{{ t }}</button>
+  <!-- Hojas inferiores: talla, dirección y nueva fecha -->
+  <div class="hoja-fondo" *ngIf="hoja() as h" (click)="hoja.set(null)">
+    <div class="hoja" role="dialog" aria-modal="true" (click)="$event.stopPropagation()" [ngSwitch]="h.tipo">
+
+      <ng-container *ngSwitchCase="'tallas'">
+        <h3>{{ nombreDe(h.id || '') }}</h3>
+        <p class="muted">Elige tu talla para añadirla al carrito.</p>
+        <div class="tallas">
+          <button type="button" class="btn-fantasma" *ngFor="let t of tallas" (click)="anadir(h.id || '', t, true)">{{ t }}</button>
+        </div>
+        <button type="button" class="enlace" (click)="hoja.set(null)">Cancelar</button>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'direccion'">
+        <h3>Cambiar dirección</h3>
+        <p class="muted">Puedes cambiarla hasta que tu pedido esté empacado.</p>
+        <label class="campo">Dirección exacta
+          <input type="text" [(ngModel)]="nuevaDireccion" />
+        </label>
+        <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+        <div class="acciones">
+          <button type="button" class="btn-fantasma" (click)="hoja.set(null)">Cancelar</button>
+          <button type="button" class="btn-oro" (click)="guardarDireccion()">Guardar dirección</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'fecha'">
+        <h3>Nueva fecha de entrega</h3>
+        <p class="muted">Elige una ventana y volvemos a intentarlo.</p>
+        <div class="ventanas">
+          <button type="button" class="btn-fantasma" *ngFor="let v of store.ventanasDisponibles(); trackBy: trackIdx" (click)="elegirVentana(v)">{{ v }}</button>
+        </div>
+        <button type="button" class="enlace" (click)="hoja.set(null)">Cancelar</button>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <!-- Confirmación -->
+  <div class="hoja-fondo centrado" *ngIf="dialogo() as d" (click)="cancelarDialogo()">
+    <div class="dialogo" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h3>{{ d.titulo }}</h3>
+      <p>{{ d.texto }}</p>
+      <div class="acciones">
+        <button type="button" class="btn-fantasma" (click)="cancelarDialogo()">{{ d.conservar }}</button>
+        <button type="button" class="btn-peligro" (click)="aceptarDialogo()">{{ d.ok }}</button>
       </div>
-      <button type="button" class="enlace" (click)="hojaTallas.set(null)">Cancelar</button>
     </div>
   </div>
 

@@ -6,7 +6,9 @@
 
     <!-- Secciones del módulo -->
     <div class="chips" role="group" aria-label="Secciones de la tienda">
-      <button type="button" *ngFor="let s of secciones" [class.activo]="seccion() === s.k" (click)="irSeccion(s.k)">{{ s.t }}</button>
+      <button type="button" *ngFor="let s of secciones" [class.activo]="seccion() === s.k" (click)="irSeccion(s.k)">
+        {{ s.t }}<em class="nuevo" *ngIf="s.nuevo">nuevo</em>
+      </button>
     </div>
 
     <div [ngSwitch]="seccion()">
@@ -17,17 +19,38 @@
           <div class="kpi"><span class="muted">Ventas</span><b>{{ ventas() | currency:'USD':'symbol':'1.2-2' }}</b></div>
           <div class="kpi"><span class="muted">Pedidos</span><b>{{ pedidos().length }}</b></div>
           <div class="kpi"><span class="muted">Por atender</span><b>{{ porAtender() }}</b></div>
-          <div class="kpi"><span class="muted">Con stock bajo</span><b>{{ stockBajo().length }}</b></div>
+          <div class="kpi"><span class="muted">Incidencias</span><b>{{ cuenta()['Incidencias'] }}</b></div>
+          <div class="kpi"><span class="muted">Entregados</span><b>{{ cuenta()['Entregados'] }}</b></div>
+          <div class="kpi"><span class="muted">Valoración</span><b>{{ valoracion() ? (valoracion() | number:'1.1-1') + ' ★' : '—' }}</b></div>
         </div>
 
         <div class="caja">
-          <h3 class="caja-titulo">Pedidos recientes</h3>
-          <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: recientes() }"></ng-container>
+          <h3 class="caja-titulo">Requieren acción</h3>
+          <p class="muted vacio-txt" *ngIf="!requierenAccion().length">No hay pedidos esperando acción.</p>
+          <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: requierenAccion() }"></ng-container>
+        </div>
+
+        <div class="caja" *ngIf="misAvisos().length">
+          <div class="item-cab">
+            <h3 class="caja-titulo">Avisos</h3>
+            <button type="button" class="enlace" *ngIf="noLeidas()" (click)="store.marcarTodasLeidas(yo)">Marcar como leídos</button>
+          </div>
+          <button type="button" class="aviso-item" *ngFor="let n of misAvisos().slice(0, 4)" [class.nuevo]="!n.leida" (click)="abrirAviso(n)">
+            <b>{{ n.titulo }}</b><span>{{ n.texto }}</span><span class="muted">{{ n.fecha }}</span>
+          </button>
+        </div>
+
+        <div class="caja">
+          <h3 class="caja-titulo">Últimos movimientos</h3>
+          <div class="lgi" *ngFor="let m of movimientos()">
+            <span class="muted">{{ m.fecha }} · {{ m.no }}</span>
+            <b>{{ m.quien }}</b> · {{ m.texto }}
+          </div>
         </div>
 
         <div class="caja">
           <h3 class="caja-titulo">Stock bajo</h3>
-          <p class="muted" *ngIf="!stockBajo().length">Todos los productos tienen más de 5 unidades.</p>
+          <p class="muted vacio-txt" *ngIf="!stockBajo().length">Todos los productos tienen más de 5 unidades.</p>
           <div class="fila-sum" *ngFor="let p of stockBajo(); trackBy: trackId">
             <span>{{ p.nombre }}</span>
             <span class="insignia" [ngClass]="estadoStock(p).clase">{{ p.stock ? p.stock + ' en stock' : 'Agotado' }}</span>
@@ -35,12 +58,42 @@
         </div>
       </ng-container>
 
+      <!-- ═════════ LOGÍSTICA ═════════ -->
+      <ng-container *ngSwitchCase="'log'">
+        <div class="kpis">
+          <div class="kpi"><span class="muted">Por verificar pago</span><b>{{ cuenta()['Por verificar pago'] }}</b></div>
+          <div class="kpi"><span class="muted">En preparación</span><b>{{ enPreparacion() }}</b></div>
+          <div class="kpi"><span class="muted">En ruta</span><b>{{ cuenta()['En ruta'] }}</b></div>
+          <div class="kpi"><span class="muted">Incidencias</span><b>{{ cuenta()['Incidencias'] }}</b></div>
+        </div>
+        <div class="corte">Corte de despacho: hoy {{ corte }}. Lo que se empaca antes sale el mismo día.</div>
+
+        <ng-container *ngFor="let g of grupos()">
+          <div class="caja" *ngIf="g.pedidos.length">
+            <div class="item-cab">
+              <h3 class="caja-titulo">{{ g.nombre }}</h3>
+              <span class="muted">{{ g.pedidos.length }}</span>
+            </div>
+            <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: g.pedidos }"></ng-container>
+          </div>
+        </ng-container>
+        <p class="muted vacio-txt" *ngIf="!(cuenta()['Por verificar pago'] + enPreparacion() + cuenta()['Por despachar'] + cuenta()['En ruta'] + cuenta()['Incidencias'])">
+          No hay pedidos activos en este momento.
+        </p>
+      </ng-container>
+
       <!-- ═════════ PEDIDOS ═════════ -->
       <ng-container *ngSwitchCase="'ord'">
-        <div class="chips" role="group" aria-label="Filtrar por estado">
+        <label class="buscador">
+          <app-icon [svg]="iconBuscar" [size]="17"></app-icon>
+          <input type="search" autocomplete="off" placeholder="Buscar por pedido o cliente" aria-label="Buscar pedido"
+                 [value]="busquedaPed()" (input)="busquedaPed.set($any($event.target).value)" />
+        </label>
+        <div class="chips" role="group" aria-label="Filtrar por etapa">
           <button type="button" *ngFor="let f of filtrosPedido" [class.activo]="filtroPedidos() === f" (click)="filtroPedidos.set(f)">{{ f }}</button>
         </div>
         <div class="caja">
+          <p class="muted vacio-txt" *ngIf="!pedidosFiltrados().length">No encontramos pedidos con ese filtro.</p>
           <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: pedidosFiltrados() }"></ng-container>
         </div>
       </ng-container>
@@ -59,7 +112,7 @@
         <div class="caja" *ngIf="productosFiltrados().length; else sinProductos">
           <div class="item" *ngFor="let p of productosFiltrados(); trackBy: trackId">
             <div class="item-cab">
-              <span class="mini" [style.background]="p.color"><img src="assets/logo.png" alt="" /></span>
+              <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
               <div class="item-datos">
                 <b>{{ p.nombre }}</b>
                 <span class="muted">{{ p.categoria }}</span>
@@ -94,10 +147,10 @@
           <button type="button" [class.activo]="soloBajo()" (click)="soloBajo.set(true)">Solo stock bajo</button>
         </div>
         <div class="caja">
-          <p class="muted" *ngIf="!inventario().length">No hay productos con stock bajo.</p>
+          <p class="muted vacio-txt" *ngIf="!inventario().length">No hay productos con stock bajo.</p>
           <div class="item" *ngFor="let p of inventario(); trackBy: trackId">
             <div class="item-cab">
-              <span class="mini" [style.background]="p.color"><img src="assets/logo.png" alt="" /></span>
+              <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
               <div class="item-datos">
                 <b>{{ p.nombre }}</b>
                 <span class="insignia" [ngClass]="estadoStock(p).clase">{{ estadoStock(p).texto }}</span>
@@ -150,7 +203,7 @@
         </div>
 
         <div class="caja">
-          <div class="item" *ngFor="let u of usuarios(); trackBy: trackCorreo">
+          <div class="item" *ngFor="let u of store.usuarios(); trackBy: trackCorreo">
             <div class="item-cab">
               <span class="avatar">{{ u.nombre.charAt(0) }}</span>
               <div class="item-datos">
@@ -176,41 +229,154 @@
 
   <app-admin-nav current="home"></app-admin-nav>
 
-  <!-- ═════════ Aviso ═════════ -->
+  <!-- Aviso emergente: pedido nuevo o cambio del cliente -->
+  <button type="button" class="push" *ngIf="banner() as b" (click)="abrirAviso(b)">
+    <img src="assets/logo.png" alt="" />
+    <span><b>{{ b.titulo }}</b><small>{{ b.texto }}</small></span>
+    <em>ahora</em>
+  </button>
+
   <div class="aviso" role="status" *ngIf="aviso() as a">{{ a }}</div>
 
   <!-- ═════════ Hojas inferiores ═════════ -->
   <div class="hoja-fondo" *ngIf="hoja()" (click)="cerrarHoja()">
     <div class="hoja" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
-      <!-- Detalle y control de estado del pedido -->
+      <!-- Pedido: datos, etapa de logística y bitácora -->
       <ng-container *ngIf="hoja() === 'pedido' && pedidoAbierto() as o">
         <h2>Pedido {{ o.no }}</h2>
         <div class="fila-estado">
-          <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
-          <span class="muted">{{ o.cliente }}, {{ o.correo }}</span>
+          <span class="insignia" [ngClass]="o.estadoPago === 'confirmado' ? 'ok' : o.estadoPago === 'pendiente' ? 'bajo' : 'agotado'">Pago: {{ textoPago(o).toLowerCase() }}</span>
+          <span class="estado" [ngClass]="'g-' + claseGrupo(o)">{{ o.cancelado ? 'Cancelado' : o.incidenciaAbierta ? 'Incidencia' : etapa(o).nombre }}</span>
         </div>
-        <p class="muted">Envío a {{ o.direccion }}. Pago con {{ o.pago.toLowerCase() }}.</p>
-
-        <div class="linea-tiempo" *ngIf="o.estado !== 'Cancelado'">
-          <div class="paso" *ngFor="let e of estados" [class.hecho]="indiceEstado(e) <= indiceEstado(o.estado)">
-            {{ e }}<span class="muted">{{ fechaDe(o, e) }}</span>
-          </div>
-        </div>
+        <p class="muted">{{ o.cliente }} · {{ o.correo }} · {{ o.telefono }}</p>
+        <p class="muted">{{ o.entrega === 'retiro' ? 'Retiro en punto' : 'Envío a ' + o.direccion }}. Pago con {{ metodoTexto(o).toLowerCase() }}.
+          <ng-container *ngIf="!o.cancelado && o.fase < 6">Entrega: {{ o.ventana || o.eta }}.</ng-container></p>
 
         <div class="fila-sum" *ngFor="let i of o.items">
           <span>{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
           <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
         </div>
-        <div class="fila-sum total"><span>Total</span><span>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+        <div class="fila-sum"><span>Envío</span><span>{{ o.envio ? (o.envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+        <div class="fila-sum total"><span>Total</span><span>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
 
-        <div class="acciones">
-          <ng-container *ngFor="let s of siguientes(o)">
-            <button type="button" class="btn-peligro btn-sm" *ngIf="s === 'Cancelado'; else avanzar" (click)="pedirCancelar(o.no)">Cancelar pedido</button>
-            <ng-template #avanzar>
-              <button type="button" class="btn-oro btn-sm" (click)="cambiarEstado(o.no, s)">{{ accionDe(s) }}</button>
+        <ng-container *ngIf="!o.cancelado">
+
+          <!-- Pago por verificar -->
+          <div class="rec" *ngIf="pagoPendiente(o)">
+            <b>Comprobante SINPE Móvil</b>
+            <div class="fila-sum"><span class="muted">Monto</span><b>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</b></div>
+            <div class="fila-sum"><span class="muted">Recibido</span><span>{{ o.eventos[0].fecha }}</span></div>
+            <p class="muted">Compara el monto con el comprobante antes de confirmar.</p>
+            <div class="acciones">
+              <button type="button" class="btn-peligro btn-sm" (click)="pedirRechazo(o)">Rechazar pago</button>
+              <button type="button" class="btn-oro btn-sm" (click)="confirmarPago(o)">Confirmar pago</button>
+            </div>
+          </div>
+
+          <!-- Por preparar -->
+          <div class="acciones" *ngIf="o.fase === 1">
+            <button type="button" class="btn-oro btn-sm" (click)="iniciarPreparacion(o)">Empezar a preparar</button>
+          </div>
+
+          <!-- Hoja de preparación y empaque -->
+          <ng-container *ngIf="o.fase === 2">
+            <h3 class="sub-titulo">Hoja de preparación</h3>
+            <button type="button" class="pick" *ngFor="let i of o.items; let k = index" [class.on]="marcado(o, k)" (click)="alternarPick(o, k)">
+              <span class="ck"></span>
+              <span class="pick-txt">{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+              <span class="muted">{{ ubicacion(i.id) }}</span>
+            </button>
+            <div class="dos">
+              <label class="campo">Caja
+                <select [(ngModel)]="caja"><option *ngFor="let c of cajas" [value]="c">{{ c }}</option></select>
+              </label>
+              <label class="campo">Peso (kg)
+                <input type="text" inputmode="decimal" [(ngModel)]="peso" />
+              </label>
+            </div>
+            <div class="acciones">
+              <button type="button" class="btn-oro btn-sm" [disabled]="!pickingCompleto(o)" (click)="marcarEmpacado(o)">Marcar como empacado</button>
+            </div>
+            <p class="muted" *ngIf="!pickingCompleto(o)">Marca cada artículo al sacarlo de bodega para poder empacar.</p>
+          </ng-container>
+
+          <!-- Empacado: transportista o retiro -->
+          <ng-container *ngIf="o.fase === 3">
+            <p class="muted">Empacado en {{ o.paquete }}.</p>
+            <ng-container *ngIf="o.entrega === 'domicilio'; else retiro">
+              <h3 class="sub-titulo">Transportista</h3>
+              <button type="button" class="opcion" *ngFor="let op of opciones(o)" [class.on]="transportistaId === op.t.id" [class.off]="!op.cubre"
+                      [disabled]="!op.cubre" (click)="elegirTransportista(op.t.id)">
+                <i></i>
+                <span><b>{{ op.t.nombre }}</b><small class="muted">{{ op.cubre ? (op.t.tarifa | currency:'USD':'symbol':'1.2-2') + ' · ' + op.t.tiempo : 'Sin cobertura en esta provincia' }}</small></span>
+              </button>
+              <p class="muted">Corte de despacho: hoy {{ corte }}.</p>
+              <div class="acciones">
+                <button type="button" class="btn-oro btn-sm" (click)="despachar(o)">Generar guía y etiqueta</button>
+              </div>
+            </ng-container>
+            <ng-template #retiro>
+              <div class="acciones">
+                <button type="button" class="btn-oro btn-sm" (click)="marcarListoRetiro(o)">Marcar listo para retirar</button>
+              </div>
             </ng-template>
           </ng-container>
+
+          <!-- Con el transportista: etiqueta -->
+          <ng-container *ngIf="o.fase === 4 && o.entrega === 'domicilio'">
+            <div class="etiqueta-envio">
+              <svg viewBox="0 0 90 90" fill="#15110a" aria-hidden="true"><rect *ngFor="let c of qr(o.guia)" [attr.x]="c.x" [attr.y]="c.y" width="10" height="10" /></svg>
+              <div><b>{{ o.guia }}</b><span>{{ o.transportista }}<br />Etiqueta lista · 10 × 15 cm</span></div>
+            </div>
+            <div class="acciones">
+              <button type="button" class="btn-oro btn-sm" (click)="iniciarReparto(o)">Pasar a reparto</button>
+            </div>
+          </ng-container>
+
+          <!-- Retiro: entrega con código -->
+          <ng-container *ngIf="o.fase === 4 && o.entrega === 'retiro'">
+            <ng-container *ngTemplateOutlet="bloqueCodigo; context: { $implicit: o, boton: 'Confirmar retiro' }"></ng-container>
+          </ng-container>
+
+          <!-- En reparto: incidencia o entrega con código -->
+          <ng-container *ngIf="o.fase === 5">
+            <div class="rec" *ngIf="o.incidenciaAbierta; else enReparto">
+              <b>Incidencia abierta</b>
+              <p class="muted">Esperando que el cliente elija una nueva fecha.</p>
+              <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="reprogramarPorCliente(o)">Reprogramar por el cliente</button></div>
+            </div>
+            <ng-template #enReparto>
+              <ng-container *ngTemplateOutlet="bloqueCodigo; context: { $implicit: o, boton: 'Confirmar entrega' }"></ng-container>
+              <div class="rec">
+                <b>¿No se pudo entregar?</b>
+                <select class="select ancho" [(ngModel)]="motivo" aria-label="Motivo de la incidencia">
+                  <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+                </select>
+                <div class="acciones"><button type="button" class="btn-peligro btn-sm" (click)="registrarIncidencia(o)">Registrar incidencia</button></div>
+              </div>
+            </ng-template>
+          </ng-container>
+
+          <!-- Entregado -->
+          <div class="rec" *ngIf="o.fase === 6">
+            <b>Entregado con código verificado</b>
+            <p class="muted">{{ fechaDe(o, 6) }}</p>
+            <div class="estrellas-ro" *ngIf="o.calificacion"><span *ngFor="let n of estrellas" [class.on]="o.calificacion >= n">★</span></div>
+            <p class="muted" *ngIf="!o.calificacion">El cliente todavía no califica la entrega.</p>
+          </div>
+        </ng-container>
+
+        <p class="error" role="alert" *ngIf="errorLog()">{{ errorLog() }}</p>
+
+        <h3 class="sub-titulo">Bitácora</h3>
+        <div class="lgi" *ngFor="let e of bitacora(o)">
+          <span class="muted">{{ e.fecha }}</span>
+          <b>{{ e.quien }}</b> · {{ e.texto }}
+        </div>
+
+        <div class="acciones">
+          <button type="button" class="btn-peligro btn-sm" *ngIf="puedeCancelar(o)" (click)="pedirCancelar(o)">Cancelar pedido</button>
           <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cerrar</button>
         </div>
       </ng-container>
@@ -302,15 +468,29 @@
 
 <!-- Plantilla reutilizable: lista de pedidos -->
 <ng-template #listaPedidos let-lista>
-  <p class="muted" *ngIf="!lista.length && hoja() !== 'cliente'">No hay pedidos en este estado.</p>
   <button type="button" class="item item-btn" *ngFor="let o of lista; trackBy: trackNo" (click)="abrirPedido(o.no)">
     <div class="item-cab">
       <div class="item-datos">
         <b>{{ o.no }}</b>
-        <span class="muted">{{ o.cliente }}, {{ o.fecha }}</span>
+        <span class="muted">{{ o.cliente }} · {{ o.entrega === 'retiro' ? 'Retiro' : 'Domicilio' }}</span>
       </div>
-      <div class="item-num"><b>{{ totalPedido(o) | currency:'USD':'symbol':'1.2-2' }}</b></div>
+      <div class="item-num"><b>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</b><span class="muted">{{ metodoTexto(o) }}</span></div>
     </div>
-    <span class="estado" [ngClass]="'estado-' + o.estado.toLowerCase()">{{ o.estado }}</span>
+    <div class="fila-etiquetas">
+      <span class="estado" [ngClass]="'g-' + claseGrupo(o)">{{ grupo(o) }}</span>
+      <span class="muted">desde {{ ultimoMovimiento(o) }}</span>
+    </div>
   </button>
+</ng-template>
+
+<!-- Plantilla reutilizable: entrega o retiro con código -->
+<ng-template #bloqueCodigo let-o let-boton="boton">
+  <div class="rec">
+    <b>Código de {{ o.entrega === 'retiro' ? 'retiro' : 'entrega' }}</b>
+    <p class="muted">Pídele al cliente los 4 dígitos que ve en su app. Sin el código no se cierra la entrega.</p>
+    <input class="codigo-input" type="text" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Código del cliente" [(ngModel)]="codigoEntrada" />
+    <div class="acciones">
+      <button type="button" class="btn-oro btn-sm" [disabled]="codigoEntrada.length < 4" (click)="confirmarEntrega(o)">{{ boton }}</button>
+    </div>
+  </div>
 </ng-template>
