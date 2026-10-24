@@ -270,18 +270,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
 
 
 // ───────── Portada y secciones ─────────
-.banner {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 16px; padding: 16px 8px 16px 18px;
-  border-radius: 20px;
-  border: 1px solid var(--linea);
-  background: linear-gradient(120deg, #2b2010, #13151b 70%);
-  overflow: hidden;
-  div { display: grid; gap: 6px; justify-items: start; }
-  b { font-family: 'Cinzel', serif; font-size: 17px; letter-spacing: 1px; color: var(--cream); }
-  span { font-size: 13px; color: #cdbf9c; }
-  img { width: 50%; flex: none; filter: drop-shadow(0 10px 24px rgba(212, 167, 60, 0.3)); }
-}
+
 .sec {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   margin: 22px 0 12px;
