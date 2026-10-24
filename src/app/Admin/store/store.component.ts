@@ -14,7 +14,7 @@ import {
 } from 'src/app/Core/Models/store.models';
 
 // ───────────────────────── Tipos de la pantalla ─────────────────────────
-type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv' | 'cli';
+type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv';
 type Hoja = 'pedido' | 'cliente' | 'producto';
 
 interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
@@ -24,7 +24,7 @@ const AGENTE = 'Admin Royale'; // quien aparece en la bitácora cuando el admin 
 const STOCK_BAJO = 5;
 const SECCIONES: { k: Seccion; t: string; nuevo?: boolean }[] = [
   { k: 'res', t: 'Resumen' }, { k: 'log', t: 'Logística', nuevo: true }, { k: 'ord', t: 'Pedidos' },
-  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' }, { k: 'cli', t: 'Clientes' },
+  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' },
 ];
 const CATEGORIAS: Categoria[] = ['Camisetas', 'Sudaderas y gorras', 'Accesorios', 'Hogar', 'Juegos'];
 const CAJAS = ['Caja S', 'Caja M', 'Caja L'];
@@ -83,7 +83,6 @@ export class StoreComponent implements OnDestroy {
 
   // Formularios de producto y usuario
   formProd = { id: '', nombre: '', categoria: 'Camisetas' as Categoria, precio: '', stock: '', descripcion: '' };
-  formUsr = { nombre: '', correo: '', rol: 'cliente' as Rol, clave: '' };
 
   private temporizador?: ReturnType<typeof setTimeout>;
   private temporizadorBanner?: ReturnType<typeof setTimeout>;
@@ -431,11 +430,7 @@ export class StoreComponent implements OnDestroy {
     return { texto: 'Disponible', clase: 'ok' };
   }
 
-  // ── Clientes ──
-  abrirCliente(correo: string): void {
-    this.clienteCorreo.set(correo);
-    this.hoja.set('cliente');
-  }
+
 
 
   // ── Diálogo de confirmación ──
