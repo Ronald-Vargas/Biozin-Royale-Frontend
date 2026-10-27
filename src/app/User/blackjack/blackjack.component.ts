@@ -285,7 +285,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     if (hand?.done) return 'PLANTARSE';
     return '';
   }
-
+  
   private seatTone(hand: BjHandSnap | null): 'dark' | 'win' | 'bust' {
     if (hand?.result === 'win' || hand?.result === 'blackjack') return 'win';
     if (hand?.result === 'lose' && hand.total > 21) return 'bust';

@@ -6,6 +6,13 @@
   --sup-2: #171a22;
   --apagado: #a89c80;
   --oro-texto: #1a1204;
+  // Tonos de texto del resto del sistema (billetera, filas de ajustes)
+  --texto: var(--cream);
+  --texto-suave: #cbb98f;
+  --texto-tenue: #8d8064;
+
+  // Todo el texto sin color propio sale en crema, no en el negro por defecto de Ionic
+  color: var(--texto);
 }
 
 .page-inner {
@@ -338,7 +345,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
     width: 36px; height: 36px; border: 0; border-radius: 50%;
     background: none; color: var(--gold-1); font-size: 18px; cursor: pointer;
   }
-  span { min-width: 24px; text-align: center; font-weight: 700; }
+  span { min-width: 24px; text-align: center; font-weight: 700; color: var(--cream); }
 }
 .cantidad-tarjeta { justify-content: space-between; }
 
@@ -369,21 +376,33 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
 .linea {
   display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center;
   padding: 14px 0; border-bottom: 1px solid var(--linea);
+  color: var(--texto);
 }
 .linea-img { padding: 4px; border: 0; border-radius: 14px; background: rgba(255, 255, 255, 0.04); cursor: pointer; }
-.linea-info { display: grid; gap: 2px; justify-items: start; b { font-size: 14px; } }
+.linea-info { display: grid; gap: 2px; justify-items: start; b { font-size: 14px; color: var(--cream); } }
 .linea-total { grid-column: 2 / 4; }
+
+// Cajas de resumen (carrito, pago, pedido, seguimiento)
 .caja {
   margin-top: 16px; padding: 16px;
   border-radius: 20px; border: 1px solid var(--linea);
   background: var(--sup);
+  color: var(--texto);
 }
 .caja-titulo { margin-bottom: 12px; font-size: 16px; letter-spacing: 1px; }
-.fila-sum { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 14px; }
+
+// Filas de resumen: la descripción en dorado suave y el valor en crema, como en la billetera
+.fila-sum {
+  display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 14px;
+  color: var(--texto-suave);
+  > :last-child { color: var(--texto); }
+}
 .total {
   margin-top: 8px; padding-top: 12px;
   border-top: 1px solid rgba(212, 167, 60, 0.3);
   font-size: 18px; font-weight: 700;
+  // El total resalta en el dorado claro del sistema
+  &, > :last-child { color: var(--gold-1); }
 }
 
 // ───────── Formulario de pago ─────────
@@ -412,6 +431,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
 // ───────── Confirmación y pedidos ─────────
 .confirmacion {
   display: grid; justify-items: center; gap: 12px; text-align: center; padding-top: 12px;
+  color: var(--texto);
   h2 { font-size: 26px; letter-spacing: 1px; }
   .caja { width: 100%; text-align: left; }
 }
@@ -482,6 +502,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
   padding: 22px 20px calc(22px + var(--ion-safe-area-bottom, 0px));
   border-radius: 28px 28px 0 0;
   background: var(--sup); border-top: 1px solid var(--linea);
+  color: var(--texto);
   h3 { font-size: 20px; }
   .tallas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin: 6px 0; }
 }
@@ -504,6 +525,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
   padding: 16px; margin-top: 4px;
   border-radius: 20px; border: 1px solid rgba(212, 167, 60, 0.3);
   background: linear-gradient(135deg, #2b2010, #13151b 70%);
+  color: var(--texto);
   h2 { font-size: 22px; letter-spacing: 1px; }
 }
 .chip {
@@ -568,7 +590,7 @@ h1, h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
   padding: 10px 12px; margin-bottom: 8px;
   border-radius: 14px; border: 1px solid var(--linea); background: none;
   color: var(--cream); cursor: pointer;
-  span { font-size: 13px; }
+  span { font-size: 13px; color: var(--texto-suave); }
   &.nuevo { border-color: rgba(212, 167, 60, 0.5); background: rgba(212, 167, 60, 0.08); }
 }
 .pedido-item {
