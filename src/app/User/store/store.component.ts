@@ -322,7 +322,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   /** Cuando el pedido está en reparto, el cliente ve su código de entrega; en retiro, su código de retiro. */
   muestraCodigo(p: Pedido): boolean {
     if (p.cancelado || p.incidenciaAbierta) return false;
-    return (p.entrega === 'domicilio' && p.fase === 5) || (p.entrega === 'retiro' && p.fase === 4);
+    return (p.entrega === 'domicilio' && p.fase === 5);
   }
   puedeCancelar(p: Pedido): boolean {
     return puedeCancelar(p, 'cliente');

@@ -144,7 +144,6 @@ export function puedeCancelar(p: Pedido, rol: 'cliente' | 'admin'): boolean {
 export interface Transportista { id: string; nombre: string; tarifa: number; tiempo: string; cobertura: string; }
 export const TRANSPORTISTAS: Transportista[] = [
   { id: 'correos', nombre: 'Correos de Costa Rica', tarifa: 5, tiempo: '2 a 3 días', cobertura: 'Todo el país' },
-  { id: 'local', nombre: 'Mensajería local', tarifa: 3, tiempo: '1 día', cobertura: 'Gran Área Metropolitana' },
 ];
 export function provinciaDe(direccion: string): string {
   return direccion.split(',')[0].trim();

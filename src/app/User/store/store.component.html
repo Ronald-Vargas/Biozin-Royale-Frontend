@@ -25,7 +25,7 @@
                  [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
         </label>
 
-
+        
 
         <section class="categorias" aria-label="Categorías de la tienda">
           <button
@@ -260,11 +260,7 @@
             <span>Envío a domicilio<small class="muted">Correos de Costa Rica · 2 a 3 días</small></span>
             <b>{{ totales().subtotal >= envioGratisDesde ? 'Gratis' : '$5.00' }}</b>
           </label>
-          <label class="metodo" [class.activo]="entrega() === 'retiro'">
-            <input type="radio" name="entrega" [checked]="entrega() === 'retiro'" (change)="setEntrega('retiro')" />
-            <span>Retiro en punto<small class="muted">Biozin Royale, Guácimo · listo en 24 horas</small></span>
-            <b>Gratis</b>
-          </label>
+          
         </div>
 
         <div class="caja formulario">
