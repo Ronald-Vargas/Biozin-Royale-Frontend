@@ -314,11 +314,6 @@
               </label>
             </div>
           </div>
-          <label class="metodo" [class.activo]="metodo() === 'sinpe'">
-            <input type="radio" name="metodo" [checked]="metodo() === 'sinpe'" (change)="setMetodo('sinpe')" />
-            <span>SINPE Móvil<small class="muted">Verificamos tu pago antes de preparar el pedido</small></span>
-          </label>
-          <p class="muted" *ngIf="metodo() === 'sinpe'">Al confirmar verás el número y el monto para enviar tu SINPE.</p>
         </div>
 
         <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>

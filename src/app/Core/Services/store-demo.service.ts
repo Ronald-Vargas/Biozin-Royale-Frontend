@@ -100,19 +100,19 @@ const HEREDIA = 'Heredia, Centro, frente al parque';
 
 const PEDIDOS_DEMO: Pedido[] = [
   {
-    ...ANA, no: 'BR-10241', metodoPago: 'sinpe', estadoPago: 'pendiente', entrega: 'domicilio', direccion: SANTA_ROSA,
+    ...ANA, no: 'BR-10241', metodoPago: 'card', estadoPago: 'pendiente', entrega: 'domicilio', direccion: SANTA_ROSA,
     items: [{ id: 't1', nombre: 'Camiseta Royale', talla: 'M', cantidad: 2, precio: 28 }, { id: 'g1', nombre: 'Gorra Royale Negra', talla: null, cantidad: 1, precio: 24 }],
     envio: 0, fase: 0, cancelado: false, transportista: '', guia: '', paquete: '', codigo: '4827',
     incidenciaAbierta: false, ventana: '', eta: 'mar 20 – mié 21 oct', calificacion: 0,
-    eventos: [ev('fase', 0, 'lun 19 oct · 10:06', 'Pedido creado · SINPE Móvil', 'Ana Mora')],
+    eventos: [ev('fase', 0, 'lun 19 oct · 10:06', 'Pedido creado · Tarjeta', 'Ana Mora')],
   },
   {
-    ...LUIS, no: 'BR-10238', metodoPago: 'sinpe', estadoPago: 'confirmado', entrega: 'domicilio', direccion: HEREDIA,
+    ...LUIS, no: 'BR-10238', metodoPago: 'card', estadoPago: 'confirmado', entrega: 'domicilio', direccion: HEREDIA,
     items: [{ id: 'h1', nombre: 'Sudadera High Roller', talla: 'L', cantidad: 1, precio: 62 }],
     envio: 0, fase: 2, cancelado: false, transportista: '', guia: '', paquete: '', codigo: '7305',
     incidenciaAbierta: false, ventana: '', eta: 'mar 20 – mié 21 oct', calificacion: 0,
     eventos: [
-      ev('fase', 0, 'dom 18 oct · 16:40', 'Pedido creado · SINPE Móvil', 'Luis Vargas'),
+      ev('fase', 0, 'dom 18 oct · 16:40', 'Pedido creado · Tarjeta', 'Luis Vargas'),
       ev('pago', 1, 'dom 18 oct · 17:05', 'Pago confirmado', 'Admin Royale'),
       ev('fase', 2, 'lun 19 oct · 08:30', 'Preparación iniciada', 'Admin Royale'),
     ],
@@ -148,20 +148,20 @@ const PEDIDOS_DEMO: Pedido[] = [
     ],
   },
   {
-    ...MARTA, no: 'BR-10202', metodoPago: 'sinpe', estadoPago: 'rechazado', entrega: 'domicilio', direccion: 'San José, Escazú, Calle Real',
+    ...MARTA, no: 'BR-10202', metodoPago: 'card', estadoPago: 'rechazado', entrega: 'domicilio', direccion: 'San José, Escazú, Calle Real',
     items: [{ id: 'r1', nombre: 'Taza Jackpot', talla: null, cantidad: 2, precio: 14 }],
     envio: 5, fase: 0, cancelado: true, transportista: '', guia: '', paquete: '', codigo: '9031',
     incidenciaAbierta: false, ventana: '', eta: '', calificacion: 0,
     eventos: [
-      ev('fase', 0, 'jue 1 oct · 09:30', 'Pedido creado · SINPE Móvil', 'Marta Solís'),
-      ev('cancelacion', undefined, 'vie 2 oct · 09:35', 'Cancelado: pago no recibido', 'Admin Royale'),
+      ev('fase', 0, 'jue 1 oct · 09:30', 'Pedido creado · Tarjeta', 'Marta Solís'),
+      ev('cancelacion', undefined, 'vie 2 oct · 09:35', 'Cancelado: pago rechazado', 'Admin Royale'),
     ],
   },
 ];
 
 const NOTIFICACIONES_DEMO: StoreNotificacion[] = [
   { id: 1, correo: 'cliente@biozin.com', titulo: 'Tu pedido va en camino', texto: 'Código de entrega: 5190', fecha: 'lun 19 oct · 08:00', leida: false, pedidoNo: 'BR-10230' },
-  { id: 2, correo: ADMIN_CORREO, titulo: 'Nuevo pedido BR-10241', texto: 'Ana Mora · $80.00 · SINPE por verificar', fecha: 'lun 19 oct · 10:06', leida: false, pedidoNo: 'BR-10241' },
+  { id: 2, correo: ADMIN_CORREO, titulo: 'Nuevo pedido BR-10241', texto: 'Ana Mora · $80.00 · Tarjeta por confirmar', fecha: 'lun 19 oct · 10:06', leida: false, pedidoNo: 'BR-10241' },
 ];
 
 // ───────────── Servicio ─────────────
@@ -196,18 +196,18 @@ export class StoreDemoService {
       const p = this.producto(i.id);
       return { id: i.id, nombre: p?.nombre ?? 'Producto', talla: i.talla, cantidad: i.cantidad, precio: p?.precio ?? 0 };
     });
-    const inmediato = d.metodoPago !== 'sinpe';
-    const metodo = d.metodoPago === 'wallet' ? 'Billetera' : d.metodoPago === 'card' ? 'Tarjeta' : 'SINPE Móvil';
+    // En la simulación, el pago con billetera o tarjeta se confirma al instante.
+    const metodo = d.metodoPago === 'wallet' ? 'Billetera' : 'Tarjeta';
     const fecha = ahora();
     const pedido: Pedido = {
       no: `BR-${10242 + this.pedidos().length}`,
       correo: d.correo, cliente: d.cliente, telefono: d.telefono,
       metodoPago: d.metodoPago,
-      estadoPago: inmediato ? 'confirmado' : 'pendiente',
+      estadoPago: 'confirmado',
       entrega: d.entrega,
       direccion: d.entrega === 'retiro' ? 'Retiro en punto: Biozin Royale, Guácimo' : d.direccion,
       items, envio: d.envio,
-      fase: inmediato ? 1 : 0,
+      fase: 1,
       cancelado: false,
       transportista: d.entrega === 'retiro' ? 'Retiro en punto' : '',
       guia: '', paquete: '',
@@ -217,7 +217,7 @@ export class StoreDemoService {
       calificacion: 0,
       eventos: [ev('fase', 0, fecha, `Pedido creado · ${metodo}`, d.cliente)],
     };
-    if (inmediato) pedido.eventos.push(ev('pago', 1, fecha, 'Pago confirmado automáticamente', 'Sistema'));
+    pedido.eventos.push(ev('pago', 1, fecha, 'Pago confirmado automáticamente', 'Sistema'));
 
     // Descuenta el stock y, si paga con billetera, el saldo.
     this.productos.update(ps => ps.map(p => {
@@ -227,8 +227,8 @@ export class StoreDemoService {
     if (d.metodoPago === 'wallet') this.gastadoBilletera.update(g => g + totalPedido(pedido));
 
     this.pedidos.update(ps => [pedido, ...ps]);
-    this.notificar(d.correo, 'Pedido recibido', inmediato ? `Tu pedido ${pedido.no} está confirmado.` : `Recibimos tu pedido ${pedido.no}. Estamos verificando el pago.`, pedido.no);
-    this.notificar(ADMIN_CORREO, `Nuevo pedido ${pedido.no}`, `${d.cliente} · ${dinero(totalPedido(pedido))} · ${metodo}${inmediato ? '' : ' por verificar'}`, pedido.no);
+    this.notificar(d.correo, 'Pedido recibido', `Tu pedido ${pedido.no} está confirmado.`, pedido.no);
+    this.notificar(ADMIN_CORREO, `Nuevo pedido ${pedido.no}`, `${d.cliente} · ${dinero(totalPedido(pedido))} · ${metodo}`, pedido.no);
     return pedido;
   }
 

@@ -317,7 +317,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     return { pendiente: 'Por verificar', confirmado: 'Confirmado', rechazado: 'Rechazado', reembolsado: 'Reembolsado' }[p.estadoPago];
   }
   metodoTexto(p: Pedido): string {
-    return { wallet: 'Billetera', card: 'Tarjeta', sinpe: 'SINPE Móvil' }[p.metodoPago];
+    return { wallet: 'Billetera', card: 'Tarjeta' }[p.metodoPago];
   }
   /** Cuando el pedido está en reparto, el cliente ve su código de entrega; en retiro, su código de retiro. */
   muestraCodigo(p: Pedido): boolean {

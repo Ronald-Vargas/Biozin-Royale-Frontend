@@ -4,7 +4,7 @@
 export type Categoria = 'Camisetas' | 'Sudaderas y gorras' | 'Accesorios' | 'Hogar' | 'Juegos';
 export type Arte = 'tee' | 'hood' | 'cap' | 'mug' | 'key' | 'pin' | 'tote' | 'post' | 'cards' | 'dice' | 'mat' | 'chips';
 export type Rol = 'admin' | 'soporte' | 'cliente';
-export type Metodo = 'wallet' | 'card' | 'sinpe';
+export type Metodo = 'wallet' | 'card';
 export type Entrega = 'domicilio' | 'retiro';
 /** El pago y la logística son dos estados independientes. */
 export type EstadoPago = 'pendiente' | 'confirmado' | 'rechazado' | 'reembolsado';
@@ -144,6 +144,7 @@ export function puedeCancelar(p: Pedido, rol: 'cliente' | 'admin'): boolean {
 export interface Transportista { id: string; nombre: string; tarifa: number; tiempo: string; cobertura: string; }
 export const TRANSPORTISTAS: Transportista[] = [
   { id: 'correos', nombre: 'Correos de Costa Rica', tarifa: 5, tiempo: '2 a 3 días', cobertura: 'Todo el país' },
+  { id: 'local', nombre: 'Mensajería local', tarifa: 3, tiempo: '1 día', cobertura: 'Gran Área Metropolitana' },
 ];
 export function provinciaDe(direccion: string): string {
   return direccion.split(',')[0].trim();

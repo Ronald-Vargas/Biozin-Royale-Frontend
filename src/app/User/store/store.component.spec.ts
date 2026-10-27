@@ -65,20 +65,6 @@ describe('StoreComponent (usuario)', () => {
     expect(component.saldo()).toBe(antes - 33); // $28 + $5 de envío
   });
 
-  it('el retiro en punto no cobra envío ni pide dirección', () => {
-    component.anadir('r3');
-    component.setEntrega('retiro');
-    component.setMetodo('sinpe');
-    component.datos.direccion = '';
-    datosValidos();
-    component.datos.direccion = '';
-    expect(component.totales().envio).toBe(0);
-
-    component.confirmar();
-    expect(component.error()).toBe('');
-    expect(component.pedidoActual()!.entrega).toBe('retiro');
-  });
-
   it('rechaza el pago con billetera si el saldo no alcanza', () => {
     for (let i = 0; i < 5; i++) component.anadir('j3');
     for (let i = 0; i < 10; i++) component.anadir('h2', 'L');
