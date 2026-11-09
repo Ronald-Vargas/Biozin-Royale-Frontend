@@ -8,8 +8,8 @@ import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
 import {
-  Categoria, COSTO_ENVIO, ENVIO_GRATIS_DESDE, Entrega, Metodo, Pedido, PROVINCIAS, Producto, StoreNotificacion,
-  etapaActual, etapasDe, puedeCancelar, subtotalPedido, totalPedido,
+  Categoria, COSTO_ENVIO, ENVIO_GRATIS_DESDE, ETAPAS, Metodo, Pedido, PROVINCIAS, Producto, StoreNotificacion,
+  etapaActual, puedeCancelar, totalPedido,
 } from 'src/app/Core/Models/store.models';
 
 // ───────────────────────── Tipos de la pantalla ─────────────────────────
@@ -49,8 +49,6 @@ export class StoreComponent implements OnInit, OnDestroy {
   readonly store = inject(StoreDemoService);
 
   // Datos fijos para la plantilla
-  readonly cliente = CLIENTE;
-  readonly categorias = CATEGORIAS;
   readonly filtros: ('Todas' | Categoria)[] = ['Todas', ...CATEGORIAS];
   readonly tallas = TALLAS;
   readonly provincias = PROVINCIAS;
@@ -74,7 +72,6 @@ export class StoreComponent implements OnInit, OnDestroy {
   readonly banner = signal<StoreNotificacion | null>(null);
   readonly error = signal('');
   readonly metodo = signal<Metodo>('wallet');
-  readonly entrega = signal<Entrega>('domicilio');
   readonly carrito = signal<LineaCarrito[]>([]);
 
   // Formularios
@@ -114,7 +111,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   readonly cantidadCarrito = computed(() => this.carrito().reduce((a, l) => a + l.cantidad, 0));
   readonly totales = computed(() => {
     const subtotal = this.carrito().reduce((a, l) => a + this.producto(l.id).precio * l.cantidad, 0);
-    const envio = this.entrega() === 'domicilio' && subtotal > 0 && subtotal < ENVIO_GRATIS_DESDE ? COSTO_ENVIO : 0;
+    const envio = subtotal > 0 && subtotal < ENVIO_GRATIS_DESDE ? COSTO_ENVIO : 0;
     return { subtotal, envio, total: subtotal + envio };
   });
   readonly saldo = computed(() => (this.balanceSvc.balance() ?? SALDO_DEMO) - this.store.gastadoBilletera());
@@ -179,10 +176,6 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.categoria.set(c);
     this.busqueda.set('');
     if (this.vista() !== 'home') this.ir('home');
-  }
-
-  irALista(): void {
-    this.host.nativeElement.querySelector('#lista')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // ── Búsqueda ──
@@ -253,10 +246,6 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.metodo.set(m);
     this.error.set('');
   }
-  setEntrega(e: Entrega): void {
-    this.entrega.set(e);
-    this.error.set('');
-  }
 
   confirmar(): void {
     const d = this.datos;
@@ -268,7 +257,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     const error =
       !d.nombre.trim() ? 'Escribe el nombre de quien recibe.'
       : !/^\d{8}$/.test(d.telefono.replace(/[\s-]/g, '')) ? 'El teléfono debe tener 8 dígitos.'
-      : this.entrega() === 'domicilio' && d.direccion.trim().length < 8 ? 'Escribe una dirección exacta para el envío.'
+      : d.direccion.trim().length < 8 ? 'Escribe una dirección exacta para el envío.'
       : m === 'card' && !/^\d{16}$/.test(tarjeta) ? 'El número de tarjeta debe tener 16 dígitos.'
       : m === 'card' && !/^(0[1-9]|1[0-2])\/\d{2}$/.test(d.vence) ? 'La fecha de vencimiento va como MM/AA.'
       : m === 'card' && !/^\d{3,4}$/.test(d.cvv) ? 'El CVV debe tener 3 o 4 dígitos.'
@@ -284,7 +273,6 @@ export class StoreComponent implements OnInit, OnDestroy {
       cliente: d.nombre.trim(),
       telefono: d.telefono.replace(/[\s-]/g, ''),
       metodoPago: m,
-      entrega: this.entrega(),
       direccion: `${d.provincia}, ${d.direccion.trim()}`,
       items: this.carrito().map(l => ({ id: l.id, talla: l.talla, cantidad: l.cantidad })),
       envio: t.envio,
@@ -304,12 +292,6 @@ export class StoreComponent implements OnInit, OnDestroy {
   totalDe(p: Pedido): number {
     return totalPedido(p);
   }
-  subtotalDe(p: Pedido): number {
-    return subtotalPedido(p);
-  }
-  provinciaDe(p: Pedido): string {
-    return p.direccion.split(',')[0];
-  }
   fechaDe(p: Pedido, fase: number): string {
     return p.eventos.find(x => x.fase === fase)?.fecha ?? '';
   }
@@ -319,22 +301,21 @@ export class StoreComponent implements OnInit, OnDestroy {
   metodoTexto(p: Pedido): string {
     return { wallet: 'Billetera', card: 'Tarjeta' }[p.metodoPago];
   }
-  /** Cuando el pedido está en reparto, el cliente ve su código de entrega; en retiro, su código de retiro. */
+  /** Cuando el pedido va en reparto, el cliente ve su código de entrega. */
   muestraCodigo(p: Pedido): boolean {
-    if (p.cancelado || p.incidenciaAbierta) return false;
-    return (p.entrega === 'domicilio' && p.fase === 5);
+    return !p.cancelado && !p.incidenciaAbierta && p.fase === 5;
   }
   puedeCancelar(p: Pedido): boolean {
     return puedeCancelar(p, 'cliente');
   }
   puedeCambiarDireccion(p: Pedido): boolean {
-    return !p.cancelado && p.fase <= 2 && p.entrega === 'domicilio';
+    return !p.cancelado && p.fase <= 2;
   }
 
   /** Línea de tiempo con fecha y hora de cada hito, más las incidencias y reprogramaciones. */
   lineaTiempo(p: Pedido): ItemLinea[] {
     const salida: ItemLinea[] = [];
-    for (const e of etapasDe(p)) {
+    for (const e of ETAPAS) {
       const alcanzada = e.fase <= p.fase && (!p.cancelado || e.fase === 0 || p.eventos.some(x => x.fase === e.fase));
       const evento = p.eventos.find(x => x.fase === e.fase && (x.tipo === 'fase' || x.tipo === 'pago'));
       const actual = alcanzada && e.fase === p.fase && !p.cancelado;
@@ -343,7 +324,7 @@ export class StoreComponent implements OnInit, OnDestroy {
         detalle: alcanzada && evento ? `${evento.fecha} · ${e.texto}` : e.texto,
         clase: actual ? 'now' : alcanzada ? 'on' : 'off',
       });
-      if (e.fase === 5 || (p.entrega === 'retiro' && e.fase === 4)) {
+      if (e.fase === 5) {
         for (const x of p.eventos.filter(v => v.tipo === 'incidencia' || v.tipo === 'reprogramacion')) {
           salida.push({
             titulo: x.tipo === 'incidencia' ? 'Intento fallido' : 'Entrega reprogramada',

@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { StoreComponent } from './store.component';
 import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
 
-describe('StoreComponent', () => {
+describe('StoreComponent (admin)', () => {
   let fixture: ComponentFixture<StoreComponent>;
   let component: StoreComponent;
   let store: StoreDemoService;
@@ -28,7 +28,7 @@ describe('StoreComponent', () => {
   });
 
   it('lleva un pedido de punta a punta: pago, preparación, despacho, incidencia y entrega con código', () => {
-    const no = 'BR-10241'; // SINPE por verificar, 2 artículos
+    const no = 'BR-10241'; // pago con tarjeta por confirmar, 2 artículos
     component.confirmarPago(pedido(no));
     expect(pedido(no).estadoPago).toBe('confirmado');
     expect(pedido(no).fase).toBe(1);
@@ -44,11 +44,9 @@ describe('StoreComponent', () => {
     expect(pedido(no).fase).toBe(3);
     expect(pedido(no).paquete).toContain('Caja M');
 
-    component.despachar(pedido(no)); // sin transportista elegido
-    expect(component.errorLog()).toContain('transportista');
-    component.elegirTransportista('correos');
     component.despachar(pedido(no));
     expect(pedido(no).fase).toBe(4);
+    expect(pedido(no).transportista).toBe('Correos de Costa Rica');
     expect(pedido(no).guia.startsWith('CR-')).toBeTrue();
 
     component.iniciarReparto(pedido(no));
@@ -71,15 +69,10 @@ describe('StoreComponent', () => {
     expect(pedido(no).eventos.length).toBeGreaterThan(6); // todo queda en la bitácora
   });
 
-  it('no deja saltarse etapas ni despachar a una zona sin cobertura', () => {
+  it('no deja saltarse etapas', () => {
     expect(store.iniciarReparto('BR-10241', 'Admin Royale')).toBeFalse();
+    expect(store.despachar('BR-10241', 'Admin Royale')).toBeFalse();
     expect(pedido('BR-10241').fase).toBe(0);
-
-    store.confirmarPago('BR-10241', 'Admin Royale');
-    store.iniciarPreparacion('BR-10241', 'Admin Royale');
-    store.marcarEmpacado('BR-10241', 'Caja M · 0,9 kg', 'Admin Royale');
-    expect(store.despachar('BR-10241', 'local', 'Admin Royale')).toBeFalse(); // Limón queda fuera de la GAM
-    expect(pedido('BR-10241').fase).toBe(3);
   });
 
   it('rechazar un pago cancela el pedido y devuelve las unidades al inventario', () => {
@@ -98,8 +91,8 @@ describe('StoreComponent', () => {
   it('un pedido nuevo genera un aviso para el admin', () => {
     const antes = component.noLeidas();
     store.crearPedido({
-      correo: 'cliente@biozin.com', cliente: 'Ana Mora', telefono: '88887777', metodoPago: 'sinpe', entrega: 'retiro',
-      direccion: '', items: [{ id: 'r3', talla: null, cantidad: 1 }], envio: 0,
+      correo: 'cliente@biozin.com', cliente: 'Ana Mora', telefono: '88887777', metodoPago: 'wallet',
+      direccion: 'Limón, Centro, casa verde', items: [{ id: 'r3', talla: null, cantidad: 1 }], envio: 5,
     });
     expect(component.noLeidas()).toBe(antes + 1);
   });
@@ -116,12 +109,5 @@ describe('StoreComponent', () => {
     component.guardarProducto();
     expect(component.errorForm()).toBe('');
     expect(store.productos().length).toBe(25);
-  });
-
-  it('no permite bloquear la propia cuenta', () => {
-    const yo = store.usuarios().find(u => u.correo === component.yo)!;
-    component.alternarBloqueo(yo);
-    expect(component.dialogo()).toBeNull();
-    expect(yo.activo).toBeTrue();
   });
 });

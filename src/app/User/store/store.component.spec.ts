@@ -38,18 +38,31 @@ describe('StoreComponent (usuario)', () => {
     expect(component.cantidadDe('k1')).toBe(2);
   });
 
-  it('un pedido con SINPE queda con el pago por verificar y descuenta el stock', () => {
+  it('un pedido con tarjeta queda confirmado y descuenta el stock', () => {
     component.anadir('t1', 'M');
-    component.setMetodo('sinpe');
+    component.setMetodo('card');
     datosValidos();
+    component.datos.tarjeta = '4111 1111 1111 1111';
+    component.datos.vence = '08/28';
+    component.datos.cvv = '123';
     component.confirmar();
 
     const pedido = component.pedidoActual()!;
     expect(component.vista()).toBe('ok');
-    expect(pedido.estadoPago).toBe('pendiente');
-    expect(pedido.fase).toBe(0);
+    expect(pedido.estadoPago).toBe('confirmado');
+    expect(pedido.fase).toBe(1);
     expect(stockDe('t1')).toBe(23);
     expect(component.carrito().length).toBe(0);
+  });
+
+  it('la tarjeta se valida antes de crear el pedido', () => {
+    component.anadir('t1', 'M');
+    component.setMetodo('card');
+    datosValidos();
+    component.datos.tarjeta = '1234';
+    component.confirmar();
+    expect(component.error()).toContain('16 dígitos');
+    expect(component.vista()).toBe('home');
   });
 
   it('un pedido con billetera confirma el pago y descuenta el saldo', () => {

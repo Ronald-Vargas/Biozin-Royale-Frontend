@@ -194,7 +194,7 @@
           <span class="estado" [ngClass]="'g-' + claseGrupo(o)">{{ o.cancelado ? 'Cancelado' : o.incidenciaAbierta ? 'Incidencia' : etapa(o).nombre }}</span>
         </div>
         <p class="muted">{{ o.cliente }} · {{ o.correo }} · {{ o.telefono }}</p>
-        <p class="muted">{{ o.entrega === 'retiro' ? 'Retiro en punto' : 'Envío a ' + o.direccion }}. Pago con {{ metodoTexto(o).toLowerCase() }}.
+        <p class="muted">Envío a {{ o.direccion }}. Pago con {{ metodoTexto(o).toLowerCase() }}.
           <ng-container *ngIf="!o.cancelado && o.fase < 6">Entrega: {{ o.ventana || o.eta }}.</ng-container></p>
 
         <div class="fila-sum" *ngFor="let i of o.items">
@@ -208,10 +208,10 @@
 
           <!-- Pago por verificar -->
           <div class="rec" *ngIf="pagoPendiente(o)">
-            <b>Comprobante SINPE Móvil</b>
+            <b>Pago con tarjeta por confirmar</b>
             <div class="fila-sum"><span class="muted">Monto</span><b>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</b></div>
-            <div class="fila-sum"><span class="muted">Recibido</span><span>{{ o.eventos[0].fecha }}</span></div>
-            <p class="muted">Compara el monto con el comprobante antes de confirmar.</p>
+            <div class="fila-sum"><span class="muted">Pedido creado</span><span>{{ o.eventos[0].fecha }}</span></div>
+            <p class="muted">Confirma solo cuando el cobro aparezca aprobado en tu procesador de pagos.</p>
             <div class="acciones">
               <button type="button" class="btn-peligro btn-sm" (click)="pedirRechazo(o)">Rechazar pago</button>
               <button type="button" class="btn-oro btn-sm" (click)="confirmarPago(o)">Confirmar pago</button>
@@ -245,30 +245,17 @@
             <p class="muted" *ngIf="!pickingCompleto(o)">Marca cada artículo al sacarlo de bodega para poder empacar.</p>
           </ng-container>
 
-          <!-- Empacado: transportista o retiro -->
+          <!-- Empacado: genera la guía y la etiqueta -->
           <ng-container *ngIf="o.fase === 3">
             <p class="muted">Empacado en {{ o.paquete }}.</p>
-            <ng-container *ngIf="o.entrega === 'domicilio'; else retiro">
-              <h3 class="sub-titulo">Transportista</h3>
-              <button type="button" class="opcion" *ngFor="let op of opciones(o)" [class.on]="transportistaId === op.t.id" [class.off]="!op.cubre"
-                      [disabled]="!op.cubre" (click)="elegirTransportista(op.t.id)">
-                <i></i>
-                <span><b>{{ op.t.nombre }}</b><small class="muted">{{ op.cubre ? (op.t.tarifa | currency:'USD':'symbol':'1.2-2') + ' · ' + op.t.tiempo : 'Sin cobertura en esta provincia' }}</small></span>
-              </button>
-              <p class="muted">Corte de despacho: hoy {{ corte }}.</p>
-              <div class="acciones">
-                <button type="button" class="btn-oro btn-sm" (click)="despachar(o)">Generar guía y etiqueta</button>
-              </div>
-            </ng-container>
-            <ng-template #retiro>
-              <div class="acciones">
-                <button type="button" class="btn-oro btn-sm" (click)="marcarListoRetiro(o)">Marcar listo para retirar</button>
-              </div>
-            </ng-template>
+            <p class="muted">Transportista: Correos de Costa Rica. Corte de despacho: hoy {{ corte }}.</p>
+            <div class="acciones">
+              <button type="button" class="btn-oro btn-sm" (click)="despachar(o)">Generar guía y etiqueta</button>
+            </div>
           </ng-container>
 
           <!-- Con el transportista: etiqueta -->
-          <ng-container *ngIf="o.fase === 4 && o.entrega === 'domicilio'">
+          <ng-container *ngIf="o.fase === 4">
             <div class="etiqueta-envio">
               <svg viewBox="0 0 90 90" fill="#15110a" aria-hidden="true"><rect *ngFor="let c of qr(o.guia)" [attr.x]="c.x" [attr.y]="c.y" width="10" height="10" /></svg>
               <div><b>{{ o.guia }}</b><span>{{ o.transportista }}<br />Etiqueta lista · 10 × 15 cm</span></div>
@@ -276,11 +263,6 @@
             <div class="acciones">
               <button type="button" class="btn-oro btn-sm" (click)="iniciarReparto(o)">Pasar a reparto</button>
             </div>
-          </ng-container>
-
-          <!-- Retiro: entrega con código -->
-          <ng-container *ngIf="o.fase === 4 && o.entrega === 'retiro'">
-            <ng-container *ngTemplateOutlet="bloqueCodigo; context: { $implicit: o, boton: 'Confirmar retiro' }"></ng-container>
           </ng-container>
 
           <!-- En reparto: incidencia o entrega con código -->
@@ -291,7 +273,7 @@
               <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="reprogramarPorCliente(o)">Reprogramar por el cliente</button></div>
             </div>
             <ng-template #enReparto>
-              <ng-container *ngTemplateOutlet="bloqueCodigo; context: { $implicit: o, boton: 'Confirmar entrega' }"></ng-container>
+              <ng-container *ngTemplateOutlet="bloqueCodigo; context: { $implicit: o }"></ng-container>
               <div class="rec">
                 <b>¿No se pudo entregar?</b>
                 <select class="select ancho" [(ngModel)]="motivo" aria-label="Motivo de la incidencia">
@@ -323,15 +305,6 @@
           <button type="button" class="btn-peligro btn-sm" *ngIf="puedeCancelar(o)" (click)="pedirCancelar(o)">Cancelar pedido</button>
           <button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cerrar</button>
         </div>
-      </ng-container>
-
-      <!-- Historial de un cliente -->
-      <ng-container *ngIf="hoja() === 'cliente' && clienteAbierto() as c">
-        <h2>{{ c.nombre }}</h2>
-        <p class="muted">{{ c.correo }}</p>
-        <p class="muted" *ngIf="!pedidosDe(c.correo).length">Este cliente aún no ha hecho pedidos.</p>
-        <ng-container *ngTemplateOutlet="listaPedidos; context: { $implicit: pedidosDe(c.correo) }"></ng-container>
-        <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="cerrarHoja()">Cerrar</button></div>
       </ng-container>
 
       <!-- Formulario de producto -->
@@ -368,7 +341,6 @@
     </div>
   </div>
 
-
   <!-- ═════════ Confirmación ═════════ -->
   <div class="hoja-fondo centrado" *ngIf="dialogo() as d" (click)="cancelarDialogo()">
     <div class="dialogo" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
@@ -388,7 +360,7 @@
     <div class="item-cab">
       <div class="item-datos">
         <b>{{ o.no }}</b>
-        <span class="muted">{{ o.cliente }} · {{ o.entrega === 'retiro' ? 'Retiro' : 'Domicilio' }}</span>
+        <span class="muted">{{ o.cliente }}</span>
       </div>
       <div class="item-num"><b>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</b><span class="muted">{{ metodoTexto(o) }}</span></div>
     </div>
@@ -399,14 +371,14 @@
   </button>
 </ng-template>
 
-<!-- Plantilla reutilizable: entrega o retiro con código -->
-<ng-template #bloqueCodigo let-o let-boton="boton">
+<!-- Plantilla reutilizable: entrega con código -->
+<ng-template #bloqueCodigo let-o>
   <div class="rec">
-    <b>Código de {{ o.entrega === 'retiro' ? 'retiro' : 'entrega' }}</b>
+    <b>Código de entrega</b>
     <p class="muted">Pídele al cliente los 4 dígitos que ve en su app. Sin el código no se cierra la entrega.</p>
     <input class="codigo-input" type="text" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Código del cliente" [(ngModel)]="codigoEntrada" />
     <div class="acciones">
-      <button type="button" class="btn-oro btn-sm" [disabled]="codigoEntrada.length < 4" (click)="confirmarEntrega(o)">{{ boton }}</button>
+      <button type="button" class="btn-oro btn-sm" [disabled]="codigoEntrada.length < 4" (click)="confirmarEntrega(o)">Confirmar entrega</button>
     </div>
   </div>
 </ng-template>

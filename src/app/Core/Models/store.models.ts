@@ -3,9 +3,7 @@
 
 export type Categoria = 'Camisetas' | 'Sudaderas y gorras' | 'Accesorios' | 'Hogar' | 'Juegos';
 export type Arte = 'tee' | 'hood' | 'cap' | 'mug' | 'key' | 'pin' | 'tote' | 'post' | 'cards' | 'dice' | 'mat' | 'chips';
-export type Rol = 'admin' | 'soporte' | 'cliente';
 export type Metodo = 'wallet' | 'card';
-export type Entrega = 'domicilio' | 'retiro';
 /** El pago y la logística son dos estados independientes. */
 export type EstadoPago = 'pendiente' | 'confirmado' | 'rechazado' | 'reembolsado';
 export type TipoEvento = 'fase' | 'pago' | 'incidencia' | 'reprogramacion' | 'cancelacion' | 'cambio' | 'calificacion';
@@ -25,8 +23,6 @@ export interface Producto {
   requiereTalla: boolean;
 }
 
-export interface Usuario { nombre: string; correo: string; rol: Rol; activo: boolean; }
-
 export interface ItemPedido { id: string; nombre: string; talla: string | null; cantidad: number; precio: number; }
 
 /** Cada cambio queda en la bitácora: qué pasó, quién lo hizo y cuándo. */
@@ -39,7 +35,6 @@ export interface Pedido {
   telefono: string;
   metodoPago: Metodo;
   estadoPago: EstadoPago;
-  entrega: Entrega;
   direccion: string;
   items: ItemPedido[];
   envio: number;
@@ -49,7 +44,7 @@ export interface Pedido {
   transportista: string;
   guia: string;
   paquete: string;
-  /** Código de 4 dígitos que el cliente entrega al recibir (domicilio) o retirar (retiro en punto). */
+  /** Código de 4 dígitos que el cliente le da al repartidor al recibir el pedido. */
   codigo: string;
   incidenciaAbierta: boolean;
   ventana: string;
@@ -73,7 +68,6 @@ export interface NuevoPedido {
   cliente: string;
   telefono: string;
   metodoPago: Metodo;
-  entrega: Entrega;
   direccion: string;
   items: { id: string; talla: string | null; cantidad: number }[];
   envio: number;
@@ -84,11 +78,10 @@ export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
 export const CORTE_DESPACHO = '2:00 p. m.';
 export const PROVINCIAS = ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'Limón'];
-export const GAM = ['San José', 'Alajuela', 'Cartago', 'Heredia'];
 
 export interface Etapa { fase: number; nombre: string; texto: string; }
 
-const ETAPAS_DOMICILIO: Etapa[] = [
+export const ETAPAS: Etapa[] = [
   { fase: 0, nombre: 'Pedido recibido', texto: 'Recibimos tu pedido.' },
   { fase: 1, nombre: 'Pago confirmado', texto: 'Verificamos tu pago.' },
   { fase: 2, nombre: 'En preparación', texto: 'Estamos preparando tu pedido.' },
@@ -98,19 +91,8 @@ const ETAPAS_DOMICILIO: Etapa[] = [
   { fase: 6, nombre: 'Entregado', texto: 'Entregado. ¡Que lo disfrutes!' },
 ];
 
-/** El retiro en punto no tiene transportista ni reparto. */
-const ETAPAS_RETIRO: Etapa[] = [
-  ETAPAS_DOMICILIO[0], ETAPAS_DOMICILIO[1], ETAPAS_DOMICILIO[2], ETAPAS_DOMICILIO[3],
-  { fase: 4, nombre: 'Listo para retirar', texto: 'Ya puedes pasar a retirarlo con tu código.' },
-  { fase: 6, nombre: 'Entregado', texto: 'Retirado. ¡Que lo disfrutes!' },
-];
-
-export function etapasDe(p: Pedido): Etapa[] {
-  return p.entrega === 'retiro' ? ETAPAS_RETIRO : ETAPAS_DOMICILIO;
-}
 export function etapaActual(p: Pedido): Etapa {
-  const etapas = etapasDe(p);
-  return etapas.find(e => e.fase === p.fase) ?? etapas[0];
+  return ETAPAS.find(e => e.fase === p.fase) ?? ETAPAS[0];
 }
 export function subtotalPedido(p: Pedido): number {
   return p.items.reduce((a, i) => a + i.precio * i.cantidad, 0);
@@ -141,14 +123,5 @@ export function puedeCancelar(p: Pedido, rol: 'cliente' | 'admin'): boolean {
   return rol === 'cliente' ? p.fase <= 2 : p.fase <= 3;
 }
 
-export interface Transportista { id: string; nombre: string; tarifa: number; tiempo: string; cobertura: string; }
-export const TRANSPORTISTAS: Transportista[] = [
-  { id: 'correos', nombre: 'Correos de Costa Rica', tarifa: 5, tiempo: '2 a 3 días', cobertura: 'Todo el país' },
-  { id: 'local', nombre: 'Mensajería local', tarifa: 3, tiempo: '1 día', cobertura: 'Gran Área Metropolitana' },
-];
-export function provinciaDe(direccion: string): string {
-  return direccion.split(',')[0].trim();
-}
-export function cubre(t: Transportista, direccion: string): boolean {
-  return t.id !== 'local' || GAM.includes(provinciaDe(direccion));
-}
+/** Único transportista de la tienda. */
+export const TRANSPORTISTA = { nombre: 'Correos de Costa Rica', prefijoGuia: 'CR', tarifa: 5, tiempo: '2 a 3 días' };

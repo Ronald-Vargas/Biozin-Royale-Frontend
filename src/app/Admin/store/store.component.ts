@@ -9,13 +9,13 @@ import { AdminNavComponent } from 'src/app/Admin/shared/admin-nav/admin-nav.comp
 import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
 import {
-  Categoria, CORTE_DESPACHO, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, Producto, Rol, StoreNotificacion, TRANSPORTISTAS,
-  Transportista, Usuario, cubre, etapaActual, etapasDe, grupoDe, puedeCancelar, subtotalPedido, totalPedido,
+  Categoria, CORTE_DESPACHO, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, Producto, StoreNotificacion,
+  etapaActual, grupoDe, puedeCancelar, totalPedido,
 } from 'src/app/Core/Models/store.models';
 
 // ───────────────────────── Tipos de la pantalla ─────────────────────────
 type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv';
-type Hoja = 'pedido' | 'cliente' | 'producto';
+type Hoja = 'pedido' | 'producto';
 
 interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
 
@@ -32,8 +32,6 @@ const MOTIVOS = ['Cliente no contesta', 'Dirección incorrecta', 'Zona de difíc
 const ESTANTES: Record<Categoria, string> = {
   Camisetas: 'Estante A', 'Sudaderas y gorras': 'Estante B', Accesorios: 'Estante C', Hogar: 'Estante D', Juegos: 'Estante E',
 };
-
-
 // ───────────────────────── Componente ─────────────────────────
 @Component({
   standalone: true,
@@ -65,7 +63,6 @@ export class StoreComponent implements OnDestroy {
   readonly soloBajo = signal(false);
   readonly hoja = signal<Hoja | null>(null);
   readonly pedidoNo = signal<string | null>(null);
-  readonly clienteCorreo = signal<string | null>(null);
   readonly errorForm = signal('');
   readonly errorLog = signal('');
   readonly dialogo = signal<Dialogo | null>(null);
@@ -77,11 +74,10 @@ export class StoreComponent implements OnDestroy {
   // Formularios de la hoja del pedido
   caja = 'Caja M';
   peso = '0.9';
-  transportistaId = '';
   motivo = MOTIVOS[0];
   codigoEntrada = '';
 
-  // Formularios de producto y usuario
+  // Formulario de producto
   formProd = { id: '', nombre: '', categoria: 'Camisetas' as Categoria, precio: '', stock: '', descripcion: '' };
 
   private temporizador?: ReturnType<typeof setTimeout>;
@@ -106,7 +102,6 @@ export class StoreComponent implements OnDestroy {
   });
   readonly requierenAccion = computed(() => this.pedidos().filter(p => ['Por verificar pago', 'Por preparar', 'Incidencias'].includes(grupoDe(p))).slice(0, 5));
   readonly ventas = computed(() => this.pedidos().filter(p => !p.cancelado && p.estadoPago === 'confirmado').reduce((a, p) => a + totalPedido(p), 0));
-  readonly costoEnvios = computed(() => this.pedidos().filter(p => !p.cancelado).reduce((a, p) => a + p.envio, 0));
   readonly valoracion = computed(() => {
     const votos = this.pedidos().filter(p => p.calificacion > 0);
     return votos.length ? votos.reduce((a, p) => a + p.calificacion, 0) / votos.length : 0;
@@ -117,7 +112,7 @@ export class StoreComponent implements OnDestroy {
   readonly misAvisos = computed(() => this.store.notificaciones().filter(n => n.correo === this.yo));
   readonly noLeidas = computed(() => this.misAvisos().filter(n => !n.leida).length);
 
-  // ── Derivados: catálogo, inventario, clientes y usuarios ──
+  // ── Derivados: catálogo e inventario ──
   readonly productosFiltrados = computed(() => {
     const q = this.norm(this.busquedaProd().trim());
     return q ? this.store.productos().filter(p => this.norm(`${p.nombre} ${p.categoria}`).includes(q)) : this.store.productos();
@@ -126,13 +121,6 @@ export class StoreComponent implements OnDestroy {
   readonly inventario = computed(() => (this.soloBajo() ? this.stockBajo() : this.store.productos()));
   readonly unidades = computed(() => this.store.productos().reduce((a, p) => a + p.stock, 0));
   readonly valorInventario = computed(() => this.store.productos().reduce((a, p) => a + p.stock * p.precio, 0));
-  readonly clientes = computed(() => this.store.usuarios().filter(u => u.rol === 'cliente').map(u => {
-    const propios = this.pedidos().filter(p => p.correo === u.correo);
-    const gastado = propios.filter(p => !p.cancelado && p.estadoPago === 'confirmado').reduce((a, p) => a + totalPedido(p), 0);
-    return { ...u, cantidad: propios.length, gastado };
-  }));
-  readonly clienteAbierto = computed(() => this.store.usuarios().find(u => u.correo === this.clienteCorreo()) ?? null);
-
   constructor() {
     // Aviso emergente cuando llega un pedido nuevo o el cliente hace un cambio.
     effect(() => {
@@ -168,9 +156,6 @@ export class StoreComponent implements OnDestroy {
   private norm(s: string): string {
     return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
-  dinero(n: number): string {
-    return `$${n.toFixed(2)}`;
-  }
   mostrarAviso(texto: string): void {
     clearTimeout(this.temporizador);
     this.aviso.set(texto);
@@ -181,24 +166,16 @@ export class StoreComponent implements OnDestroy {
   }
   trackId = (_: number, x: { id: string }) => x.id;
   trackNo = (_: number, p: Pedido) => p.no;
-  trackCorreo = (_: number, c: { correo: string }) => c.correo;
-  trackIdx = (i: number) => i;
 
   // ── Pedidos: datos para mostrar ──
   total(p: Pedido): number {
     return totalPedido(p);
-  }
-  subtotal(p: Pedido): number {
-    return subtotalPedido(p);
   }
   grupo(p: Pedido): Grupo {
     return grupoDe(p);
   }
   etapa(p: Pedido) {
     return etapaActual(p);
-  }
-  etapas(p: Pedido) {
-    return etapasDe(p);
   }
   claseGrupo(p: Pedido): string {
     const g = grupoDe(p);
@@ -209,16 +186,13 @@ export class StoreComponent implements OnDestroy {
     return { pendiente: 'Por verificar', confirmado: 'Confirmado', rechazado: 'Rechazado', reembolsado: 'Reembolsado' }[p.estadoPago];
   }
   metodoTexto(p: Pedido): string {
-    return { wallet: 'Billetera', card: 'Tarjeta', sinpe: 'SINPE Móvil' }[p.metodoPago];
+    return { wallet: 'Billetera', card: 'Tarjeta' }[p.metodoPago];
   }
   fechaDe(p: Pedido, fase: number): string {
     return p.eventos.find(x => x.fase === fase)?.fecha ?? '';
   }
   ultimoMovimiento(p: Pedido): string {
     return p.eventos[p.eventos.length - 1].fecha;
-  }
-  pedidosDe(correo: string): Pedido[] {
-    return this.pedidos().filter(p => p.correo === correo);
   }
   puedeCancelar(p: Pedido): boolean {
     return puedeCancelar(p, 'admin');
@@ -234,7 +208,6 @@ export class StoreComponent implements OnDestroy {
     this.pedidoNo.set(no);
     this.caja = 'Caja M';
     this.peso = '0.9';
-    this.transportistaId = '';
     this.motivo = MOTIVOS[0];
     this.codigoEntrada = '';
     this.errorLog.set('');
@@ -292,23 +265,9 @@ export class StoreComponent implements OnDestroy {
   }
 
   // ── Logística: despacho y reparto ──
-  opciones(p: Pedido): { t: Transportista; cubre: boolean }[] {
-    return TRANSPORTISTAS.map(t => ({ t, cubre: cubre(t, p.direccion) }));
-  }
-  elegirTransportista(id: string): void {
-    this.transportistaId = id;
-    this.errorLog.set('');
-  }
+  /** Genera la guía y entrega el pedido a Correos de Costa Rica. */
   despachar(p: Pedido): void {
-    if (!this.transportistaId) {
-      this.errorLog.set('Elige un transportista para generar la guía.');
-      return;
-    }
-    this.errorLog.set('');
-    if (this.store.despachar(p.no, this.transportistaId, AGENTE)) this.mostrarAviso(`Guía generada para ${p.no}.`);
-  }
-  marcarListoRetiro(p: Pedido): void {
-    if (this.store.marcarListoRetiro(p.no, AGENTE)) this.mostrarAviso(`${p.no} está listo para retirar.`);
+    if (this.store.despachar(p.no, AGENTE)) this.mostrarAviso(`Guía generada para ${p.no}.`);
   }
   iniciarReparto(p: Pedido): void {
     if (this.store.iniciarReparto(p.no, AGENTE)) this.mostrarAviso(`${p.no} salió a reparto.`);
@@ -429,9 +388,6 @@ export class StoreComponent implements OnDestroy {
     if (p.stock <= STOCK_BAJO) return { texto: 'Stock bajo', clase: 'bajo' };
     return { texto: 'Disponible', clase: 'ok' };
   }
-
-
-
 
   // ── Diálogo de confirmación ──
   aceptarDialogo(): void {

@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import {
-  Categoria, Arte, Entrega, Evento, NuevoPedido, Pedido, Producto, StoreNotificacion, TipoEvento, Usuario,
-  TRANSPORTISTAS, cubre, puedeCancelar, totalPedido,
+  Categoria, Arte, Evento, NuevoPedido, Pedido, Producto, StoreNotificacion, TipoEvento,
+  TRANSPORTISTA, puedeCancelar, totalPedido,
 } from 'src/app/Core/Models/store.models';
 
 // Servicio de la tienda con datos simulados en memoria.
@@ -33,8 +33,7 @@ function corto(d: Date, conMes: boolean): string {
   const mes = d.toLocaleDateString('es-CR', { month: 'short' }).replace('.', '');
   return `${dia} ${d.getDate()}${conMes ? ' ' + mes : ''}`;
 }
-function estimar(entrega: Entrega): string {
-  if (entrega === 'retiro') return 'Listo para retirar en 24 horas';
+function estimar(): string {
   const a = sumarHabiles(2);
   const b = sumarHabiles(3);
   const distinto = a.getMonth() !== b.getMonth();
@@ -81,14 +80,6 @@ const PRODUCTOS_DEMO: Producto[] = [
   crear('j5', 'Tapete de póker', 'Juegos', 45, 'mat', '#12261f', 7, 'Nuevo', 'Fieltro verde de 90 cm con el emblema.'),
 ];
 
-const USUARIOS_DEMO: Usuario[] = [
-  { nombre: 'Admin Royale', correo: ADMIN_CORREO, rol: 'admin', activo: true },
-  { nombre: 'Soporte Royale', correo: 'soporte@biozin.com', rol: 'soporte', activo: true },
-  { nombre: 'Ana Mora', correo: 'cliente@biozin.com', rol: 'cliente', activo: true },
-  { nombre: 'Luis Vargas', correo: 'luis@correo.com', rol: 'cliente', activo: true },
-  { nombre: 'Marta Solís', correo: 'marta@correo.com', rol: 'cliente', activo: false },
-];
-
 const ev = (tipo: TipoEvento, fase: number | undefined, fecha: string, texto: string, quien: string): Evento =>
   ({ tipo, fase, fecha, texto, quien });
 
@@ -100,14 +91,14 @@ const HEREDIA = 'Heredia, Centro, frente al parque';
 
 const PEDIDOS_DEMO: Pedido[] = [
   {
-    ...ANA, no: 'BR-10241', metodoPago: 'card', estadoPago: 'pendiente', entrega: 'domicilio', direccion: SANTA_ROSA,
+    ...ANA, no: 'BR-10241', metodoPago: 'card', estadoPago: 'pendiente', direccion: SANTA_ROSA,
     items: [{ id: 't1', nombre: 'Camiseta Royale', talla: 'M', cantidad: 2, precio: 28 }, { id: 'g1', nombre: 'Gorra Royale Negra', talla: null, cantidad: 1, precio: 24 }],
     envio: 0, fase: 0, cancelado: false, transportista: '', guia: '', paquete: '', codigo: '4827',
     incidenciaAbierta: false, ventana: '', eta: 'mar 20 – mié 21 oct', calificacion: 0,
     eventos: [ev('fase', 0, 'lun 19 oct · 10:06', 'Pedido creado · Tarjeta', 'Ana Mora')],
   },
   {
-    ...LUIS, no: 'BR-10238', metodoPago: 'card', estadoPago: 'confirmado', entrega: 'domicilio', direccion: HEREDIA,
+    ...LUIS, no: 'BR-10238', metodoPago: 'card', estadoPago: 'confirmado', direccion: HEREDIA,
     items: [{ id: 'h1', nombre: 'Sudadera High Roller', talla: 'L', cantidad: 1, precio: 62 }],
     envio: 0, fase: 2, cancelado: false, transportista: '', guia: '', paquete: '', codigo: '7305',
     incidenciaAbierta: false, ventana: '', eta: 'mar 20 – mié 21 oct', calificacion: 0,
@@ -118,7 +109,7 @@ const PEDIDOS_DEMO: Pedido[] = [
     ],
   },
   {
-    ...ANA, no: 'BR-10230', metodoPago: 'card', estadoPago: 'confirmado', entrega: 'domicilio', direccion: SANTA_ROSA,
+    ...ANA, no: 'BR-10230', metodoPago: 'card', estadoPago: 'confirmado', direccion: SANTA_ROSA,
     items: [{ id: 'j2', nombre: 'Set de 50 fichas', talla: null, cantidad: 1, precio: 39 }],
     envio: 5, fase: 5, cancelado: false, transportista: 'Correos de Costa Rica', guia: 'CR-48103321', paquete: 'Caja M · 1,2 kg', codigo: '5190',
     incidenciaAbierta: false, ventana: '', eta: 'lun 19 – mar 20 oct', calificacion: 0,
@@ -132,23 +123,23 @@ const PEDIDOS_DEMO: Pedido[] = [
     ],
   },
   {
-    ...LUIS, no: 'BR-10215', metodoPago: 'wallet', estadoPago: 'confirmado', entrega: 'domicilio', direccion: HEREDIA,
+    ...LUIS, no: 'BR-10215', metodoPago: 'wallet', estadoPago: 'confirmado', direccion: HEREDIA,
     items: [{ id: 'r1', nombre: 'Taza Jackpot', talla: null, cantidad: 2, precio: 14 }, { id: 'r3', nombre: 'Pin Royale', talla: null, cantidad: 1, precio: 6 }],
-    envio: 5, fase: 6, cancelado: false, transportista: 'Mensajería local', guia: 'ML-20931845', paquete: 'Caja S · 0,7 kg', codigo: '2468',
+    envio: 5, fase: 6, cancelado: false, transportista: TRANSPORTISTA.nombre, guia: 'CR-20931845', paquete: 'Caja S · 0,7 kg', codigo: '2468',
     incidenciaAbierta: false, ventana: '', eta: 'vie 9 – lun 12 oct', calificacion: 5,
     eventos: [
       ev('fase', 0, 'mié 7 oct · 11:00', 'Pedido creado · Billetera', 'Luis Vargas'),
       ev('pago', 1, 'mié 7 oct · 11:00', 'Pago confirmado automáticamente', 'Sistema'),
       ev('fase', 2, 'mié 7 oct · 13:10', 'Preparación iniciada', 'Admin Royale'),
       ev('fase', 3, 'mié 7 oct · 13:40', 'Empacado · Caja S · 0,7 kg', 'Admin Royale'),
-      ev('fase', 4, 'mié 7 oct · 14:05', 'Guía ML-20931845 · entregado a Mensajería local', 'Admin Royale'),
+      ev('fase', 4, 'mié 7 oct · 14:05', 'Guía CR-20931845 · entregado a Correos de Costa Rica', 'Admin Royale'),
       ev('fase', 5, 'jue 8 oct · 08:15', 'En reparto', 'Sistema'),
       ev('fase', 6, 'jue 8 oct · 10:20', 'Entregado · código verificado', 'Repartidor'),
       ev('calificacion', undefined, 'jue 8 oct · 18:00', 'Calificó la entrega con 5 estrellas', 'Luis Vargas'),
     ],
   },
   {
-    ...MARTA, no: 'BR-10202', metodoPago: 'card', estadoPago: 'rechazado', entrega: 'domicilio', direccion: 'San José, Escazú, Calle Real',
+    ...MARTA, no: 'BR-10202', metodoPago: 'card', estadoPago: 'rechazado', direccion: 'San José, Escazú, Calle Real',
     items: [{ id: 'r1', nombre: 'Taza Jackpot', talla: null, cantidad: 2, precio: 14 }],
     envio: 5, fase: 0, cancelado: true, transportista: '', guia: '', paquete: '', codigo: '9031',
     incidenciaAbierta: false, ventana: '', eta: '', calificacion: 0,
@@ -170,7 +161,6 @@ export class StoreDemoService {
   readonly adminCorreo = ADMIN_CORREO;
   readonly productos = signal<Producto[]>(PRODUCTOS_DEMO);
   readonly pedidos = signal<Pedido[]>(PEDIDOS_DEMO);
-  readonly usuarios = signal<Usuario[]>(USUARIOS_DEMO);
   readonly notificaciones = signal<StoreNotificacion[]>(NOTIFICACIONES_DEMO);
   /** Lo que el cliente gastó de su billetera en esta sesión de simulación. */
   readonly gastadoBilletera = signal(0);
@@ -204,16 +194,15 @@ export class StoreDemoService {
       correo: d.correo, cliente: d.cliente, telefono: d.telefono,
       metodoPago: d.metodoPago,
       estadoPago: 'confirmado',
-      entrega: d.entrega,
-      direccion: d.entrega === 'retiro' ? 'Retiro en punto: Biozin Royale, Guácimo' : d.direccion,
+      direccion: d.direccion,
       items, envio: d.envio,
       fase: 1,
       cancelado: false,
-      transportista: d.entrega === 'retiro' ? 'Retiro en punto' : '',
+      transportista: '',
       guia: '', paquete: '',
       codigo: String(1000 + Math.floor(Math.random() * 9000)),
       incidenciaAbierta: false, ventana: '',
-      eta: estimar(d.entrega),
+      eta: estimar(),
       calificacion: 0,
       eventos: [ev('fase', 0, fecha, `Pedido creado · ${metodo}`, d.cliente)],
     };
@@ -255,25 +244,14 @@ export class StoreDemoService {
     if (p) this.notificar(p.correo, 'Empacado', 'Tu pedido está listo para salir.', no);
     return !!p;
   }
-  despachar(no: string, transportistaId: string, quien: string): boolean {
-    const t = TRANSPORTISTAS.find(x => x.id === transportistaId);
-    const actual = this.pedido(no);
-    if (!t || !actual || actual.entrega !== 'domicilio' || !cubre(t, actual.direccion)) return false;
-    const guia = `${t.id === 'correos' ? 'CR' : 'ML'}-${Math.floor(10000000 + Math.random() * 89999999)}`;
-    const p = this.mover(no, 3, 4, `Guía ${guia} · entregado a ${t.nombre}`, quien, { transportista: t.nombre, guia });
-    if (p) this.notificar(p.correo, 'Salió tu pedido', `${t.nombre} · guía ${guia}`, no);
-    return !!p;
-  }
-  marcarListoRetiro(no: string, quien: string): boolean {
-    const actual = this.pedido(no);
-    if (!actual || actual.entrega !== 'retiro') return false;
-    const p = this.mover(no, 3, 4, 'Listo para retirar', quien);
-    if (p) this.notificar(p.correo, 'Listo para retirar', `Pasa por Biozin Royale con tu código: ${p.codigo}`, no);
+  /** Genera la guía y entrega el pedido a Correos de Costa Rica. */
+  despachar(no: string, quien: string): boolean {
+    const guia = `${TRANSPORTISTA.prefijoGuia}-${Math.floor(10000000 + Math.random() * 89999999)}`;
+    const p = this.mover(no, 3, 4, `Guía ${guia} · entregado a ${TRANSPORTISTA.nombre}`, quien, { transportista: TRANSPORTISTA.nombre, guia });
+    if (p) this.notificar(p.correo, 'Salió tu pedido', `${TRANSPORTISTA.nombre} · guía ${guia}`, no);
     return !!p;
   }
   iniciarReparto(no: string, quien: string): boolean {
-    const actual = this.pedido(no);
-    if (!actual || actual.entrega !== 'domicilio') return false;
     const p = this.mover(no, 4, 5, 'En reparto', quien);
     if (p) this.notificar(p.correo, 'Tu pedido va en camino', `Código de entrega: ${p.codigo}`, no);
     return !!p;
@@ -298,8 +276,7 @@ export class StoreDemoService {
   confirmarEntrega(no: string, codigo: string, quien: string): boolean {
     const p = this.pedido(no);
     if (!p || p.cancelado || p.incidenciaAbierta) return false;
-    const listo = (p.entrega === 'domicilio' && p.fase === 5) || (p.entrega === 'retiro' && p.fase === 4);
-    if (!listo || codigo.trim() !== p.codigo) return false;
+    if (p.fase !== 5 || codigo.trim() !== p.codigo) return false;
     this.actualizar(no, x => ({ ...x, fase: 6, eventos: [...x.eventos, this.evento('fase', 'Entregado · código verificado', quien, 6)] }));
     this.notificar(p.correo, 'Entregado', 'Gracias por tu compra.', no);
     return true;
@@ -311,7 +288,7 @@ export class StoreDemoService {
   }
   cambiarDireccion(no: string, direccion: string, quien: string): boolean {
     const p = this.pedido(no);
-    if (!p || p.cancelado || p.fase > 2 || p.entrega !== 'domicilio') return false;
+    if (!p || p.cancelado || p.fase > 2) return false;
     this.actualizar(no, x => ({ ...x, direccion, eventos: [...x.eventos, this.evento('cambio', `Dirección actualizada · ${direccion}`, quien)] }));
     this.notificar(ADMIN_CORREO, `Dirección cambiada ${no}`, `${p.cliente} actualizó la dirección de envío.`, no);
     return true;

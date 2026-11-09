@@ -25,8 +25,6 @@
                  [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
         </label>
 
-        
-
         <section class="categorias" aria-label="Categorías de la tienda">
           <button
             type="button"
@@ -146,7 +144,6 @@
 
 
         <ng-container *ngIf="!busqueda().trim() && categoria() === 'Todas'">
-
           <div class="sec"><h3 class="sec-titulo">Novedades y favoritos</h3></div>
           <div class="rail">
             <ng-container *ngFor="let p of novedades(); trackBy: trackId">
@@ -255,20 +252,17 @@
       <ng-container *ngSwitchCase="'chk'">
         <div class="caja formulario">
           <h3 class="caja-titulo">Entrega</h3>
-          <label class="metodo" [class.activo]="entrega() === 'domicilio'">
-            <input type="radio" name="entrega" [checked]="entrega() === 'domicilio'" (change)="setEntrega('domicilio')" />
+          <div class="metodo activo" style="justify-content: space-between">
             <span>Envío a domicilio<small class="muted">Correos de Costa Rica · 2 a 3 días</small></span>
             <b>{{ totales().subtotal >= envioGratisDesde ? 'Gratis' : '$5.00' }}</b>
-          </label>
-          
+          </div>
         </div>
 
         <div class="caja formulario">
-          <h3 class="caja-titulo">{{ entrega() === 'domicilio' ? 'Datos de envío' : 'Datos de contacto' }}</h3>
+          <h3 class="caja-titulo">Datos de envío</h3>
           <label>Nombre de quien recibe
             <input type="text" autocomplete="name" [(ngModel)]="datos.nombre" />
           </label>
-          <ng-container *ngIf="entrega() === 'domicilio'; else puntoRetiro">
             <div class="dos">
               <label>Teléfono
                 <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
@@ -282,13 +276,6 @@
             <label>Dirección exacta
               <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
             </label>
-          </ng-container>
-          <ng-template #puntoRetiro>
-            <label>Teléfono
-              <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
-            </label>
-            <p class="muted">Cuando esté listo te avisamos y te damos un código para retirarlo.</p>
-          </ng-template>
         </div>
 
         <div class="caja formulario">
@@ -344,7 +331,7 @@
               <span class="estado" [ngClass]="o.estadoPago === 'confirmado' ? 'estado-entregado' : 'estado-pendiente'">{{ textoPago(o) }}</span>
             </div>
             <div class="fila-sum"><span>Entrega estimada</span><b>{{ o.eta }}</b></div>
-            <div class="fila-sum"><span>{{ o.entrega === 'retiro' ? 'Retiro' : 'Transportista' }}</span><span>{{ o.entrega === 'retiro' ? 'Biozin Royale, Guácimo' : 'Correos de Costa Rica' }}</span></div>
+            <div class="fila-sum"><span>Transportista</span><span>Correos de Costa Rica</span></div>
             <div class="fila-sum total"><span>Total</span><span>{{ totalDe(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
           </div>
           <div class="acciones">
@@ -413,19 +400,16 @@
           </div>
 
           <!-- Transportista y guía -->
-          <div class="caja" *ngIf="!p.cancelado && p.fase >= 4 && p.entrega === 'domicilio'">
+          <div class="caja" *ngIf="!p.cancelado && p.fase >= 4">
             <div class="fila-sum"><span>{{ p.transportista }}</span><b>{{ p.guia }}</b></div>
           </div>
-          <div class="caja" *ngIf="!p.cancelado && p.entrega === 'retiro'">
-            <div class="fila-sum"><span>Punto de retiro</span><span>Biozin Royale, Guácimo</span></div>
-          </div>
 
-          <!-- Código de entrega o de retiro -->
+          <!-- Código de entrega -->
           <div class="caja centrado" *ngIf="muestraCodigo(p)">
-            <h3 class="caja-titulo">{{ p.entrega === 'retiro' ? 'Código de retiro' : 'Código de entrega' }}</h3>
+            <h3 class="caja-titulo">Código de entrega</h3>
             <div class="codigo"><span *ngFor="let d of p.codigo.split('')">{{ d }}</span></div>
-            <p class="muted">{{ p.entrega === 'retiro' ? 'Díselo a quien te atienda al retirar.' : 'Díselo al repartidor cuando recibas el pedido.' }}</p>
-            <svg class="ruta" *ngIf="p.entrega === 'domicilio'" viewBox="0 0 340 70" aria-hidden="true">
+            <p class="muted">Díselo al repartidor cuando recibas el pedido.</p>
+            <svg class="ruta" viewBox="0 0 340 70" aria-hidden="true">
               <path d="M10 55C90 5 160 65 240 25S320 40 330 20" fill="none" stroke="#d4a73c" stroke-dasharray="5 6" opacity=".6" />
               <circle cx="10" cy="55" r="5" fill="#a89c80" />
               <circle cx="330" cy="20" r="7" fill="none" stroke="#f0d080" stroke-width="2" />
@@ -466,7 +450,7 @@
             </div>
             <div class="fila-sum"><span>Envío</span><span>{{ p.envio ? (p.envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
             <div class="fila-sum total"><span>Total</span><span>{{ totalDe(p) | currency:'USD':'symbol':'1.2-2' }}</span></div>
-            <p class="muted">Pago con {{ metodoTexto(p).toLowerCase() }}: {{ textoPago(p).toLowerCase() }}. {{ p.entrega === 'retiro' ? 'Retiro en punto.' : 'Envío a ' + p.direccion + '.' }}</p>
+            <p class="muted">Pago con {{ metodoTexto(p).toLowerCase() }}: {{ textoPago(p).toLowerCase() }}. Envío a {{ p.direccion }}.</p>
           </div>
         </ng-container>
       </ng-container>
