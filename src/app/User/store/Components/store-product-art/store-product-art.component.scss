@@ -1,0 +1,10 @@
+:host { display: block; }
+
+.arte { display: block; width: 100%; aspect-ratio: 1; }
+
+.foto {
+  display: block; width: 100%; aspect-ratio: 1;
+  object-fit: cover; border-radius: 12px;
+}
+.trazo { stroke: #d4a73c; stroke-opacity: 0.45; stroke-width: 1.5; }
+.trazo-fino { fill: none; stroke: #d4a73c; stroke-opacity: 0.45; stroke-width: 1.5; }

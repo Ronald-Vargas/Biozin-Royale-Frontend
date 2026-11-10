@@ -1,0 +1,10 @@
+<app-store-sheet (closed)="nav.hoja.set(null)">
+  <div class="contenido">
+    <h3>{{ cart.nombreDe(productoId) }}</h3>
+    <p class="muted">Elige tu talla para añadirla al carrito.</p>
+    <div class="tallas">
+      <button type="button" class="btn-fantasma" *ngFor="let t of tallas" [disabled]="cart.stockDe(productoId, t) <= 0" (click)="cart.anadir(productoId, t, true)">{{ t }}</button>
+    </div>
+    <button type="button" class="enlace" (click)="nav.hoja.set(null)">Cancelar</button>
+  </div>
+</app-store-sheet>

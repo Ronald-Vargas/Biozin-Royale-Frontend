@@ -1,0 +1,4 @@
+<div class="aviso" role="status" [style.z-index]="layer">
+  <span>{{ text }}</span>
+  <button type="button" *ngIf="actionLabel" (click)="action.emit()">{{ actionLabel }}</button>
+</div>

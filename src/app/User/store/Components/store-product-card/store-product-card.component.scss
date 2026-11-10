@@ -1,0 +1,44 @@
+@use '../../styles/base';
+
+:host { display: flex; flex-direction: column; }
+
+.tarjeta {
+  position: relative;
+  display: flex; flex-direction: column;
+  border-radius: 20px;
+  border: 1px solid var(--linea);
+  background: linear-gradient(180deg, var(--sup-2), var(--sup));
+  overflow: hidden;
+}
+.tarjeta-img {
+  display: block; width: 100%;
+  padding: 12px 12px 2px;
+  border: 0; cursor: pointer;
+  background: radial-gradient(circle at 50% 42%, #33260f, transparent 66%);
+}
+.tarjeta-info {
+  display: grid; gap: 2px;
+  padding: 4px 12px 14px;
+  h3 { font-family: inherit; font-size: 15px; font-weight: 600; letter-spacing: 0; }
+}
+.fila { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; .btn-oro { width: 100%; } }
+.etiqueta {
+  position: absolute; top: 10px; left: 10px; z-index: 1;
+  padding: 3px 10px; border-radius: 99px;
+  background: rgba(240, 208, 128, 0.14); color: var(--gold-1);
+  font-size: 11px; font-weight: 700;
+  &.pocas { background: rgba(231, 182, 74, 0.16); color: #e7b64a; }
+  &.agotado { background: rgba(240, 122, 122, 0.16); color: #f07a7a; }
+}
+.cantidad {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 2px; border-radius: 99px;
+  background: rgba(240, 208, 128, 0.12);
+  button {
+    width: 36px; height: 36px; border: 0; border-radius: 50%;
+    background: none; color: var(--gold-1); font-size: 18px; cursor: pointer;
+  }
+  span { min-width: 24px; text-align: center; font-weight: 700; color: var(--cream); }
+}
+.cantidad-tarjeta { justify-content: space-between; }
+.tarjeta { flex: 1; }

@@ -1,0 +1,11 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/estado';
+
+:host { display: contents; }
+
+.vista { flex: none; }
+.pedido-item {
+  display: block; width: 100%; text-align: left; color: var(--cream); cursor: pointer;
+  .pedido-cab { margin-bottom: 2px; }
+}

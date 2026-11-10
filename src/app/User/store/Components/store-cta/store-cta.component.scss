@@ -1,0 +1,14 @@
+@use '../../styles/base';
+
+:host { display: contents; }
+
+.cta {
+  position: sticky; bottom: -18px; z-index: 5;
+  margin: auto -20px -18px; padding: 12px 20px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: linear-gradient(180deg, rgba(13, 10, 5, 0.88), var(--bg-dark));
+  border-top: 1px solid rgba(212, 167, 60, 0.22);
+  backdrop-filter: blur(14px);
+  div { display: grid; }
+  .btn-oro { flex: 1; min-height: 48px; font-size: 16px; }
+}

@@ -1,0 +1,17 @@
+.cab {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px;
+  h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 1px; color: var(--cream); }
+}
+.enlace {
+  background: none; border: 0; padding: 4px 0;
+  color: var(--gold-1); font-size: 13px; text-decoration: underline; cursor: pointer;
+}
+.aviso-item {
+  display: grid; gap: 2px; width: 100%; text-align: left;
+  padding: 10px 12px; margin-bottom: 8px;
+  border-radius: 14px; border: 1px solid var(--linea); background: none;
+  color: var(--cream); cursor: pointer;
+  span { font-size: 13px; color: var(--texto-suave, inherit); }
+  .muted { color: var(--apagado); }
+  &.nuevo { border-color: rgba(212, 167, 60, 0.5); background: rgba(212, 167, 60, 0.08); }
+}

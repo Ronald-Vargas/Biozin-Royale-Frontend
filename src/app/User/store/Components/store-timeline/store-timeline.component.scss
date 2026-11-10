@@ -1,0 +1,23 @@
+@use '../../styles/base';
+
+:host { display: block; }
+
+.vt { margin: 4px 0; }
+.vi {
+  position: relative; display: flex; gap: 12px; padding-bottom: 16px;
+  &::before {
+    content: ''; position: absolute; left: 8px; top: 18px; bottom: 0; width: 2px;
+    background: var(--linea);
+  }
+  &:last-child::before { display: none; }
+  i {
+    flex: none; width: 18px; height: 18px; border-radius: 50%; z-index: 1;
+    border: 2px solid var(--linea); background: var(--bg-dark);
+  }
+  b { display: block; font-size: 14px; color: var(--cream); }
+  &.on i { background: var(--gold-2); border-color: var(--gold-2); }
+  &.on::before { background: var(--gold-2); }
+  &.now i { box-shadow: 0 0 0 5px rgba(212, 167, 60, 0.25); }
+  &.warn i { background: #e7b64a; border-color: #e7b64a; }
+  &.off { opacity: 0.45; }
+}

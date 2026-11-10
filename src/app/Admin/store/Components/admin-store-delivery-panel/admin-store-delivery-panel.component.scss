@@ -1,0 +1,17 @@
+@use '../../styles/base';
+@use '../../styles/forms';
+
+:host { display: block; }
+
+.rec {
+  display: grid; gap: 6px; margin-top: 14px; padding: 12px 14px;
+  border-radius: 14px; border: 1px dashed rgba(212, 167, 60, 0.4); background: rgba(255, 255, 255, 0.03);
+  p { margin: 0; }
+}
+.codigo-input {
+  min-height: 52px; padding: 0 14px; text-align: center; letter-spacing: 12px;
+  border-radius: 12px; border: 1px solid rgba(212, 167, 60, 0.4);
+  background: rgba(255, 255, 255, 0.04); color: var(--gold-1);
+  font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700;
+}
+.estrellas-ro { display: flex; gap: 4px; span { font-size: 22px; color: #4a4437; &.on { color: var(--gold-1); } } }

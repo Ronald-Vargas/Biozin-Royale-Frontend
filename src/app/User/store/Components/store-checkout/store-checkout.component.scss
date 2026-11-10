@@ -1,0 +1,7 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/forms';
+
+:host { display: contents; }
+
+.vista { flex: none; }

@@ -21,14 +21,24 @@ export interface Producto {
   descripcion: string;
   visible: boolean;
   requiereTalla: boolean;
+  /** Stock por talla (vacío en productos sin talla). `stock` es la suma de todas. */
+  tallas: { talla: string; stock: number }[];
+  /** URL pública de la foto (Supabase Storage); si falta o falla, se usa el dibujo vectorial. */
+  imagen?: string;
 }
 
 export interface ItemPedido { id: string; nombre: string; talla: string | null; cantidad: number; precio: number; }
 
 /** Cada cambio queda en la bitácora: qué pasó, quién lo hizo y cuándo. */
-export interface Evento { tipo: TipoEvento; fase?: number; fecha: string; texto: string; quien: string; }
+export interface Evento {
+  tipo: TipoEvento; fase?: number; fecha: string; texto: string; quien: string;
+  /** Identificador, rol de quien lo hizo ('user' | 'admin' | 'system') y marca de tiempo (ms). */
+  id?: string; rol?: string; ts?: number;
+}
 
 export interface Pedido {
+  /** Identificador real del pedido; `no` es el número que ve la gente (BR-10242). */
+  id: string;
   no: string;
   correo: string;
   cliente: string;
@@ -36,6 +46,11 @@ export interface Pedido {
   metodoPago: Metodo;
   estadoPago: EstadoPago;
   direccion: string;
+  provincia: string;
+  /** Dirección sin la provincia, para poder editarla. */
+  domicilio: string;
+  /** Tarjeta usada, ya formateada (por ejemplo "Visa •••• 4242"); vacío si pagó con billetera. */
+  tarjeta: string;
   items: ItemPedido[];
   envio: number;
   /** Etapa logística: 0 recibido, 1 pago confirmado, 2 preparación, 3 empacado, 4 con el transportista, 5 en reparto, 6 entregado. */
@@ -54,26 +69,30 @@ export interface Pedido {
 }
 
 export interface StoreNotificacion {
-  id: number;
-  correo: string;
+  id: string;
   titulo: string;
   texto: string;
   fecha: string;
+  /** Marca de tiempo (ms) para detectar avisos nuevos. */
+  ts: number;
   leida: boolean;
   pedidoNo: string;
 }
 
 export interface NuevoPedido {
-  correo: string;
-  cliente: string;
-  telefono: string;
   metodoPago: Metodo;
+  /** Obligatorio con tarjeta: id de una tarjeta ya registrada en Métodos de pago. */
+  tarjetaId?: string;
+  telefono: string;
+  provincia: string;
   direccion: string;
   items: { id: string; talla: string | null; cantidad: number }[];
-  envio: number;
+  /** Evita crear dos pedidos si el cliente reintenta la misma compra. */
+  claveOperacion: string;
 }
 
 // ───────────── Reglas del negocio ─────────────
+// Valores por defecto; los reales los entrega el servidor (StoreService.config).
 export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
 export const CORTE_DESPACHO = '2:00 p. m.';
@@ -125,3 +144,14 @@ export function puedeCancelar(p: Pedido, rol: 'cliente' | 'admin'): boolean {
 
 /** Único transportista de la tienda. */
 export const TRANSPORTISTA = { nombre: 'Correos de Costa Rica', prefijoGuia: 'CR', tarifa: 5, tiempo: '2 a 3 días' };
+// ───────── Textos y fechas de un pedido (los usan el rol usuario y el rol admin) ─────────
+export function textoPago(p: Pedido): string {
+  return { pendiente: 'Por verificar', confirmado: 'Confirmado', rechazado: 'Rechazado', reembolsado: 'Reembolsado' }[p.estadoPago];
+}
+export function textoMetodo(p: Pedido): string {
+  return { wallet: 'Billetera', card: 'Tarjeta' }[p.metodoPago];
+}
+/** Fecha y hora del primer evento de una etapa (vacío si todavía no ocurrió). */
+export function fechaDeFase(p: Pedido, fase: number): string {
+  return p.eventos.find(x => x.fase === fase)?.fecha ?? '';
+}

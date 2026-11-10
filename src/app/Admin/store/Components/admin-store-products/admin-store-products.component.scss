@@ -1,0 +1,18 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/items';
+@use '../../styles/estado';
+
+:host { display: block; }
+
+.barra { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.buscador {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; min-height: 44px; border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07); color: var(--apagado);
+  input {
+    flex: 1; min-width: 0; background: none; border: 0; outline: none;
+    color: var(--cream); font-size: 16px;
+    &::placeholder { color: #7d7360; }
+  }
+}

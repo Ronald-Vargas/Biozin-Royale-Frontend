@@ -1,0 +1,15 @@
+.titulo { margin: 0 0 8px; font-family: 'Cinzel', serif; font-size: 20px; color: var(--cream); }
+.texto { margin: 0; color: #cdbf9c; line-height: 1.5; }
+
+.acciones {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 8px;
+  &.compact { justify-content: flex-end; margin-top: 16px; }
+}
+.btn-fantasma, .btn-peligro {
+  min-height: 44px; padding: 0 22px;
+  border-radius: 99px; background: none;
+  font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.btn-fantasma { border: 1px solid rgba(212, 167, 60, 0.4); color: var(--gold-1); }
+.btn-peligro { border: 1px solid rgba(240, 122, 122, 0.45); color: #f07a7a; }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 13px; }

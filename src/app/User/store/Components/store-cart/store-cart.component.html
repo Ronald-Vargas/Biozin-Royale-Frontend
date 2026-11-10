@@ -1,0 +1,37 @@
+<div class="vista">
+  <div class="vacio" *ngIf="!cart.carrito().length; else conItems">
+    <h3>Tu carrito está vacío</h3>
+    <p class="muted">Añade algo de la tienda y aparecerá aquí.</p>
+    <button type="button" class="btn-oro" (click)="nav.ir('home')">Ver la tienda</button>
+  </div>
+  <ng-template #conItems>
+    <div class="linea" *ngFor="let l of cart.carrito(); let i = index; trackBy: trackIdx">
+      <button type="button" class="linea-img" (click)="nav.ir('prod', l.id)" [attr.aria-label]="'Ver ' + cart.nombreDe(l.id)">
+        <app-store-product-art [producto]="cart.producto(l.id)"></app-store-product-art>
+      </button>
+      <div class="linea-info">
+        <b>{{ cart.nombreDe(l.id) }}</b>
+        <span class="muted">{{ l.talla ? 'Talla ' + l.talla + ', ' : '' }}{{ cart.producto(l.id).precio | currency:'USD':'symbol':'1.2-2' }} c/u</span>
+        <button type="button" class="enlace" (click)="cart.quitar(i)">Quitar</button>
+      </div>
+      <div class="cantidad">
+        <button type="button" aria-label="Quitar una unidad" (click)="cart.cambiar(i, -1)">−</button>
+        <span>{{ l.cantidad }}</span>
+        <button type="button" aria-label="Añadir una unidad" (click)="cart.cambiar(i, 1)">+</button>
+      </div>
+      <span class="precio linea-total">{{ cart.producto(l.id).precio * l.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+    </div>
+
+    <div class="caja">
+      <h3 class="caja-titulo">Resumen</h3>
+      <div class="fila-sum"><span>Subtotal</span><span>{{ cart.totales().subtotal | currency:'USD':'symbol':'1.2-2' }}</span></div>
+      <div class="fila-sum"><span>Envío a domicilio</span><span>{{ cart.totales().envio ? (cart.totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+      <p class="muted" *ngIf="cart.totales().subtotal < envioGratisDesde">
+        Te faltan {{ envioGratisDesde - cart.totales().subtotal | currency:'USD':'symbol':'1.2-2' }} para el envío gratis.
+      </p>
+      <div class="fila-sum total"><span>Total</span><span>{{ cart.totales().total | currency:'USD':'symbol':'1.2-2' }}</span></div>
+    </div>
+  </ng-template>
+</div>
+
+<app-store-cta *ngIf="cart.carrito().length" [amount]="cart.totales().total" buttonText="Continuar con el pago" (pressed)="nav.ir('chk')"></app-store-cta>

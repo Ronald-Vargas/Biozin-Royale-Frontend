@@ -1,0 +1,30 @@
+<div class="vista">
+  <div class="caja" *ngIf="store.notificaciones().length">
+    <app-store-notice-list
+      [avisos]="store.notificaciones()"
+      [unread]="noLeidas()"
+      (open)="nav.abrirAviso($event)"
+      (markAll)="store.marcarTodasLeidas()"
+    ></app-store-notice-list>
+  </div>
+
+  <div class="vacio" *ngIf="!store.pedidos().length">
+    <h3>Aún no tienes pedidos</h3>
+    <p class="muted">Cuando compres, aquí verás el estado de cada pedido.</p>
+    <button type="button" class="btn-oro" (click)="nav.ir('home')">Ver la tienda</button>
+  </div>
+
+  <button type="button" class="caja pedido-item" *ngFor="let o of store.pedidos(); trackBy: trackNo" (click)="nav.ir('track', o.no)">
+    <div class="pedido-cab">
+      <h3 class="caja-titulo">{{ o.no }}</h3>
+      <span class="estado" [ngClass]="o.cancelado ? 'estado-cancelado' : o.incidenciaAbierta ? 'estado-pendiente' : o.fase === 6 ? 'estado-entregado' : 'estado-preparando'">
+        {{ o.cancelado ? 'Cancelado' : o.incidenciaAbierta ? 'Requiere tu atención' : etapa(o).nombre }}
+      </span>
+    </div>
+    <p class="muted">{{ o.eventos[0].fecha }}</p>
+    <div class="fila-sum">
+      <span class="muted">{{ o.cancelado ? 'Sin entrega' : o.fase === 6 ? 'Entregado' : o.ventana || o.eta }}</span>
+      <b>{{ totalDe(o) | currency:'USD':'symbol':'1.2-2' }}</b>
+    </div>
+  </button>
+</div>

@@ -1,0 +1,28 @@
+<h2>{{ form.id ? 'Editar producto' : 'Nuevo producto' }}</h2>
+<div class="formulario">
+  <label>Nombre
+    <input type="text" [(ngModel)]="form.nombre" />
+  </label>
+  <div class="dos">
+    <label>Categoría
+      <select [(ngModel)]="form.categoria">
+        <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+      </select>
+    </label>
+    <label>Precio (USD)
+      <input type="text" inputmode="decimal" [(ngModel)]="form.precio" />
+    </label>
+  </div>
+  <label *ngIf="!tieneTallas()">Unidades en stock
+    <input type="text" inputmode="numeric" [(ngModel)]="form.stock" />
+  </label>
+  <p class="muted" *ngIf="tieneTallas()">El stock de este producto se ajusta por talla en Inventario.</p>
+  <label>Descripción
+    <textarea rows="3" [(ngModel)]="form.descripcion"></textarea>
+  </label>
+  <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+  <div class="acciones">
+    <button type="button" class="btn-fantasma btn-sm" (click)="ui.cerrarHoja()">Cancelar</button>
+    <button type="button" class="btn-oro btn-sm" (click)="guardar()">Guardar producto</button>
+  </div>
+</div>

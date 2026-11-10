@@ -1,0 +1,13 @@
+// Filtros con desplazamiento.
+.chips {
+  display: flex; gap: 8px;
+  margin: 4px -18px 14px; padding: 0 18px;
+  overflow-x: auto; scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+  button {
+    flex: none; min-height: 40px; padding: 0 16px;
+    border: 0; border-radius: 99px;
+    background: rgba(255, 255, 255, 0.07); color: var(--cream); font-size: 14px; cursor: pointer;
+    &.activo { background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); color: var(--oro-texto); font-weight: 700; }
+  }
+}

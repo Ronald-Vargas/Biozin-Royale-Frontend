@@ -1,0 +1,10 @@
+<app-store-sheet (closed)="nav.hoja.set(null)">
+  <div class="contenido">
+    <h3>Nueva fecha de entrega</h3>
+    <p class="muted">Elige una ventana y volvemos a intentarlo.</p>
+    <div class="ventanas">
+      <button type="button" class="btn-fantasma" *ngFor="let v of ventanas" (click)="elegir(v)">{{ v }}</button>
+    </div>
+    <button type="button" class="enlace" (click)="nav.hoja.set(null)">Cancelar</button>
+  </div>
+</app-store-sheet>

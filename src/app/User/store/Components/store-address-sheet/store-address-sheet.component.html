@@ -1,0 +1,19 @@
+<app-store-sheet (closed)="nav.hoja.set(null)">
+  <div class="contenido">
+    <h3>Cambiar dirección</h3>
+    <p class="muted">Puedes cambiarla hasta que tu pedido esté empacado.</p>
+    <label class="campo">Provincia
+      <select [(ngModel)]="provincia">
+        <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+      </select>
+    </label>
+    <label class="campo">Dirección exacta
+      <input type="text" [(ngModel)]="direccion" />
+    </label>
+    <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+    <div class="acciones">
+      <button type="button" class="btn-fantasma" (click)="nav.hoja.set(null)">Cancelar</button>
+      <button type="button" class="btn-oro" (click)="guardar()">Guardar dirección</button>
+    </div>
+  </div>
+</app-store-sheet>

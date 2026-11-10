@@ -1,0 +1,23 @@
+<div class="vista">
+  <div class="confirmacion" *ngIf="pedido() as o">
+    <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
+      <circle cx="36" cy="36" r="33" fill="none" stroke="#d4a73c" stroke-width="3" />
+      <path d="M22 37l10 10 19-22" fill="none" stroke="#f0d080" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <h2 class="gold-text">Pedido confirmado</h2>
+    <p>Tu pedido <b>{{ o.no }}</b> quedó registrado.</p>
+    <div class="caja">
+      <div class="fila-sum">
+        <span>Pago</span>
+        <span class="estado" [ngClass]="o.estadoPago === 'confirmado' ? 'estado-entregado' : 'estado-pendiente'">{{ textoPago(o) }}</span>
+      </div>
+      <div class="fila-sum"><span>Entrega estimada</span><b>{{ o.eta }}</b></div>
+      <div class="fila-sum"><span>Transportista</span><span>Correos de Costa Rica</span></div>
+      <div class="fila-sum total"><span>Total</span><span>{{ totalDe(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+    </div>
+    <div class="acciones">
+      <button type="button" class="btn-oro" (click)="nav.ir('track', o.no)">Ver seguimiento</button>
+      <button type="button" class="btn-fantasma" (click)="nav.ir('home')">Seguir comprando</button>
+    </div>
+  </div>
+</div>

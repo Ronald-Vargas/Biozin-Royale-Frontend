@@ -1,0 +1,5 @@
+<h3 class="sub-titulo">Bitácora</h3>
+<div class="lgi" *ngFor="let e of eventos">
+  <span class="muted">{{ e.fecha }}</span>
+  <b>{{ e.quien }}</b> · {{ e.texto }}
+</div>

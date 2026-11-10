@@ -1,0 +1,7 @@
+@use '../../styles/base';
+@use '../../styles/items';
+@use '../../styles/estado';
+
+:host { display: block; }
+
+.fila-etiquetas { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

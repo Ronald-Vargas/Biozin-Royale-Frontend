@@ -1,0 +1,13 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/estado';
+
+:host { display: contents; }
+
+.vista { flex: none; }
+.confirmacion {
+  display: grid; justify-items: center; gap: 12px; text-align: center; padding-top: 12px;
+  color: var(--texto);
+  h2 { font-size: 26px; letter-spacing: 1px; }
+  .caja { width: 100%; text-align: left; }
+}

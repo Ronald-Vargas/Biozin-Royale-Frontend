@@ -1,0 +1,10 @@
+@use '../../styles/base';
+
+:host { display: block; }
+
+.kpi {
+  display: grid; gap: 2px; padding: 14px 16px;
+  border-radius: 20px; border: 1px solid var(--linea);
+  background: linear-gradient(150deg, rgba(199, 154, 50, 0.12), var(--sup) 65%);
+  b { font-size: 22px; font-weight: 700; color: var(--cream); }
+}

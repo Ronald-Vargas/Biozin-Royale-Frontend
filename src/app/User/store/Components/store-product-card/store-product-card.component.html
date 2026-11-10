@@ -1,0 +1,27 @@
+<article class="tarjeta">
+  <span class="etiqueta agotado" *ngIf="producto.stock <= 0">Agotado</span>
+  <span class="etiqueta pocas" *ngIf="producto.stock > 0 && producto.stock <= 5">Quedan {{ producto.stock }}</span>
+  <span class="etiqueta" *ngIf="producto.stock > 5 && producto.etiqueta">{{ producto.etiqueta }}</span>
+
+  <button type="button" class="tarjeta-img" (click)="nav.ir('prod', producto.id)" [attr.aria-label]="'Ver ' + producto.nombre">
+    <app-store-product-art [producto]="producto"></app-store-product-art>
+  </button>
+
+  <div class="tarjeta-info">
+    <h3>{{ producto.nombre }}</h3>
+    <span class="muted">{{ producto.categoria }}</span>
+    <div class="fila">
+      <span class="precio">{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</span>
+      <ng-container [ngSwitch]="cart.accion(producto)">
+        <button *ngSwitchCase="'agotado'" type="button" class="btn-oro btn-sm" disabled>Agotado</button>
+        <button *ngSwitchCase="'talla'" type="button" class="btn-oro btn-sm" (click)="cart.abrirTallas(producto.id)">Elegir talla</button>
+        <div *ngSwitchCase="'cantidad'" class="cantidad cantidad-tarjeta">
+          <button type="button" [attr.aria-label]="'Quitar una unidad de ' + producto.nombre" (click)="cart.cambiar(cart.indiceDe(producto.id), -1)">−</button>
+          <span>{{ cart.cantidadDe(producto.id) }}</span>
+          <button type="button" [attr.aria-label]="'Añadir una unidad de ' + producto.nombre" (click)="cart.anadir(producto.id)">+</button>
+        </div>
+        <button *ngSwitchDefault type="button" class="btn-oro btn-sm" (click)="cart.anadir(producto.id)">Añadir</button>
+      </ng-container>
+    </div>
+  </div>
+</article>

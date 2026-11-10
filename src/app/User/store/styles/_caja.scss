@@ -1,0 +1,20 @@
+// Cajas de resumen y sus filas (carrito, pago, pedido, seguimiento).
+.caja {
+  margin-top: 16px; padding: 16px;
+  border-radius: 20px; border: 1px solid var(--linea);
+  background: var(--sup);
+  color: var(--texto);
+}
+.caja-titulo { margin-bottom: 12px; font-size: 16px; letter-spacing: 1px; }
+.fila-sum {
+  display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 14px;
+  color: var(--texto-suave);
+  > :last-child { color: var(--texto); }
+}
+.total {
+  margin-top: 8px; padding-top: 12px;
+  border-top: 1px solid rgba(212, 167, 60, 0.3);
+  font-size: 18px; font-weight: 700;
+  // El total resalta en el dorado claro del sistema
+  &, > :last-child { color: var(--gold-1); }
+}

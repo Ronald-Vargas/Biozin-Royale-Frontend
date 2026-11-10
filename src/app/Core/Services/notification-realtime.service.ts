@@ -24,6 +24,8 @@ export class NotificationRealtimeService {
   readonly nuevoMensaje$ = new Subject<NuevoMensajeNotif>();
   readonly nuevaSolicitud$ = new Subject<NuevaSolicitudNotif>();
   readonly nuevoMensajeSolicitud$ = new Subject<NuevoMensajeSolicitudNotif>();
+  /** La tienda avisa que un pedido cambió (solo ids; los datos se piden a la API). */
+  readonly pedidoTienda$ = new Subject<{ id: string; orderNumber: number }>();
 
   constructor(private readonly auth: AuthService) {}
 
@@ -44,6 +46,7 @@ export class NotificationRealtimeService {
     this.hub.on('nuevoMensaje', (p: NuevoMensajeNotif) => this.nuevoMensaje$.next(p));
     this.hub.on('nuevaSolicitud', (p: NuevaSolicitudNotif) => this.nuevaSolicitud$.next(p));
     this.hub.on('nuevoMensajeSolicitud', (p: NuevoMensajeSolicitudNotif) => this.nuevoMensajeSolicitud$.next(p));
+    this.hub.on('pedidoTienda', (p: { id: string; orderNumber: number }) => this.pedidoTienda$.next(p));
 
     await this.hub.start();
   }

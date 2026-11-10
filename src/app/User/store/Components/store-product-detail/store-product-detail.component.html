@@ -1,0 +1,40 @@
+<ng-container *ngIf="cat.detalle() as p">
+  <div class="vista">
+    <nav class="migas">
+      <button type="button" (click)="cat.verCategoria('Todas')">Tienda</button> /
+      <button type="button" (click)="cat.verCategoria(p.categoria)">{{ p.categoria }}</button>
+    </nav>
+
+    <div class="detalle-img">
+      <app-store-product-art [producto]="p"></app-store-product-art>
+    </div>
+
+    <h1 class="detalle-nombre">{{ p.nombre }}</h1>
+    <span class="precio precio-grande">{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</span>
+    <p class="detalle-desc">{{ p.descripcion }}</p>
+
+    <ng-container *ngIf="p.requiereTalla">
+      <span class="muted">Talla</span>
+      <div class="seg" role="group" aria-label="Talla">
+        <button type="button" *ngFor="let t of tallas" [class.activo]="talla() === t" [disabled]="cart.stockDe(p.id, t) <= 0" (click)="talla.set(t)">{{ t }}</button>
+      </div>
+    </ng-container>
+
+    <p class="muted stock">
+      {{ p.stock <= 0 ? 'Agotado por ahora.' : p.stock <= 5 ? 'Quedan ' + p.stock + ' unidades.' : 'Disponible. Envío gratis desde ' + dinero(envioGratisDesde) + '.' }}
+    </p>
+
+    <div class="sec"><h3 class="sec-titulo">Más de la colección</h3></div>
+    <div class="grid">
+      <app-store-product-card *ngFor="let r of cat.relacionados(); trackBy: trackId" [producto]="r"></app-store-product-card>
+    </div>
+  </div>
+
+  <app-store-cta
+    label="Precio"
+    [amount]="p.precio"
+    buttonText="Añadir al carrito"
+    [disabled]="p.stock <= 0"
+    (pressed)="cart.anadir(p.id, p.requiereTalla ? talla() : null, true)"
+  ></app-store-cta>
+</ng-container>

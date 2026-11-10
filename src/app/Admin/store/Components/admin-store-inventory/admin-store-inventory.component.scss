@@ -1,0 +1,28 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/items';
+@use '../../styles/estado';
+@use '../../styles/chips';
+
+:host { display: block; }
+
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.kpis-3 { grid-template-columns: repeat(3, 1fr); }
+.cantidad {
+  display: inline-flex; gap: 2px; padding: 2px;
+  border-radius: 99px; background: rgba(240, 208, 128, 0.12);
+  button {
+    width: 40px; height: 36px; border: 0; border-radius: 99px;
+    background: none; color: var(--gold-1); font-size: 18px; cursor: pointer;
+  }
+}
+.tallas-stock {
+  flex-wrap: wrap;
+  gap: 10px 16px;
+
+  .talla-stock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}

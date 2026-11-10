@@ -1,0 +1,12 @@
+// Cajas de resumen y sus filas.
+.caja {
+  margin-bottom: 14px; padding: 6px 16px;
+  border-radius: 20px; border: 1px solid var(--linea); background: var(--sup);
+}
+.caja-titulo { margin: 12px 0 6px; font-size: 16px; letter-spacing: 1px; }
+.fila-sum { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; font-size: 14px; }
+.total {
+  margin-top: 6px; padding-top: 12px;
+  border-top: 1px solid rgba(212, 167, 60, 0.3);
+  font-size: 18px; font-weight: 700;
+}

@@ -1,0 +1,33 @@
+<div class="barra">
+  <label class="buscador">
+    <app-icon [svg]="iconBuscar" [size]="18"></app-icon>
+    <input type="search" autocomplete="off" placeholder="Buscar producto" aria-label="Buscar producto"
+           [value]="ui.busquedaProd()" (input)="ui.busquedaProd.set($any($event.target).value)" />
+  </label>
+  <button type="button" class="btn-oro btn-sm" (click)="ui.nuevoProducto()">Nuevo producto</button>
+</div>
+
+<div class="caja" *ngIf="ui.productosFiltrados().length; else sinProductos">
+  <div class="item" *ngFor="let p of ui.productosFiltrados(); trackBy: trackId">
+    <div class="item-cab">
+      <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
+      <div class="item-datos">
+        <b>{{ p.nombre }}</b>
+        <span class="muted">{{ p.categoria }}</span>
+      </div>
+      <div class="item-num">
+        <b>{{ p.precio | currency:'USD':'symbol':'1.2-2' }}</b>
+        <span class="muted">{{ p.stock }} en stock</span>
+      </div>
+    </div>
+    <div class="item-acciones">
+      <button type="button" class="insignia boton" [ngClass]="p.visible ? 'ok' : 'apagado'" (click)="alternarVisible(p.id)"
+              [attr.aria-label]="'Cambiar visibilidad de ' + p.nombre">{{ p.visible ? 'Visible' : 'Oculto' }}</button>
+      <button type="button" class="btn-fantasma btn-sm" (click)="ui.editarProducto(p.id)">Editar</button>
+      <button type="button" class="btn-peligro btn-sm" (click)="pedirEliminar(p)">Eliminar</button>
+    </div>
+  </div>
+</div>
+<ng-template #sinProductos>
+  <div class="vacio"><h3>No encontramos productos</h3><p class="muted">Prueba con otra palabra.</p></div>
+</ng-template>

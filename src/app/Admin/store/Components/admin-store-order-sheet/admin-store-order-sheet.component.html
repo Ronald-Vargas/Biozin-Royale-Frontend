@@ -1,0 +1,34 @@
+<ng-container *ngIf="ui.pedidoAbierto() as o">
+  <h2>Pedido {{ o.no }}</h2>
+  <div class="fila-estado">
+    <span class="insignia" [ngClass]="o.estadoPago === 'confirmado' ? 'ok' : o.estadoPago === 'pendiente' ? 'bajo' : 'agotado'">Pago: {{ textoPago(o).toLowerCase() }}</span>
+    <span class="estado" [ngClass]="'g-' + claseGrupo(o)">{{ o.cancelado ? 'Cancelado' : o.incidenciaAbierta ? 'Incidencia' : etapa(o).nombre }}</span>
+  </div>
+  <p class="muted">{{ o.cliente }} · {{ o.correo }} · {{ o.telefono }}</p>
+  <p class="muted">Envío a {{ o.direccion }}. Pago con {{ metodoTexto(o).toLowerCase() }}{{ o.tarjeta ? ' (' + o.tarjeta + ')' : '' }}.
+    <ng-container *ngIf="!o.cancelado && o.fase < 6">Entrega: {{ o.ventana || o.eta }}.</ng-container></p>
+
+  <div class="fila-sum" *ngFor="let i of o.items">
+    <span>{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+    <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+  </div>
+  <div class="fila-sum"><span>Envío</span><span>{{ o.envio ? (o.envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+  <div class="fila-sum total"><span>Total</span><span>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+
+  <!-- Panel de la etapa actual -->
+  <ng-container *ngIf="!o.cancelado">
+    <app-admin-store-payment-review *ngIf="o.estadoPago === 'pendiente'" [pedido]="o"></app-admin-store-payment-review>
+    <app-admin-store-prep-panel *ngIf="o.fase === 1 || o.fase === 2" [pedido]="o"></app-admin-store-prep-panel>
+    <app-admin-store-shipping-panel *ngIf="o.fase === 3 || o.fase === 4" [pedido]="o"></app-admin-store-shipping-panel>
+    <app-admin-store-delivery-panel *ngIf="o.fase === 5 || o.fase === 6" [pedido]="o"></app-admin-store-delivery-panel>
+  </ng-container>
+
+  <p class="error" role="alert" *ngIf="ui.errorLog()">{{ ui.errorLog() }}</p>
+
+  <app-admin-store-order-log [pedido]="o"></app-admin-store-order-log>
+
+  <div class="acciones">
+    <button type="button" class="btn-peligro btn-sm" *ngIf="puedeCancelar(o)" (click)="pedirCancelar(o)">Cancelar pedido</button>
+    <button type="button" class="btn-fantasma btn-sm" (click)="ui.cerrarHoja()">Cerrar</button>
+  </div>
+</ng-container>

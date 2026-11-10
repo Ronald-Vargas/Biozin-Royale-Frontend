@@ -1,0 +1,29 @@
+// Formularios de pago y de las hojas.
+.formulario {
+  display: grid; gap: 12px;
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--apagado); }
+  input[type='text'], input[type='tel'], select {
+    min-height: 46px; padding: 0 14px;
+    border-radius: 12px; border: 1px solid var(--linea);
+    background: rgba(255, 255, 255, 0.04); color: var(--cream); font-size: 16px;
+    option { background: var(--sup); }
+  }
+  &.interno { margin: 4px 0 8px; }
+}
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.metodo {
+  display: flex !important; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 14px;
+  border: 1px solid var(--linea); color: var(--cream) !important; font-size: 15px !important;
+  input { accent-color: var(--gold-2); width: 18px; height: 18px; }
+  small { display: block; }
+  &.activo { border-color: var(--gold-2); background: rgba(212, 167, 60, 0.08); }
+}
+.error { margin: 12px 0 0; color: #f4a0a0; font-size: 13.5px; }
+.campo { display: grid; gap: 4px; width: 100%; text-align: left; font-size: 13px; color: var(--apagado);
+  input {
+    min-height: 46px; padding: 0 14px; border-radius: 12px;
+    border: 1px solid var(--linea); background: rgba(255, 255, 255, 0.04);
+    color: var(--cream); font-size: 16px;
+  }
+}

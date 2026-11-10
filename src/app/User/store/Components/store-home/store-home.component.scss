@@ -1,0 +1,41 @@
+@use '../../styles/base';
+@use '../../styles/estado';
+
+:host { display: contents; }
+
+.vista { flex: none; }
+.buscador {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px; min-height: 46px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--apagado);
+  input {
+    flex: 1; min-width: 0;
+    background: none; border: 0; outline: none;
+    color: var(--cream); font-size: 16px;
+    &::placeholder { color: #7d7360; }
+  }
+}
+.sec {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  margin: 22px 0 12px;
+}
+.sec-titulo {
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+}
+.orden {
+  min-height: 36px; padding: 0 12px;
+  border-radius: 99px; border: 1px solid var(--linea);
+  background: rgba(255, 255, 255, 0.06); color: var(--cream); font-size: 13px;
+  option { background: var(--sup); }
+}
+.rail {
+  display: flex; gap: 14px;
+  margin: 0 -20px; padding: 4px 20px 14px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+  app-store-product-card { flex: 0 0 200px; scroll-snap-align: start; }
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

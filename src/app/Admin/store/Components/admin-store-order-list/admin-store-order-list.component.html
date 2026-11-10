@@ -1,0 +1,13 @@
+<button type="button" class="item item-btn" *ngFor="let o of pedidos; trackBy: trackNo" (click)="abrir.emit(o.no)">
+  <div class="item-cab">
+    <div class="item-datos">
+      <b>{{ o.no }}</b>
+      <span class="muted">{{ o.cliente }}</span>
+    </div>
+    <div class="item-num"><b>{{ total(o) | currency:'USD':'symbol':'1.2-2' }}</b><span class="muted">{{ metodo(o) }}</span></div>
+  </div>
+  <div class="fila-etiquetas">
+    <span class="estado" [ngClass]="'g-' + clase(o)">{{ grupo(o) }}</span>
+    <span class="muted">desde {{ ultimo(o) }}</span>
+  </div>
+</button>

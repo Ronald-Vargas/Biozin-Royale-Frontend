@@ -1,0 +1,44 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/estado';
+
+:host { display: contents; }
+
+.vista { flex: none; }
+.estado-card {
+  display: grid; gap: 4px; justify-items: start;
+  padding: 16px; margin-top: 4px;
+  border-radius: 20px; border: 1px solid rgba(212, 167, 60, 0.3);
+  background: linear-gradient(135deg, #2b2010, #13151b 70%);
+  color: var(--texto);
+  h2 { font-size: 22px; letter-spacing: 1px; }
+}
+.chip {
+  display: inline-flex; padding: 3px 11px; border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+  color: var(--c, #7fb0ff);
+  background: color-mix(in srgb, var(--c, #7fb0ff) 14%, transparent);
+  &.azul { --c: #7fb0ff; }
+  &.verde { --c: #4fd190; }
+  &.rojo { --c: #f07a7a; }
+}
+.fila-enlaces { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 4px; }
+.codigo {
+  display: flex; gap: 8px; justify-content: center; margin: 8px 0;
+  span {
+    width: 46px; height: 54px; display: grid; place-items: center;
+    border-radius: 12px; border: 1px solid rgba(212, 167, 60, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+    font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--gold-1);
+  }
+}
+.ruta { display: block; width: 100%; margin-top: 6px; }
+.estrellas {
+  display: flex; gap: 6px; justify-content: center; margin: 8px 0;
+  button {
+    background: none; border: 0; font-size: 32px; line-height: 1;
+    color: #4a4437; cursor: pointer;
+    &.on { color: var(--gold-1); }
+    &:disabled { cursor: default; }
+  }
+}

@@ -1,0 +1,14 @@
+// Base de la administración de la tienda: texto, botones y enlaces.
+.muted { color: var(--apagado); font-size: 13px; }
+h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
+.btn-oro, .btn-fantasma, .btn-peligro {
+  min-height: 44px; padding: 0 20px;
+  border-radius: 99px; font-weight: 700; font-size: 14px; cursor: pointer;
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+.btn-oro { border: 0; background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); color: var(--oro-texto); }
+.btn-fantasma { background: none; border: 1px solid rgba(212, 167, 60, 0.4); color: var(--gold-1); }
+.btn-peligro { background: none; border: 1px solid rgba(240, 122, 122, 0.45); color: #f07a7a; }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 13px; }
+.enlace { background: none; border: 0; padding: 4px 0; color: var(--gold-1); font-size: 13px; text-decoration: underline; cursor: pointer; }
+.vacio-txt { margin: 10px 0; }

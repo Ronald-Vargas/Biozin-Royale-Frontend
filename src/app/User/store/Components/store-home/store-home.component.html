@@ -1,0 +1,41 @@
+<div class="vista">
+  <label class="buscador">
+    <app-icon [svg]="iconBuscar" [size]="18"></app-icon>
+    <input type="search" autocomplete="off" placeholder="Buscar en la tienda" aria-label="Buscar en la tienda"
+           [value]="cat.busqueda()" (input)="cat.busqueda.set($any($event.target).value)" />
+  </label>
+
+  <app-store-categories
+    [filtros]="cat.filtros"
+    [activa]="cat.categoria()"
+    [conteos]="cat.conteos()"
+    (elegir)="cat.verCategoria($event)"
+  ></app-store-categories>
+
+  <ng-container *ngIf="!cat.busqueda().trim() && cat.categoria() === 'Todas'">
+    <div class="sec"><h3 class="sec-titulo">Novedades y favoritos</h3></div>
+    <div class="rail">
+      <app-store-product-card *ngFor="let p of cat.novedades(); trackBy: trackId" [producto]="p"></app-store-product-card>
+    </div>
+  </ng-container>
+
+  <div class="sec" id="lista">
+    <h3 class="sec-titulo">{{ cat.busqueda().trim() ? 'Resultados' : cat.categoria() === 'Todas' ? 'Todos los productos' : cat.categoria() }}</h3>
+    <select class="orden" aria-label="Ordenar" [value]="cat.orden()" (change)="cat.orden.set($any($event.target).value)">
+      <option value="rel">Destacados</option>
+      <option value="lo">Menor precio</option>
+      <option value="hi">Mayor precio</option>
+    </select>
+  </div>
+
+  <div class="grid" *ngIf="cat.filtrados().length; else sinResultados">
+    <app-store-product-card *ngFor="let p of cat.filtrados(); trackBy: trackId" [producto]="p"></app-store-product-card>
+  </div>
+  <ng-template #sinResultados>
+    <div class="vacio">
+      <h3>No encontramos productos</h3>
+      <p class="muted">Revisa la ortografía o elige otra categoría.</p>
+      <button type="button" class="btn-oro" (click)="cat.verCategoria('Todas')">Ver toda la tienda</button>
+    </div>
+  </ng-template>
+</div>

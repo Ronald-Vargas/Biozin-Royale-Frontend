@@ -1,113 +1,73 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { pedidoApi, productoApi, responder } from 'src/app/Core/Testing/store-testing';
 import { StoreComponent } from './store.component';
-import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
 
 describe('StoreComponent (admin)', () => {
   let fixture: ComponentFixture<StoreComponent>;
   let component: StoreComponent;
-  let store: StoreDemoService;
+  let http: HttpTestingController;
+  const el = () => fixture.nativeElement as HTMLElement;
 
   beforeEach(async () => {
+    localStorage.removeItem('store_admin_avisos_leidos');
     await TestBed.configureTestingModule({
       imports: [StoreComponent],
-      providers: [provideRouter([])],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StoreComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreDemoService);
+    http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await responder(http, { pedidos: [pedidoApi()], productos: [productoApi('a', 8), productoApi('b', 3)] });
     fixture.detectChanges();
   });
 
-  const pedido = (no: string) => store.pedido(no)!;
-  const stockDe = (id: string) => store.producto(id)!.stock;
+  afterEach(() => http.verify());
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('lleva un pedido de punta a punta: pago, preparación, despacho, incidencia y entrega con código', () => {
-    const no = 'BR-10241'; // pago con tarjeta por confirmar, 2 artículos
-    component.confirmarPago(pedido(no));
-    expect(pedido(no).estadoPago).toBe('confirmado');
-    expect(pedido(no).fase).toBe(1);
-
-    component.iniciarPreparacion(pedido(no));
-    expect(pedido(no).fase).toBe(2);
-
-    component.alternarPick(pedido(no), 0);
-    expect(component.pickingCompleto(pedido(no))).toBeFalse(); // falta un artículo
-    component.alternarPick(pedido(no), 1);
-    expect(component.pickingCompleto(pedido(no))).toBeTrue();
-    component.marcarEmpacado(pedido(no));
-    expect(pedido(no).fase).toBe(3);
-    expect(pedido(no).paquete).toContain('Caja M');
-
-    component.despachar(pedido(no));
-    expect(pedido(no).fase).toBe(4);
-    expect(pedido(no).transportista).toBe('Correos de Costa Rica');
-    expect(pedido(no).guia.startsWith('CR-')).toBeTrue();
-
-    component.iniciarReparto(pedido(no));
-    expect(pedido(no).fase).toBe(5);
-
-    component.registrarIncidencia(pedido(no));
-    expect(pedido(no).incidenciaAbierta).toBeTrue();
-    component.reprogramarPorCliente(pedido(no));
-    expect(pedido(no).incidenciaAbierta).toBeFalse();
-    expect(pedido(no).ventana).not.toBe('');
-
-    component.codigoEntrada = '0000';
-    component.confirmarEntrega(pedido(no));
-    expect(component.errorLog()).toContain('código');
-    expect(pedido(no).fase).toBe(5);
-
-    component.codigoEntrada = pedido(no).codigo;
-    component.confirmarEntrega(pedido(no));
-    expect(pedido(no).fase).toBe(6);
-    expect(pedido(no).eventos.length).toBeGreaterThan(6); // todo queda en la bitácora
+  it('abre en el resumen con los datos de la API', () => {
+    expect(el().querySelector('app-admin-store-summary')).toBeTruthy();
+    expect(component.ui.pedidos().length).toBe(1);
+    expect(component.ui.store.productos().length).toBe(2);
+    expect(el().querySelector('app-admin-store-order-list')?.textContent).toContain('BR-10241');
   });
 
-  it('no deja saltarse etapas', () => {
-    expect(store.iniciarReparto('BR-10241', 'Admin Royale')).toBeFalse();
-    expect(store.despachar('BR-10241', 'Admin Royale')).toBeFalse();
-    expect(pedido('BR-10241').fase).toBe(0);
+  it('cada sección monta su propio componente', () => {
+    const ir = (k: 'log' | 'ord' | 'prods' | 'inv') => { component.ui.irSeccion(k); fixture.detectChanges(); };
+
+    ir('log');
+    expect(el().querySelector('app-admin-store-logistics')).toBeTruthy();
+    expect(el().querySelector('app-admin-store-summary')).toBeNull();
+    ir('ord');
+    expect(el().querySelector('app-admin-store-orders')).toBeTruthy();
+    ir('prods');
+    expect(el().querySelector('app-admin-store-products')).toBeTruthy();
+    ir('inv');
+    expect(el().querySelector('app-admin-store-inventory')).toBeTruthy();
   });
 
-  it('rechazar un pago cancela el pedido y devuelve las unidades al inventario', () => {
-    const antes = stockDe('t1');
-    store.rechazarPago('BR-10241', 'Admin Royale');
-    expect(pedido('BR-10241').cancelado).toBeTrue();
-    expect(pedido('BR-10241').estadoPago).toBe('rechazado');
-    expect(stockDe('t1')).toBe(antes + 2);
+  it('un pedido sin confirmar aparece en "Por verificar pago" de Logística', () => {
+    component.ui.irSeccion('log');
+    fixture.detectChanges();
+    expect(el().textContent).toContain('Por verificar pago');
+    expect(component.ui.cuenta()['Por verificar pago']).toBe(1);
   });
 
-  it('el admin cancela hasta que el pedido sale, y no después', () => {
-    expect(component.puedeCancelar(pedido('BR-10241'))).toBeTrue();
-    expect(component.puedeCancelar(pedido('BR-10230'))).toBeFalse(); // ya va en reparto
-  });
+  it('al tocar un pedido abre su hoja con el panel de pago', () => {
+    component.ui.abrirPedido('BR-10241');
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-sheet app-admin-store-order-sheet')).toBeTruthy();
+    expect(el().querySelector('app-admin-store-payment-review')).toBeTruthy();
 
-  it('un pedido nuevo genera un aviso para el admin', () => {
-    const antes = component.noLeidas();
-    store.crearPedido({
-      correo: 'cliente@biozin.com', cliente: 'Ana Mora', telefono: '88887777', metodoPago: 'wallet',
-      direccion: 'Limón, Centro, casa verde', items: [{ id: 'r3', talla: null, cantidad: 1 }], envio: 5,
-    });
-    expect(component.noLeidas()).toBe(antes + 1);
-  });
-
-  it('valida el formulario de producto antes de guardar', () => {
-    component.nuevoProducto();
-    component.formProd.nombre = 'Producto prueba';
-    component.formProd.precio = '0';
-    component.formProd.stock = '3';
-    component.guardarProducto();
-    expect(component.errorForm()).toContain('precio');
-
-    component.formProd.precio = '10';
-    component.guardarProducto();
-    expect(component.errorForm()).toBe('');
-    expect(store.productos().length).toBe(25);
+    component.ui.cerrarHoja();
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-sheet')).toBeNull();
   });
 });

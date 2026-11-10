@@ -1,0 +1,33 @@
+<!-- En reparto: incidencia o entrega con código -->
+<ng-container *ngIf="pedido.fase === 5">
+  <div class="rec" *ngIf="pedido.incidenciaAbierta; else enReparto">
+    <b>Incidencia abierta</b>
+    <p class="muted">Esperando que el cliente elija una nueva fecha.</p>
+    <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="reprogramarPorCliente(pedido)">Reprogramar por el cliente</button></div>
+  </div>
+  <ng-template #enReparto>
+    <div class="rec">
+      <b>Código de entrega</b>
+      <p class="muted">Pídele al cliente los 4 dígitos que ve en su app. Sin el código no se cierra la entrega.</p>
+      <input class="codigo-input" type="text" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Código del cliente" [(ngModel)]="codigoEntrada" />
+      <div class="acciones">
+        <button type="button" class="btn-oro btn-sm" [disabled]="codigoEntrada.length < 4" (click)="confirmarEntrega(pedido)">Confirmar entrega</button>
+      </div>
+    </div>
+    <div class="rec">
+      <b>¿No se pudo entregar?</b>
+      <select class="select ancho" [(ngModel)]="motivo" aria-label="Motivo de la incidencia">
+        <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+      </select>
+      <div class="acciones"><button type="button" class="btn-peligro btn-sm" (click)="registrarIncidencia(pedido)">Registrar incidencia</button></div>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- Entregado -->
+<div class="rec" *ngIf="pedido.fase === 6">
+  <b>Entregado con código verificado</b>
+  <p class="muted">{{ fechaDe(pedido, 6) }}</p>
+  <div class="estrellas-ro" *ngIf="pedido.calificacion"><span *ngFor="let n of estrellas" [class.on]="pedido.calificacion >= n">★</span></div>
+  <p class="muted" *ngIf="!pedido.calificacion">El cliente todavía no califica la entrega.</p>
+</div>

@@ -1,0 +1,40 @@
+<div class="kpis">
+  <app-admin-store-kpi label="Ventas" [value]="ui.ventas() | currency:'USD':'symbol':'1.2-2'"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Pedidos" [value]="ui.pedidos().length"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Por atender" [value]="ui.porAtender()"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Incidencias" [value]="ui.cuenta()['Incidencias']"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Entregados" [value]="ui.cuenta()['Entregados']"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Valoración" [value]="ui.valoracion() ? (ui.valoracion() | number:'1.1-1') + ' ★' : '—'"></app-admin-store-kpi>
+</div>
+
+<div class="caja">
+  <h3 class="caja-titulo">Requieren acción</h3>
+  <p class="muted vacio-txt" *ngIf="!ui.requierenAccion().length">No hay pedidos esperando acción.</p>
+  <app-admin-store-order-list [pedidos]="ui.requierenAccion()" (abrir)="ui.abrirPedido($event)"></app-admin-store-order-list>
+</div>
+
+<div class="caja" *ngIf="store.notificaciones().length">
+  <app-store-notice-list
+    [avisos]="store.notificaciones()"
+    [unread]="ui.noLeidas()"
+    (open)="ui.abrirAviso($event)"
+    (markAll)="store.marcarTodasLeidas()"
+  ></app-store-notice-list>
+</div>
+
+<div class="caja">
+  <h3 class="caja-titulo">Últimos movimientos</h3>
+  <div class="lgi" *ngFor="let m of ui.movimientos()">
+    <span class="muted">{{ m.fecha }} · {{ m.no }}</span>
+    <b>{{ m.quien }}</b> · {{ m.texto }}
+  </div>
+</div>
+
+<div class="caja">
+  <h3 class="caja-titulo">Stock bajo</h3>
+  <p class="muted vacio-txt" *ngIf="!ui.stockBajo().length">Todos los productos tienen más de 5 unidades.</p>
+  <div class="fila-sum" *ngFor="let p of ui.stockBajo(); trackBy: trackId">
+    <span>{{ p.nombre }}</span>
+    <span class="insignia" [ngClass]="estadoStock(p).clase">{{ p.stock ? p.stock + ' en stock' : 'Agotado' }}</span>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+@use '../../styles/base';
+
+:host { display: contents; }
+
+.contenido {
+  display: grid; gap: 10px; justify-items: center; text-align: center;
+  h3 { font-size: 20px; }
+}
+.ventanas { display: grid; gap: 10px; width: 100%; margin: 6px 0; }

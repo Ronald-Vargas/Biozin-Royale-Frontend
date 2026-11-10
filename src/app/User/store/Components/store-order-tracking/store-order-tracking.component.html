@@ -1,0 +1,72 @@
+<div class="vista">
+  <ng-container *ngIf="pedido() as p">
+
+    <div class="estado-card">
+      <span class="chip" [ngClass]="p.cancelado ? 'rojo' : p.fase === 6 ? 'verde' : 'azul'">{{ p.no }}</span>
+      <h2>{{ p.cancelado ? 'Pedido cancelado' : etapa(p).nombre }}</h2>
+      <span class="muted" *ngIf="!p.cancelado">
+        {{ p.fase === 6 ? 'Entregado el ' + fechaDe(p, 6) : p.ventana ? 'Reprogramada: ' + p.ventana : 'Entrega estimada: ' + p.eta }}
+      </span>
+      <span class="muted" *ngIf="p.cancelado">Pago: {{ textoPago(p).toLowerCase() }}.</span>
+    </div>
+
+    <!-- Calificación al recibir -->
+    <div class="caja centrado" *ngIf="p.fase === 6 && !p.cancelado">
+      <h3 class="caja-titulo">¿Cómo fue tu entrega?</h3>
+      <div class="estrellas" role="group" aria-label="Calificación">
+        <button type="button" *ngFor="let n of estrellas" [class.on]="p.calificacion >= n" [disabled]="p.calificacion > 0"
+                [attr.aria-label]="n + ' estrellas'" (click)="calificar(p, n)">★</button>
+      </div>
+      <button type="button" class="enlace" (click)="pedirCambio(p)">Pedir un cambio o devolución (15 días)</button>
+    </div>
+
+    <!-- Transportista y guía -->
+    <div class="caja" *ngIf="!p.cancelado && p.fase >= 4">
+      <div class="fila-sum"><span>{{ p.transportista }}</span><b>{{ p.guia }}</b></div>
+    </div>
+
+    <!-- Código de entrega -->
+    <div class="caja centrado" *ngIf="muestraCodigo(p)">
+      <h3 class="caja-titulo">Código de entrega</h3>
+      <div class="codigo"><span *ngFor="let d of p.codigo.split('')">{{ d }}</span></div>
+      <p class="muted">Díselo al repartidor cuando recibas el pedido.</p>
+      <svg class="ruta" viewBox="0 0 340 70" aria-hidden="true">
+        <path d="M10 55C90 5 160 65 240 25S320 40 330 20" fill="none" stroke="#d4a73c" stroke-dasharray="5 6" opacity=".6" />
+        <circle cx="10" cy="55" r="5" fill="#a89c80" />
+        <circle cx="330" cy="20" r="7" fill="none" stroke="#f0d080" stroke-width="2" />
+        <circle r="6" fill="#f0d080">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M10 55C90 5 160 65 240 25S320 40 330 20" />
+        </circle>
+      </svg>
+    </div>
+
+    <!-- Incidencia: el cliente elige nueva fecha -->
+    <div class="caja alerta" *ngIf="p.incidenciaAbierta && !p.cancelado">
+      <h3 class="caja-titulo">No pudimos entregar</h3>
+      <p class="muted">No hubo respuesta en tu dirección. Elige cuándo volvemos a intentarlo.</p>
+      <div class="acciones"><button type="button" class="btn-oro" (click)="abrirFechas(p)">Elegir nueva fecha</button></div>
+    </div>
+
+    <!-- Línea de tiempo -->
+    <div class="caja">
+      <h3 class="caja-titulo">Seguimiento</h3>
+      <app-store-timeline [items]="lineaTiempo()"></app-store-timeline>
+      <div class="fila-enlaces" *ngIf="puedeCambiarDireccion(p) || puedeCancelar(p)">
+        <button type="button" class="enlace" *ngIf="puedeCambiarDireccion(p)" (click)="abrirDireccion(p)">Cambiar dirección</button>
+        <button type="button" class="enlace" *ngIf="puedeCancelar(p)" (click)="pedirCancelar(p)">Cancelar pedido</button>
+      </div>
+    </div>
+
+    <!-- Resumen -->
+    <div class="caja">
+      <h3 class="caja-titulo">Resumen</h3>
+      <div class="fila-sum" *ngFor="let i of p.items">
+        <span>{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+        <span>{{ i.precio * i.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+      </div>
+      <div class="fila-sum"><span>Envío</span><span>{{ p.envio ? (p.envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+      <div class="fila-sum total"><span>Total</span><span>{{ totalDe(p) | currency:'USD':'symbol':'1.2-2' }}</span></div>
+      <p class="muted">Pago con {{ metodoTexto(p).toLowerCase() }}: {{ textoPago(p).toLowerCase() }}. Envío a {{ p.direccion }}.</p>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,8 @@
+<app-store-sheet [centered]="true" (closed)="cancelled.emit()">
+  <h3 class="titulo">{{ title }}</h3>
+  <p class="texto">{{ text }}</p>
+  <div class="acciones" [class.compact]="compact">
+    <button type="button" class="btn-fantasma" [class.btn-sm]="compact" (click)="cancelled.emit()">{{ keep }}</button>
+    <button type="button" class="btn-peligro" [class.btn-sm]="compact" (click)="accepted.emit()">{{ ok }}</button>
+  </div>
+</app-store-sheet>

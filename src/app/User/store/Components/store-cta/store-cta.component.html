@@ -1,0 +1,4 @@
+<div class="cta">
+  <div><span class="muted">{{ label }}</span><b class="precio">{{ amount | currency:'USD':'symbol':'1.2-2' }}</b></div>
+  <button type="button" class="btn-oro" [disabled]="disabled" (click)="pressed.emit()">{{ buttonText }}</button>
+</div>

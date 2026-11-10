@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { responder, tick } from 'src/app/Core/Testing/store-testing';
 import { StoreComponent } from './store.component';
-import { StoreDemoService } from 'src/app/Core/Services/store-demo.service';
 
 describe('StoreComponent (usuario)', () => {
   let fixture: ComponentFixture<StoreComponent>;
   let component: StoreComponent;
-  let store: StoreDemoService;
+  let http: HttpTestingController;
+  const el = () => fixture.nativeElement as HTMLElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,114 +19,55 @@ describe('StoreComponent (usuario)', () => {
 
     fixture = TestBed.createComponent(StoreComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreDemoService);
+    http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await responder(http);
     fixture.detectChanges();
   });
 
-  const datosValidos = () => {
-    component.datos.nombre = 'Ana Mora';
-    component.datos.telefono = '88887777';
-    component.datos.direccion = 'Calle 5, casa verde';
-  };
-  const stockDe = (id: string) => store.producto(id)!.stock;
+  afterEach(() => http.verify());
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('añade productos al carrito y respeta el stock', () => {
-    for (let i = 0; i < 4; i++) component.anadir('k1'); // el llavero de 5 tiene 2 unidades
-    expect(component.cantidadDe('k1')).toBe(2);
+  it('muestra la portada con los productos que trae la API', () => {
+    expect(el().querySelector('app-store-home')).toBeTruthy();
+    expect(el().querySelectorAll('.grid app-store-product-card').length).toBe(2);
+    expect(component.store.productos().length).toBe(2);
   });
 
-  it('un pedido con tarjeta queda confirmado y descuenta el stock', () => {
-    component.anadir('t1', 'M');
-    component.setMetodo('card');
-    datosValidos();
-    component.datos.tarjeta = '4111 1111 1111 1111';
-    component.datos.vence = '08/28';
-    component.datos.cvv = '123';
-    component.confirmar();
+  it('cada vista monta su propia ventana', async () => {
+    component.nav.ir('cart');
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-cart')).toBeTruthy();
+    expect(el().querySelector('app-store-home')).toBeNull();
 
-    const pedido = component.pedidoActual()!;
-    expect(component.vista()).toBe('ok');
-    expect(pedido.estadoPago).toBe('confirmado');
-    expect(pedido.fase).toBe(1);
-    expect(stockDe('t1')).toBe(23);
-    expect(component.carrito().length).toBe(0);
+    component.nav.ir('mine');
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-my-orders')).toBeTruthy();
+    await tick();
   });
 
-  it('la tarjeta se valida antes de crear el pedido', () => {
-    component.anadir('t1', 'M');
-    component.setMetodo('card');
-    datosValidos();
-    component.datos.tarjeta = '1234';
-    component.confirmar();
-    expect(component.error()).toContain('16 dígitos');
-    expect(component.vista()).toBe('home');
+  it('el ícono del carrito cuenta las unidades y la hoja de tallas se abre desde la tarjeta', () => {
+    component.cart.anadir('p-llavero');
+    fixture.detectChanges();
+    expect(el().querySelector('[aria-label="Carrito"] .badge')?.textContent?.trim()).toBe('1');
+
+    component.cart.abrirTallas('p-camisa');
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-size-sheet')).toBeTruthy();
   });
 
-  it('un pedido con billetera confirma el pago y descuenta el saldo', () => {
-    component.anadir('t1', 'M');
-    component.setMetodo('wallet');
-    datosValidos();
-    const antes = component.saldo();
-    component.confirmar();
+  it('la confirmación se muestra y ejecuta la acción solo al aceptar', () => {
+    let hecho = false;
+    component.nav.pedirConfirmacion({ titulo: '¿Seguro?', texto: 'Texto', ok: 'Sí', conservar: 'No', accion: () => (hecho = true) });
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-confirm-dialog .titulo')?.textContent).toContain('¿Seguro?');
 
-    const pedido = component.pedidoActual()!;
-    expect(pedido.estadoPago).toBe('confirmado');
-    expect(pedido.fase).toBe(1);
-    expect(component.saldo()).toBe(antes - 33); // $28 + $5 de envío
-  });
-
-  it('rechaza el pago con billetera si el saldo no alcanza', () => {
-    for (let i = 0; i < 5; i++) component.anadir('j3');
-    for (let i = 0; i < 10; i++) component.anadir('h2', 'L');
-    component.setMetodo('wallet');
-    datosValidos();
-    component.confirmar();
-
-    expect(component.error()).toContain('saldo');
-    expect(component.vista()).toBe('home');
-  });
-
-  it('el cliente cancela antes del empaque y las unidades vuelven al inventario', () => {
-    const antes = stockDe('t1');
-    const pedido = store.pedido('BR-10241')!; // pago por verificar, 2 camisetas
-    expect(component.puedeCancelar(pedido)).toBeTrue();
-
-    store.cancelar('BR-10241', 'Ana Mora', 'cliente');
-    expect(store.pedido('BR-10241')!.cancelado).toBeTrue();
-    expect(stockDe('t1')).toBe(antes + 2);
-    expect(component.puedeCancelar(store.pedido('BR-10241')!)).toBeFalse();
-  });
-
-  it('tras un intento fallido, el cliente reprograma desde su seguimiento', () => {
-    store.registrarIncidencia('BR-10230', 'Cliente no contesta', 'Repartidor');
-    component.verPedido('BR-10230');
-    expect(component.pedidoActual()!.incidenciaAbierta).toBeTrue();
-
-    component.abrirFechas(component.pedidoActual()!);
-    component.elegirVentana(store.ventanasDisponibles()[0]);
-    const p = component.pedidoActual()!;
-    expect(p.incidenciaAbierta).toBeFalse();
-    expect(p.ventana).not.toBe('');
-  });
-
-  it('un pedido solo se entrega con el código correcto', () => {
-    expect(store.confirmarEntrega('BR-10230', '0000', 'Repartidor')).toBeFalse();
-    expect(store.pedido('BR-10230')!.fase).toBe(5);
-
-    expect(store.confirmarEntrega('BR-10230', '5190', 'Repartidor')).toBeTrue();
-    expect(store.pedido('BR-10230')!.fase).toBe(6);
-  });
-
-  it('un aviso nuevo llega al cliente y se cuenta como no leído', () => {
-    const antes = component.noLeidas();
-    store.iniciarPreparacion('BR-10238', 'Admin Royale'); // otro cliente: no cambia el conteo de Ana
-    expect(component.noLeidas()).toBe(antes);
-
-    store.notificar('cliente@biozin.com', 'Prueba', 'Aviso de prueba', 'BR-10230');
-    expect(component.noLeidas()).toBe(antes + 1);
+    (el().querySelector('app-store-confirm-dialog .btn-peligro') as HTMLElement).click();
+    expect(hecho).toBeTrue();
+    fixture.detectChanges();
+    expect(el().querySelector('app-store-confirm-dialog')).toBeNull();
   });
 });

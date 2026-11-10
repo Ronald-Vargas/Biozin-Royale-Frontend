@@ -1,0 +1,9 @@
+<div class="cab">
+  <h3>Avisos</h3>
+  <button type="button" class="enlace" *ngIf="unread" (click)="markAll.emit()">Marcar como leídos</button>
+</div>
+<button type="button" class="aviso-item" *ngFor="let n of avisos.slice(0, limit)" [class.nuevo]="!n.leida" (click)="open.emit(n)">
+  <b>{{ n.titulo }}</b>
+  <span>{{ n.texto }}</span>
+  <span class="muted">{{ n.fecha }}</span>
+</button>

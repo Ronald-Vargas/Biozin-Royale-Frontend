@@ -1,0 +1,18 @@
+<div class="kpis">
+  <app-admin-store-kpi label="Por verificar pago" [value]="ui.cuenta()['Por verificar pago']"></app-admin-store-kpi>
+  <app-admin-store-kpi label="En preparación" [value]="ui.enPreparacion()"></app-admin-store-kpi>
+  <app-admin-store-kpi label="En ruta" [value]="ui.cuenta()['En ruta']"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Incidencias" [value]="ui.cuenta()['Incidencias']"></app-admin-store-kpi>
+</div>
+<div class="corte">Corte de despacho: hoy {{ corte() }}. Lo que se empaca antes sale el mismo día.</div>
+
+<ng-container *ngFor="let g of ui.grupos()">
+  <div class="caja" *ngIf="g.pedidos.length">
+    <div class="item-cab">
+      <h3 class="caja-titulo">{{ g.nombre }}</h3>
+      <span class="muted">{{ g.pedidos.length }}</span>
+    </div>
+    <app-admin-store-order-list [pedidos]="g.pedidos" (abrir)="ui.abrirPedido($event)"></app-admin-store-order-list>
+  </div>
+</ng-container>
+<p class="muted vacio-txt" *ngIf="!activos()">No hay pedidos activos en este momento.</p>

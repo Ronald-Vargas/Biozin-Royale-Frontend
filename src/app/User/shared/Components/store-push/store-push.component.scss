@@ -1,0 +1,19 @@
+.push {
+  position: fixed; left: 14px; right: 14px;
+  top: calc(12px + var(--ion-safe-area-top, 0px));
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; text-align: left;
+  border-radius: 20px; border: 1px solid rgba(212, 167, 60, 0.35);
+  background: rgba(32, 28, 20, 0.97); color: var(--cream);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); cursor: pointer;
+  img { flex: none; width: 34px; height: auto; }
+  span { flex: 1; display: grid; }
+  b { font-size: 13.5px; }
+  small { font-size: 12.5px; color: #cdbf9c; }
+  em { font-style: normal; font-size: 11px; color: var(--apagado); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .push { animation: bajar 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+}
+@keyframes bajar { from { transform: translateY(-30px); opacity: 0; } }

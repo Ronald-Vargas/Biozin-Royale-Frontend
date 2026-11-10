@@ -1,0 +1,38 @@
+<div class="kpis kpis-3">
+  <app-admin-store-kpi label="Unidades" [value]="ui.unidades()"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Valor" [value]="ui.valorInventario() | currency:'USD':'symbol':'1.0-0'"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Stock bajo" [value]="ui.stockBajo().length"></app-admin-store-kpi>
+</div>
+<div class="chips" role="group" aria-label="Filtrar inventario">
+  <button type="button" [class.activo]="!ui.soloBajo()" (click)="ui.soloBajo.set(false)">Todos</button>
+  <button type="button" [class.activo]="ui.soloBajo()" (click)="ui.soloBajo.set(true)">Solo stock bajo</button>
+</div>
+<div class="caja">
+  <p class="muted vacio-txt" *ngIf="!ui.inventario().length">No hay productos con stock bajo.</p>
+  <div class="item" *ngFor="let p of ui.inventario(); trackBy: trackId">
+    <div class="item-cab">
+      <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
+      <div class="item-datos">
+        <b>{{ p.nombre }}</b>
+        <span class="insignia" [ngClass]="estadoStock(p).clase">{{ estadoStock(p).texto }}</span>
+      </div>
+      <div class="item-num"><b>{{ p.stock }}</b><span class="muted">unidades</span></div>
+    </div>
+    <div class="item-acciones tallas-stock" *ngIf="p.requiereTalla">
+      <div class="talla-stock" *ngFor="let t of p.tallas">
+        <span class="muted">{{ t.talla }}: <b>{{ t.stock }}</b></span>
+        <div class="cantidad">
+          <button type="button" [attr.aria-label]="'Restar una unidad talla ' + t.talla + ' de ' + p.nombre" (click)="ajustar(p.id, -1, t.talla)">−</button>
+          <button type="button" [attr.aria-label]="'Sumar una unidad talla ' + t.talla + ' de ' + p.nombre" (click)="ajustar(p.id, 1, t.talla)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="item-acciones" *ngIf="!p.requiereTalla">
+      <div class="cantidad">
+        <button type="button" [attr.aria-label]="'Restar una unidad a ' + p.nombre" (click)="ajustar(p.id, -1)">−</button>
+        <button type="button" [attr.aria-label]="'Sumar una unidad a ' + p.nombre" (click)="ajustar(p.id, 1)">+</button>
+      </div>
+      <button type="button" class="btn-fantasma btn-sm" (click)="ajustar(p.id, 10)">Reponer 10</button>
+    </div>
+  </div>
+</div>

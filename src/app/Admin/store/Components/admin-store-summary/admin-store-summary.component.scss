@@ -1,0 +1,7 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/estado';
+
+:host { display: block; }
+
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }

@@ -1,0 +1,12 @@
+@use '../../styles/base';
+@use '../../styles/caja';
+@use '../../styles/items';
+
+:host { display: block; }
+
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.corte {
+  margin-bottom: 14px; padding: 10px 14px; border-radius: 14px;
+  background: rgba(212, 167, 60, 0.08); border: 1px solid rgba(212, 167, 60, 0.2);
+  color: #cdbf9c; font-size: 13px;
+}

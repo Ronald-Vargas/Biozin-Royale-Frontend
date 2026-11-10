@@ -1,0 +1,69 @@
+<div class="vista">
+  <div class="caja formulario">
+    <h3 class="caja-titulo">Entrega</h3>
+    <div class="metodo activo" style="justify-content: space-between">
+      <span>Envío a domicilio<small class="muted">Correos de Costa Rica · 2 a 3 días</small></span>
+      <b>{{ cart.totales().subtotal >= envioGratisDesde ? 'Gratis' : (costoEnvio | currency:'USD':'symbol':'1.2-2') }}</b>
+    </div>
+  </div>
+
+  <div class="caja formulario">
+    <h3 class="caja-titulo">Datos de envío</h3>
+    <div class="dos">
+      <label>Teléfono
+        <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
+      </label>
+      <label>Provincia
+        <select [(ngModel)]="datos.provincia">
+          <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+        </select>
+      </label>
+    </div>
+    <label>Dirección exacta
+      <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
+    </label>
+  </div>
+
+  <div class="caja formulario">
+    <h3 class="caja-titulo">Método de pago</h3>
+    <label class="metodo" [class.activo]="metodo() === 'wallet'">
+      <input type="radio" name="metodo" [checked]="metodo() === 'wallet'" (change)="setMetodo('wallet')" />
+      <span>Billetera<small class="muted">Saldo disponible {{ saldo() | currency:'USD':'symbol':'1.2-2' }}</small></span>
+    </label>
+    <label class="metodo" [class.activo]="metodo() === 'card'">
+      <input type="radio" name="metodo" [checked]="metodo() === 'card'" (change)="setMetodo('card')" />
+      <span>Tarjeta</span>
+    </label>
+    <div class="formulario interno" *ngIf="metodo() === 'card'">
+      <p class="muted" *ngIf="!tarjetas().length">
+        No tienes tarjetas registradas.
+        <button type="button" class="enlace" (click)="irAMetodosPago()">Registrar una tarjeta</button>
+      </p>
+      <label class="metodo" *ngFor="let t of tarjetas(); trackBy: trackId" [class.activo]="tarjetaId() === t.id">
+        <input type="radio" name="tarjeta" [checked]="tarjetaId() === t.id" (change)="tarjetaId.set(t.id)" />
+        <span>{{ nombreRed(t) }} •••• {{ t.lastFour }}<small class="muted">{{ t.cardHolder }} · vence {{ vence(t) }}</small></span>
+      </label>
+      <p class="muted" *ngIf="tarjetas().length">El pago con tarjeta queda por verificar hasta que la tienda lo confirme.</p>
+    </div>
+  </div>
+
+  <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+
+  <div class="caja">
+    <h3 class="caja-titulo">Tu pedido</h3>
+    <div class="fila-sum" *ngFor="let l of cart.carrito(); trackBy: trackIdx">
+      <span>{{ l.cantidad }} × {{ cart.nombreDe(l.id) }}{{ l.talla ? ' (' + l.talla + ')' : '' }}</span>
+      <span>{{ cart.producto(l.id).precio * l.cantidad | currency:'USD':'symbol':'1.2-2' }}</span>
+    </div>
+    <div class="fila-sum"><span>Envío</span><span>{{ cart.totales().envio ? (cart.totales().envio | currency:'USD':'symbol':'1.2-2') : 'Gratis' }}</span></div>
+    <div class="fila-sum total"><span>Total</span><span>{{ cart.totales().total | currency:'USD':'symbol':'1.2-2' }}</span></div>
+  </div>
+</div>
+
+<app-store-cta
+  *ngIf="cart.carrito().length"
+  [amount]="cart.totales().total"
+  [buttonText]="enviando() ? 'Procesando…' : 'Confirmar pedido'"
+  [disabled]="enviando()"
+  (pressed)="confirmar()"
+></app-store-cta>

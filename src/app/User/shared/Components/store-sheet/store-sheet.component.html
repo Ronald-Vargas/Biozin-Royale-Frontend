@@ -1,0 +1,11 @@
+<div class="fondo" [class.centrado]="centered" (click)="closed.emit()">
+  <div
+    [ngClass]="centered ? 'dialogo' : 'hoja'"
+    [class.desplazable]="scroll"
+    [attr.role]="centered ? 'alertdialog' : 'dialog'"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

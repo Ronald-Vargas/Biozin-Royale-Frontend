@@ -1,0 +1,11 @@
+<div class="rec">
+  <b>Pago con tarjeta por confirmar</b>
+  <div class="fila-sum"><span class="muted">Tarjeta</span><span>{{ pedido.tarjeta || 'Tarjeta' }}</span></div>
+  <div class="fila-sum"><span class="muted">Monto</span><b>{{ total(pedido) | currency:'USD':'symbol':'1.2-2' }}</b></div>
+  <div class="fila-sum"><span class="muted">Pedido creado</span><span>{{ pedido.eventos[0].fecha }}</span></div>
+  <p class="muted">Confirma solo cuando el cobro aparezca aprobado en tu procesador de pagos.</p>
+  <div class="acciones">
+    <button type="button" class="btn-peligro btn-sm" (click)="pedirRechazo(pedido)">Rechazar pago</button>
+    <button type="button" class="btn-oro btn-sm" (click)="confirmar(pedido)">Confirmar pago</button>
+  </div>
+</div>

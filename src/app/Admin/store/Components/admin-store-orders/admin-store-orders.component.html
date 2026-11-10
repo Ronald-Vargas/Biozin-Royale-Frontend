@@ -1,0 +1,12 @@
+<label class="buscador">
+  <app-icon [svg]="iconBuscar" [size]="17"></app-icon>
+  <input type="search" autocomplete="off" placeholder="Buscar por pedido o cliente" aria-label="Buscar pedido"
+         [value]="ui.busquedaPed()" (input)="ui.busquedaPed.set($any($event.target).value)" />
+</label>
+<div class="chips" role="group" aria-label="Filtrar por etapa">
+  <button type="button" *ngFor="let f of filtros" [class.activo]="ui.filtroPedidos() === f" (click)="ui.filtroPedidos.set(f)">{{ f }}</button>
+</div>
+<div class="caja">
+  <p class="muted vacio-txt" *ngIf="!ui.pedidosFiltrados().length">No encontramos pedidos con ese filtro.</p>
+  <app-admin-store-order-list [pedidos]="ui.pedidosFiltrados()" (abrir)="ui.abrirPedido($event)"></app-admin-store-order-list>
+</div>

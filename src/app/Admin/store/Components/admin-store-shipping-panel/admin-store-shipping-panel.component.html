@@ -1,0 +1,19 @@
+<!-- Empacado: genera la guía y la etiqueta -->
+<ng-container *ngIf="pedido.fase === 3">
+  <p class="muted">Empacado en {{ pedido.paquete }}.</p>
+  <p class="muted">Transportista: Correos de Costa Rica. Corte de despacho: hoy {{ corte() }}.</p>
+  <div class="acciones">
+    <button type="button" class="btn-oro btn-sm" (click)="despachar(pedido)">Generar guía y etiqueta</button>
+  </div>
+</ng-container>
+
+<!-- Con el transportista: etiqueta -->
+<ng-container *ngIf="pedido.fase === 4">
+  <div class="etiqueta-envio">
+    <svg viewBox="0 0 90 90" fill="#15110a" aria-hidden="true"><rect *ngFor="let c of qr(pedido.guia)" [attr.x]="c.x" [attr.y]="c.y" width="10" height="10" /></svg>
+    <div><b>{{ pedido.guia }}</b><span>{{ pedido.transportista }}<br />Etiqueta lista · 10 × 15 cm</span></div>
+  </div>
+  <div class="acciones">
+    <button type="button" class="btn-oro btn-sm" (click)="iniciarReparto(pedido)">Pasar a reparto</button>
+  </div>
+</ng-container>

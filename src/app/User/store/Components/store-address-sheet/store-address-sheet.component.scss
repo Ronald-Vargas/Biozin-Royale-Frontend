@@ -1,0 +1,10 @@
+@use '../../styles/base';
+@use '../../styles/estado';
+@use '../../styles/forms';
+
+:host { display: contents; }
+
+.contenido {
+  display: grid; gap: 10px; justify-items: center; text-align: center;
+  h3 { font-size: 20px; }
+}

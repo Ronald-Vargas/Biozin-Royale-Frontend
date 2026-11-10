@@ -1,0 +1,27 @@
+<!-- Por preparar -->
+<div class="acciones" *ngIf="pedido.fase === 1">
+  <button type="button" class="btn-oro btn-sm" (click)="iniciar(pedido)">Empezar a preparar</button>
+</div>
+
+<!-- Hoja de preparación y empaque -->
+<ng-container *ngIf="pedido.fase === 2">
+  <h3 class="sub-titulo">Hoja de preparación</h3>
+  <button type="button" class="pick" *ngFor="let i of pedido.items; let k = index" [class.on]="marcado(pedido, k)" (click)="alternar(pedido, k)">
+    <span class="ck"></span>
+    <span class="pick-txt">{{ i.cantidad }} × {{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</span>
+    <span class="muted">{{ ubicacion(i.id) }}</span>
+  </button>
+  <div class="dos">
+    <label class="campo">Caja
+      <select [(ngModel)]="caja"><option *ngFor="let c of cajas" [value]="c">{{ c }}</option></select>
+    </label>
+    <label class="campo">Peso (kg)
+      <input type="text" inputmode="decimal" [(ngModel)]="peso" />
+    </label>
+  </div>
+  <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+  <div class="acciones">
+    <button type="button" class="btn-oro btn-sm" [disabled]="!completo(pedido)" (click)="empacar(pedido)">Marcar como empacado</button>
+  </div>
+  <p class="muted" *ngIf="!completo(pedido)">Marca cada artículo al sacarlo de bodega para poder empacar.</p>
+</ng-container>
