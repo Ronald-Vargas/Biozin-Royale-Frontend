@@ -47,7 +47,11 @@ export interface Pedido {
   estadoPago: EstadoPago;
   direccion: string;
   provincia: string;
-  /** Dirección sin la provincia, para poder editarla. */
+  canton: string;
+  distrito: string;
+  /** Señas: dirección exacta sin provincia/cantón/distrito. */
+  senas: string;
+  /** Provincia, cantón, distrito y señas ya unidos, para poder editarla. */
   domicilio: string;
   /** Tarjeta usada, ya formateada (por ejemplo "Visa •••• 4242"); vacío si pagó con billetera. */
   tarjeta: string;
@@ -85,6 +89,9 @@ export interface NuevoPedido {
   tarjetaId?: string;
   telefono: string;
   provincia: string;
+  canton: string;
+  distrito: string;
+  /** Señas: dirección exacta (casa, color, puntos de referencia). */
   direccion: string;
   items: { id: string; talla: string | null; cantidad: number }[];
   /** Evita crear dos pedidos si el cliente reintenta la misma compra. */
@@ -96,7 +103,6 @@ export interface NuevoPedido {
 export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
 export const CORTE_DESPACHO = '2:00 p. m.';
-export const PROVINCIAS = ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'Limón'];
 
 export interface Etapa { fase: number; nombre: string; texto: string; }
 

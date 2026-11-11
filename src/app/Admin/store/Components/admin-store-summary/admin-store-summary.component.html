@@ -25,8 +25,8 @@
 <div class="caja">
   <h3 class="caja-titulo">Últimos movimientos</h3>
   <div class="lgi" *ngFor="let m of ui.movimientos()">
-    <span class="muted">{{ m.fecha }} · {{ m.no }}</span>
-    <b>{{ m.quien }}</b> · {{ m.texto }}
+    <span class="lgi-meta">{{ m.fecha }} · {{ m.no }} · <b>{{ m.quien }}</b></span>
+    <span class="lgi-texto">{{ m.texto }}</span>
   </div>
 </div>
 

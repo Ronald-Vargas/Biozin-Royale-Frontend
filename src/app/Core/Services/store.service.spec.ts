@@ -134,8 +134,8 @@ describe('StoreService', () => {
     await responder(http, { pedidos: [] });
 
     const envio = store.crearPedido({
-      metodoPago: 'wallet', telefono: '88887777', provincia: 'Limón', direccion: 'Calle 5, casa verde',
-      items: [{ id: 'p-llavero', talla: null, cantidad: 1 }], claveOperacion: 'abc',
+      metodoPago: 'wallet', telefono: '88887777', provincia: 'Limón', canton: 'Central', distrito: 'Limón',
+      direccion: 'Calle 5, casa verde', items: [{ id: 'p-llavero', talla: null, cantidad: 1 }], claveOperacion: 'abc',
     });
     http.expectOne(`${API}/pedidos`).flush(ok(pedidoApi({ paymentMethod: 'wallet' })));
     await responder(http);

@@ -230,6 +230,8 @@ export class StoreService {
       paymentMethodId: d.tarjetaId ?? null,
       phone: d.telefono,
       province: d.provincia,
+      canton: d.canton || null,
+      district: d.distrito || null,
       addressLine: d.direccion,
       items: d.items.map(i => ({ productId: i.id, size: i.talla, quantity: i.cantidad })),
       idempotencyKey: d.claveOperacion,
@@ -244,10 +246,12 @@ export class StoreService {
     if (r.ok) await this.cargarProductos();   // las unidades volvieron al inventario
     return r;
   }
-  cambiarDireccion(no: string, provincia: string, direccion: string): Promise<Resultado<Pedido>> {
+  cambiarDireccion(no: string, provincia: string, canton: string, distrito: string, direccion: string): Promise<Resultado<Pedido>> {
     const id = this.idDe(no);
     if (!id) return this.noEncontrado();
-    return this.accionPedido(this.http.put<ApiResponse<ApiPedido>>(`${this.base}/pedidos/${id}/direccion`, { province: provincia, addressLine: direccion }));
+    return this.accionPedido(this.http.put<ApiResponse<ApiPedido>>(`${this.base}/pedidos/${id}/direccion`, {
+      province: provincia, canton: canton || null, district: distrito || null, addressLine: direccion,
+    }));
   }
   /** Lo usa el cliente, o el admin en nombre del cliente. */
   reprogramar(no: string, ventana: string): Promise<Resultado<Pedido>> {
@@ -396,7 +400,8 @@ export class StoreService {
       id: a.id, no: `BR-${a.orderNumber}`, correo: a.email, cliente: a.customerName, telefono: a.phone,
       metodoPago: a.paymentMethod === 'card' ? 'card' : 'wallet',
       estadoPago: ESTADO_PAGO[a.paymentStatus] ?? 'pendiente',
-      direccion: `${a.province}, ${domicilio}`, provincia: a.province, domicilio,
+      direccion: `${a.province}, ${domicilio}`, provincia: a.province,
+      canton: a.canton ?? '', distrito: a.district ?? '', senas: a.addressLine, domicilio,
       tarjeta: a.paymentMethod === 'card' && a.cardLastFour ? `${red} •••• ${a.cardLastFour}` : '',
       items: a.items.map(i => ({ id: i.productId, nombre: i.name, talla: i.size, cantidad: i.quantity, precio: i.unitPrice })),
       envio: a.shippingCost, fase: a.fulfillmentPhase, cancelado: a.isCancelled,

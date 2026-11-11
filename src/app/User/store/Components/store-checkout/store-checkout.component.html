@@ -9,18 +9,16 @@
 
   <div class="caja formulario">
     <h3 class="caja-titulo">Datos de envío</h3>
-    <div class="dos">
-      <label>Teléfono
-        <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
-      </label>
-      <label>Provincia
-        <select [(ngModel)]="datos.provincia">
-          <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
-        </select>
-      </label>
-    </div>
-    <label>Dirección exacta
-      <input type="text" autocomplete="street-address" [(ngModel)]="datos.direccion" />
+    <label>Teléfono
+      <input type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono" />
+    </label>
+    <app-store-location-fields
+      [(provincia)]="datos.provincia"
+      [(canton)]="datos.canton"
+      [(distrito)]="datos.distrito"
+    ></app-store-location-fields>
+    <label>Dirección exacta (señas)
+      <input type="text" autocomplete="street-address" placeholder="Casa, color, punto de referencia…" [(ngModel)]="datos.direccion" />
     </label>
   </div>
 

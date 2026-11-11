@@ -1,16 +1,19 @@
 // Formularios de pago y de las hojas.
 .formulario {
   display: grid; gap: 12px;
-  label { display: grid; gap: 4px; font-size: 13px; color: var(--apagado); }
+  label { display: grid; gap: 4px; min-width: 0; font-size: 13px; color: var(--apagado); }
   input[type='text'], input[type='tel'], select {
-    min-height: 46px; padding: 0 14px;
+    min-width: 0; width: 100%; min-height: 46px; padding: 0 14px;
     border-radius: 12px; border: 1px solid var(--linea);
     background: rgba(255, 255, 255, 0.04); color: var(--cream); font-size: 16px;
     option { background: var(--sup); }
   }
+  select { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   &.interno { margin: 4px 0 8px; }
 }
-.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+// minmax(0, 1fr) en vez de 1fr: evita que un texto largo (un cantón o distrito
+// largo, por ejemplo) empuje la columna más allá del ancho disponible.
+.dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .metodo {
   display: flex !important; align-items: center; gap: 12px;
   padding: 12px 14px; border-radius: 14px;

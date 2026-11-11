@@ -12,3 +12,15 @@ h2, h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--cream); }
 .btn-sm { min-height: 40px; padding: 0 16px; font-size: 13px; }
 .enlace { background: none; border: 0; padding: 4px 0; color: var(--gold-1); font-size: 13px; text-decoration: underline; cursor: pointer; }
 .vacio-txt { margin: 10px 0; }
+
+// Fila de bitácora / movimientos: una línea de metadatos y otra de texto.
+.lgi {
+  display: grid; gap: 4px; padding: 12px 0;
+  border-bottom: 1px solid var(--linea);
+  &:last-child { border-bottom: 0; }
+}
+.lgi-meta {
+  font-size: 12.5px; color: var(--apagado);
+  b { color: var(--cream); font-weight: 700; }
+}
+.lgi-texto { font-size: 14px; line-height: 1.45; }

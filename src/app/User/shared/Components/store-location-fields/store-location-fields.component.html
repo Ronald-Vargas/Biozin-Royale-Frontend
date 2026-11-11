@@ -1,0 +1,21 @@
+<label class="campo">Provincia
+  <select [ngModel]="provincia" (ngModelChange)="cambiarProvincia($event)">
+    <option value="" disabled>Elige una provincia</option>
+    <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+  </select>
+</label>
+
+<div class="dos">
+  <label class="campo">Cantón
+    <select [ngModel]="canton" (ngModelChange)="cambiarCanton($event)" [disabled]="!provincia">
+      <option value="" disabled>{{ provincia ? 'Elige un cantón' : 'Elige una provincia' }}</option>
+      <option *ngFor="let c of cantones" [value]="c">{{ c }}</option>
+    </select>
+  </label>
+  <label class="campo">Distrito
+    <select [ngModel]="distrito" (ngModelChange)="cambiarDistrito($event)" [disabled]="!canton">
+      <option value="" disabled>{{ canton ? 'Elige un distrito' : 'Elige un cantón' }}</option>
+      <option *ngFor="let d of distritos" [value]="d">{{ d }}</option>
+    </select>
+  </label>
+</div>

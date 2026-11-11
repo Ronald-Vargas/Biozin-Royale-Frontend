@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <app-admin-nav current="home"></app-admin-nav>
+  <app-admin-nav current="tienda"></app-admin-nav>
 
   <!-- Aviso emergente: pedido nuevo o cambio del cliente -->
   <app-store-push *ngIf="ui.banner() as b" [title]="b.titulo" [text]="b.texto" [layer]="60" (opened)="ui.abrirAviso(b)"></app-store-push>

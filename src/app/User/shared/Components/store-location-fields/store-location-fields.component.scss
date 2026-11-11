@@ -1,0 +1,18 @@
+// Encapsulación emulada: este componente se inserta dentro del grid `.formulario`
+// del padre (display: contents), así que repite aquí el mismo look de campo/select.
+:host { display: contents; }
+
+.campo {
+  display: grid; gap: 4px; min-width: 0; font-size: 13px; color: var(--apagado);
+  select {
+    min-width: 0; width: 100%; min-height: 46px; padding: 0 14px;
+    border-radius: 12px; border: 1px solid var(--linea);
+    background: rgba(255, 255, 255, 0.04); color: var(--cream); font-size: 16px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    option { background: var(--sup); }
+    &:disabled { opacity: 0.5; }
+  }
+}
+// minmax(0, 1fr) en vez de 1fr: un distrito con nombre largo no debe
+// empujar la columna del cantón o del distrito fuera de la caja.
+.dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }

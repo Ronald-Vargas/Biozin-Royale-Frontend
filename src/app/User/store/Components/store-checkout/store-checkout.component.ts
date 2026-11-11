@@ -7,7 +7,8 @@ import { MetodosPagoService } from 'src/app/Core/Services/metodos-pago.service';
 import { ProfileService } from 'src/app/Core/Services/profile.service';
 import { StoreService } from 'src/app/Core/Services/store.service';
 import { MetodoPago } from 'src/app/Core/Models/metodos-pago.models';
-import { Metodo, PROVINCIAS } from 'src/app/Core/Models/store.models';
+import { Metodo } from 'src/app/Core/Models/store.models';
+import { StoreLocationFieldsComponent } from 'src/app/User/shared/Components/store-location-fields/store-location-fields.component';
 import { StoreCartService } from '../../store-cart.service';
 import { StoreNavService } from '../../store-nav.service';
 import { StoreCtaComponent } from '../store-cta/store-cta.component';
@@ -15,7 +16,7 @@ import { StoreCtaComponent } from '../store-cta/store-cta.component';
 /** Pago: datos de envío, método de pago (billetera o una tarjeta ya registrada) y resumen. */
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, StoreCtaComponent],
+  imports: [CommonModule, FormsModule, StoreCtaComponent, StoreLocationFieldsComponent],
   selector: 'app-store-checkout',
   templateUrl: './store-checkout.component.html',
   styleUrls: ['./store-checkout.component.scss'],
@@ -29,7 +30,6 @@ export class StoreCheckoutComponent implements OnInit {
   readonly cart = inject(StoreCartService);
   private readonly nav = inject(StoreNavService);
 
-  readonly provincias = PROVINCIAS;
   readonly metodo = signal<Metodo>('wallet');
   /** Tarjetas ya registradas en Métodos de pago; no se vuelve a pedir la tarjeta. */
   readonly tarjetas = signal<MetodoPago[]>([]);
@@ -38,7 +38,7 @@ export class StoreCheckoutComponent implements OnInit {
   readonly error = signal('');
   readonly saldo = computed(() => this.balanceSvc.balance() ?? 0);
 
-  datos = { telefono: '', provincia: 'Limón', direccion: '' };
+  datos = { telefono: '', provincia: '', canton: '', distrito: '', direccion: '' };
   /** Se renueva en cada compra nueva; un reintento del mismo pedido reutiliza la misma. */
   private claveOperacion = crypto.randomUUID();
 
@@ -91,7 +91,10 @@ export class StoreCheckoutComponent implements OnInit {
 
     const error =
       !/^\d{8}$/.test(d.telefono.replace(/[\s-]/g, '')) ? 'El teléfono debe tener 8 dígitos.'
-      : d.direccion.trim().length < 8 ? 'Escribe una dirección exacta para el envío.'
+      : !d.provincia ? 'Elige la provincia de entrega.'
+      : !d.canton ? 'Elige el cantón de entrega.'
+      : !d.distrito ? 'Elige el distrito de entrega.'
+      : d.direccion.trim().length < 5 ? 'Escribe las señas exactas para el envío.'
       : m === 'card' && !this.tarjetaId() ? 'Elige una de tus tarjetas registradas.'
       : sinStock ? `Ya no hay suficiente stock de ${this.cart.nombreDe(sinStock.id)}. Reduce la cantidad en el carrito.`
       : m === 'wallet' && t.total > this.saldo()
@@ -106,6 +109,8 @@ export class StoreCheckoutComponent implements OnInit {
       tarjetaId: m === 'card' ? this.tarjetaId() ?? undefined : undefined,
       telefono: d.telefono.replace(/[\s-]/g, ''),
       provincia: d.provincia,
+      canton: d.canton,
+      distrito: d.distrito,
       direccion: d.direccion.trim(),
       items: this.cart.carrito().map(l => ({ id: l.id, talla: l.talla, cantidad: l.cantidad })),
       claveOperacion: this.claveOperacion,

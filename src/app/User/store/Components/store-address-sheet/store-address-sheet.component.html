@@ -2,13 +2,13 @@
   <div class="contenido">
     <h3>Cambiar dirección</h3>
     <p class="muted">Puedes cambiarla hasta que tu pedido esté empacado.</p>
-    <label class="campo">Provincia
-      <select [(ngModel)]="provincia">
-        <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
-      </select>
-    </label>
-    <label class="campo">Dirección exacta
-      <input type="text" [(ngModel)]="direccion" />
+    <app-store-location-fields
+      [(provincia)]="provincia"
+      [(canton)]="canton"
+      [(distrito)]="distrito"
+    ></app-store-location-fields>
+    <label class="campo">Dirección exacta (señas)
+      <input type="text" placeholder="Casa, color, punto de referencia…" [(ngModel)]="direccion" />
     </label>
     <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
     <div class="acciones">

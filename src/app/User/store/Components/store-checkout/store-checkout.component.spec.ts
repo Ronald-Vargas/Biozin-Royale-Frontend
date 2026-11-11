@@ -47,6 +47,9 @@ describe('StoreCheckoutComponent', () => {
 
   const datosValidos = () => {
     component.datos.telefono = '88887777';
+    component.datos.provincia = 'Limón';
+    component.datos.canton = 'Central';
+    component.datos.distrito = 'Limón';
     component.datos.direccion = 'Calle 5, casa verde';
   };
 
@@ -133,7 +136,7 @@ describe('StoreCheckoutComponent', () => {
     http.expectNone(`${API}/pedidos`);
   });
 
-  it('valida teléfono y dirección antes de enviar', async () => {
+  it('valida teléfono, ubicación y señas antes de enviar', async () => {
     await preparar();
     cart.anadir('p-llavero');
     component.datos.telefono = '123';
@@ -141,8 +144,20 @@ describe('StoreCheckoutComponent', () => {
     expect(component.error()).toContain('8 dígitos');
 
     component.datos.telefono = '88887777';
-    component.datos.direccion = 'corta';
     await component.confirmar();
-    expect(component.error()).toContain('dirección exacta');
+    expect(component.error()).toContain('provincia');
+
+    component.datos.provincia = 'Limón';
+    await component.confirmar();
+    expect(component.error()).toContain('cantón');
+
+    component.datos.canton = 'Central';
+    await component.confirmar();
+    expect(component.error()).toContain('distrito');
+
+    component.datos.distrito = 'Limón';
+    component.datos.direccion = 'ab';
+    await component.confirmar();
+    expect(component.error()).toContain('señas exactas');
   });
 });
