@@ -1,0 +1,10 @@
+<span class="mini" [class.con-foto]="producto.imagen && !fotoRota" [style.background]="producto.imagen && !fotoRota ? null : colorDe(producto)">
+  <img
+    *ngIf="producto.imagen && !fotoRota; else logo"
+    [src]="producto.imagen"
+    [alt]="producto.nombre"
+    loading="lazy"
+    (error)="fotoRota = true"
+  />
+  <ng-template #logo><img src="assets/logo.png" alt="" /></ng-template>
+</span>

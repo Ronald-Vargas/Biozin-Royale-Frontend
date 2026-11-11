@@ -10,7 +10,7 @@
 <div class="caja" *ngIf="ui.productosFiltrados().length; else sinProductos">
   <div class="item" *ngFor="let p of ui.productosFiltrados(); trackBy: trackId">
     <div class="item-cab">
-      <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
+      <app-admin-store-product-thumb [producto]="p"></app-admin-store-product-thumb>
       <div class="item-datos">
         <b>{{ p.nombre }}</b>
         <span class="muted">{{ p.categoria }}</span>

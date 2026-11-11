@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreAdminService } from '../../store-admin.service';
-import { colorDe, estadoStock } from '../../store-admin.utils';
+import { estadoStock } from '../../store-admin.utils';
 import { AdminStoreKpiComponent } from '../admin-store-kpi/admin-store-kpi.component';
+import { AdminStoreProductThumbComponent } from '../admin-store-product-thumb/admin-store-product-thumb.component';
 
 /** Inventario: unidades, valor y ajuste de stock (por talla en las prendas). */
 @Component({
   standalone: true,
-  imports: [CommonModule, AdminStoreKpiComponent],
+  imports: [CommonModule, AdminStoreKpiComponent, AdminStoreProductThumbComponent],
   selector: 'app-admin-store-inventory',
   templateUrl: './admin-store-inventory.component.html',
   styleUrls: ['./admin-store-inventory.component.scss'],
@@ -15,7 +16,6 @@ import { AdminStoreKpiComponent } from '../admin-store-kpi/admin-store-kpi.compo
 export class AdminStoreInventoryComponent {
   readonly ui = inject(StoreAdminService);
 
-  colorDe = colorDe;
   estadoStock = estadoStock;
   trackId = (_: number, x: { id: string }) => x.id;
 

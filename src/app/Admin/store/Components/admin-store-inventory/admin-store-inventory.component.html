@@ -11,7 +11,7 @@
   <p class="muted vacio-txt" *ngIf="!ui.inventario().length">No hay productos con stock bajo.</p>
   <div class="item" *ngFor="let p of ui.inventario(); trackBy: trackId">
     <div class="item-cab">
-      <span class="mini" [style.background]="colorDe(p)"><img src="assets/logo.png" alt="" /></span>
+      <app-admin-store-product-thumb [producto]="p"></app-admin-store-product-thumb>
       <div class="item-datos">
         <b>{{ p.nombre }}</b>
         <span class="insignia" [ngClass]="estadoStock(p).clase">{{ estadoStock(p).texto }}</span>

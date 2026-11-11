@@ -4,12 +4,12 @@ import { SvgIconComponent } from 'src/app/User/shared/Components/svg-icons/svg-i
 import { ICON_SEARCH } from 'src/app/User/shared/icons/icons';
 import { Producto } from 'src/app/Core/Models/store.models';
 import { StoreAdminService } from '../../store-admin.service';
-import { colorDe } from '../../store-admin.utils';
+import { AdminStoreProductThumbComponent } from '../admin-store-product-thumb/admin-store-product-thumb.component';
 
 /** Productos: lista con precio, visibilidad, edición y eliminación. */
 @Component({
   standalone: true,
-  imports: [CommonModule, SvgIconComponent],
+  imports: [CommonModule, SvgIconComponent, AdminStoreProductThumbComponent],
   selector: 'app-admin-store-products',
   templateUrl: './admin-store-products.component.html',
   styleUrls: ['./admin-store-products.component.scss'],
@@ -18,7 +18,6 @@ export class AdminStoreProductsComponent {
   readonly ui = inject(StoreAdminService);
   readonly iconBuscar = ICON_SEARCH;
 
-  colorDe = colorDe;
   trackId = (_: number, x: { id: string }) => x.id;
 
   async alternarVisible(id: string): Promise<void> {
