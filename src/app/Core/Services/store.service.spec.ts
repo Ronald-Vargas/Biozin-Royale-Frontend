@@ -34,6 +34,7 @@ describe('StoreService', () => {
     expect(p.items[0]).toEqual({ id: 'p-camisa', nombre: 'Camiseta Royale', talla: 'M', cantidad: 1, precio: 28 });
     expect(p.eventos[0].tipo).toBe('fase');
     expect(p.eta).toContain('mié 11');   // 11 y 12 de noviembre de 2026
+    expect(p.eta).not.toContain('Invalid');   // el servidor manda la fecha con hora pegada
     expect(store.config().corte).toBe('2:00 p. m.');
 
     const camisa = store.producto('p-camisa');

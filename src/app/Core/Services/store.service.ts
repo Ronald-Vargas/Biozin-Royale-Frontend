@@ -61,9 +61,9 @@ function corto(d: Date, conMes: boolean): string {
   const mes = d.toLocaleDateString('es-CR', { month: 'short' }).replace('.', '');
   return `${dia} ${d.getDate()}${conMes ? ' ' + mes : ''}`;
 }
-/** "2026-10-20" → fecha local (sin desfase por zona horaria). */
+/** "2026-10-20" (o "2026-10-20T00:00:00", como la manda el servidor) → fecha local, sin desfase por zona horaria. */
 function soloFecha(s: string): Date {
-  const [a, m, d] = s.split('-').map(Number);
+  const [a, m, d] = s.slice(0, 10).split('-').map(Number);
   return new Date(a, m - 1, d);
 }
 function rango(desde: string | null, hasta: string | null): string {

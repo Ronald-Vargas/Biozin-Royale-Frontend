@@ -40,7 +40,8 @@ export const pedidoApi = (extra: object = {}) => ({
   province: 'Limón', canton: null, district: null, addressLine: 'Barrio Santa Rosa', subtotal: 28, shippingCost: 5, total: 33,
   paymentMethod: 'card', paymentStatus: 'pending', cardLastFour: '4242', cardNetwork: 'visa', fulfillmentPhase: 0,
   isCancelled: false, carrierName: null, trackingNumber: null, packageInfo: null, deliveryCode: null, hasOpenIncident: false,
-  rescheduleWindow: null, etaFrom: '2026-11-11', etaTo: '2026-11-12', rating: null, createdAt: '2026-11-09T16:00:00Z',
+  // El servidor manda la columna `date` como DateTime con hora (p. ej. "2026-11-11T00:00:00"): así se prueba de verdad.
+  rescheduleWindow: null, etaFrom: '2026-11-11T00:00:00', etaTo: '2026-11-12T00:00:00', rating: null, createdAt: '2026-11-09T16:00:00Z',
   items: [{ productId: 'p-camisa', name: 'Camiseta Royale', size: 'M', quantity: 1, unitPrice: 28 }],
   events: [{ id: 'e-1', type: 'phase', phase: 0, message: 'Pedido creado · Tarjeta', actorName: 'Ana Mora', actorRole: 'user', createdAt: '2026-11-09T16:00:00Z' }],
   ...extra,
