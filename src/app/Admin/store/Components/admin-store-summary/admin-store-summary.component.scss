@@ -5,3 +5,9 @@
 :host { display: block; }
 
 .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+.lgi-btn {
+  width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--linea);
+  cursor: pointer;
+  &:last-child { border-bottom: 0; }
+}

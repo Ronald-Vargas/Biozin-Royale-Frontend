@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Resultado, StoreService } from 'src/app/Core/Services/store.service';
 import {
-  Categoria, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, SolicitudCambio, StoreNotificacion, grupoDe, totalPedido,
+  Categoria, Evento, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, SolicitudCambio, StoreNotificacion, grupoDe, totalPedido,
 } from 'src/app/Core/Models/store.models';
 import { STOCK_BAJO } from './store-admin.utils';
 
@@ -73,8 +73,14 @@ export class StoreAdminService implements OnDestroy {
     const votos = this.pedidos().filter(p => p.calificacion > 0);
     return votos.length ? votos.reduce((a, p) => a + p.calificacion, 0) / votos.length : 0;
   });
-  /** Último movimiento de cada pedido, para la bitácora del resumen. */
-  readonly movimientos = computed(() => this.pedidos().filter(p => p.eventos.length).map(p => ({ no: p.no, ...p.eventos[p.eventos.length - 1] })).slice(0, 6));
+  /** Los eventos más recientes de toda la tienda (de cualquier pedido), para la bitácora del resumen. */
+  readonly movimientos = computed(() => {
+    const todos: ({ no: string } & Evento)[] = [];
+    for (const p of this.pedidos()) {
+      for (const e of p.eventos) todos.push({ no: p.no, ...e });
+    }
+    return todos.sort((a, b) => (b.ts ?? 0) - (a.ts ?? 0)).slice(0, 6);
+  });
   readonly pedidoAbierto = computed(() => this.pedidos().find(p => p.no === this.pedidoNo()) ?? null);
   readonly noLeidas = computed(() => this.store.notificaciones().filter(n => !n.leida).length);
 

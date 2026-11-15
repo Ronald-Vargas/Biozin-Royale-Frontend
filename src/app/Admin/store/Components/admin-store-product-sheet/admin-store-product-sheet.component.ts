@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Categoria } from 'src/app/Core/Models/store.models';
+import { Categoria, FORMATOS_IMAGEN_PRODUCTO, TAMANO_MAXIMO_IMAGEN_PRODUCTO } from 'src/app/Core/Models/store.models';
 import { CATEGORIAS, StoreAdminService } from '../../store-admin.service';
 
 /** Formulario para crear o editar un producto. */
@@ -17,6 +17,9 @@ export class AdminStoreProductSheetComponent implements OnInit {
 
   readonly categorias = CATEGORIAS;
   readonly error = signal('');
+  readonly errorImagen = signal('');
+  readonly avisoDimension = signal('');
+  readonly subiendoImagen = signal(false);
   form = { id: '', nombre: '', categoria: 'Camisetas' as Categoria, precio: '', stock: '', descripcion: '' };
 
   ngOnInit(): void {
@@ -29,6 +32,11 @@ export class AdminStoreProductSheetComponent implements OnInit {
   /** En productos con talla el stock se ajusta talla por talla desde Inventario. */
   tieneTallas(): boolean {
     return !!this.ui.store.producto(this.form.id)?.requiereTalla;
+  }
+
+  /** Imagen actual del producto que se está editando; vacío si todavía no tiene una. */
+  imagenActual(): string {
+    return (this.form.id && this.ui.store.producto(this.form.id)?.imagen) || '';
   }
 
   async guardar(): Promise<void> {
@@ -45,11 +53,59 @@ export class AdminStoreProductSheetComponent implements OnInit {
     this.error.set(error);
     if (error) return;
 
+    const eraNuevo = !f.id;
     const r = await this.ui.store.guardarProducto({
       id: f.id, nombre, categoria: f.categoria, precio, stock: conTalla ? null : stock, descripcion: f.descripcion.trim(),
     });
     if (!r.ok) { this.error.set(r.error); return; }
-    this.ui.cerrarHoja();
-    this.ui.mostrarAviso(f.id ? 'Cambios guardados.' : 'Producto creado.');
+
+    if (eraNuevo) {
+      // Ya existe (tiene id): se deja la hoja abierta para poder subirle la foto de inmediato.
+      this.form.id = r.valor.id;
+      this.ui.mostrarAviso('Producto creado. Ahora puedes subirle una foto.');
+    } else {
+      this.ui.cerrarHoja();
+      this.ui.mostrarAviso('Cambios guardados.');
+    }
+  }
+
+  async elegirImagen(ev: Event): Promise<void> {
+    const input = ev.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    if (!archivo) return;
+    this.errorImagen.set('');
+    this.avisoDimension.set('');
+
+    if (!FORMATOS_IMAGEN_PRODUCTO.includes(archivo.type)) {
+      this.errorImagen.set('Formato no válido. Usa WebP, JPG o PNG.');
+      input.value = '';
+      return;
+    }
+    if (archivo.size > TAMANO_MAXIMO_IMAGEN_PRODUCTO) {
+      this.errorImagen.set('La imagen no puede superar 3 MB.');
+      input.value = '';
+      return;
+    }
+    if (!(await this.esCuadrada(archivo))) {
+      this.avisoDimension.set('La imagen no es cuadrada: se recortará al mostrarse. Para mejor resultado, usa 1000×1000.');
+    }
+
+    this.subiendoImagen.set(true);
+    const r = await this.ui.store.subirImagenProducto(this.form.id, archivo);
+    this.subiendoImagen.set(false);
+    input.value = '';
+    if (!r.ok) { this.errorImagen.set(r.error); return; }
+    this.ui.mostrarAviso('Foto actualizada.');
+  }
+
+  /** Si no se puede medir (archivo corrupto, etc.) no bloqueamos con una advertencia falsa. */
+  private esCuadrada(archivo: File): Promise<boolean> {
+    return new Promise(resolve => {
+      const url = URL.createObjectURL(archivo);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img.width === img.height); };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(true); };
+      img.src = url;
+    });
   }
 }

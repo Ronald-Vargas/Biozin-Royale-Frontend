@@ -20,6 +20,23 @@
   <label>Descripción
     <textarea rows="3" [(ngModel)]="form.descripcion"></textarea>
   </label>
+
+  <div class="foto">
+    <span class="etiqueta">Foto del producto</span>
+    <p class="muted" *ngIf="!form.id">Guarda el producto primero; después podrás subirle una foto.</p>
+    <ng-container *ngIf="form.id">
+      <div class="previa">
+        <img *ngIf="imagenActual()" [src]="imagenActual()" alt="" />
+        <span *ngIf="!imagenActual()" class="sin-foto">Sin foto</span>
+      </div>
+      <input type="file" accept="image/webp,image/jpeg,image/png" [disabled]="subiendoImagen()" (change)="elegirImagen($event)" />
+      <p class="muted">WebP, JPG o PNG · cuadrada (ideal 1000×1000 px) · máx. 3 MB.</p>
+      <p class="muted" *ngIf="subiendoImagen()">Subiendo…</p>
+      <p class="muted" *ngIf="avisoDimension()">{{ avisoDimension() }}</p>
+      <p class="error" role="alert" *ngIf="errorImagen()">{{ errorImagen() }}</p>
+    </ng-container>
+  </div>
+
   <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
   <div class="acciones">
     <button type="button" class="btn-fantasma btn-sm" (click)="ui.cerrarHoja()">Cancelar</button>

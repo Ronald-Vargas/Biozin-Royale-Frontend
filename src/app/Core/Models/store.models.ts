@@ -147,6 +147,10 @@ export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
 export const MAX_INTENTOS_ENTREGA = 3;
 
+/** Debe coincidir con lo que acepta StoreLN.SubirImagenProductoAsync en el backend. */
+export const FORMATOS_IMAGEN_PRODUCTO = ['image/webp', 'image/jpeg', 'image/png'];
+export const TAMANO_MAXIMO_IMAGEN_PRODUCTO = 3 * 1024 * 1024;
+
 export interface Etapa { fase: number; nombre: string; texto: string; }
 
 export const ETAPAS: Etapa[] = [

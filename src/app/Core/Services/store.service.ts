@@ -330,6 +330,17 @@ export class StoreService {
     return this.guardarProducto({ id, nombre: p.nombre, categoria: p.categoria, precio: p.precio, stock: null, descripcion: p.descripcion, visible: !p.visible });
   }
 
+  /** Sube la foto de un producto ya guardado (necesita su id) y reemplaza la que tuviera. */
+  async subirImagenProducto(id: string, archivo: File): Promise<Resultado<Producto>> {
+    const cuerpo = new FormData();
+    cuerpo.append('imagen', archivo);
+    const r = await this.llamar(this.http.post<ApiResponse<ApiProducto>>(`${this.base}/admin/productos/${id}/imagen`, cuerpo));
+    if (!r.ok) return r;
+    const nuevo = this.aProducto(r.valor);
+    this.productos.update(ps => ps.map(p => (p.id === nuevo.id ? nuevo : p)));
+    return { ok: true, valor: nuevo };
+  }
+
   async eliminarProducto(id: string): Promise<Resultado> {
     const r = await this.llamar(this.http.delete<ApiResponse<boolean>>(`${this.base}/admin/productos/${id}`));
     if (!r.ok) return r;
