@@ -1,9 +1,12 @@
-<!-- En reparto: incidencia o entrega con código -->
+<!-- En reparto: incidencia, código de entrega, o cambio de fecha -->
 <ng-container *ngIf="pedido.fase === 5">
   <div class="rec" *ngIf="pedido.incidenciaAbierta; else enReparto">
     <b>Incidencia abierta</b>
-    <p class="muted">Esperando que el cliente elija una nueva fecha.</p>
-    <div class="acciones"><button type="button" class="btn-fantasma btn-sm" (click)="reprogramarPorCliente(pedido)">Reprogramar por el cliente</button></div>
+    <p class="muted">{{ motivoReal(pedido) || 'Esperando que el cliente elija una nueva fecha.' }}</p>
+    <select class="select ancho" [(ngModel)]="ventanaElegida" aria-label="Elegir ventana de entrega">
+      <option *ngFor="let v of ventanas" [value]="v">{{ v }}</option>
+    </select>
+    <div class="acciones"><button type="button" class="btn-fantasma btn-sm" [disabled]="!ventanaElegida" (click)="reprogramar(pedido)">Reprogramar con esta fecha</button></div>
   </div>
   <ng-template #enReparto>
     <div class="rec">
@@ -16,10 +19,24 @@
     </div>
     <div class="rec">
       <b>¿No se pudo entregar?</b>
-      <select class="select ancho" [(ngModel)]="motivo" aria-label="Motivo de la incidencia">
-        <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+      <p class="muted">Intentos fallidos: {{ pedido.intentosFallidos }} de {{ maxIntentos() }}.</p>
+      <ng-container *ngIf="puedeRegistrarIncidencia(pedido); else sinIntentos">
+        <select class="select ancho" [(ngModel)]="motivo" aria-label="Motivo de la incidencia">
+          <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+        </select>
+        <div class="acciones"><button type="button" class="btn-peligro btn-sm" (click)="registrarIncidencia(pedido)">Registrar incidencia</button></div>
+      </ng-container>
+      <ng-template #sinIntentos>
+        <p class="muted">Ya se alcanzó el máximo de intentos. Cancela el pedido o contacta al cliente directamente.</p>
+      </ng-template>
+    </div>
+    <div class="rec">
+      <b>¿Necesita otra fecha?</b>
+      <p class="muted">El cliente también puede pedirlo desde su app; esto no requiere que haya fallado un intento.</p>
+      <select class="select ancho" [(ngModel)]="ventanaElegida" aria-label="Elegir ventana de entrega">
+        <option *ngFor="let v of ventanas" [value]="v">{{ v }}</option>
       </select>
-      <div class="acciones"><button type="button" class="btn-peligro btn-sm" (click)="registrarIncidencia(pedido)">Registrar incidencia</button></div>
+      <div class="acciones"><button type="button" class="btn-fantasma btn-sm" [disabled]="!ventanaElegida" (click)="reprogramar(pedido)">Cambiar fecha</button></div>
     </div>
   </ng-template>
 </ng-container>

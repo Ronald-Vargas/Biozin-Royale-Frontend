@@ -17,7 +17,19 @@
         <button type="button" *ngFor="let n of estrellas" [class.on]="p.calificacion >= n" [disabled]="p.calificacion > 0"
                 [attr.aria-label]="n + ' estrellas'" (click)="calificar(p, n)">★</button>
       </div>
-      <button type="button" class="enlace" (click)="pedirCambio(p)">Pedir un cambio o devolución (15 días)</button>
+      <button type="button" class="enlace" (click)="abrirSolicitud(p)">Pedir cambio o devolución (15 días)</button>
+    </div>
+
+    <!-- Cambios y devoluciones ya pedidos -->
+    <div class="caja" *ngIf="p.solicitudes.length">
+      <h3 class="caja-titulo">Tus solicitudes</h3>
+      <ng-container *ngFor="let s of p.solicitudes">
+        <div class="fila-sum">
+          <span>{{ tipoSolicitud(s) }} · {{ s.producto }}{{ s.talla ? ' (' + s.talla + ')' : '' }}</span>
+          <span class="insignia" [ngClass]="s.estado === 'aprobada' ? 'ok' : s.estado === 'rechazada' ? 'agotado' : 'bajo'">{{ estadoSolicitud(s) }}</span>
+        </div>
+        <p class="muted" *ngIf="s.notaResolucion">{{ s.notaResolucion }}</p>
+      </ng-container>
     </div>
 
     <!-- Transportista y guía -->
@@ -43,7 +55,7 @@
     <!-- Incidencia: el cliente elige nueva fecha -->
     <div class="caja alerta" *ngIf="p.incidenciaAbierta && !p.cancelado">
       <h3 class="caja-titulo">No pudimos entregar</h3>
-      <p class="muted">No hubo respuesta en tu dirección. Elige cuándo volvemos a intentarlo.</p>
+      <p class="muted">{{ motivoDe(p) || 'No hubo respuesta en tu dirección.' }} Elige cuándo volvemos a intentarlo.</p>
       <div class="acciones"><button type="button" class="btn-oro" (click)="abrirFechas(p)">Elegir nueva fecha</button></div>
     </div>
 
@@ -51,8 +63,9 @@
     <div class="caja">
       <h3 class="caja-titulo">Seguimiento</h3>
       <app-store-timeline [items]="lineaTiempo()"></app-store-timeline>
-      <div class="fila-enlaces" *ngIf="puedeCambiarDireccion(p) || puedeCancelar(p)">
+      <div class="fila-enlaces" *ngIf="puedeCambiarDireccion(p) || puedeReprogramar(p) || puedeCancelar(p)">
         <button type="button" class="enlace" *ngIf="puedeCambiarDireccion(p)" (click)="abrirDireccion(p)">Cambiar dirección</button>
+        <button type="button" class="enlace" *ngIf="puedeReprogramar(p)" (click)="abrirFechas(p)">Cambiar fecha de entrega</button>
         <button type="button" class="enlace" *ngIf="puedeCancelar(p)" (click)="pedirCancelar(p)">Cancelar pedido</button>
       </div>
     </div>

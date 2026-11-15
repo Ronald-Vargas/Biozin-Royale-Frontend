@@ -1,23 +1,25 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Pedido, etapaActual, puedeCancelar, textoMetodo, textoPago, totalPedido } from 'src/app/Core/Models/store.models';
+import { Pedido, SolicitudCambio, etapaActual, puedeCancelar, textoMetodo, textoPago, totalPedido } from 'src/app/Core/Models/store.models';
 import { StoreAdminService } from '../../store-admin.service';
 import { claseGrupo } from '../../store-admin.utils';
 import { AdminStoreDeliveryPanelComponent } from '../admin-store-delivery-panel/admin-store-delivery-panel.component';
 import { AdminStoreOrderLogComponent } from '../admin-store-order-log/admin-store-order-log.component';
 import { AdminStorePaymentReviewComponent } from '../admin-store-payment-review/admin-store-payment-review.component';
 import { AdminStorePrepPanelComponent } from '../admin-store-prep-panel/admin-store-prep-panel.component';
+import { AdminStoreReturnRequestComponent } from '../admin-store-return-request/admin-store-return-request.component';
 import { AdminStoreShippingPanelComponent } from '../admin-store-shipping-panel/admin-store-shipping-panel.component';
 
 /**
  * Hoja de un pedido: datos del cliente, artículos y el panel de la etapa en la que está
- * (verificar pago, preparar, despachar, entregar), más la bitácora.
+ * (verificar pago, preparar, despachar, entregar), sus solicitudes de cambio/devolución y la bitácora.
  */
 @Component({
   standalone: true,
   imports: [
     CommonModule, AdminStorePaymentReviewComponent, AdminStorePrepPanelComponent,
-    AdminStoreShippingPanelComponent, AdminStoreDeliveryPanelComponent, AdminStoreOrderLogComponent,
+    AdminStoreShippingPanelComponent, AdminStoreDeliveryPanelComponent, AdminStoreReturnRequestComponent,
+    AdminStoreOrderLogComponent,
   ],
   selector: 'app-admin-store-order-sheet',
   templateUrl: './admin-store-order-sheet.component.html',
@@ -32,6 +34,7 @@ export class AdminStoreOrderSheetComponent {
   textoPago(p: Pedido): string { return textoPago(p); }
   metodoTexto(p: Pedido): string { return textoMetodo(p); }
   puedeCancelar(p: Pedido): boolean { return puedeCancelar(p, 'admin'); }
+  trackSolicitud = (_: number, s: SolicitudCambio) => s.id;
 
   pedirCancelar(p: Pedido): void {
     this.ui.pedirConfirmacion({

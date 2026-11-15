@@ -1,0 +1,59 @@
+<app-store-sheet [scroll]="true" (closed)="nav.hoja.set(null)">
+  <div class="contenido">
+    <h3>Cambio o devolución</h3>
+
+    <ng-container *ngIf="items().length; else sinArticulos">
+      <div class="formulario">
+        <label *ngIf="items().length > 1">Artículo
+          <select [ngModel]="itemId()" (ngModelChange)="elegirItem($event)">
+            <option *ngFor="let i of items(); trackBy: trackItem" [value]="i.itemId">{{ i.nombre }}{{ i.talla ? ' (' + i.talla + ')' : '' }}</option>
+          </select>
+        </label>
+
+        <ng-container *ngIf="itemSeleccionado() as item">
+          <label class="metodo" [class.activo]="tipo() === 'devolucion'">
+            <input type="radio" name="tipo" [checked]="tipo() === 'devolucion'" (change)="elegirTipo('devolucion')" />
+            <span>Devolución<small class="muted">Te devolvemos el dinero de este artículo.</small></span>
+          </label>
+          <label class="metodo" *ngIf="puedeCambiarTalla()" [class.activo]="tipo() === 'cambio'">
+            <input type="radio" name="tipo" [checked]="tipo() === 'cambio'" (change)="elegirTipo('cambio')" />
+            <span>Cambio de talla<small class="muted">Te enviamos la talla que necesitas.</small></span>
+          </label>
+
+          <label *ngIf="tipo() === 'cambio'">Talla que necesitas
+            <select [ngModel]="tallaNueva()" (ngModelChange)="tallaNueva.set($event)">
+              <option value="" disabled>Elige una talla</option>
+              <option *ngFor="let t of tallasDisponibles(); trackBy: trackTalla" [value]="t">{{ t }}</option>
+            </select>
+          </label>
+
+          <label *ngIf="item.cantidad > 1">Cantidad
+            <select [ngModel]="cantidad()" (ngModelChange)="cantidad.set($event)">
+              <option *ngFor="let n of rango(item.cantidad); trackBy: trackN" [value]="n">{{ n }}</option>
+            </select>
+          </label>
+
+          <label>Motivo
+            <select [ngModel]="motivo()" (ngModelChange)="motivo.set($event)">
+              <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+            </select>
+          </label>
+          <label>Cuéntanos más (opcional)
+            <textarea rows="3" [ngModel]="detalle()" (ngModelChange)="detalle.set($event)" placeholder="Detalles que le sirvan al equipo…"></textarea>
+          </label>
+        </ng-container>
+      </div>
+
+      <p class="error" role="alert" *ngIf="error()">{{ error() }}</p>
+      <div class="acciones">
+        <button type="button" class="btn-fantasma" (click)="nav.hoja.set(null)">Cancelar</button>
+        <button type="button" class="btn-oro" [disabled]="enviando()" (click)="enviar()">{{ enviando() ? 'Enviando…' : 'Enviar solicitud' }}</button>
+      </div>
+    </ng-container>
+
+    <ng-template #sinArticulos>
+      <p class="muted">Ya pediste un cambio o devolución para todos los artículos de este pedido.</p>
+      <button type="button" class="enlace" (click)="nav.hoja.set(null)">Cerrar</button>
+    </ng-template>
+  </div>
+</app-store-sheet>

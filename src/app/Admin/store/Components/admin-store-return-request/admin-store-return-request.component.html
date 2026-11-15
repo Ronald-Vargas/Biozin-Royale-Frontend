@@ -1,0 +1,25 @@
+<div class="rec">
+  <div class="item-cab">
+    <div class="item-datos">
+      <b>{{ tipoDe(item) }} · {{ item.solicitud.producto }}{{ item.solicitud.talla ? ' (' + item.solicitud.talla + ')' : '' }}</b>
+      <span class="muted" *ngIf="mostrarPedido">{{ item.pedido.no }} · {{ item.pedido.cliente }}</span>
+      <span class="muted" *ngIf="item.solicitud.tipo === 'cambio'">Cambia a talla {{ item.solicitud.tallaNueva }}</span>
+    </div>
+    <span class="insignia" [ngClass]="item.solicitud.estado === 'aprobada' ? 'ok' : item.solicitud.estado === 'rechazada' ? 'agotado' : 'bajo'">{{ estadoDe(item) }}</span>
+  </div>
+  <p class="muted">{{ item.solicitud.motivo }}{{ item.solicitud.detalle ? ' · ' + item.solicitud.detalle : '' }}{{ item.solicitud.cantidad > 1 ? ' · ' + item.solicitud.cantidad + ' unidades' : '' }}</p>
+
+  <ng-container *ngIf="item.solicitud.estado === 'pendiente'; else resuelta">
+    <label class="campo">Nota para el cliente (opcional)
+      <input type="text" [ngModel]="nota()" (ngModelChange)="nota.set($event)" placeholder="Por ejemplo, el motivo si la rechazas" />
+    </label>
+    <div class="acciones">
+      <button type="button" class="btn-peligro btn-sm" [disabled]="enviando()" (click)="rechazar()">Rechazar</button>
+      <button type="button" class="btn-oro btn-sm" [disabled]="enviando()" (click)="aprobar()">Aprobar</button>
+    </div>
+  </ng-container>
+  <ng-template #resuelta>
+    <p class="muted" *ngIf="item.solicitud.notaResolucion">{{ item.solicitud.notaResolucion }}</p>
+    <p class="muted">{{ item.solicitud.resueltoPor }} · {{ item.solicitud.resueltoEn }}</p>
+  </ng-template>
+</div>

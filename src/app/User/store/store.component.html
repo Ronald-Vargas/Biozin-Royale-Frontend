@@ -36,11 +36,12 @@
     (action)="nav.ir('cart')"
   ></app-store-toast>
 
-  <!-- Hojas inferiores: talla, dirección y nueva fecha -->
+  <!-- Hojas inferiores: talla, dirección, nueva fecha y cambio/devolución -->
   <ng-container *ngIf="nav.hoja() as h" [ngSwitch]="h.tipo">
     <app-store-size-sheet *ngSwitchCase="'tallas'" [productoId]="h.id || ''"></app-store-size-sheet>
     <app-store-address-sheet *ngSwitchCase="'direccion'" [pedidoNo]="h.id || ''"></app-store-address-sheet>
     <app-store-date-sheet *ngSwitchCase="'fecha'" [pedidoNo]="h.id || ''"></app-store-date-sheet>
+    <app-store-return-sheet *ngSwitchCase="'solicitud'" [pedidoNo]="h.id || ''"></app-store-return-sheet>
   </ng-container>
 
   <!-- Confirmación -->

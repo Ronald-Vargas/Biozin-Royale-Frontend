@@ -27,7 +27,37 @@ export interface Producto {
   imagen?: string;
 }
 
-export interface ItemPedido { id: string; nombre: string; talla: string | null; cantidad: number; precio: number; }
+export interface ItemPedido {
+  id: string; nombre: string; talla: string | null; cantidad: number; precio: number;
+  /** Id de esta línea del pedido (no el del producto); lo pide una solicitud de cambio o devolución. */
+  itemId: string;
+}
+
+export type TipoSolicitud = 'cambio' | 'devolucion';
+export type EstadoSolicitud = 'pendiente' | 'aprobada' | 'rechazada';
+
+/** Cambio de talla o devolución de un artículo ya entregado. */
+export interface SolicitudCambio {
+  id: string;
+  itemId: string;
+  producto: string;
+  talla: string | null;
+  cantidad: number;
+  tipo: TipoSolicitud;
+  motivo: string;
+  detalle: string;
+  /** Solo en cambios de talla: la talla que se pidió a cambio. */
+  tallaNueva: string | null;
+  estado: EstadoSolicitud;
+  notaResolucion: string;
+  resueltoPor: string;
+  resueltoEn: string;
+  creadoEn: string;
+  /** Marca de tiempo (ms) de `creadoEn`, para ordenar. */
+  creadoTs: number;
+}
+
+export const MOTIVOS_SOLICITUD = ['No es mi talla', 'Llegó dañado o defectuoso', 'No me gustó', 'Pedí el producto equivocado', 'Otro'];
 
 /** Cada cambio queda en la bitácora: qué pasó, quién lo hizo y cuándo. */
 export interface Evento {
@@ -66,10 +96,13 @@ export interface Pedido {
   /** Código de 4 dígitos que el cliente le da al repartidor al recibir el pedido. */
   codigo: string;
   incidenciaAbierta: boolean;
+  /** Intentos de entrega fallidos registrados hasta ahora. */
+  intentosFallidos: number;
   ventana: string;
   eta: string;
   calificacion: number;
   eventos: Evento[];
+  solicitudes: SolicitudCambio[];
 }
 
 export interface StoreNotificacion {
@@ -98,10 +131,21 @@ export interface NuevoPedido {
   claveOperacion: string;
 }
 
+export interface NuevaSolicitud {
+  itemId: string;
+  tipo: TipoSolicitud;
+  motivo: string;
+  detalle: string;
+  cantidad: number;
+  /** Obligatoria con 'cambio'. */
+  tallaNueva?: string;
+}
+
 // ───────────── Reglas del negocio ─────────────
 // Valores por defecto; los reales los entrega el servidor (StoreService.config).
 export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
+export const MAX_INTENTOS_ENTREGA = 3;
 export const CORTE_DESPACHO = '2:00 p. m.';
 
 export interface Etapa { fase: number; nombre: string; texto: string; }
@@ -148,6 +192,26 @@ export function puedeCancelar(p: Pedido, rol: 'cliente' | 'admin'): boolean {
   return rol === 'cliente' ? p.fase <= 2 : p.fase <= 3;
 }
 
+/**
+ * Cambiar la fecha de entrega ya no exige esperar a que falle un intento: alcanza con que el
+ * pedido vaya en reparto. Cuando hay una incidencia abierta, esa tarjeta ya trae su propio botón,
+ * así que este enlace solo se muestra cuando no la hay (para no duplicar la acción).
+ */
+export function puedeReprogramar(p: Pedido): boolean {
+  return !p.cancelado && p.fase === 5 && !p.incidenciaAbierta;
+}
+
+/** Motivo real del último intento fallido (lo registró el admin); vacío si no hay ninguno. */
+export function motivoIncidencia(p: Pedido): string {
+  const e = [...p.eventos].reverse().find(x => x.tipo === 'incidencia');
+  return e ? e.texto.replace(/^Intento fallido\s*·\s*/, '') : '';
+}
+
+/** Un artículo entregado puede pedir cambio o devolución mientras no tenga ya una solicitud activa. */
+export function tieneSolicitudActiva(p: Pedido, itemId: string): boolean {
+  return p.solicitudes.some(s => s.itemId === itemId && s.estado !== 'rechazada');
+}
+
 /** Único transportista de la tienda. */
 export const TRANSPORTISTA = { nombre: 'Correos de Costa Rica', prefijoGuia: 'CR', tarifa: 5, tiempo: '2 a 3 días' };
 // ───────── Textos y fechas de un pedido (los usan el rol usuario y el rol admin) ─────────
@@ -156,6 +220,12 @@ export function textoPago(p: Pedido): string {
 }
 export function textoMetodo(p: Pedido): string {
   return { wallet: 'Billetera', card: 'Tarjeta' }[p.metodoPago];
+}
+export function textoTipoSolicitud(s: SolicitudCambio): string {
+  return s.tipo === 'cambio' ? 'Cambio de talla' : 'Devolución';
+}
+export function textoEstadoSolicitud(s: SolicitudCambio): string {
+  return { pendiente: 'Pendiente', aprobada: 'Aprobada', rechazada: 'Rechazada' }[s.estado];
 }
 /** Fecha y hora del primer evento de una etapa (vacío si todavía no ocurrió). */
 export function fechaDeFase(p: Pedido, fase: number): string {

@@ -76,4 +76,30 @@ describe('AdminStoreDeliveryPanelComponent', () => {
 
     expect(store.pedidos()[0].incidenciaAbierta).toBeTrue();
   });
+
+  it('ya no se puede registrar una incidencia al llegar al máximo de intentos', () => {
+    fixture.componentRef.setInput('pedido', store['aPedido']({ ...pedidoApi(enReparto), incidentCount: 3 } as never));
+    expect(component.puedeRegistrarIncidencia(fixture.componentInstance.pedido)).toBeFalse();
+  });
+
+  it('reprograma con la ventana elegida, no siempre la primera', async () => {
+    component.ventanas = ['mañana AM', 'mañana PM'];
+    component.ventanaElegida = 'mañana PM';
+    const accion = component.reprogramar(store.pedidos()[0]);
+    const req = http.expectOne(`${API}/pedidos/o-1/reprogramar`);
+    expect(req.request.body).toEqual({ window: 'mañana PM' });
+    req.flush(ok(pedidoApi({ ...enReparto, rescheduleWindow: 'mañana PM' })));
+    await accion;
+
+    expect(store.pedidos()[0].ventana).toBe('mañana PM');
+  });
+
+  it('muestra el motivo real de la incidencia, no un texto genérico', () => {
+    fixture.componentRef.setInput('pedido', store['aPedido']({
+      ...pedidoApi(enReparto), hasOpenIncident: true,
+      events: [{ id: 'e-1', type: 'incident', phase: null, message: 'Intento fallido · Zona de difícil acceso', actorName: 'Admin', actorRole: 'admin', createdAt: '2026-11-10T16:00:00Z' }],
+    } as never));
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Zona de difícil acceso');
+  });
 });

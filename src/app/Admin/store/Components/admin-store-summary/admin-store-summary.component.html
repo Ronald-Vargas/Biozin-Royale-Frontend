@@ -3,6 +3,7 @@
   <app-admin-store-kpi label="Pedidos" [value]="ui.pedidos().length"></app-admin-store-kpi>
   <app-admin-store-kpi label="Por atender" [value]="ui.porAtender()"></app-admin-store-kpi>
   <app-admin-store-kpi label="Incidencias" [value]="ui.cuenta()['Incidencias']"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Devoluciones" [value]="ui.solicitudesPendientes().length"></app-admin-store-kpi>
   <app-admin-store-kpi label="Entregados" [value]="ui.cuenta()['Entregados']"></app-admin-store-kpi>
   <app-admin-store-kpi label="Valoración" [value]="ui.valoracion() ? (ui.valoracion() | number:'1.1-1') + ' ★' : '—'"></app-admin-store-kpi>
 </div>

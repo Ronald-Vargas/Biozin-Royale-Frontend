@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { API, BAD_REQUEST, fallo, ok, pedidoApi, responder } from '../Testing/store-testing';
+import { API, BAD_REQUEST, fallo, ok, pedidoApi, responder, solicitudApi } from '../Testing/store-testing';
 import { StoreService } from './store.service';
 
 describe('StoreService', () => {
@@ -31,11 +31,14 @@ describe('StoreService', () => {
     expect(p.tarjeta).toBe('Visa •••• 4242');
     expect(p.direccion).toBe('Limón, Barrio Santa Rosa');
     expect(p.codigo).toBe('5190');
-    expect(p.items[0]).toEqual({ id: 'p-camisa', nombre: 'Camiseta Royale', talla: 'M', cantidad: 1, precio: 28 });
+    expect(p.items[0]).toEqual({ id: 'p-camisa', itemId: 'i-1', nombre: 'Camiseta Royale', talla: 'M', cantidad: 1, precio: 28 });
     expect(p.eventos[0].tipo).toBe('fase');
     expect(p.eta).toContain('mié 11');   // 11 y 12 de noviembre de 2026
     expect(p.eta).not.toContain('Invalid');   // el servidor manda la fecha con hora pegada
     expect(store.config().corte).toBe('2:00 p. m.');
+    expect(store.config().maxIntentosEntrega).toBe(3);
+    expect(p.intentosFallidos).toBe(0);
+    expect(p.solicitudes).toEqual([]);
 
     const camisa = store.producto('p-camisa');
     expect(camisa?.imagen).toMatch(/\/storage\/v1\/object\/public\/store-products\/br-t1\.webp$/);
@@ -128,6 +131,66 @@ describe('StoreService', () => {
       })] });
       expect(store.notificaciones().length).toBe(1);   // solo el pedido nuevo del cliente
     });
+
+    it('una solicitud nueva del cliente avisa al admin; aprobarla o rechazarla (cosa suya) no', async () => {
+      void store.iniciar(true);
+      await responder(http, { pedidos: [pedidoApi({
+        events: [
+          { id: 'e-1', type: 'phase', phase: 0, message: 'Pedido creado', actorName: 'Ana', actorRole: 'user', createdAt: '2026-11-09T16:00:00Z' },
+          { id: 'e-2', type: 'change', phase: null, message: 'Pidió devolución · 1× Camiseta Royale (M) · No es mi talla', actorName: 'Ana', actorRole: 'user', createdAt: '2026-11-10T16:00:00Z' },
+          { id: 'e-3', type: 'change', phase: null, message: 'Devolución aprobada · $28.00 reembolsados a la billetera', actorName: 'Admin', actorRole: 'admin', createdAt: '2026-11-10T17:00:00Z' },
+        ],
+      })] });
+      const avisos = store.notificaciones();   // también está el aviso del "Pedido creado" (e-1)
+      expect(avisos.length).toBe(2);
+      const solicitud = avisos.find(a => a.titulo === 'Solicitud nueva BR-10241');
+      expect(solicitud?.texto).toContain('devolución');
+    });
+  });
+
+  it('traduce las solicitudes de cambio/devolución del pedido', async () => {
+    void store.iniciar(false);
+    await responder(http, { pedidos: [pedidoApi({ returns: [solicitudApi(), solicitudApi({ id: 's-2', status: 'approved', requestType: 'exchange', exchangeSize: 'L' })] })] });
+
+    const s = store.pedidos()[0].solicitudes;
+    expect(s.length).toBe(2);
+    expect(s[0]).toEqual({
+      id: 's-1', itemId: 'i-1', producto: 'Camiseta Royale', talla: 'M', cantidad: 1, tipo: 'devolucion',
+      motivo: 'No es mi talla', detalle: '', tallaNueva: null, estado: 'pendiente', notaResolucion: '', resueltoPor: '', resueltoEn: '',
+      creadoEn: s[0].creadoEn, creadoTs: s[0].creadoTs,
+    });
+    expect(s[1].tipo).toBe('cambio');
+    expect(s[1].estado).toBe('aprobada');
+    expect(s[1].tallaNueva).toBe('L');
+  });
+
+  it('crea una solicitud de cambio/devolución', async () => {
+    void store.iniciar(false);
+    await responder(http, { pedidos: [pedidoApi()] });
+
+    const envio = store.crearSolicitud('BR-10241', { itemId: 'i-1', tipo: 'devolucion', motivo: 'No es mi talla', detalle: 'Me quedó grande', cantidad: 1 });
+    const req = http.expectOne(`${API}/pedidos/o-1/solicitudes`);
+    expect(req.request.body).toEqual({
+      orderItemId: 'i-1', requestType: 'refund', reason: 'No es mi talla', detail: 'Me quedó grande', quantity: 1, exchangeSize: null,
+    });
+    req.flush(ok(pedidoApi({ returns: [solicitudApi()] })));
+    await responder(http);   // una acción del cliente vuelve a pedir sus avisos
+    const r = await envio;
+    expect(r.ok).toBeTrue();
+  });
+
+  it('el admin aprueba o rechaza una solicitud', async () => {
+    void store.iniciar(true);
+    await responder(http, { pedidos: [pedidoApi({ returns: [solicitudApi()] })] });
+
+    const envio = store.aprobarSolicitud('s-1', 'Confirmado por el cliente');
+    const req = http.expectOne(`${API}/admin/solicitudes/s-1/aprobar`);
+    expect(req.request.body).toEqual({ note: 'Confirmado por el cliente' });
+    req.flush(ok(pedidoApi({ returns: [solicitudApi({ status: 'approved' })] })));
+    await responder(http);   // tras aprobar, vuelve a pedir el catálogo (el stock cambió)
+    const r = await envio;
+    expect(r.ok).toBeTrue();
+    expect(store.pedidos()[0].solicitudes[0].estado).toBe('aprobada');
   });
 
   it('el catálogo y el pedido creado quedan en los signals', async () => {

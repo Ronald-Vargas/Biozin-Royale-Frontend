@@ -70,4 +70,23 @@ describe('AdminStoreOrderSheetComponent', () => {
     await mostrar({});
     expect(el().querySelector('app-admin-store-order-log')?.textContent).toContain('Pedido creado');
   });
+
+  it('muestra las solicitudes de cambio/devolución del pedido, sin repetir su número', async () => {
+    await mostrar({
+      fulfillmentPhase: 6, paymentStatus: 'confirmed',
+      returns: [{
+        id: 's-1', orderItemId: 'i-1', productName: 'Camiseta Royale', size: 'M', quantity: 1,
+        requestType: 'refund', reason: 'No es mi talla', detail: '', exchangeSize: null, status: 'pending',
+        resolutionNote: null, resolvedByName: null, resolvedAt: null, createdAt: '2026-11-10T16:00:00Z',
+      }],
+    });
+    const fila = el().querySelector('app-admin-store-return-request');
+    expect(fila?.textContent).toContain('Devolución');
+    expect(fila?.textContent).not.toContain('BR-10241');   // ya se sabe de qué pedido es, no hace falta repetirlo
+  });
+
+  it('sin solicitudes, no muestra la sección', async () => {
+    await mostrar({});
+    expect(el().querySelector('app-admin-store-return-request')).toBeNull();
+  });
 });

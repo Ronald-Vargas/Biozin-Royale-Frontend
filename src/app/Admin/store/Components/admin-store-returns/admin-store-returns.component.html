@@ -1,0 +1,23 @@
+<div class="kpis">
+  <app-admin-store-kpi label="Pendientes" [value]="ui.solicitudesPendientes().length"></app-admin-store-kpi>
+  <app-admin-store-kpi label="Total" [value]="ui.solicitudes().length"></app-admin-store-kpi>
+</div>
+
+<div class="caja">
+  <h3 class="caja-titulo">Pendientes</h3>
+  <p class="muted vacio-txt" *ngIf="!ui.solicitudesPendientes().length">No hay solicitudes esperando una respuesta.</p>
+  <app-admin-store-return-request *ngFor="let i of ui.solicitudesPendientes(); trackBy: trackId" [item]="i"></app-admin-store-return-request>
+</div>
+
+<div class="caja">
+  <div class="item-cab">
+    <h3 class="caja-titulo">Resueltas</h3>
+    <button type="button" class="enlace" (click)="verResueltas.set(!verResueltas())">{{ verResueltas() ? 'Ocultar' : 'Ver' }}</button>
+  </div>
+  <ng-container *ngIf="verResueltas()">
+    <p class="muted vacio-txt" *ngIf="!(ui.solicitudes().length - ui.solicitudesPendientes().length)">Todavía no se resolvió ninguna.</p>
+    <ng-container *ngFor="let i of ui.solicitudes(); trackBy: trackId">
+      <app-admin-store-return-request *ngIf="i.solicitud.estado !== 'pendiente'" [item]="i"></app-admin-store-return-request>
+    </ng-container>
+  </ng-container>
+</div>

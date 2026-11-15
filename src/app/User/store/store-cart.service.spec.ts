@@ -48,7 +48,7 @@ describe('StoreCartService', () => {
     expect(cart.totales()).toEqual({ subtotal: 10, envio: 5, total: 15 });
 
     store.productos.set([producto('k', 20)]);
-    store.config.set({ envioGratisDesde: 15, costoEnvio: 5, corte: '2:00 p. m.' });
+    store.config.set({ envioGratisDesde: 15, costoEnvio: 5, corte: '2:00 p. m.', maxIntentosEntrega: 3 });
     cart.cambiar(0, 1);                          // $20: ya no paga envío
     expect(cart.totales()).toEqual({ subtotal: 20, envio: 0, total: 20 });
   });

@@ -5,8 +5,8 @@ import { StoreService } from 'src/app/Core/Services/store.service';
 import { StoreNotificacion } from 'src/app/Core/Models/store.models';
 
 export type Vista = 'home' | 'prod' | 'cart' | 'chk' | 'ok' | 'mine' | 'track';
-/** Hojas inferiores: elegir talla, cambiar dirección o elegir nueva fecha de entrega. */
-export type Hoja = { tipo: 'tallas' | 'direccion' | 'fecha'; id?: string };
+/** Hojas inferiores: elegir talla, cambiar dirección, elegir nueva fecha o pedir cambio/devolución. */
+export type Hoja = { tipo: 'tallas' | 'direccion' | 'fecha' | 'solicitud'; id?: string };
 export interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
 interface Posicion { vista: Vista; producto: string | null; pedido: string | null; }
 

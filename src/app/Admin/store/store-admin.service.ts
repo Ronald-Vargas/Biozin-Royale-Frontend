@@ -1,17 +1,19 @@
 import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Resultado, StoreService } from 'src/app/Core/Services/store.service';
 import {
-  Categoria, Grupo, GRUPOS, GRUPOS_ACTIVOS, StoreNotificacion, grupoDe, totalPedido,
+  Categoria, Grupo, GRUPOS, GRUPOS_ACTIVOS, Pedido, SolicitudCambio, StoreNotificacion, grupoDe, totalPedido,
 } from 'src/app/Core/Models/store.models';
 import { STOCK_BAJO } from './store-admin.utils';
 
-export type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv';
+export type Seccion = 'res' | 'log' | 'ord' | 'prods' | 'inv' | 'dev';
 export type Hoja = 'pedido' | 'producto';
 export interface Dialogo { titulo: string; texto: string; ok: string; conservar: string; accion: () => void; }
+/** Una solicitud de cambio/devolución, con el pedido al que pertenece (lo necesita la tarjeta y el enlace al pedido). */
+export interface SolicitudConPedido { pedido: Pedido; solicitud: SolicitudCambio; }
 
 export const SECCIONES: { k: Seccion; t: string; nuevo?: boolean }[] = [
-  { k: 'res', t: 'Resumen' }, { k: 'log', t: 'Logística', nuevo: true }, { k: 'ord', t: 'Pedidos' },
-  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' },
+  { k: 'res', t: 'Resumen' }, { k: 'log', t: 'Logística' }, { k: 'ord', t: 'Pedidos' },
+  { k: 'prods', t: 'Productos' }, { k: 'inv', t: 'Inventario' }, { k: 'dev', t: 'Devoluciones', nuevo: true },
 ];
 export const CATEGORIAS: Categoria[] = ['Camisetas', 'Sudaderas y gorras', 'Accesorios', 'Hogar', 'Juegos'];
 
@@ -75,6 +77,16 @@ export class StoreAdminService implements OnDestroy {
   readonly movimientos = computed(() => this.pedidos().filter(p => p.eventos.length).map(p => ({ no: p.no, ...p.eventos[p.eventos.length - 1] })).slice(0, 6));
   readonly pedidoAbierto = computed(() => this.pedidos().find(p => p.no === this.pedidoNo()) ?? null);
   readonly noLeidas = computed(() => this.store.notificaciones().filter(n => !n.leida).length);
+
+  // ── Derivados: cambios y devoluciones (salen de los pedidos, no hay una lista aparte) ──
+  readonly solicitudes = computed<SolicitudConPedido[]>(() => {
+    const lista: SolicitudConPedido[] = [];
+    for (const pedido of this.pedidos()) {
+      for (const solicitud of pedido.solicitudes) lista.push({ pedido, solicitud });
+    }
+    return lista.sort((a, b) => b.solicitud.creadoTs - a.solicitud.creadoTs);
+  });
+  readonly solicitudesPendientes = computed(() => this.solicitudes().filter(s => s.solicitud.estado === 'pendiente'));
 
   // ── Derivados: catálogo e inventario ──
   readonly productosFiltrados = computed(() => {

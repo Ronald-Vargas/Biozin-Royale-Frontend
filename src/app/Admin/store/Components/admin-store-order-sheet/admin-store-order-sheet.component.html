@@ -25,6 +25,16 @@
 
   <p class="error" role="alert" *ngIf="ui.errorLog()">{{ ui.errorLog() }}</p>
 
+  <!-- Cambios y devoluciones pedidos para este pedido -->
+  <ng-container *ngIf="o.solicitudes.length">
+    <h3 class="caja-titulo">Cambios y devoluciones</h3>
+    <app-admin-store-return-request
+      *ngFor="let s of o.solicitudes; trackBy: trackSolicitud"
+      [item]="{ pedido: o, solicitud: s }"
+      [mostrarPedido]="false"
+    ></app-admin-store-return-request>
+  </ng-container>
+
   <app-admin-store-order-log [pedido]="o"></app-admin-store-order-log>
 
   <div class="acciones">

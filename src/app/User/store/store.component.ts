@@ -20,6 +20,7 @@ import { StoreMyOrdersComponent } from './Components/store-my-orders/store-my-or
 import { StoreOrderDoneComponent } from './Components/store-order-done/store-order-done.component';
 import { StoreOrderTrackingComponent } from './Components/store-order-tracking/store-order-tracking.component';
 import { StoreProductDetailComponent } from './Components/store-product-detail/store-product-detail.component';
+import { StoreReturnSheetComponent } from './Components/store-return-sheet/store-return-sheet.component';
 import { StoreSizeSheetComponent } from './Components/store-size-sheet/store-size-sheet.component';
 
 const TITULOS: Record<Vista, string> = {
@@ -40,7 +41,7 @@ const ICON_CARRITO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
     StoreConfirmDialogComponent, StorePushComponent, StoreToastComponent,
     StoreHomeComponent, StoreProductDetailComponent, StoreCartComponent, StoreCheckoutComponent,
     StoreOrderDoneComponent, StoreMyOrdersComponent, StoreOrderTrackingComponent,
-    StoreSizeSheetComponent, StoreAddressSheetComponent, StoreDateSheetComponent,
+    StoreSizeSheetComponent, StoreAddressSheetComponent, StoreDateSheetComponent, StoreReturnSheetComponent,
   ],
   providers: [StoreNavService, StoreCartService, StoreCatalogService],
   selector: 'app-store',

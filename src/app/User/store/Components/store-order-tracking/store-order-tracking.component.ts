@@ -2,7 +2,8 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from 'src/app/Core/Services/store.service';
 import {
-  ETAPAS, Pedido, etapaActual, fechaDeFase, puedeCancelar, textoMetodo, textoPago, totalPedido,
+  ETAPAS, Pedido, SolicitudCambio, etapaActual, fechaDeFase, motivoIncidencia, puedeCancelar, puedeReprogramar,
+  textoEstadoSolicitud, textoMetodo, textoPago, textoTipoSolicitud, totalPedido,
 } from 'src/app/Core/Models/store.models';
 import { BalanceService } from 'src/app/Core/Services/balance.service';
 import { StoreNavService } from '../../store-nav.service';
@@ -44,6 +45,14 @@ export class StoreOrderTrackingComponent {
   puedeCambiarDireccion(p: Pedido): boolean {
     return !p.cancelado && p.fase <= 2;
   }
+  puedeReprogramar(p: Pedido): boolean {
+    return puedeReprogramar(p);
+  }
+  motivoDe(p: Pedido): string {
+    return motivoIncidencia(p);
+  }
+  tipoSolicitud(s: SolicitudCambio): string { return textoTipoSolicitud(s); }
+  estadoSolicitud(s: SolicitudCambio): string { return textoEstadoSolicitud(s); }
 
   /** Hitos con fecha y hora, más las incidencias y reprogramaciones. */
   private armarLinea(p: Pedido): ItemLinea[] {
@@ -98,8 +107,7 @@ export class StoreOrderTrackingComponent {
     const r = await this.store.calificar(p.no, estrellas);
     this.nav.mostrarAviso(r.ok ? 'Gracias por calificar tu entrega.' : r.error);
   }
-  async pedirCambio(p: Pedido): Promise<void> {
-    const r = await this.store.solicitarCambio(p.no);
-    this.nav.mostrarAviso(r.ok ? 'Recibimos tu solicitud de cambio.' : r.error);
+  abrirSolicitud(p: Pedido): void {
+    this.nav.hoja.set({ tipo: 'solicitud', id: p.no });
   }
 }

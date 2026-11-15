@@ -9,7 +9,7 @@ export const ok = <T>(returnValue: T) => ({ returnValue, strResponseMessage: '',
 export const fallo = (mensaje: string) => ({ returnValue: null, strResponseMessage: mensaje, blnError: true, strResponseTittle: 'Error' });
 export const BAD_REQUEST = { status: 400, statusText: 'Bad Request' };
 
-export const configApi = { freeShippingFrom: 60, shippingCost: 5, dispatchCutoff: '14:00', returnWindowDays: 15 };
+export const configApi = { freeShippingFrom: 60, shippingCost: 5, dispatchCutoff: '14:00', returnWindowDays: 15, maxDeliveryAttempts: 3 };
 
 export const camisaApi = {
   id: 'p-camisa', name: 'Camiseta Royale', category: 'Camisetas', description: 'Algodón', price: 28,
@@ -40,10 +40,20 @@ export const pedidoApi = (extra: object = {}) => ({
   province: 'Limón', canton: null, district: null, addressLine: 'Barrio Santa Rosa', subtotal: 28, shippingCost: 5, total: 33,
   paymentMethod: 'card', paymentStatus: 'pending', cardLastFour: '4242', cardNetwork: 'visa', fulfillmentPhase: 0,
   isCancelled: false, carrierName: null, trackingNumber: null, packageInfo: null, deliveryCode: null, hasOpenIncident: false,
+  incidentCount: 0,
   // El servidor manda la columna `date` como DateTime con hora (p. ej. "2026-11-11T00:00:00"): así se prueba de verdad.
   rescheduleWindow: null, etaFrom: '2026-11-11T00:00:00', etaTo: '2026-11-12T00:00:00', rating: null, createdAt: '2026-11-09T16:00:00Z',
-  items: [{ productId: 'p-camisa', name: 'Camiseta Royale', size: 'M', quantity: 1, unitPrice: 28 }],
+  items: [{ id: 'i-1', productId: 'p-camisa', name: 'Camiseta Royale', size: 'M', quantity: 1, unitPrice: 28 }],
   events: [{ id: 'e-1', type: 'phase', phase: 0, message: 'Pedido creado · Tarjeta', actorName: 'Ana Mora', actorRole: 'user', createdAt: '2026-11-09T16:00:00Z' }],
+  returns: [],
+  ...extra,
+});
+
+/** Una solicitud de cambio o devolución, pendiente por defecto. */
+export const solicitudApi = (extra: object = {}) => ({
+  id: 's-1', orderItemId: 'i-1', productName: 'Camiseta Royale', size: 'M', quantity: 1,
+  requestType: 'refund', reason: 'No es mi talla', detail: '', exchangeSize: null, status: 'pending',
+  resolutionNote: null, resolvedByName: null, resolvedAt: null, createdAt: '2026-11-10T16:00:00Z',
   ...extra,
 });
 

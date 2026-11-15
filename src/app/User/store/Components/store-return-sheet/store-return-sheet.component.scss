@@ -1,0 +1,12 @@
+@use '../../styles/base';
+@use '../../styles/estado';
+@use '../../styles/forms';
+
+:host { display: contents; }
+
+.contenido {
+  display: grid; gap: 14px; text-align: center;
+  h3 { font-size: 20px; }
+  .formulario { text-align: left; }
+}
+.acciones { display: flex; justify-content: flex-end; gap: 10px; }

@@ -5,8 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
 import { NotificationRealtimeService } from './notification-realtime.service';
 import {
-  Arte, Categoria, CORTE_DESPACHO, COSTO_ENVIO, ENVIO_GRATIS_DESDE, Evento, EstadoPago, NuevoPedido, Pedido,
-  Producto, StoreNotificacion, TipoEvento,
+  Arte, Categoria, CORTE_DESPACHO, COSTO_ENVIO, ENVIO_GRATIS_DESDE, Evento, EstadoPago, MAX_INTENTOS_ENTREGA,
+  NuevaSolicitud, NuevoPedido, Pedido, Producto, SolicitudCambio, StoreNotificacion, TipoEvento, TipoSolicitud,
 } from '../Models/store.models';
 
 // ───────────── Forma de las respuestas de la API (api/tienda) ─────────────
@@ -20,6 +20,11 @@ interface ApiProducto {
 /** Base pública del bucket de fotos de producto (mismo esquema que los avatares). */
 const BUCKET_PRODUCTOS = `${environment.supabaseUrl}/storage/v1/object/public/store-products/`;
 interface ApiEvento { id: string; type: string; phase: number | null; message: string; actorName: string; actorRole: string; createdAt: string; }
+interface ApiSolicitud {
+  id: string; orderItemId: string; productName: string; size: string | null; quantity: number;
+  requestType: string; reason: string; detail: string; exchangeSize: string | null; status: string;
+  resolutionNote: string | null; resolvedByName: string | null; resolvedAt: string | null; createdAt: string;
+}
 interface ApiPedido {
   id: string; orderNumber: number; userId: string; customerName: string; email: string; phone: string;
   province: string; canton: string | null; district: string | null; addressLine: string;
@@ -27,13 +32,16 @@ interface ApiPedido {
   cardLastFour: string | null; cardNetwork: string | null;
   fulfillmentPhase: number; isCancelled: boolean;
   carrierName: string | null; trackingNumber: string | null; packageInfo: string | null; deliveryCode: string | null;
-  hasOpenIncident: boolean; rescheduleWindow: string | null; etaFrom: string | null; etaTo: string | null;
+  hasOpenIncident: boolean; incidentCount: number; rescheduleWindow: string | null; etaFrom: string | null; etaTo: string | null;
   rating: number | null; createdAt: string;
-  items: { productId: string; name: string; size: string | null; quantity: number; unitPrice: number }[];
+  items: { id: string; productId: string; name: string; size: string | null; quantity: number; unitPrice: number }[];
   events: ApiEvento[];
+  returns: ApiSolicitud[];
 }
 interface ApiAviso { id: string; title: string; body: string; orderId: string | null; read: boolean; createdAt: string; }
-interface ApiConfig { freeShippingFrom: number; shippingCost: number; dispatchCutoff: string; returnWindowDays: number; }
+interface ApiConfig {
+  freeShippingFrom: number; shippingCost: number; dispatchCutoff: string; returnWindowDays: number; maxDeliveryAttempts: number;
+}
 
 /** Resultado de una operación: el componente decide qué mostrar. */
 export type Resultado<T = void> = { ok: true; valor: T } | { ok: false; error: string };
@@ -46,6 +54,10 @@ const ESTADO_PAGO: Record<string, EstadoPago> = {
   pending: 'pendiente', confirmed: 'confirmado', rejected: 'rechazado', refunded: 'reembolsado',
 };
 const REDES: Record<string, string> = { visa: 'Visa', mastercard: 'Mastercard', amex: 'Amex' };
+const TIPO_SOLICITUD: Record<string, TipoSolicitud> = { exchange: 'cambio', refund: 'devolucion' };
+const ESTADO_SOLICITUD: Record<string, SolicitudCambio['estado']> = {
+  pending: 'pendiente', approved: 'aprobada', rejected: 'rechazada',
+};
 const LEIDOS_ADMIN = 'store_admin_avisos_leidos';
 
 // ───────────── Utilidades de fecha ─────────────
@@ -99,7 +111,9 @@ export class StoreService {
 
   readonly productos = signal<Producto[]>([]);
   readonly pedidos = signal<Pedido[]>([]);
-  readonly config = signal({ envioGratisDesde: ENVIO_GRATIS_DESDE, costoEnvio: COSTO_ENVIO, corte: CORTE_DESPACHO });
+  readonly config = signal({
+    envioGratisDesde: ENVIO_GRATIS_DESDE, costoEnvio: COSTO_ENVIO, corte: CORTE_DESPACHO, maxIntentosEntrega: MAX_INTENTOS_ENTREGA,
+  });
   /** true cuando ya llegó la primera respuesta de pedidos (evita avisar por pedidos viejos). */
   readonly cargado = signal(false);
   readonly cargando = signal(false);
@@ -131,9 +145,9 @@ export class StoreService {
         } else if (e.tipo === 'cambio' && e.texto.startsWith('Dirección')) {
           titulo = `Dirección cambiada ${p.no}`;
           texto = `${p.cliente} actualizó la dirección de envío.`;
-        } else if (e.tipo === 'cambio') {
-          titulo = `Cambio solicitado ${p.no}`;
-          texto = `${p.cliente} pidió un cambio o devolución.`;
+        } else if (e.tipo === 'cambio' && (e.texto.startsWith('Pidió cambio de talla') || e.texto.startsWith('Pidió devolución'))) {
+          titulo = `Solicitud nueva ${p.no}`;
+          texto = `${p.cliente} · ${e.texto.replace(/^Pidió /, '')}`;
         } else if (e.tipo === 'cancelacion') {
           titulo = `Pedido cancelado ${p.no}`;
           texto = `${p.cliente} canceló su pedido.`;
@@ -198,6 +212,7 @@ export class StoreService {
       envioGratisDesde: r.valor.freeShippingFrom,
       costoEnvio: r.valor.shippingCost,
       corte: this.horaTexto(r.valor.dispatchCutoff),
+      maxIntentosEntrega: r.valor.maxDeliveryAttempts,
     });
   }
 
@@ -260,8 +275,15 @@ export class StoreService {
   calificar(no: string, estrellas: number): Promise<Resultado<Pedido>> {
     return this.accion(no, 'calificar', { stars: estrellas }, false);
   }
-  solicitarCambio(no: string): Promise<Resultado<Pedido>> {
-    return this.accion(no, 'cambio', {}, false);
+  crearSolicitud(no: string, d: NuevaSolicitud): Promise<Resultado<Pedido>> {
+    return this.accion(no, 'solicitudes', {
+      orderItemId: d.itemId,
+      requestType: d.tipo === 'cambio' ? 'exchange' : 'refund',
+      reason: d.motivo,
+      detail: d.detalle,
+      quantity: d.cantidad,
+      exchangeSize: d.tallaNueva ?? null,
+    }, false);
   }
 
   // ═════════════ Admin: logística ═════════════
@@ -278,6 +300,16 @@ export class StoreService {
   iniciarReparto(no: string) { return this.accion(no, 'reparto'); }
   registrarIncidencia(no: string, motivo: string) { return this.accion(no, 'incidencia', { reason: motivo }); }
   confirmarEntrega(no: string, codigo: string) { return this.accion(no, 'entregar', { code: codigo }); }
+
+  /** Aprobar o rechazar una solicitud de cambio/devolución: el artículo vuelve al inventario. */
+  async aprobarSolicitud(solicitudId: string, nota = ''): Promise<Resultado<Pedido>> {
+    const r = await this.accionSolicitud(solicitudId, 'aprobar', nota);
+    if (r.ok) await this.cargarProductos();
+    return r;
+  }
+  async rechazarSolicitud(solicitudId: string, nota = ''): Promise<Resultado<Pedido>> {
+    return this.accionSolicitud(solicitudId, 'rechazar', nota);
+  }
 
   // ═════════════ Admin: productos e inventario ═════════════
 
@@ -352,6 +384,12 @@ export class StoreService {
     return this.accionPedido(this.http.post<ApiResponse<ApiPedido>>(url, cuerpo));
   }
 
+  /** POST a `admin/solicitudes/{id}/{ruta}` (aprobar o rechazar una solicitud de cambio/devolución). */
+  private accionSolicitud(solicitudId: string, ruta: string, nota: string): Promise<Resultado<Pedido>> {
+    const url = `${this.base}/admin/solicitudes/${solicitudId}/${ruta}`;
+    return this.accionPedido(this.http.post<ApiResponse<ApiPedido>>(url, { note: nota || null }));
+  }
+
   private async accionPedido(obs: Observable<ApiResponse<ApiPedido>>): Promise<Resultado<Pedido>> {
     const r = await this.llamar(obs);
     if (!r.ok) return r;
@@ -403,11 +441,23 @@ export class StoreService {
       direccion: `${a.province}, ${domicilio}`, provincia: a.province,
       canton: a.canton ?? '', distrito: a.district ?? '', senas: a.addressLine, domicilio,
       tarjeta: a.paymentMethod === 'card' && a.cardLastFour ? `${red} •••• ${a.cardLastFour}` : '',
-      items: a.items.map(i => ({ id: i.productId, nombre: i.name, talla: i.size, cantidad: i.quantity, precio: i.unitPrice })),
+      items: a.items.map(i => ({ id: i.productId, itemId: i.id, nombre: i.name, talla: i.size, cantidad: i.quantity, precio: i.unitPrice })),
       envio: a.shippingCost, fase: a.fulfillmentPhase, cancelado: a.isCancelled,
       transportista: a.carrierName ?? '', guia: a.trackingNumber ?? '', paquete: a.packageInfo ?? '',
-      codigo: a.deliveryCode ?? '', incidenciaAbierta: a.hasOpenIncident, ventana: a.rescheduleWindow ?? '',
-      eta: a.isCancelled ? '' : rango(a.etaFrom, a.etaTo), calificacion: a.rating ?? 0, eventos,
+      codigo: a.deliveryCode ?? '', incidenciaAbierta: a.hasOpenIncident, intentosFallidos: a.incidentCount,
+      ventana: a.rescheduleWindow ?? '', eta: a.isCancelled ? '' : rango(a.etaFrom, a.etaTo),
+      calificacion: a.rating ?? 0, eventos, solicitudes: a.returns.map(s => this.aSolicitud(s)),
+    };
+  }
+
+  private aSolicitud(s: ApiSolicitud): SolicitudCambio {
+    return {
+      id: s.id, itemId: s.orderItemId, producto: s.productName, talla: s.size, cantidad: s.quantity,
+      tipo: TIPO_SOLICITUD[s.requestType] ?? 'devolucion', motivo: s.reason, detalle: s.detail,
+      tallaNueva: s.exchangeSize, estado: ESTADO_SOLICITUD[s.status] ?? 'pendiente',
+      notaResolucion: s.resolutionNote ?? '', resueltoPor: s.resolvedByName ?? '',
+      resueltoEn: s.resolvedAt ? fechaHora(s.resolvedAt) : '',
+      creadoEn: fechaHora(s.createdAt), creadoTs: new Date(s.createdAt).getTime(),
     };
   }
 

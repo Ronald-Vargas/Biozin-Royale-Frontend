@@ -95,4 +95,46 @@ describe('StoreOrderTrackingComponent', () => {
     await accion;
     expect(nav.aviso()?.texto).toContain('calificar una vez');
   });
+
+  it('la incidencia muestra el motivo real, no un texto genérico', () => {
+    mostrar({
+      fulfillmentPhase: 5, hasOpenIncident: true,
+      events: [{ id: 'e-1', type: 'incident', phase: null, message: 'Intento fallido · Dirección incorrecta', actorName: 'Admin', actorRole: 'admin', createdAt: '2026-11-10T16:00:00Z' }],
+    });
+    expect(el().querySelector('.alerta .muted')?.textContent).toContain('Dirección incorrecta');
+  });
+
+  it('se puede cambiar la fecha de entrega en reparto sin que haya una incidencia', () => {
+    mostrar({ fulfillmentPhase: 5 });
+    expect(component.puedeReprogramar(component.pedido()!)).toBeTrue();
+    const enlaces = Array.from(el().querySelectorAll('.fila-enlaces .enlace')).map(b => b.textContent?.trim());
+    expect(enlaces).toContain('Cambiar fecha de entrega');
+
+    mostrar({ fulfillmentPhase: 5, hasOpenIncident: true });
+    expect(component.puedeReprogramar(component.pedido()!)).toBeFalse();   // ya tiene su propia tarjeta de incidencia
+
+    mostrar({ fulfillmentPhase: 4 });
+    expect(component.puedeReprogramar(component.pedido()!)).toBeFalse();   // todavía no va en reparto
+  });
+
+  it('pedir cambio o devolución abre la hoja de solicitud', () => {
+    mostrar({ fulfillmentPhase: 6, paymentStatus: 'confirmed' });
+    component.abrirSolicitud(component.pedido()!);
+    expect(nav.hoja()).toEqual({ tipo: 'solicitud', id: 'BR-10241' });
+  });
+
+  it('muestra las solicitudes ya pedidas con su estado', () => {
+    mostrar({
+      fulfillmentPhase: 6, paymentStatus: 'confirmed',
+      returns: [{
+        id: 's-1', orderItemId: 'i-1', productName: 'Camiseta Royale', size: 'M', quantity: 1,
+        requestType: 'refund', reason: 'No es mi talla', detail: '', exchangeSize: null, status: 'rejected',
+        resolutionNote: 'Pasó el plazo de cambio', resolvedByName: 'Admin', resolvedAt: '2026-11-10T16:00:00Z', createdAt: '2026-11-09T16:00:00Z',
+      }],
+    });
+    const texto = el().textContent ?? '';
+    expect(texto).toContain('Devolución');
+    expect(texto).toContain('Rechazada');
+    expect(texto).toContain('Pasó el plazo de cambio');
+  });
 });

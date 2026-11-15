@@ -16,6 +16,7 @@ import { AdminStoreOrderSheetComponent } from './Components/admin-store-order-sh
 import { AdminStoreOrdersComponent } from './Components/admin-store-orders/admin-store-orders.component';
 import { AdminStoreProductSheetComponent } from './Components/admin-store-product-sheet/admin-store-product-sheet.component';
 import { AdminStoreProductsComponent } from './Components/admin-store-products/admin-store-products.component';
+import { AdminStoreReturnsComponent } from './Components/admin-store-returns/admin-store-returns.component';
 import { AdminStoreSummaryComponent } from './Components/admin-store-summary/admin-store-summary.component';
 
 /**
@@ -28,7 +29,7 @@ import { AdminStoreSummaryComponent } from './Components/admin-store-summary/adm
     CommonModule, AtmosphereComponent, AdminHeaderComponent, AdminNavComponent,
     StoreSheetComponent, StoreConfirmDialogComponent, StorePushComponent, StoreToastComponent,
     AdminStoreSummaryComponent, AdminStoreLogisticsComponent, AdminStoreOrdersComponent,
-    AdminStoreProductsComponent, AdminStoreInventoryComponent,
+    AdminStoreProductsComponent, AdminStoreInventoryComponent, AdminStoreReturnsComponent,
     AdminStoreOrderSheetComponent, AdminStoreProductSheetComponent,
   ],
   providers: [StoreAdminService],
