@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../Models/auth.models';
 import { NotificationRealtimeService } from './notification-realtime.service';
 import {
-  Arte, Categoria, CORTE_DESPACHO, COSTO_ENVIO, ENVIO_GRATIS_DESDE, Evento, EstadoPago, MAX_INTENTOS_ENTREGA,
+  Arte, Categoria, COSTO_ENVIO, ENVIO_GRATIS_DESDE, Evento, EstadoPago, MAX_INTENTOS_ENTREGA,
   NuevaSolicitud, NuevoPedido, Pedido, Producto, SolicitudCambio, StoreNotificacion, TipoEvento, TipoSolicitud,
 } from '../Models/store.models';
 
@@ -40,7 +40,7 @@ interface ApiPedido {
 }
 interface ApiAviso { id: string; title: string; body: string; orderId: string | null; read: boolean; createdAt: string; }
 interface ApiConfig {
-  freeShippingFrom: number; shippingCost: number; dispatchCutoff: string; returnWindowDays: number; maxDeliveryAttempts: number;
+  freeShippingFrom: number; shippingCost: number; returnWindowDays: number; maxDeliveryAttempts: number;
 }
 
 /** Resultado de una operación: el componente decide qué mostrar. */
@@ -112,7 +112,7 @@ export class StoreService {
   readonly productos = signal<Producto[]>([]);
   readonly pedidos = signal<Pedido[]>([]);
   readonly config = signal({
-    envioGratisDesde: ENVIO_GRATIS_DESDE, costoEnvio: COSTO_ENVIO, corte: CORTE_DESPACHO, maxIntentosEntrega: MAX_INTENTOS_ENTREGA,
+    envioGratisDesde: ENVIO_GRATIS_DESDE, costoEnvio: COSTO_ENVIO, maxIntentosEntrega: MAX_INTENTOS_ENTREGA,
   });
   /** true cuando ya llegó la primera respuesta de pedidos (evita avisar por pedidos viejos). */
   readonly cargado = signal(false);
@@ -211,7 +211,6 @@ export class StoreService {
     this.config.set({
       envioGratisDesde: r.valor.freeShippingFrom,
       costoEnvio: r.valor.shippingCost,
-      corte: this.horaTexto(r.valor.dispatchCutoff),
       maxIntentosEntrega: r.valor.maxDeliveryAttempts,
     });
   }
@@ -459,13 +458,6 @@ export class StoreService {
       resueltoEn: s.resolvedAt ? fechaHora(s.resolvedAt) : '',
       creadoEn: fechaHora(s.createdAt), creadoTs: new Date(s.createdAt).getTime(),
     };
-  }
-
-  private horaTexto(hhmm: string): string {
-    const [h, m] = hhmm.split(':').map(Number);
-    if (Number.isNaN(h)) return CORTE_DESPACHO;
-    const pm = h >= 12;
-    return `${h % 12 || 12}:${String(m || 0).padStart(2, '0')} ${pm ? 'p. m.' : 'a. m.'}`;
   }
 
   // ── Avisos leídos del admin (solo en este navegador) ──

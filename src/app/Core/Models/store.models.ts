@@ -146,7 +146,6 @@ export interface NuevaSolicitud {
 export const ENVIO_GRATIS_DESDE = 60;
 export const COSTO_ENVIO = 5;
 export const MAX_INTENTOS_ENTREGA = 3;
-export const CORTE_DESPACHO = '2:00 p. m.';
 
 export interface Etapa { fase: number; nombre: string; texto: string; }
 

@@ -14,7 +14,6 @@ import { AdminStoreOrderListComponent } from '../admin-store-order-list/admin-st
 })
 export class AdminStoreLogisticsComponent {
   readonly ui = inject(StoreAdminService);
-  readonly corte = computed(() => this.ui.store.config().corte);
 
   /** Cantidad de pedidos que todavía requieren algo del equipo. */
   readonly activos = computed(() => {

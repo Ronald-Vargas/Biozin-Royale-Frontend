@@ -1,7 +1,7 @@
 <!-- Empacado: genera la guía y la etiqueta -->
 <ng-container *ngIf="pedido.fase === 3">
   <p class="muted">Empacado en {{ pedido.paquete }}.</p>
-  <p class="muted">Transportista: Correos de Costa Rica. Corte de despacho: hoy {{ corte() }}.</p>
+  <p class="muted">Transportista: Correos de Costa Rica.</p>
   <div class="acciones">
     <button type="button" class="btn-oro btn-sm" (click)="despachar(pedido)">Generar guía y etiqueta</button>
   </div>

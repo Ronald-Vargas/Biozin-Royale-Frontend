@@ -9,7 +9,7 @@ export const ok = <T>(returnValue: T) => ({ returnValue, strResponseMessage: '',
 export const fallo = (mensaje: string) => ({ returnValue: null, strResponseMessage: mensaje, blnError: true, strResponseTittle: 'Error' });
 export const BAD_REQUEST = { status: 400, statusText: 'Bad Request' };
 
-export const configApi = { freeShippingFrom: 60, shippingCost: 5, dispatchCutoff: '14:00', returnWindowDays: 15, maxDeliveryAttempts: 3 };
+export const configApi = { freeShippingFrom: 60, shippingCost: 5, returnWindowDays: 15, maxDeliveryAttempts: 3 };
 
 export const camisaApi = {
   id: 'p-camisa', name: 'Camiseta Royale', category: 'Camisetas', description: 'Algodón', price: 28,

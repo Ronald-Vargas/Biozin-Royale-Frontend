@@ -1,4 +1,4 @@
-import { Component, Input, computed, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pedido } from 'src/app/Core/Models/store.models';
 import { StoreAdminService } from '../../store-admin.service';
@@ -15,7 +15,6 @@ export class AdminStoreShippingPanelComponent {
   private readonly ui = inject(StoreAdminService);
 
   @Input({ required: true }) pedido!: Pedido;
-  readonly corte = computed(() => this.ui.store.config().corte);
 
   /** Genera la guía y entrega el pedido a Correos de Costa Rica. */
   async despachar(p: Pedido): Promise<void> {

@@ -35,7 +35,6 @@ describe('StoreService', () => {
     expect(p.eventos[0].tipo).toBe('fase');
     expect(p.eta).toContain('mié 11');   // 11 y 12 de noviembre de 2026
     expect(p.eta).not.toContain('Invalid');   // el servidor manda la fecha con hora pegada
-    expect(store.config().corte).toBe('2:00 p. m.');
     expect(store.config().maxIntentosEntrega).toBe(3);
     expect(p.intentosFallidos).toBe(0);
     expect(p.solicitudes).toEqual([]);

@@ -4,8 +4,6 @@
   <app-admin-store-kpi label="En ruta" [value]="ui.cuenta()['En ruta']"></app-admin-store-kpi>
   <app-admin-store-kpi label="Incidencias" [value]="ui.cuenta()['Incidencias']"></app-admin-store-kpi>
 </div>
-<div class="corte">Corte de despacho: hoy {{ corte() }}. Lo que se empaca antes sale el mismo día.</div>
-
 <ng-container *ngFor="let g of ui.grupos()">
   <div class="caja" *ngIf="g.pedidos.length">
     <div class="item-cab">
